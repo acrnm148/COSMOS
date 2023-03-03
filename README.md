@@ -136,10 +136,6 @@
 - Redis
 - SSE
 - MySQL
-- Docker
-- Jenkins
-- nginX
-- HTTPS
 - Kakao API
 - Index
 - Elasticsearch
@@ -147,6 +143,10 @@
 
 ### Server/DevOps
 - AWS EC2, RDS, S3
+- Docker
+- Jenkins
+- nginX
+- HTTPS
 <br>
 
 ### 형상관리
