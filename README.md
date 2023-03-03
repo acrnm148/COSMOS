@@ -6,7 +6,7 @@
 > 삼성청년SW아카데미(SSAFY) 특화 프로젝트 (2023.02.20.~2023.04.07, 46일간 진행)
 
  <br>
-🌸팀 노션 : [팀 노션 링크]( https://sunakang.notion.site/sunakang/5cc3595584474826abb48218275d8926 )
+🌸팀 노션 : [팀 노션 링크](https://sunakang.notion.site/sunakang/5cc3595584474826abb48218275d8926)
 <br><br>
 
 ## 1️⃣ 기획배경
@@ -99,7 +99,7 @@
 
 ### 프로토타입, 목업
 
-🌸Figma :[Figma 링크](https://www.figma.com/file/fhHoMpS3dimLj9kwn0TAaM/cosmos?node-id=0%3A1&t=hlGp8iKnO0ls1Smm-0)
+🌸Figma : [Figma 링크](https://www.figma.com/file/fhHoMpS3dimLj9kwn0TAaM/cosmos?node-id=0%3A1&t=hlGp8iKnO0ls1Smm-0)
 
 <br>
 
@@ -116,7 +116,7 @@
 <br>
 
 <br><br>
-## 5️⃣ **사용 기술**
+##  **사용 기술**
 
 ### Frontend
 - ReactJS
