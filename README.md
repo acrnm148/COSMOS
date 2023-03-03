@@ -11,15 +11,18 @@
 
 ## 1️⃣ 기획배경
 
-- 설문조사 결과 데이트 할 때 가장 신경 쓰이는 것으로 ‘장소 & 음식점 선정’이 도합 **42.5%**로 가장 많은 비율을 차지하고 있다. 20대 남녀 기준 ‘새로운 장소 찾기’가 **46.2%**, ‘코스 알아보기’가 **35.9%**로 **데이트 코스 선정에 있어 어려움이 있다**고 밝혔다.<br>
-- 이에 설문조사를 기반으로 커플 모두 만족할 수 있는 **데이트 코스를 추천**해줌으로써 **데이트 일정 짜기에 소요되는 시간과 스트레스를 줄이고**자 한다.<br>
+- 설문조사 결과 데이트 할 때 가장 신경 쓰이는 것으로 ‘장소 & 음식점 선정’이 도합 **42.5%** 로 가장 많은 비율을 차지하고 있다. 20대 남녀 기준 ‘새로운 장소 찾기’가 **46.2%** , ‘코스 알아보기’가 **35.9%** 로 **데이트 코스 선정에 있어 어려움이 있다**고 밝혔다.<br><br>
+![image.png](./image.png)
+- 이에 설문조사를 기반으로 커플 모두 만족할 수 있는 **데이트 코스를 추천**해줌으로써 **데이트 일정 짜기에 소요되는 시간과 스트레스를 줄이고**자 한다.<br><br>
 
+<br><br>
 ## 2️⃣ **주요 고객 및 고객이 얻는 이익**
 
 - AI를 통해 사용자 맞춤형 데이트 코스를 추천 받을 수 있어서 **일정 짜는데에 대한 소요 시간**을 줄일 수 있다.<br>
 - 찜 장소를 수정, 생성하여 **자유롭게 커스텀** 할 수 있으며, 최적 경로를 통해 **이동 시간과 거리를 한눈에 파악**할 수 있다.<br>
 - 데이트 일정과 사진 공유를 통해 **커플들만의 추억**을 남길 수 있다.<br>
 
+<br><br>
 ## 3️⃣ 활용되는 기술력, 차별성
 
 ## | 경쟁사 분석
@@ -71,6 +74,7 @@
 - 데이트 코스는 자유롭게 생성, 수정, 삭제가 가능하며, 해당 코스의 최적 경로를 한눈에 파악할 수 있다.
   <br>
 
+<br><br>
 ## 4️⃣ **필요 기능**
 
 - 카카오 소셜 로그인/로그아웃
@@ -87,18 +91,23 @@
 - 일정 관리
 - 커플 연결 & 연결 끊기
 - 장소 찜 - 코스 커스텀(직접 - 최적경로 / 추천 - 랜덤)
-  <br>
-  🌸기능명세서 : [기능명세서 링크](https://sunakang.notion.site/55219461ce4f4aa3abd047c01c6d4cfc?v=93c3c103a46b49af822671d5b8ee7274)
+<br>
+🌸기능명세서 : [기능명세서 링크](https://sunakang.notion.site/55219461ce4f4aa3abd047c01c6d4cfc?v=93c3c103a46b49af822671d5b8ee7274)
 
+<br><br>
 ## 5️⃣ 프로젝트 설계
 
-### Figma
+### 프로토타입, 목업
 
-[Figma 링크](https://www.figma.com/file/fhHoMpS3dimLj9kwn0TAaM/cosmos?node-id=0%3A1&t=hlGp8iKnO0ls1Smm-0)
+🌸Figma :[Figma 링크](https://www.figma.com/file/fhHoMpS3dimLj9kwn0TAaM/cosmos?node-id=0%3A1&t=hlGp8iKnO0ls1Smm-0)
+
+<br>
 
 ### ERD
 
-![image]()
+![image-2.png](./image-2.png)
+
+<br>
 
 ### 시스템 아키텍처
 
@@ -106,13 +115,44 @@
 
 <br>
 
-## 9️⃣ **사용 기술**
+<br><br>
+## 5️⃣ **사용 기술**
 
-- FE: ReactJS + TypeScript, React Query, TMap API, Recoil, (Kakao API)
-- BE: Spring Boot, JPA, Query DSL, Spring Security, JWT, Redis, SSE, MySQL, Docker, Jenkins, nginX, HTTPS, (Kakao API), Index, Elasticsearch
-- Server/DevOps: AWS EC2, RDS, S3
-- 형상관리 : Gitlab, Gather town, Notion, JIRA, Discord
+### Frontend
+- ReactJS
+- TypeScript
+- React Query
+- TMap API
+- Recoil
+- Kakao API
+<br>
 
+### Backend
+- Spring Boot
+- JPA
+- Query DSL
+- Spring Security
+- JWT
+- Redis
+- SSE
+- MySQL
+- Docker
+- Jenkins
+- nginX
+- HTTPS
+- Kakao API
+- Index
+- Elasticsearch
+<br>
+
+### Server/DevOps
+- AWS EC2, RDS, S3
+<br>
+
+### 형상관리
+- Gitlab, Gather town, Notion, JIRA, Discord
+
+<br><br>
 ## 7️⃣ 팀 구성
 
 ### 슈의 비비빅데이터
