@@ -1,0 +1,98 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.8'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" //querydsl
+}
+
+group = 'com.tify'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'junit:junit:4.13.1'
+    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    //query dsl
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    //jwt
+    implementation group: 'com.auth0', name: 'java-jwt', version: '3.10.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5', 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation 'org.springframework.boot:spring-boot-test-autoconfigure:'
+    implementation 'org.springframework.boot:spring-boot-test'
+
+    //swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+
+    //GCP
+    //implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-starter', version: '3.0.0'
+    //implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-storage', version: '3.0.0'
+
+    //WebClient 사용 - http 요청
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+
+    //sping mail server
+    implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.1'
+    //java mail
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+    implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.18'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// QueryDSL 설정 start
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl{
+    options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+// QueryDSL 설정 end
