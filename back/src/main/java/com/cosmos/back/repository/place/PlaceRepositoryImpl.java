@@ -41,6 +41,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qTour.insideYn,
                     qTour.dayOff
                 ))
+                .from(qTour)
                 .where(qTour.id.eq(placeId))
                 .fetchOne();
     }
@@ -73,6 +74,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         qFestival.price,
                         qFestival.takenTime
                 ))
+                .from(qFestival)
                 .where(qFestival.id.eq(placeId))
                 .fetchOne();
     }
