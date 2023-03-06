@@ -35,7 +35,19 @@ public class Place {
 
     private String detail; // 상세정보
 
-    private String parking; // 주차시설
+    private String parking_yn; // 주차 가능 여부
 
     private String address; // 주소
+
+    private String img1; // 이미지1
+
+    private String img2; // 이미지2
+
+    private String img3; // 이미지3
+
+    private String img4; // 이미지4
+
+    private String img5; // 이미지5
+
+    private String type; // 타입
 }

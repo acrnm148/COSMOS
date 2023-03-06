@@ -15,11 +15,16 @@ import javax.persistence.Table;
 @Table(name = "tour")
 public class Tour extends Place {
 
-    private String experience; // 체험안내
-
-    @Column(name = "parking_yn")
-    private String parkingYn; // 주차 사용 가능 여부
-
     @Column(name = "pet_yn")
     private String petYn; // 애완동물 동반 가능 여부
+
+    private String introduce; // 개요
+
+    @Column(name = "inside_yn")
+    private String insideYn; // 실내, 실외
+
+    @Column(name = "day_off")
+    private String dayOff; // 쉬는 날
+
+    private String program; // 투어 프로그램
 }

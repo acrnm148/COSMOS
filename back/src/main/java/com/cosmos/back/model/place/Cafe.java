@@ -35,4 +35,7 @@ public class Cafe extends Place{
 
     @Column(name = "reserve_info")
     private String reserveInfo; // 예약안내
+
+    @Column(name = "open_time")
+    private String openTime;
 }
