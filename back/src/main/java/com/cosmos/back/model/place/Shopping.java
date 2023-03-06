@@ -30,5 +30,5 @@ public class Shopping extends Place {
     @Column(name = "card_yn")
     private String cardYn; // 신용카드 사용 가능 여부
 
-    private String toilet; // 화장실 안내
+
 }
