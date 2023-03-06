@@ -23,10 +23,20 @@ public class KakaoProfile {
         public Boolean profile_image_needs_agreement;
         public Profile profile;
         public Boolean has_email;
+        public Boolean has_birthday;
+        public Boolean has_age_range;
         public Boolean email_needs_agreement;
+        public Boolean name_needs_agreement;
+        public Boolean age_range_needs_agreement;
+        public Boolean birthday_needs_agreement;
+        public Boolean phone_number_needs_agreement;
         public Boolean is_email_valid;
         public Boolean is_email_verified;
         public String email;
+        public String name;
+        public String age_range;
+        public String birthday;
+        public String phone_number;
 
         @Data
         public class Profile {

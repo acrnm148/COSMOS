@@ -39,7 +39,7 @@ public class JwtService {
     public JwtToken getJwtToken(String userId) {
 
         User user = userRepository.findByUserId(userId);
-        RefreshToken userRefreshToken = user.getJwtRefreshToken();
+        RefreshToken userRefreshToken = null;//user.getJwtRefreshToken();
 
         //처음 서비스를 이용하는 사용자(refresh 토큰이 없는 사용자)
         if(userRefreshToken ==null) {
@@ -73,7 +73,7 @@ public class JwtService {
                 //새로운 access, refresh 토큰 생성
                 JwtToken newJwtToken = jwtProviderService.createJwtToken(user.getUserSeq(), user.getUserId());
 
-                user.SetRefreshToken(newJwtToken.getRefreshToken());
+                //user.SetRefreshToken(newJwtToken.getRefreshToken());
                 return newJwtToken;
             }
         }
@@ -118,11 +118,22 @@ public class JwtService {
         //refresh 토큰이 만료됨 -> access, refresh 토큰 모두 재발급
        else {
             JwtToken newJwtToken = jwtProviderService.createJwtToken(user.getUserSeq(), user.getUserId());
-            user.SetRefreshToken(newJwtToken.getRefreshToken());
+            //user.SetRefreshToken(newJwtToken.getRefreshToken());
             return newJwtToken;
         }
 
     }
+
+    /**
+     * accesstoken 복호화해서 유저 아이디 추출
+     */
+    @Transactional
+    public Long getUserSeq(String token) {
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
+        Long userSeq = decodedJWT.getClaim("userSeq").asLong();
+        return userSeq;
+    }
+
 
     /**
      * refreshtoken 중복 확인
@@ -130,11 +141,11 @@ public class JwtService {
     public RefreshToken sameCheckRefreshToken(User user, String refreshToken) {
 
         //DB 에서 찾기
-        RefreshToken jwtRefreshToken = user.getJwtRefreshToken();
-
-        if(jwtRefreshToken.getRefreshToken().equals(refreshToken)){
-            return jwtRefreshToken;
-        }
+//        RefreshToken jwtRefreshToken = user.getJwtRefreshToken();
+//
+//        if(jwtRefreshToken.getRefreshToken().equals(refreshToken)){
+//            return jwtRefreshToken;
+//        }
         return null;
     }
 

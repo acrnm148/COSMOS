@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     public User findByUserId(String username); //public 빼면 오류난다
-    public User findByPassword(String nowPassword);
+    public User findByUserSeq(Long userSeq);
 }

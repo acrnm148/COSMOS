@@ -42,12 +42,11 @@ public class UserApiController {
      * 회원 조회
      */
     @Operation(summary = "유저 프로필 정보를 가져옴", description = "유저 프로필 정보를 가져옴")
-    @GetMapping("/account/userInfo")
-    public ResponseEntity<?> getUserProfile(@RequestHeader(value = "Authorization") String token) {
+    @GetMapping("/account/userInfo/{userSeq}")
+    public ResponseEntity<?> getUserProfile(@PathVariable("userSeq")Long userSeq, @RequestHeader(value = "Authorization") String token) {
         try {
             System.out.println("유저 조회 token 체크 : "+token);
-            UserProfileDto userProfileDto = userService.getUser(token.substring(7));
-            //return ResponseEntity.ok().body(new UserProfileDto(user));
+            UserProfileDto userProfileDto = userService.getUser(userSeq, token.substring(7));
             return ResponseEntity.ok().body(userProfileDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -78,12 +77,16 @@ public class UserApiController {
      * 로그아웃
      */
     @Operation(summary = "로그아웃", description = "로그아웃")
-    @PostMapping("/account/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+    @GetMapping("/account/logout/{userSeq}")
+    public ResponseEntity<?> logout(@PathVariable("userSeq")String userSeq, @RequestHeader("Authorization") String token) {
         token = token.substring(7);
-        userService.logout(token);
-        System.out.println("로그아웃 완료");
-        return ResponseEntity.ok().body("로그아웃 되었습니다.");
+        boolean res = userService.logout(Long.parseLong(userSeq), token);
+        if (res) {
+            System.out.println("로그아웃 완료");
+            return ResponseEntity.ok().body("로그아웃 되었습니다.");
+        }
+        System.out.println("로그아웃 실패");
+        return ResponseEntity.ok().body("로그아웃에 실패했습니다.");
     }
 
     /**

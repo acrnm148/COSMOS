@@ -1,8 +1,15 @@
 package com.cosmos.back.dto;
 
+import com.cosmos.back.model.Review;
+import com.cosmos.back.model.UserCourse;
+import com.cosmos.back.model.UserPlace;
 import lombok.*;
 
+import javax.persistence.Column;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -11,26 +18,29 @@ import java.time.LocalDateTime;
 public class UserProfileDto {
 
     private Long userSeq;
-
-    private String userId; //일반사용자-입력한 아이디, 카카오 사용자-카카오 고유 id(provider id)
-    private String roles; //USER,ADMIN 게 넣을것이다.
-
-    private String provider;
-    private String nickname;
-    private String profileImg;
-    private String username;
-    private String birth;
+    private String userId;
+    private String userName;
+    private String phoneNumber;
+    private String profileImgUrl;
+    private String coupleYn;
+    private String ageRange;
     private String email;
-    private String tel;
-    private String addr1;
-    private String addr2;
-    private String zipcode;
-    private String birthYear;
-    private String gender;
+    private String birthday;
+    private String role; //USER,ADMIN
 
-    private String refreshToken;
-
+    private String type1;
+    private String type2;
+    private Long coupleUserId;
     private LocalDateTime createTime;
+
+    // 유저 - (유저 - 데이트 코스)
+    List<UserCourse> userCourses = new ArrayList<>();
+
+    // 유저 - 리뷰
+    List<Review> reviews = new ArrayList<>();
+
+    // 유저 - (유저 - 장소)
+    List<UserPlace> userPlaces = new ArrayList<>();
 
 
 }
