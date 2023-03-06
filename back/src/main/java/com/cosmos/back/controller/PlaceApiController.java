@@ -1,7 +1,6 @@
 package com.cosmos.back.controller;
 
-import com.cosmos.back.dto.response.place.FestivalResponseDto;
-import com.cosmos.back.dto.response.place.TourResponseDto;
+import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,5 +34,29 @@ public class PlaceApiController {
         FestivalResponseDto festivalResponseDto = placeService.detailFestival(placeId);
 
         return new ResponseEntity<>(festivalResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "숙박 정보를 가져옴", description = "숙박 정보를 가져옴")
+    @GetMapping("/places/accommodations/{placeId}")
+    public ResponseEntity<AccommodationResponseDto> detailAccommodation(@PathVariable Long placeId) {
+        AccommodationResponseDto accommodationResponseDto = placeService.detailAccommodation(placeId);
+
+        return new ResponseEntity<>(accommodationResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "음식점 정보를 가져옴", description = "음식점 정보를 가져옴")
+    @GetMapping("/places/restaurants/{placeId}")
+    public ResponseEntity<RestaurantResponseDto> detailRestaurant(@PathVariable Long placeId) {
+        RestaurantResponseDto restaurantResponseDto = placeService.detailRestaurant(placeId);
+
+        return new ResponseEntity<>(restaurantResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "카페 정보를 가져옴", description = "카페 정보를 가져옴")
+    @GetMapping("/places/cafes/{placeId}")
+    public ResponseEntity<CafeResponseDto> detailCafe(@PathVariable Long placeId) {
+        CafeResponseDto cafeResponseDto = placeService.detailCafe(placeId);
+
+        return new ResponseEntity<>(cafeResponseDto, HttpStatus.OK);
     }
 }

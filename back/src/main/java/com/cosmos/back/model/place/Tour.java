@@ -18,6 +18,7 @@ public class Tour extends Place {
     @Column(name = "pet_yn")
     private String petYn; // 애완동물 동반 가능 여부
 
+    @Column(name = "introduce")
     private String introduce; // 개요
 
     @Column(name = "inside_yn")

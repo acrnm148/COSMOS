@@ -28,14 +28,14 @@ public class Place {
 
     private String longitude; // 경도
 
-    private String introduce; // 개요
+//    private String introduce; // 개요
 
     @Column(name = "thumb_nail_url")
     private String thumbNailUrl; // 썸네일
 
     private String detail; // 상세정보
 
-    private String parking_yn; // 주차 가능 여부
+    private String parkingYn; // 주차 가능 여부
 
     private String address; // 주소
 
