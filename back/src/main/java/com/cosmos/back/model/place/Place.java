@@ -1,7 +1,10 @@
 package com.cosmos.back.model.place;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
@@ -13,6 +16,8 @@ import static javax.persistence.GenerationType.*;
 @Table(name = "place")
 @DiscriminatorColumn(name = "dtype")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Getter
+@SuperBuilder
 public class Place {
 
     @Id @GeneratedValue(strategy = IDENTITY)
