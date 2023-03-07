@@ -118,7 +118,7 @@ public class KakaoService {
                     //.phoneNumber(profile.getKakao_account().getProfile().getPhone_number())
                     .profileImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
                     .email(profile.getKakao_account().getEmail())
-                    .role("USER") //일단 유저로 넣음.
+                    //.role("USER") //일단 유저로 넣음.
                     .createTime(LocalDateTime.now())
                     .build();
 

@@ -12,6 +12,7 @@ import com.cosmos.back.auth.jwt.service.JwtProviderService;
 import com.cosmos.back.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,16 +36,9 @@ public class UserService {
      * accessToken을 복호화(디코딩)해서 유저 정보 가져옴
      */
     @Transactional
-    public UserProfileDto getUser(Long userSeq, String accessToken) {
+    public UserProfileDto getUser(Long userSeq) {
         System.out.println("getUser 함수 진입");
         try {
-            //복호화된 JWT
-            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(accessToken);
-            Long userSeqByToken = decodedJWT.getClaim("userSeq").asLong();
-            if (userSeq != userSeqByToken) {
-                return null;
-            }
-
             User user = userRepository.findByUserSeq(userSeq);
 
             UserProfileDto userProfileDto = UserProfileDto.builder()
@@ -73,23 +67,13 @@ public class UserService {
 
     /**
      * 유저 정보 수정
-     * 프로필이미지 변경, 비밀번호 변경
+     * (카카오톡 공유하기 -> 수정필요)
      */
     @Transactional
     public User updateUserInfo(UserUpdateDto dto) {
-        User user = userRepository.findByUserId(dto.getUserId());
-        if (dto.getTel() == null || dto.getNickname() == null ||
-           dto.getZipcode() == null || dto.getAddr1() == null ||
-            dto.getAddr2()==null) {
-            System.out.println("입력란이 비었습니다.");
-            return null;
-        }
-//        user.setTel(dto.getTel());
-//        user.setZipCode(dto.getZipcode());
-//        user.setNickName(dto.getNickname());
-//        user.setAddr1(dto.getAddr1());
-//        user.setAddr2(dto.getAddr2());
-
+        User user = userRepository.findByUserSeq(dto.getUserSeq());
+        user.setCoupleYn("Y");
+        user.setCoupleUserId(dto.getCoupleUserId());
         userRepository.save(user);
         return user;
     }
@@ -98,12 +82,10 @@ public class UserService {
      * Redis를 이용한 로그아웃
      */
     @Transactional
-    public boolean logout(Long userSeq, String accessToken) {
-        //accesstoken 복호화해서 나온 userId가 userId와 동일하면 ok, 다르면 응답안함
-        if (jwtService.getUserSeq(accessToken) == userSeq) {
-            return true;
-        }
-        return false;
+    public void logout(Long userSeq) {
+            String redisUserSeq = userSeq.toString();
+            redisTemplate.delete(redisUserSeq); //redis에서 refresh 토큰 삭제
+            System.out.println("로그아웃 완료, refresh토큰 삭제: "+userSeq);
     }
 
 

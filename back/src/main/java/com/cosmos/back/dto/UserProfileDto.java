@@ -33,14 +33,9 @@ public class UserProfileDto {
     private Long coupleUserId;
     private LocalDateTime createTime;
 
-    // 유저 - (유저 - 데이트 코스)
-    List<UserCourse> userCourses = new ArrayList<>();
-
-    // 유저 - 리뷰
-    List<Review> reviews = new ArrayList<>();
-
-    // 유저 - (유저 - 장소)
-    List<UserPlace> userPlaces = new ArrayList<>();
+    private List<UserCourse> userCourses = new ArrayList<>(); //유저-데이트 코스
+    private List<Review> reviews = new ArrayList<>();//유저-리뷰
+    private List<UserPlace> userPlaces = new ArrayList<>();//유저-장소
 
 
 }

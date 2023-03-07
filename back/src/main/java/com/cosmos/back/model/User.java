@@ -1,7 +1,6 @@
 package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.cosmos.back.auth.jwt.refreshToken.RefreshToken;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
