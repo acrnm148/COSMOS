@@ -59,4 +59,28 @@ public class PlaceApiController {
 
         return new ResponseEntity<>(cafeResponseDto, HttpStatus.OK);
     }
+
+    @Operation(summary = "쇼핑 정보를 가져옴", description = "쇼핑 정보를 가져옴")
+    @GetMapping("/places/shoppings/{placeId}")
+    public ResponseEntity<ShoppingResponseDto> detailShopping(@PathVariable Long placeId) {
+        ShoppingResponseDto shoppingResponseDto = placeService.detailShopping(placeId);
+
+        return new ResponseEntity<>(shoppingResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "레포츠 정보를 가져옴", description = "레포츠 정보를 가져옴")
+    @GetMapping("/places/leisures/{placeId}")
+    public ResponseEntity<LeisuresResponseDto> detailLeisure(@PathVariable Long placeId) {
+        LeisuresResponseDto leisuresResponseDto = placeService.detailLeisure(placeId);
+
+        return new ResponseEntity<>(leisuresResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "문화시설 정보를 가져옴", description = "문화시설 정보를 가져옴")
+    @GetMapping("/places/cultures/{placeId}")
+    public ResponseEntity<CulturesResponseDto> detailCulture(@PathVariable Long placeId) {
+        CulturesResponseDto culturesResponseDto = placeService.detailCulture(placeId);
+
+        return new ResponseEntity<>(culturesResponseDto, HttpStatus.OK);
+    }
 }

@@ -38,4 +38,18 @@ public class PlaceService {
         return placeRepository.findCafeByPlaceIdQueryDsl(placeId);
     }
 
+    // QueryDsl로 쇼핑 상세 정보 받아오기
+    public ShoppingResponseDto detailShopping (Long placeId) {
+        return placeRepository.findShoppingByPlaceIdQueryDsl(placeId);
+    }
+
+    // QueryDsl로 레포츠 상세 정보 받아오기
+    public LeisuresResponseDto detailLeisure (Long placeId) {
+        return placeRepository.findLeisureByPlaceIdQueryDsl(placeId);
+    }
+
+    // QueryDsl로 문화시설 상세 정보 받아오기
+    public CulturesResponseDto detailCulture (Long placeId) {
+        return placeRepository.findCultureByPlaceIdQueryDsl(placeId);
+    }
 }

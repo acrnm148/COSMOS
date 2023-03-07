@@ -115,6 +115,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetchOne();
     }
 
+    // QueryDsl로 음식점 상세 정보 받아오기
     @Override
     public RestaurantResponseDto findRestaurantByPlaceIdQueryDsl(Long placeId) {
         QRestaurant qRestaurant = QRestaurant.restaurant;
@@ -149,6 +150,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetchOne();
     }
 
+    // QueryDsl로 카페 상세 정보 받아오기
     @Override
     public CafeResponseDto findCafeByPlaceIdQueryDsl(Long placeId) {
         QCafe qCafe = QCafe.cafe;
@@ -180,6 +182,101 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 ))
                 .from(qCafe)
                 .where(qCafe.id.eq(placeId))
+                .fetchOne();
+    }
+
+    // QueryDsl로 쇼핑 상세 정보 받아오기
+    @Override
+    public ShoppingResponseDto findShoppingByPlaceIdQueryDsl(Long placeId) {
+        QShopping qShopping = QShopping.shopping;
+        return queryFactory.select(Projections.constructor(ShoppingResponseDto.class,
+                qShopping.id,
+                qShopping.name,
+                qShopping.phoneNumber,
+                qShopping.latitude,
+                qShopping.longitude,
+                qShopping.thumbNailUrl,
+                qShopping.detail,
+                qShopping.parkingYn,
+                qShopping.address,
+                qShopping.img1,
+                qShopping.img2,
+                qShopping.img3,
+                qShopping.img4,
+                qShopping.img5,
+                qShopping.type,
+                qShopping.shoppingList,
+                qShopping.dayOff,
+                qShopping.strollerYn,
+                qShopping.petYn,
+                qShopping.cardYn,
+                qShopping.openTime,
+                qShopping.openDay
+                ))
+                .from(qShopping)
+                .where(qShopping.id.eq(placeId))
+                .fetchOne();
+    }
+
+    // QueryDsl로 레포츠 상세 정보 받아오기
+    @Override
+    public LeisuresResponseDto findLeisureByPlaceIdQueryDsl(Long placeId) {
+        QLeisure qLeisure = QLeisure.leisure;
+        return queryFactory.select(Projections.constructor(LeisuresResponseDto.class,
+                qLeisure.id,
+                qLeisure.name,
+                qLeisure.phoneNumber,
+                qLeisure.latitude,
+                qLeisure.longitude,
+                qLeisure.thumbNailUrl,
+                qLeisure.detail,
+                qLeisure.parkingYn,
+                qLeisure.address,
+                qLeisure.img1,
+                qLeisure.img2,
+                qLeisure.img3,
+                qLeisure.img4,
+                qLeisure.img5,
+                qLeisure.type,
+                qLeisure.acceptablePeople,
+                qLeisure.dayOff,
+                qLeisure.parkingCost,
+                qLeisure.openTime,
+                qLeisure.openPeriod,
+                qLeisure.price,
+                qLeisure.ageRange,
+                qLeisure.petYn
+                ))
+                .from(qLeisure)
+                .where(qLeisure.id.eq(placeId))
+                .fetchOne();
+    }
+
+    // QueryDsl로 문화시설 상세 정보 받아오기
+    @Override
+    public CulturesResponseDto findCultureByPlaceIdQueryDsl(Long placeId) {
+        QCulture qCulture = QCulture.culture;
+        return queryFactory.select(Projections.constructor(CulturesResponseDto.class,
+                qCulture.id,
+                qCulture.name,
+                qCulture.phoneNumber,
+                qCulture.latitude,
+                qCulture.longitude,
+                qCulture.thumbNailUrl,
+                qCulture.detail,
+                qCulture.parkingYn,
+                qCulture.address,
+                qCulture.img1,
+                qCulture.img2,
+                qCulture.img3,
+                qCulture.img4,
+                qCulture.img5,
+                qCulture.type,
+                qCulture.dayOff,
+                qCulture.petYn
+                ))
+                .from(qCulture)
+                .where(qCulture.id.eq(placeId))
                 .fetchOne();
     }
 }

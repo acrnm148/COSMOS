@@ -18,4 +18,13 @@ public interface PlaceRepositoryCustom {
 
     // QueryDsl로 카페 상세 정보 받아오기
     public CafeResponseDto findCafeByPlaceIdQueryDsl(Long placeId);
+
+    // QueryDsl로 쇼핑 상세 정보 받아오기
+    public ShoppingResponseDto findShoppingByPlaceIdQueryDsl(Long placeId);
+
+    // QueryDsl로 레포츠 상세 정보 받아오기
+    public LeisuresResponseDto findLeisureByPlaceIdQueryDsl(Long placeId);
+
+    // QueryDsl로 문화시설 상세 정보 받아오기
+    public CulturesResponseDto findCultureByPlaceIdQueryDsl(Long placeId);
 }
