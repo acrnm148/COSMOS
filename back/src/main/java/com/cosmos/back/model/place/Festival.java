@@ -26,9 +26,6 @@ public class Festival extends Place {
     @Column(name = "taken_time")
     private String takenTime; // 관람 소요 시간
 
-    @Column(name = "pet_yn")
-    private String petYn; // 애완동물 가능 여부
-
     @Column(name = "introduce")
     private String introduce; // 개요
 }
