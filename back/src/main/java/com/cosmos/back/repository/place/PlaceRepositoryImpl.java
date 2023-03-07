@@ -65,7 +65,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         qFestival.img4,
                         qFestival.img5,
                         qFestival.type,
-                        qFestival.petYn,
                         qFestival.introduce,
                         qFestival.startDate,
                         qFestival.endDate,
