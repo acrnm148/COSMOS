@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CafeResponseDto {
+public class ShoppingResponseDto {
     private Long placeId;
-    private String type;
     private String name;
     private String phoneNumber;
     private String latitude;
@@ -25,13 +24,12 @@ public class CafeResponseDto {
     private String img3;
     private String img4;
     private String img5;
-    private String playground;
+    private String type;
+    private String shoppingList;
     private String dayOff;
-    private String representativeMenu;
-    private String totalMenu;
-    private String smokingYn;
+    private String strollerYn;
+    private String petYn;
     private String cardYn;
-    private String takeoutYn;
-    private String reserveInfo;
     private String openTime;
+    private String openDay;
 }

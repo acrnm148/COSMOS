@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CafeResponseDto {
+public class AccommodationResponseDto {
     private Long placeId;
     private String type;
     private String name;
@@ -25,13 +25,16 @@ public class CafeResponseDto {
     private String img3;
     private String img4;
     private String img5;
-    private String playground;
-    private String dayOff;
-    private String representativeMenu;
-    private String totalMenu;
-    private String smokingYn;
-    private String cardYn;
-    private String takeoutYn;
-    private String reserveInfo;
-    private String openTime;
+    private String acceptablePeople;
+    private String roomNum;
+    private String roomType;
+    private String cookYn;
+    private String checkIn;
+    private String checkOut;
+    private String reservationPage;
+    private String pickupYn;
+    private String karaokeYn;
+    private String bbqYn;
+    private String gymYn;
+    private String refund;
 }

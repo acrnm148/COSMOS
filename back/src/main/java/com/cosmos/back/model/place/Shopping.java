@@ -30,5 +30,9 @@ public class Shopping extends Place {
     @Column(name = "card_yn")
     private String cardYn; // 신용카드 사용 가능 여부
 
+    @Column(name = "open_time")
+    private String openTime; // 여는 시간
 
+    @Column(name = "open_day")
+    private String openDay; // 여는 날
 }

@@ -1,7 +1,6 @@
 package com.cosmos.back.controller;
 
-import com.cosmos.back.dto.response.place.FestivalResponseDto;
-import com.cosmos.back.dto.response.place.TourResponseDto;
+import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,5 +34,53 @@ public class PlaceApiController {
         FestivalResponseDto festivalResponseDto = placeService.detailFestival(placeId);
 
         return new ResponseEntity<>(festivalResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "숙박 정보를 가져옴", description = "숙박 정보를 가져옴")
+    @GetMapping("/places/accommodations/{placeId}")
+    public ResponseEntity<AccommodationResponseDto> detailAccommodation(@PathVariable Long placeId) {
+        AccommodationResponseDto accommodationResponseDto = placeService.detailAccommodation(placeId);
+
+        return new ResponseEntity<>(accommodationResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "음식점 정보를 가져옴", description = "음식점 정보를 가져옴")
+    @GetMapping("/places/restaurants/{placeId}")
+    public ResponseEntity<RestaurantResponseDto> detailRestaurant(@PathVariable Long placeId) {
+        RestaurantResponseDto restaurantResponseDto = placeService.detailRestaurant(placeId);
+
+        return new ResponseEntity<>(restaurantResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "카페 정보를 가져옴", description = "카페 정보를 가져옴")
+    @GetMapping("/places/cafes/{placeId}")
+    public ResponseEntity<CafeResponseDto> detailCafe(@PathVariable Long placeId) {
+        CafeResponseDto cafeResponseDto = placeService.detailCafe(placeId);
+
+        return new ResponseEntity<>(cafeResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "쇼핑 정보를 가져옴", description = "쇼핑 정보를 가져옴")
+    @GetMapping("/places/shoppings/{placeId}")
+    public ResponseEntity<ShoppingResponseDto> detailShopping(@PathVariable Long placeId) {
+        ShoppingResponseDto shoppingResponseDto = placeService.detailShopping(placeId);
+
+        return new ResponseEntity<>(shoppingResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "레포츠 정보를 가져옴", description = "레포츠 정보를 가져옴")
+    @GetMapping("/places/leisures/{placeId}")
+    public ResponseEntity<LeisuresResponseDto> detailLeisure(@PathVariable Long placeId) {
+        LeisuresResponseDto leisuresResponseDto = placeService.detailLeisure(placeId);
+
+        return new ResponseEntity<>(leisuresResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "문화시설 정보를 가져옴", description = "문화시설 정보를 가져옴")
+    @GetMapping("/places/cultures/{placeId}")
+    public ResponseEntity<CulturesResponseDto> detailCulture(@PathVariable Long placeId) {
+        CulturesResponseDto culturesResponseDto = placeService.detailCulture(placeId);
+
+        return new ResponseEntity<>(culturesResponseDto, HttpStatus.OK);
     }
 }

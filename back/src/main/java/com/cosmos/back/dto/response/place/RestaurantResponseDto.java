@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CafeResponseDto {
+public class RestaurantResponseDto {
     private Long placeId;
     private String type;
     private String name;
