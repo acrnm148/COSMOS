@@ -1,6 +1,7 @@
 package com.cosmos.back.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "plan")
+@Builder
 public class Plan {
 
     @Id @GeneratedValue(strategy = IDENTITY)

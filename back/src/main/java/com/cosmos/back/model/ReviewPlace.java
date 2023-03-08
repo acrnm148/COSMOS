@@ -3,6 +3,7 @@ package com.cosmos.back.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.cosmos.back.model.place.Place;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "reviewplace")
+@Builder
 public class ReviewPlace {
 
     @Id
