@@ -6,7 +6,6 @@ import com.cosmos.back.service.PlaceService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -162,7 +161,7 @@ class PlaceApiControllerTest {
     // HTTP Status 200, Service에서 ResponseDto를 형식에 맞게 잘 받아오는지 테스트
     public void 문화시설정보() throws Exception {
 
-        CulturesResponseDto mockDto = CulturesResponseDto.builder().name("문화시설").build();
+        CultureResponseDto mockDto = CultureResponseDto.builder().name("문화시설").build();
 
         // mocking
         when(placeService.detailCulture(anyLong()))
@@ -187,7 +186,7 @@ class PlaceApiControllerTest {
     // HTTP Status 200, Service에서 ResponseDto를 형식에 맞게 잘 받아오는지 테스트
     public void 레져정보() throws Exception {
 
-        LeisuresResponseDto mockDto = LeisuresResponseDto.builder().name("레져").build();
+        LeisureResponseDto mockDto = LeisureResponseDto.builder().name("레져").build();
 
         // mocking
         when(placeService.detailLeisure(anyLong()))

@@ -32,13 +32,13 @@ class PlaceServiceTest {
     // service가 repository를 잘 호출 하는지, 알맞는 Response Dto를 가져오는지 확인
     public void 문화생활상세정보받아오기() throws Exception {
 
-        CulturesResponseDto mockDto = CulturesResponseDto.builder().name("문화생활").build();
+        CultureResponseDto mockDto = CultureResponseDto.builder().name("문화생활").build();
 
         // mocking
         when(placeRepository.findCultureByPlaceIdQueryDsl(anyLong()))
                 .thenReturn(mockDto);
 
-        CulturesResponseDto dto = placeService.detailCulture(1L);
+        CultureResponseDto dto = placeService.detailCulture(1L);
 
         assertEquals(dto.getName(), "문화생활");
     }
@@ -100,13 +100,13 @@ class PlaceServiceTest {
     // service가 repository를 잘 호출 하는지, 알맞는 Response Dto를 가져오는지 확인
     public void 레져상세정보받아오기() throws Exception {
 
-        LeisuresResponseDto mockDto = LeisuresResponseDto.builder().name("레져").build();
+        LeisureResponseDto mockDto = LeisureResponseDto.builder().name("레져").build();
 
         // mocking
         when(placeRepository.findLeisureByPlaceIdQueryDsl(anyLong()))
                 .thenReturn(mockDto);
 
-        LeisuresResponseDto dto = placeService.detailLeisure(1L);
+        LeisureResponseDto dto = placeService.detailLeisure(1L);
 
         assertEquals(dto.getName(), "레져");
     }

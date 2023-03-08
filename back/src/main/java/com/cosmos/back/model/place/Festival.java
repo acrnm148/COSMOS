@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -16,6 +17,7 @@ import javax.persistence.Table;
 @DiscriminatorValue("festival")
 @Table(name = "festival")
 @Getter
+@SuperBuilder
 public class Festival extends Place {
 
     @Column(name = "start_date")
