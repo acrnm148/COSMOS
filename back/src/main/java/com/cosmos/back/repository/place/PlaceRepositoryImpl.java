@@ -37,7 +37,8 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qTour.petYn,
                     qTour.introduce,
                     qTour.insideYn,
-                    qTour.dayOff
+                    qTour.dayOff,
+                    qTour.program
                 ))
                 .from(qTour)
                 .where(qTour.id.eq(placeId))
@@ -82,6 +83,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         QAccommodation qAccommodation = QAccommodation.accommodation;
         return queryFactory.select(Projections.constructor(AccommodationResponseDto.class,
                 qAccommodation.id,
+                qAccommodation.type,
                 qAccommodation.name,
                 qAccommodation.phoneNumber,
                 qAccommodation.latitude,
@@ -95,19 +97,18 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 qAccommodation.img3,
                 qAccommodation.img4,
                 qAccommodation.img5,
-                qAccommodation.type,
                 qAccommodation.acceptablePeople,
-                qAccommodation.bbqYn,
+                qAccommodation.roomNum,
+                qAccommodation.roomType,
+                qAccommodation.cookYn,
                 qAccommodation.checkIn,
                 qAccommodation.checkOut,
-                qAccommodation.cookYn,
-                qAccommodation.gymYn,
-                qAccommodation.karaokeYn,
-                qAccommodation.pickupYn,
-                qAccommodation.refund,
                 qAccommodation.reservationPage,
-                qAccommodation.roomNum,
-                qAccommodation.roomType
+                qAccommodation.pickupYn,
+                qAccommodation.karaokeYn,
+                qAccommodation.bbqYn,
+                qAccommodation.gymYn,
+                qAccommodation.refund
                 ))
                 .from(qAccommodation)
                 .where(qAccommodation.id.eq(placeId))
@@ -120,6 +121,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         QRestaurant qRestaurant = QRestaurant.restaurant;
         return queryFactory.select(Projections.constructor(RestaurantResponseDto.class,
                         qRestaurant.id,
+                        qRestaurant.type,
                         qRestaurant.name,
                         qRestaurant.phoneNumber,
                         qRestaurant.latitude,
@@ -133,15 +135,14 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         qRestaurant.img3,
                         qRestaurant.img4,
                         qRestaurant.img5,
-                        qRestaurant.type,
-                        qRestaurant.cardYn,
-                        qRestaurant.smokingYn,
-                        qRestaurant.dayOff,
                         qRestaurant.playground,
+                        qRestaurant.dayOff,
                         qRestaurant.representativeMenu,
-                        qRestaurant.reserveInfo,
-                        qRestaurant.takeoutYn,
                         qRestaurant.totalMenu,
+                        qRestaurant.smokingYn,
+                        qRestaurant.cardYn,
+                        qRestaurant.takeoutYn,
+                        qRestaurant.reserveInfo,
                         qRestaurant.openTime
                 ))
                 .from(qRestaurant)
@@ -155,6 +156,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         QCafe qCafe = QCafe.cafe;
         return queryFactory.select(Projections.constructor(CafeResponseDto.class,
                 qCafe.id,
+                qCafe.type,
                 qCafe.name,
                 qCafe.phoneNumber,
                 qCafe.latitude,
@@ -168,15 +170,14 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 qCafe.img3,
                 qCafe.img4,
                 qCafe.img5,
-                qCafe.type,
-                qCafe.cardYn,
-                qCafe.smokingYn,
-                qCafe.dayOff,
                 qCafe.playground,
+                qCafe.dayOff,
                 qCafe.representativeMenu,
-                qCafe.reserveInfo,
-                qCafe.takeoutYn,
                 qCafe.totalMenu,
+                qCafe.smokingYn,
+                qCafe.cardYn,
+                qCafe.takeoutYn,
+                qCafe.reserveInfo,
                 qCafe.openTime
                 ))
                 .from(qCafe)

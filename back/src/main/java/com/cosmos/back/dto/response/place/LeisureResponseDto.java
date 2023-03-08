@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class LeisureResponseDto {
-    Long placeId;
+    private Long placeId;
     private String name;
     private String phoneNumber;
     private String latitude;

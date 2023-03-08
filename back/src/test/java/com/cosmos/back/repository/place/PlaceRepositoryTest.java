@@ -51,7 +51,6 @@ class PlaceRepositoryTest {
     @Test
     @DisplayName("PlaceRepository 카페상세정보가져오기")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    @Rollback(value = false)
     public void 카페상세정보가져오기() throws Exception {
         Cafe cafe = Cafe.builder().playground("놀이방 있음").build();
         placeRepository.save(cafe);
