@@ -2,6 +2,7 @@ package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import static javax.persistence.GenerationType.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "usercourse")
+@Builder
 public class UserCourse {
 
     @Id @GeneratedValue(strategy = IDENTITY)
