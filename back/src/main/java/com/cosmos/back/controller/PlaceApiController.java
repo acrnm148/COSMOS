@@ -70,17 +70,17 @@ public class PlaceApiController {
 
     @Operation(summary = "레포츠 정보를 가져옴", description = "레포츠 정보를 가져옴")
     @GetMapping("/places/leisures/{placeId}")
-    public ResponseEntity<LeisuresResponseDto> detailLeisure(@PathVariable Long placeId) {
-        LeisuresResponseDto leisuresResponseDto = placeService.detailLeisure(placeId);
+    public ResponseEntity<LeisureResponseDto> detailLeisure(@PathVariable Long placeId) {
+        LeisureResponseDto leisureResponseDto = placeService.detailLeisure(placeId);
 
-        return new ResponseEntity<>(leisuresResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(leisureResponseDto, HttpStatus.OK);
     }
 
     @Operation(summary = "문화시설 정보를 가져옴", description = "문화시설 정보를 가져옴")
     @GetMapping("/places/cultures/{placeId}")
-    public ResponseEntity<CulturesResponseDto> detailCulture(@PathVariable Long placeId) {
-        CulturesResponseDto culturesResponseDto = placeService.detailCulture(placeId);
+    public ResponseEntity<CultureResponseDto> detailCulture(@PathVariable Long placeId) {
+        CultureResponseDto cultureResponseDto = placeService.detailCulture(placeId);
 
-        return new ResponseEntity<>(culturesResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(cultureResponseDto, HttpStatus.OK);
     }
 }

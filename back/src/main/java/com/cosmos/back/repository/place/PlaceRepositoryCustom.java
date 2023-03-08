@@ -23,8 +23,8 @@ public interface PlaceRepositoryCustom {
     public ShoppingResponseDto findShoppingByPlaceIdQueryDsl(Long placeId);
 
     // QueryDsl로 레포츠 상세 정보 받아오기
-    public LeisuresResponseDto findLeisureByPlaceIdQueryDsl(Long placeId);
+    public LeisureResponseDto findLeisureByPlaceIdQueryDsl(Long placeId);
 
     // QueryDsl로 문화시설 상세 정보 받아오기
-    public CulturesResponseDto findCultureByPlaceIdQueryDsl(Long placeId);
+    public CultureResponseDto findCultureByPlaceIdQueryDsl(Long placeId);
 }

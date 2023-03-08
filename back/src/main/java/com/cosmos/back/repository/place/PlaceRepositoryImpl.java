@@ -219,9 +219,9 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
 
     // QueryDsl로 레포츠 상세 정보 받아오기
     @Override
-    public LeisuresResponseDto findLeisureByPlaceIdQueryDsl(Long placeId) {
+    public LeisureResponseDto findLeisureByPlaceIdQueryDsl(Long placeId) {
         QLeisure qLeisure = QLeisure.leisure;
-        return queryFactory.select(Projections.constructor(LeisuresResponseDto.class,
+        return queryFactory.select(Projections.constructor(LeisureResponseDto.class,
                 qLeisure.id,
                 qLeisure.name,
                 qLeisure.phoneNumber,
@@ -253,9 +253,9 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
 
     // QueryDsl로 문화시설 상세 정보 받아오기
     @Override
-    public CulturesResponseDto findCultureByPlaceIdQueryDsl(Long placeId) {
+    public CultureResponseDto findCultureByPlaceIdQueryDsl(Long placeId) {
         QCulture qCulture = QCulture.culture;
-        return queryFactory.select(Projections.constructor(CulturesResponseDto.class,
+        return queryFactory.select(Projections.constructor(CultureResponseDto.class,
                 qCulture.id,
                 qCulture.name,
                 qCulture.phoneNumber,
