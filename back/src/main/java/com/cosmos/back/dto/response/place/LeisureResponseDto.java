@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CulturesResponseDto {
+public class LeisureResponseDto {
     private Long placeId;
     private String name;
     private String phoneNumber;
@@ -25,6 +25,12 @@ public class CulturesResponseDto {
     private String img4;
     private String img5;
     private String type;
+    private String acceptablePeople;
     private String dayOff;
+    private String parkingCost;
+    private String openTime;
+    private String openPeriod;
+    private String price;
+    private String ageRange;
     private String petYn;
 }

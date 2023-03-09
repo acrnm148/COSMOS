@@ -1,7 +1,10 @@
 package com.cosmos.back.model.place;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -13,6 +16,8 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @DiscriminatorValue("festival")
 @Table(name = "festival")
+@Getter
+@SuperBuilder
 public class Festival extends Place {
 
     @Column(name = "start_date")
@@ -25,9 +30,6 @@ public class Festival extends Place {
 
     @Column(name = "taken_time")
     private String takenTime; // 관람 소요 시간
-
-    @Column(name = "pet_yn")
-    private String petYn; // 애완동물 가능 여부
 
     @Column(name = "introduce")
     private String introduce; // 개요

@@ -44,12 +44,12 @@ public class PlaceService {
     }
 
     // QueryDsl로 레포츠 상세 정보 받아오기
-    public LeisuresResponseDto detailLeisure (Long placeId) {
+    public LeisureResponseDto detailLeisure (Long placeId) {
         return placeRepository.findLeisureByPlaceIdQueryDsl(placeId);
     }
 
     // QueryDsl로 문화시설 상세 정보 받아오기
-    public CulturesResponseDto detailCulture (Long placeId) {
+    public CultureResponseDto detailCulture (Long placeId) {
         return placeRepository.findCultureByPlaceIdQueryDsl(placeId);
     }
 }

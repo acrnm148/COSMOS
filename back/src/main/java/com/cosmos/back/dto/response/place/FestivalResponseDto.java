@@ -25,7 +25,6 @@ public class FestivalResponseDto {
     private String img4;
     private String img5;
     private String type;
-    private String petYn;
     private String introduce;
     private String startDate;
     private String endDate;
