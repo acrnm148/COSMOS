@@ -1,7 +1,8 @@
 package com.cosmos.back.repository.review;
 
-import com.cosmos.back.dto.response.place.*;
 
 public interface ReviewRepositoryCustom {
 
+    // QueryDsl로 review 지우기
+    public Long deleteReviewQueryDsl (Long reviewId, Long userSeq);
 }

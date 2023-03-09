@@ -50,4 +50,17 @@ public class ReviewService {
 
         return new_review.getId();
     }
+
+    // 리뷰 삭제하기
+    @Transactional
+    public Long deleteReview (Long reviewId, Long userSeq) {
+        Long execute = reviewRepository.deleteReviewQueryDsl(reviewId, userSeq);
+
+        // 존재하지 않는 review 일 때 error 처리
+        if (execute == 0) {
+            throw new IllegalStateException("존재하지 않는 리뷰입니다.");
+        }
+
+        return execute;
+    }
 }
