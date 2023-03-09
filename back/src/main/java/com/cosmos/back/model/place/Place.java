@@ -1,5 +1,9 @@
 package com.cosmos.back.model.place;
 
+import com.cosmos.back.model.CoursePlace;
+import com.cosmos.back.model.ReviewPlace;
+import com.cosmos.back.model.UserPlace;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +12,10 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
 @Entity
@@ -33,8 +41,6 @@ public class Place {
 
     private String longitude; // 경도
 
-//    private String introduce; // 개요
-
     @Column(name = "thumb_nail_url")
     private String thumbNailUrl; // 썸네일
 
@@ -55,4 +61,14 @@ public class Place {
     private String img5; // 이미지5
 
     private String type; // 타입
+
+    // 장소 - (유저 - 장소)
+    @OneToMany(mappedBy = "place")
+    List<UserPlace> userPlaces = new ArrayList<>();
+
+    @OneToMany(mappedBy = "place")
+    List<ReviewPlace> reviewPlaces = new ArrayList<>();
+
+    @OneToMany(mappedBy = "place")
+    List<CoursePlace> coursePlaces = new ArrayList<>();
 }

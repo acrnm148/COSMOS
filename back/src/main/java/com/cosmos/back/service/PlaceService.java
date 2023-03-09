@@ -1,10 +1,19 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.User;
+import com.cosmos.back.model.UserPlace;
+import com.cosmos.back.model.place.Place;
+import com.cosmos.back.repository.place.UserPlaceRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -12,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
+    private final UserRepository userRepository;
+    private final UserPlaceRepository userPlaceRepository;
 
     // QueryDsl로 관광 상세 정보 받아오기
     public TourResponseDto detailTour (Long placeId) {
@@ -51,5 +62,36 @@ public class PlaceService {
     // QueryDsl로 문화시설 상세 정보 받아오기
     public CultureResponseDto detailCulture (Long placeId) {
         return placeRepository.findCultureByPlaceIdQueryDsl(placeId);
+    }
+
+    // 장소 찜하기
+    @Transactional
+    public Long likePlace (Long placeId, Long userSeq) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+
+        UserPlace userPlace = UserPlace.createUserPlace(user, place);
+
+        UserPlace savedUserPlace = userPlaceRepository.save(userPlace);
+
+        return savedUserPlace.getId();
+    }
+
+    // 장소 찜 삭제
+    @Transactional
+    public Long deleteLikePlace (Long placeId, Long userSeq) {
+        Long execute = userPlaceRepository.deleteUserPlaceQueryDsl(placeId, userSeq);
+
+        // 존재하지 않는 UserPlace 일 때 error 처리
+        if (execute == 0) {
+            throw new IllegalStateException("존재하지 않는 찜 입니다.");
+        }
+
+        return execute;
+    }
+
+    // 이름으로 장소 검색
+    public List<PlaceListResponseDto> searchPlacesByName (String name, Integer limit, Integer offset) {
+        return placeRepository.findPlaceListByNameQueryDsl(name, limit, offset);
     }
 }
