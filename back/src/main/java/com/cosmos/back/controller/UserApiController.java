@@ -4,9 +4,8 @@ import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.dto.UserProfileDto;
 import com.cosmos.back.dto.UserUpdateDto;
-import com.cosmos.back.repository.UserRepository;
+import com.cosmos.back.dto.request.TypeRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.cosmos.back.auth.jwt.service.JwtProviderService;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.service.UserService;
 import com.cosmos.back.model.User;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
 import java.util.Map;
 
 @Tag(name = "user", description = "유저 API")
@@ -99,7 +97,7 @@ public class UserApiController {
     @Operation(summary = "로그아웃", description = "로그아웃")
     @GetMapping("/accounts/logout/{userSeq}")
     public ResponseEntity<?> logout(@PathVariable("userSeq")Long userSeq, @RequestHeader("Authorization") String token) {
-        
+
         //userSeq 일치, access토큰 유효 여부 체크
         token = token.substring(7);
         JwtState state = jwtService.checkUserSeqWithAccess(userSeq, token);
@@ -137,10 +135,11 @@ public class UserApiController {
     }
 
     /**
-     * refresh token 재발급 -> 필요 없는듯. 어차피 서버에서만 가지고 있으므로 
-     * access 토큰 요청 왔을 때 > access 토큰 유효기간 만료되면 > refresh 토큰 유효기간을 체크
-     * refresh 토큰이 유효하면 > access 토큰만 재발급해줬고
-     * refresh 토큰이 유효하지 않으면 > 내부에서 refresh 토큰을 재발급해주면 된다. 프론트엔드에 줄 필요가 없다.
+     * access 토큰 재발급 요청
+     * access 토큰 요청 왔을 때 > access 토큰 유효기간 만료되면 > 응답 안함
+     * access 토큰 재발급 요청 > refresh 토큰 유효기간을 체크
+     *  - refresh 토큰이 유효하면 > access 토큰만 재발급해줬고
+     *  - refresh 토큰이 유효하지 않으면 > 내부에서 refresh 토큰을 재발급해주면 된다. 프론트엔드에 줄 필요가 없다.
      */
     @Operation(summary = "access토큰 재발급 후 프론트에 전달", description = "access토큰 재발급 후 프론트에 전달")
     @Parameter(description = "userSeq를 파라미터로 받습니다.")
@@ -159,4 +158,55 @@ public class UserApiController {
         return jsonResponse;
     }
 
+    /**
+     * 커플 연결 요청 - 카카오 공유하기 요청 -> 백에서 하는게 아닌듯
+
+     @Operation(summary = "커플 연결 요청", description = "커플 연결 요청")
+     @GetMapping("/api/couples/{userSeq}/{coupleUserSeq}")
+     public ResponseEntity<?> requestCouple(@PathVariable("userSeq")Long userSeq, @PathVariable("coupleUserSeq")Long coupleUserSeq, @RequestHeader("Authorization") String token) {
+     //userSeq 일치, access토큰 유효 여부 체크
+     token = token.substring(7);
+     JwtState state = jwtService.checkUserSeqWithAccess(userSeq, token);
+     if (state.equals(JwtState.MISMATCH_USER)) { //userSeq 불일치
+     return ResponseEntity.ok().body(jwtService.mismatchUserResponse());
+     } else if (state.equals(JwtState.EXPIRED_ACCESS)) { //access 만료
+     return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
+     }
+
+     userService.makeCouple(userSeq, coupleUserSeq);
+     return ResponseEntity.ok().body("커플 연결이 요청되었습니다.");
+     }
+     */
+
+    /**
+     * 커플 연결 수락 - 카카오 공유하기에서 수락
+     */
+    @Operation(summary = "커플 연결 수락", description = "커플 연결 수락")
+    @PostMapping("/api/couples/accept")
+    public ResponseEntity<?> acceptCouple(@RequestBody Long userSeq, Long coupleUserSeq, Long coupleId) {
+
+        userService.acceptCouple(userSeq, coupleUserSeq, coupleId);
+        return ResponseEntity.ok().body("커플 연결을 수락하셨습니다.");
+    }
+
+    /**
+     * 커플 연결 끊기
+     */
+    @Operation(summary = "커플 연결 끊기", description = "커플 연결 끊기")
+    @DeleteMapping("/api/couples/{coupleId}")
+    public ResponseEntity<?> disconnectCouple(@PathVariable("coupleId") Long coupleId) {
+        userService.disconnectCouple(coupleId);
+        return ResponseEntity.ok().body("커플 연결을 끊습니다.");
+    }
+
+    /**
+     * 사용자 유형 등록
+     */
+    @Operation(summary = "사용자 유형 등록", description = "사용자 유형 등록")
+    @PutMapping("/api/couples/type")
+    public ResponseEntity<?> saveTypes(@RequestBody TypeRequestDto dto) {
+        User user = userService.saveTypes(dto);
+        System.out.println("user가 등록되었습니다.");
+        return ResponseEntity.ok().body(user);
+    }
 }

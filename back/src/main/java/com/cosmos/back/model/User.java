@@ -43,8 +43,8 @@ public class User {
 
     private String type1;
     private String type2;
-    @Column(name = "couple_user_id")
-    private Long coupleUserId;
+    @Column(name = "couple_id")
+    private Long coupleId;
     @Column(name = "create_time")
     private LocalDateTime createTime;
 

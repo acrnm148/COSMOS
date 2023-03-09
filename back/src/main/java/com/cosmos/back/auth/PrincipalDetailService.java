@@ -2,7 +2,7 @@ package com.cosmos.back.auth;
 
 
 import com.cosmos.back.model.User;
-import com.cosmos.back.repository.UserRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

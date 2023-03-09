@@ -6,7 +6,7 @@ import com.cosmos.back.auth.jwt.JwtProperties;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.model.User;
-import com.cosmos.back.repository.UserRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

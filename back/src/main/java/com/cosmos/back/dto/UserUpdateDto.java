@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserUpdateDto {
     private Long userSeq; //수정불가
     private boolean coupleYn;
-    private Long coupleUserId;
+    private Long coupleId;
 }

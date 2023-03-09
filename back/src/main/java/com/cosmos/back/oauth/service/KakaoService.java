@@ -2,12 +2,11 @@ package com.cosmos.back.oauth.service;
 
 import com.cosmos.back.oauth.provider.Token.KakaoToken;
 import com.cosmos.back.oauth.provider.profile.KakaoProfile;
-import com.cosmos.back.repository.UserRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cosmos.back.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -113,12 +112,12 @@ public class KakaoService {
         if(user ==null) {
             user = User.builder()
                     .userId(profile.getId())
-                    //.userName(profile.getKakao_account().getProfile().getName())
-                    //.nickName(profile.getKakao_account().getProfile().getNickname())
+                    //.userName(profile.getKakao_account().getProfile().getNickname())
+                    .userName(profile.getKakao_account().getProfile().getNickname())
                     //.phoneNumber(profile.getKakao_account().getProfile().getPhone_number())
                     .profileImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
                     .email(profile.getKakao_account().getEmail())
-                    //.role("USER") //일단 유저로 넣음.
+                    .role("USER") //일단 유저로 넣음.
                     .createTime(LocalDateTime.now())
                     .build();
 

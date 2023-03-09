@@ -37,6 +37,7 @@ public class KakaoProfile {
         public String age_range;
         public String birthday;
         public String phone_number;
+        public String birthday_type;
 
         @Data
         public class Profile {
