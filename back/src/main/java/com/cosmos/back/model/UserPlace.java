@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.cosmos.back.model.place.Place;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Table(name = "userplace")
 @Builder
+@Data
 public class UserPlace {
 
     @Id
@@ -34,4 +36,26 @@ public class UserPlace {
     @JoinColumn(name = "place_id")
     @JsonIgnore
     private Place place;
+
+    // 연관관계 메서드
+    public void setUser(User user) {
+        this.user = user;
+        user.getUserPlaces().add(this);
+    }
+
+    // 연관관계 메서드
+    public void setPlace(Place place) {
+        this.place = place;
+        place.getUserPlaces().add(this);
+    }
+
+    // 생성 메서드
+    public static UserPlace createUserPlace (User user, Place place) {
+        UserPlace userPlace = new UserPlace();
+
+        userPlace.setUser(user);
+        userPlace.setPlace(place);
+
+        return userPlace;
+    }
 }
