@@ -1,5 +1,6 @@
 package com.cosmos.back.model.place;
 
+import com.cosmos.back.model.ReviewPlace;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
@@ -55,4 +59,8 @@ public class Place {
     private String img5; // 이미지5
 
     private String type; // 타입
+
+    // 장소 - (리뷰 - 장소)
+    @OneToMany(mappedBy = "place")
+    private List<ReviewPlace> reviewPlaces = new ArrayList<>();
 }
