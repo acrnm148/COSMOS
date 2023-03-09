@@ -159,54 +159,40 @@ public class UserApiController {
     }
 
     /**
-     * 커플 연결 요청 - 카카오 공유하기 요청 -> 백에서 하는게 아닌듯
-
-     @Operation(summary = "커플 연결 요청", description = "커플 연결 요청")
-     @GetMapping("/api/couples/{userSeq}/{coupleUserSeq}")
-     public ResponseEntity<?> requestCouple(@PathVariable("userSeq")Long userSeq, @PathVariable("coupleUserSeq")Long coupleUserSeq, @RequestHeader("Authorization") String token) {
-     //userSeq 일치, access토큰 유효 여부 체크
-     token = token.substring(7);
-     JwtState state = jwtService.checkUserSeqWithAccess(userSeq, token);
-     if (state.equals(JwtState.MISMATCH_USER)) { //userSeq 불일치
-     return ResponseEntity.ok().body(jwtService.mismatchUserResponse());
-     } else if (state.equals(JwtState.EXPIRED_ACCESS)) { //access 만료
-     return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
-     }
-
-     userService.makeCouple(userSeq, coupleUserSeq);
-     return ResponseEntity.ok().body("커플 연결이 요청되었습니다.");
-     }
-     */
-
-    /**
      * 커플 연결 수락 - 카카오 공유하기에서 수락
      */
     @Operation(summary = "커플 연결 수락", description = "커플 연결 수락")
-    @PostMapping("/api/couples/accept")
-    public ResponseEntity<?> acceptCouple(@RequestBody Long userSeq, Long coupleUserSeq, Long coupleId) {
+    @PostMapping("/couples/accept")
+    public ResponseEntity<Long> acceptCouple(@RequestBody Map<String, Long> map) {
+        Long userSeq = map.get("userSeq");
+        Long coupleUserSeq = map.get("coupleUserSeq");
 
-        userService.acceptCouple(userSeq, coupleUserSeq, coupleId);
-        return ResponseEntity.ok().body("커플 연결을 수락하셨습니다.");
+        Long coupleId = userService.acceptCouple(userSeq, coupleUserSeq);
+        if (coupleId == null) {
+            System.out.println("이미 커플인 유저입니다.");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(coupleId, HttpStatus.OK);
     }
 
     /**
      * 커플 연결 끊기
      */
     @Operation(summary = "커플 연결 끊기", description = "커플 연결 끊기")
-    @DeleteMapping("/api/couples/{coupleId}")
-    public ResponseEntity<?> disconnectCouple(@PathVariable("coupleId") Long coupleId) {
+    @DeleteMapping("/couples/{coupleId}")
+    public ResponseEntity<Long> disconnectCouple(@PathVariable("coupleId") Long coupleId) {
         userService.disconnectCouple(coupleId);
-        return ResponseEntity.ok().body("커플 연결을 끊습니다.");
+        return new ResponseEntity<>(coupleId, HttpStatus.OK);
     }
 
     /**
      * 사용자 유형 등록
      */
     @Operation(summary = "사용자 유형 등록", description = "사용자 유형 등록")
-    @PutMapping("/api/couples/type")
-    public ResponseEntity<?> saveTypes(@RequestBody TypeRequestDto dto) {
+    @PutMapping("/couples/type")
+    public ResponseEntity<User> saveTypes(@RequestBody TypeRequestDto dto) {
         User user = userService.saveTypes(dto);
         System.out.println("user가 등록되었습니다.");
-        return ResponseEntity.ok().body(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

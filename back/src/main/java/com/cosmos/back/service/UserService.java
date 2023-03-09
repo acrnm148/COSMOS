@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * 실제 JWT 토큰과 관련된 서비스
@@ -90,31 +91,38 @@ public class UserService {
      */
     public boolean validateDuplicated(String userid) {
         if (userRepository.findByUserId(userid) != null) { //중복되면 true
+            System.out.println("유형 저장");
             return true;
         }
         return false;
     }
 
     /**
-     * 커플 연결 요청
-
-     public void makeCouple(Long userSeq, Long coupleUserSeq) {
-
-     }
-     */
-
-    /**
      * 커플 연결 수락
      */
-    public void acceptCouple(Long userSeq, Long coupleUserSeq, Long coupleId) {
+    @Transactional
+    public Long acceptCouple(Long userSeq, Long coupleUserSeq) {
         User user = userRepository.findByUserSeq(userSeq);
         User coupleUser = userRepository.findByUserSeq(coupleUserSeq);
 
+        System.out.println("user: "+user);
+        System.out.println("coupleUser: "+coupleUser);
+
+        if (!(user.getCoupleId()==null && coupleUser.getCoupleId()==null)) {
+            return null;
+        }
+        Long coupleId = makeCoupleId(); //난수 생성
+
         user.setCoupleId(coupleId);
-        userRepository.save(user);
         coupleUser.setCoupleId(coupleId);
+        userRepository.save(user);
         userRepository.save(coupleUser);
-        System.out.println("커플 연결 수락");
+
+        System.out.println("user: "+user);
+        System.out.println("coupleUser: "+coupleUser);
+        System.out.println("커플 연결 수락, 커플아이디:"+coupleId);
+
+        return coupleId;
     }
 
     /**
@@ -129,16 +137,25 @@ public class UserService {
         couple.get(1).setCoupleId(null);
         userRepository.save(couple.get(0));
         userRepository.save(couple.get(1));
-        System.out.println("두 유저의 커플 id 삭제");
+        System.out.println("커플 연결이 끊어졌습니다.");
     }
 
     /**
      * 사용자 유형 등록
      */
+    @Transactional
     public User saveTypes(TypeRequestDto dto) {
         User user = userRepository.findByUserSeq(dto.getUserSeq());
         user.setType1(dto.getType1());
         user.setType2(dto.getType2());
+        System.out.println("유형 저장");
         return userRepository.save(user);
+    }
+
+    public Long makeCoupleId() {
+        Random random = new Random(); // 랜덤 객체 생성
+        Long coupleId = Long.valueOf(random.nextInt(100000000));
+        System.out.println("생성된 커플아이디: " +coupleId);
+        return coupleId;
     }
 }
