@@ -7,10 +7,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "place", description = "장소 API")
 @RestController
@@ -82,5 +81,29 @@ public class PlaceApiController {
         CultureResponseDto cultureResponseDto = placeService.detailCulture(placeId);
 
         return new ResponseEntity<>(cultureResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "장소 찜하기", description = "장소를 찜 함")
+    @GetMapping("/places/{placeId}/users/{userSeq}")
+    public ResponseEntity<Long> likePlace(@PathVariable Long placeId, @PathVariable Long userSeq) {
+        Long id = placeService.likePlace(placeId, userSeq);
+
+        return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @Operation(summary = "장소 찜 삭제", description = "장소를 찜 해제함")
+    @DeleteMapping("/places/{placeId}/users/{userSeq}")
+    public ResponseEntity<?> deleteLikePlace(@PathVariable Long placeId, @PathVariable Long userSeq) {
+        Long execute = placeService.deleteLikePlace(placeId, userSeq);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(summary = "이름으로 장소 검색", description = "이름으로 장소 검색")
+    @GetMapping("/places/{name}")
+    public ResponseEntity<List> search(@PathVariable String name, @RequestParam Integer limit, @RequestParam Integer offset) {
+        List<PlaceListResponseDto> list = placeService.searchPlacesByName(name, limit, offset);
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

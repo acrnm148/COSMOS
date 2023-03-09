@@ -39,17 +39,26 @@ public class CoursePlace {
     @JsonIgnore
     private Place place;
 
-    // 연관관계 메서드
-//    public void setPlace(User user) {
-//        this.user = user;
-//        user.getReviews().add(this);
-//    }
+
+    // 연관관계 메서드 - (데이트코스 - 데이트코스_장소)
+    public void setCourse(Course course) {
+        this.course = course;
+        course.getCoursePlaces().add(this);
+    }
+
+
+    // 연관관계 메서드 - (장소 - 데이트코스_장소)
+    public void setPlace(Place place) {
+        this.place = place;
+        place.getCoursePlaces().add(this);
+    }
 
     // 생성 메서드
     public static CoursePlace createCoursePlace (Course course, Place place) {
         CoursePlace coursePlace = new CoursePlace();
 
-
+        coursePlace.setCourse(course);
+        coursePlace.setPlace(place);
 
         return coursePlace;
     }

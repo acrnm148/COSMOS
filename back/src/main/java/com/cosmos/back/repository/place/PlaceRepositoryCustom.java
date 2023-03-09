@@ -2,6 +2,8 @@ package com.cosmos.back.repository.place;
 
 import com.cosmos.back.dto.response.place.*;
 
+import java.util.List;
+
 public interface PlaceRepositoryCustom {
 
     // QueryDsl로 관광 상세 정보 받아오기
@@ -27,4 +29,7 @@ public interface PlaceRepositoryCustom {
 
     // QueryDsl로 문화시설 상세 정보 받아오기
     public CultureResponseDto findCultureByPlaceIdQueryDsl(Long placeId);
+
+    // QueryDsl로 장소 리스트 가져오기 with Pagination
+    public List<PlaceListResponseDto> findPlaceListByNameQueryDsl(String name, Integer limit, Integer offset);
 }

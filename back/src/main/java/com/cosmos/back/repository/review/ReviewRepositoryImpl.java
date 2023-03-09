@@ -11,7 +11,4 @@ import org.springframework.stereotype.Repository;
 public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-
-    // QueryDsl로 관광 상세 정보 받아오기
-
 }

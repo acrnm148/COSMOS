@@ -1,11 +1,15 @@
 package com.cosmos.back.repository.place;
 
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.QReview;
+import com.cosmos.back.model.QReviewPlace;
 import com.cosmos.back.model.place.*;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -278,5 +282,33 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .from(qCulture)
                 .where(qCulture.id.eq(placeId))
                 .fetchOne();
+    }
+
+    // QueryDsl로 장소 리스트 가져오기 with Pagination
+    @Override
+    public List<PlaceListResponseDto> findPlaceListByNameQueryDsl(String name, Integer limit, Integer offset) {
+        QPlace qPlace = QPlace.place;
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+
+        return queryFactory.select(Projections.constructor(PlaceListResponseDto.class,
+                    qPlace.id,
+                    qPlace.name,
+                    qPlace.address,
+                    qReview.score.avg(),
+                    qPlace.thumbNailUrl,
+                    qPlace.detail
+                ))
+                .from(qPlace)
+                .join(qReviewPlace)
+                .on(qPlace.id.eq(qReviewPlace.place.id))
+                .leftJoin(qReview)
+                .fetchJoin()
+                .on(qReviewPlace.review.id.eq(qReview.id))
+                .where(qPlace.name.eq(name))
+                .groupBy(qPlace.id)
+                .limit(limit)
+                .offset(offset)
+                .fetch();
     }
 }
