@@ -70,8 +70,13 @@ public class ReviewService {
     }
 
     // 장소별 리뷰 모두 불러오기
-    public List getReviesInPlace (Long placeId) {
+    public List findReviewsInPlace (Long placeId) {
         return reviewRepository.findReviewInPlaceQueryDsl(placeId);
+    }
+
+    // 내 리뷰 모두 불러오기
+    public List findReviewsInUser (Long userId) {
+        return reviewRepository.findReviewInUserQueryDsl(userId);
     }
 
 }

@@ -5,16 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewPlaceRepositoryDto {
+public class ReviewUserResponseDto {
     private Long reviewId;
 //    private List<String> categories;
     private Integer score;
     private String contents;
-    private Long userId;
+    private Long palceId;
 }

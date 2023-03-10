@@ -1,9 +1,11 @@
 package com.cosmos.back.repository.review;
 
 import com.cosmos.back.dto.response.review.ReviewPlaceRepositoryDto;
+import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
 import com.cosmos.back.model.QReview;
 import com.cosmos.back.model.QReviewCategory;
 import com.cosmos.back.model.QReviewPlace;
+import com.cosmos.back.model.QUser;
 import com.cosmos.back.model.place.QPlace;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -73,13 +75,28 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .from(qReview)
                 .join(qReviewPlace)
                 .on(qReview.id.eq(qReviewPlace.review.id))
-                //
-                .leftJoin(qPlace)
-                .fetchJoin()
-                .on(qReviewPlace.place.id.eq(qPlace.id))
-                .where(qPlace.id.eq(placeId))
-                //
+                .where(qReviewPlace.place.id.eq(placeId))
                 .fetch();
 
+    }
+
+    @Override
+    public List<ReviewUserResponseDto> findReviewInUserQueryDsl(Long userId) {
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
+
+        return queryFactory.select(Projections.constructor(ReviewUserResponseDto.class,
+                    qReview.id,
+            //    private List<String> categories,
+                    qReview.score,
+                    qReview.contents,
+                    qReviewPlace.place.id
+                ))
+                .from(qReview)
+                .join(qReviewPlace)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .where(qReview.user.userSeq.eq(userId))
+                .fetch();
     }
 }
