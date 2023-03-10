@@ -1,6 +1,7 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.dto.request.ReviewRequestDto;
+import com.cosmos.back.dto.response.review.ReviewResponseDto;
 import com.cosmos.back.model.Review;
 import com.cosmos.back.model.ReviewCategory;
 import com.cosmos.back.model.ReviewPlace;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,8 +72,16 @@ public class ReviewService {
     }
 
     // 장소별 리뷰 모두 불러오기
-    public List getReviesInPlace (Long placeId) {
-        return reviewRepository.findReviewInPlaceQueryDsl(placeId);
+    public List<ReviewResponseDto> getReviesInPlace (Long placeId) {
+        List<Review> review = reviewRepository.findReviewInPlaceQueryDsl(placeId);
+
+        List<ReviewResponseDto> list = new ArrayList<>();
+        for (Review r : review) {
+            ReviewResponseDto dto = ReviewResponseDto.builder().reviewId(r.getId()).categories(r.getReviewCategories()).score(r.getScore()).contents(r.getContents()).userId(r.getUser().getUserSeq()).build();
+            list.add(dto);
+        }
+
+        return list;
     }
 
 }

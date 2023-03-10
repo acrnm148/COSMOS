@@ -1,10 +1,7 @@
 package com.cosmos.back.repository.review;
 
-import com.cosmos.back.dto.response.review.ReviewPlaceRepositoryDto;
-import com.cosmos.back.model.QReview;
-import com.cosmos.back.model.QReviewCategory;
-import com.cosmos.back.model.QReviewPlace;
-import com.cosmos.back.model.place.QPlace;
+import com.cosmos.back.dto.response.review.ReviewResponseDto;
+import com.cosmos.back.model.*;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -58,28 +55,17 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     // 장소에 대한 리뷰 모두 불러오기
     @Override
-    public List<ReviewPlaceRepositoryDto> findReviewInPlaceQueryDsl(Long placeId) {
-        QPlace qPlace = QPlace.place;
+    public List<Review> findReviewInPlaceQueryDsl(Long placeId) {
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReview qReview = QReview.review;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
 
-        return queryFactory.select(Projections.constructor(ReviewPlaceRepositoryDto.class,
-                    qReview.id,
-                    qReview.score,
-                    qReview.contents,
-                    qReview.user.userSeq
-                ))
-                .from(qReview)
+        return queryFactory.selectFrom(qReview)
                 .join(qReviewPlace)
                 .on(qReview.id.eq(qReviewPlace.review.id))
-                //
-                .leftJoin(qPlace)
-                .fetchJoin()
-                .on(qReviewPlace.place.id.eq(qPlace.id))
-                .where(qPlace.id.eq(placeId))
-                //
+                .where(qReviewPlace.place.id.eq(placeId))
+                .join(qReviewCategory)
+                .on(qReview.id.eq(qReviewCategory.review.id))
                 .fetch();
-
     }
 }
