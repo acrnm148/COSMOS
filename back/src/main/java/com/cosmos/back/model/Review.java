@@ -56,6 +56,10 @@ public class Review {
         Review review = new Review();
 
         review.setUser(user);
+//        for (Review r : user.getReviews()) {
+//            System.out.print(r.id + " ");
+//        }
+//        System.out.println();
         review.setContents(contents);
         review.setScore(score);
 
