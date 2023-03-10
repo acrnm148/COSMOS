@@ -88,7 +88,7 @@ public class ReviewService {
 
     // 내 리뷰 모두 불러오기
     public List findReviewsInUser (Long userId) {
-        List<ReviewUserResponseDto> review = reviewRepository.findReviewInUserQueryDsl(userId);
+        List<Review> review = reviewRepository.findReviewInUserQueryDsl(userId);
         System.out.println("review! = " + review);
 //        List<ReviewUserResponseDto> list = new ArrayList<>();
 //        for (Review r : review) {

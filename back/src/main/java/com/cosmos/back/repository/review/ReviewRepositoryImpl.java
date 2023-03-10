@@ -76,25 +76,35 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     }
 
     @Override
-    public List<ReviewUserResponseDto> findReviewInUserQueryDsl(Long userId) {
+    public List<Review> findReviewInUserQueryDsl(Long userId) {
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
 
-        return queryFactory.select(Projections.constructor(ReviewUserResponseDto.class,
-                qReview.id,
-                qReview.score,
-//                qReviewCategory.reviewCategoryCode,
-                qReview.contents,
-                qReviewPlace.place.id
-                ))
-                .from(qReview)
+        return queryFactory.selectFrom(qReview)
                 .distinct()
                 .join(qReviewPlace)
                 .on(qReview.id.eq(qReviewPlace.review.id))
+                .where(qReview.user.userSeq.eq(userId))
                 .join(qReviewCategory)
                 .on(qReview.id.eq(qReviewCategory.review.id))
-                .where(qReview.user.userSeq.eq(userId))
                 .fetch();
+
+
+//        return queryFactory.select(Projections.constructor(ReviewUserResponseDto.class,
+//                qReview.id,
+//                qReview.score,
+////                qReviewCategory.reviewCategoryCode,
+//                qReview.contents,
+//                qReviewPlace.place.id
+//                ))
+//                .from(qReview)
+//                .distinct()
+//                .join(qReviewPlace)
+//                .on(qReview.id.eq(qReviewPlace.review.id))
+//                .join(qReviewCategory)
+//                .on(qReview.id.eq(qReviewCategory.review.id))
+//                .where(qReview.user.userSeq.eq(userId))
+//                .fetch();
     }
 }

@@ -53,9 +53,9 @@ public class ReviewApiController {
 
     // 내 리뷰 모두 불러오기
     @Operation(summary = "내 리뷰 모두 불러오기", description = "내가 쓴 리뷰를 모두 불러온다")
-    @GetMapping("/reviews/{userId}")
-    public ResponseEntity<List> findReviwesInUser(@PathVariable Long userId) {
-        List<Review> reviewsInUser = reviewService.findReviewsInUser(userId);
+    @GetMapping("/reviews/users/{userSeq}")
+    public ResponseEntity<List> findReviwesInUser(@PathVariable Long userSeq) {
+        List<Review> reviewsInUser = reviewService.findReviewsInUser(userSeq);
         return new ResponseEntity<>(reviewsInUser, HttpStatus.OK);
     }
 }
