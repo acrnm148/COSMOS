@@ -106,4 +106,19 @@ public class PlaceApiController {
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+//    // 시도 리스트 가져오기
+//    @Operation(summary = "시도 리스트 가져오기", description = "시도 리스트 가져오기")
+//    @GetMapping("/sidos")
+//    public ResponseEntity<List> sidoList() {
+//
+//    }
+//
+//    // 시도에 따른 구군 리스트 가져오기
+//    @Operation(summary = "구군 리스트 가져오기", description = "구군 리스트 가져오기")
+//    @GetMapping("/gugun/{sido}")
+//    public ResponseEntity<List> gugunList(@PathVariable String sido) {
+//
+//    }
+
 }
