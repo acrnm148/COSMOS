@@ -1,5 +1,6 @@
 package com.cosmos.back.model;
 
+import com.cosmos.back.model.place.Place;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "course")
+@Data
 @Builder
 @Data
 public class Course {
@@ -54,4 +56,18 @@ public class Course {
     // 데이트 코스 - (유저 - 데이트 코스)
     @OneToMany(mappedBy = "course")
     private List<UserCourse> userCourses = new ArrayList<>();
+
+    // 생성 메서드
+    public static Course createCourse (String name, String startDate, String endDate, String subCategory) {
+        Course course = new Course();
+
+        course.setPlan(null);
+        course.setName(name);
+        course.setStartDate(startDate);
+        course.setEndDate(endDate);
+        course.setSubCategory(subCategory);
+
+        return course;
+    }
+
 }
