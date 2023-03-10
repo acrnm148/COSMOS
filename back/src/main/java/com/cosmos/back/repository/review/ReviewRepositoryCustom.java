@@ -1,8 +1,10 @@
 package com.cosmos.back.repository.review;
 
 
-import com.cosmos.back.dto.response.review.ReviewPlaceRepositoryDto;
 import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
+
+import com.cosmos.back.model.Review;
+
 
 import java.util.List;
 
@@ -14,8 +16,11 @@ public interface ReviewRepositoryCustom {
     public Long deleteReviewPlaceQueryDsl (Long reviewId);
 
     // QueryDsl로 장소별 review 불러오기
-    public List<ReviewPlaceRepositoryDto> findReviewInPlaceQueryDsl (Long placeId);
+    public List<Review> findReviewInPlaceQueryDsl (Long placeId);
 
     // QueryDsl로 내 review 불러오기
     public List<ReviewUserResponseDto> findReviewInUserQueryDsl (Long userId);
+
+
+
 }

@@ -1,12 +1,12 @@
 package com.cosmos.back.repository.review;
 
-import com.cosmos.back.dto.response.review.ReviewPlaceRepositoryDto;
 import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
 import com.cosmos.back.model.QReview;
 import com.cosmos.back.model.QReviewCategory;
 import com.cosmos.back.model.QReviewPlace;
 import com.cosmos.back.model.QUser;
 import com.cosmos.back.model.place.QPlace;
+import com.cosmos.back.model.*;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -60,24 +60,19 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     // 장소에 대한 리뷰 모두 불러오기
     @Override
-    public List<ReviewPlaceRepositoryDto> findReviewInPlaceQueryDsl(Long placeId) {
-        QPlace qPlace = QPlace.place;
+    public List<Review> findReviewInPlaceQueryDsl(Long placeId) {
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReview qReview = QReview.review;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
 
-        return queryFactory.select(Projections.constructor(ReviewPlaceRepositoryDto.class,
-                    qReview.id,
-                    qReview.score,
-                    qReview.contents,
-                    qReview.user.userSeq
-                ))
-                .from(qReview)
+        return queryFactory.selectFrom(qReview)
+                .distinct()
                 .join(qReviewPlace)
                 .on(qReview.id.eq(qReviewPlace.review.id))
                 .where(qReviewPlace.place.id.eq(placeId))
+                .join(qReviewCategory)
+                .on(qReview.id.eq(qReviewCategory.review.id))
                 .fetch();
-
     }
 
     @Override
@@ -87,15 +82,18 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
 
         return queryFactory.select(Projections.constructor(ReviewUserResponseDto.class,
-                    qReview.id,
-            //    private List<String> categories,
-                    qReview.score,
-                    qReview.contents,
-                    qReviewPlace.place.id
+                qReview.id,
+                qReview.score,
+//                qReviewCategory.reviewCategoryCode,
+                qReview.contents,
+                qReviewPlace.place.id
                 ))
                 .from(qReview)
+                .distinct()
                 .join(qReviewPlace)
                 .on(qReview.id.eq(qReviewPlace.review.id))
+                .join(qReviewCategory)
+                .on(qReview.id.eq(qReviewCategory.review.id))
                 .where(qReview.user.userSeq.eq(userId))
                 .fetch();
     }
