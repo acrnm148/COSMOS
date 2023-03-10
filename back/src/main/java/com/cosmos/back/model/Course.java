@@ -3,6 +3,7 @@ package com.cosmos.back.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Table(name = "course")
 @Builder
+@Data
 public class Course {
 
     @Id
@@ -35,6 +37,9 @@ public class Course {
 
     @Column(name = "sub_category")
     private String subCategory; // 소분류
+
+    //@Column(name = "order")
+    //private Integer order; //코스순서
 
     // 데이트 코스 - 일정
     @ManyToOne(fetch = LAZY)

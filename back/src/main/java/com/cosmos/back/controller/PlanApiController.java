@@ -37,6 +37,14 @@ public class PlanApiController {
         return new ResponseEntity<>(plan, HttpStatus.OK);
     }
 
+    @Operation(summary = "커플 일정 수정", description = "커플 일정 수정")
+    @PutMapping("/plans/{coupleId}/{planId}")
+    public ResponseEntity<Plan> updatePlan(@RequestBody PlanRequestDto dto) {
+        Plan plan = planService.updatePlan(dto);
+
+        return new ResponseEntity<>(plan, HttpStatus.OK);
+    }
+
     @Operation(summary = "커플 일정 삭제", description = "커플 일정 삭제")
     @DeleteMapping("/plans/{coupleId}/{planId}")
     public ResponseEntity<?> deletePlan(@PathVariable("coupleId") Long coupleId,
@@ -46,18 +54,20 @@ public class PlanApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "커플 일정 월별 조회", description = "커플 일정 월별 조회")
-    @GetMapping("/plans/month/{coupleId}")
-    public ResponseEntity<?> getPlanListByMonth(@PathVariable("coupleId") Long coupleId) {
-        List<Plan> plans = planService.getPlanListByMonth(coupleId);
+    @Operation(summary = "커플 일정 월별 조회(ex: 2023.01)", description = "커플 일정 월별 조회")
+    @GetMapping("/plans/month/{coupleId}/{date}") //2023.01
+    public ResponseEntity<?> getPlanListByMonth(@PathVariable("coupleId") Long coupleId,
+                                                @PathVariable("date") String date) {
+        List<Plan> plans = planService.getPlanListByMonth(coupleId, date);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);
     }
 
-    @Operation(summary = "커플 일정 일별 조회", description = "커플 일정 일별 조회")
-    @GetMapping("/plans/day/{coupleId}")
-    public ResponseEntity<?> getPlanListByDay(@PathVariable("coupleId") Long coupleId) {
-        List<PlanOfDayDto> plans = planService.getPlanListByDay(coupleId);
+    @Operation(summary = "커플 일정 일별 조회(ex: 2023.01.30)", description = "커플 일정 일별 조회")
+    @GetMapping("/plans/day/{coupleId}/{date}") //2023.01.30
+    public ResponseEntity<?> getPlanListByDay(@PathVariable("coupleId") Long coupleId,
+                                              @PathVariable("date") String date) {
+        List<Plan> plans = planService.getPlanListByDay(coupleId, date);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);
     }

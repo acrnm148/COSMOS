@@ -1,22 +1,21 @@
-package com.cosmos.back.dto.request;
+package com.cosmos.back.dto.response;
 
-import com.cosmos.back.model.Course;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlanRequestDto {
+@Builder
+public class CourseResponseDto {
+    private Long courseId;
     private Long planId;
-    private Long coupleId;
-    private String mainCategory;
+    private String name;
     private String startDate;
     private String endDate;
-    private List<Long> courseIds;
+    private String subCategory;
+    private String placeId;
+    private Integer order; //순서
 }

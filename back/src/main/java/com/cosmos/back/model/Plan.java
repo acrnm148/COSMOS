@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -34,6 +35,12 @@ public class Plan {
 
     @Column(name = "couple_id")
     private Long coupleId; // 커플 ID
+
+    @Column(name = "create_time")
+    private LocalDateTime createTime; // 생성일자
+
+    @Column(name = "update_time")
+    private LocalDateTime updateTime; // 수정일자
 
     // 일정 - 데이트 코스
     @OneToMany(mappedBy = "plan")

@@ -4,7 +4,6 @@ import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.dto.UserProfileDto;
 import com.cosmos.back.dto.UserUpdateDto;
-import com.cosmos.back.dto.request.TypeRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.service.UserService;
@@ -169,7 +168,6 @@ public class UserApiController {
 
         Long coupleId = userService.acceptCouple(userSeq, coupleUserSeq);
         if (coupleId == null) {
-            System.out.println("이미 커플인 유저입니다.");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(coupleId, HttpStatus.OK);
@@ -190,9 +188,11 @@ public class UserApiController {
      */
     @Operation(summary = "사용자 유형 등록", description = "사용자 유형 등록")
     @PutMapping("/couples/type")
-    public ResponseEntity<User> saveTypes(@RequestBody TypeRequestDto dto) {
-        User user = userService.saveTypes(dto);
-        System.out.println("user가 등록되었습니다.");
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<Long> saveTypes(@RequestBody Map<String, Object> map) {
+        Long userSeq = Long.valueOf((Integer) map.get("userSeq"));
+        String type1 = map.get("type1").toString();
+        String type2 = map.get("type2").toString();
+        User user = userService.saveTypes(userSeq, type1, type2);
+        return new ResponseEntity<>(userSeq, HttpStatus.OK);
     }
 }
