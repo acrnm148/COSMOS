@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class ReviewPlaceRepositoryDto {
     Long reviewId;
-    List<String> categories;
+//    List<String> categories;
     Integer score;
     String contents;
     Long userId;

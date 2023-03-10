@@ -2,6 +2,7 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.dto.request.ReviewRequestDto;
 import com.cosmos.back.dto.response.place.TourResponseDto;
+import com.cosmos.back.dto.response.review.ReviewPlaceRepositoryDto;
 import com.cosmos.back.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "review", description = "리뷰 API")
 @RestController
@@ -39,9 +42,9 @@ public class ReviewApiController {
     // 장소별 리뷰 모두 불러오기
     @Operation(summary = "장소별 리뷰 모두 불러오기", description = "장소별로 리뷰를 모두 불러온다")
     @GetMapping("/reviews/places/{placeId}")
-    public ResponseEntity<?> getReviesInPlace(@PathVariable Long placeId) {
+    public ResponseEntity<List> getReviesInPlace(@PathVariable Long placeId) {
+        List<ReviewPlaceRepositoryDto> reviewsInPlace = reviewService.getReviesInPlace(placeId);
 
-
-        return new ResponseEntity<>(HttpStatus.OK)
+        return new ResponseEntity<>(reviewsInPlace, HttpStatus.OK);
     }
 }

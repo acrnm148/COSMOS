@@ -13,5 +13,5 @@ public interface ReviewRepositoryCustom {
     public Long deleteReviewPlaceQueryDsl (Long reviewId);
 
     // QueryDsl로 장소별 review 불러오기
-    public List<ReviewPlaceRepositoryDto> getReviewInPlaceQueryDsl (Long placeId);
+    public List<ReviewPlaceRepositoryDto> findReviewInPlaceQueryDsl (Long placeId);
 }

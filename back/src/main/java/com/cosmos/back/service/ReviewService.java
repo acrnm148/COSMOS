@@ -71,10 +71,7 @@ public class ReviewService {
 
     // 장소별 리뷰 모두 불러오기
     public List getReviesInPlace (Long placeId) {
-
-
-
-        return
+        return reviewRepository.findReviewInPlaceQueryDsl(placeId);
     }
 
 }

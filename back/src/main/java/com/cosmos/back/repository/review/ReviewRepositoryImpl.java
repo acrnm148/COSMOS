@@ -58,12 +58,28 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     // 장소에 대한 리뷰 모두 불러오기
     @Override
-    public List<ReviewPlaceRepositoryDto> getReviewInPlaceQueryDsl(Long placeId) {
+    public List<ReviewPlaceRepositoryDto> findReviewInPlaceQueryDsl(Long placeId) {
         QPlace qPlace = QPlace.place;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
+        QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
 
         return queryFactory.select(Projections.constructor(ReviewPlaceRepositoryDto.class,
-                qPlace.
+                    qReview.id,
+                    qReview.score,
+                    qReview.contents,
+                    qReview.user.userSeq
                 ))
+                .from(qReview)
+                .join(qReviewPlace)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                //
+                .leftJoin(qPlace)
+                .fetchJoin()
+                .on(qReviewPlace.place.id.eq(qPlace.id))
+                .where(qPlace.id.eq(placeId))
+                //
+                .fetch();
 
     }
 }
