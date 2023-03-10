@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface GugunRepository extends JpaRepository<Gugun, String> {
-    @Query(value = "SELECT * FROM gugun_code gc WHERE gc.code = :sidoCode", nativeQuery = true)
+    @Query(value = "SELECT * FROM gugun_code gc WHERE gc.sido_code = :sidoCode", nativeQuery = true)
     public List<Gugun> findBysidoCode(@Param("sidoCode") String sidoCode);
 }
