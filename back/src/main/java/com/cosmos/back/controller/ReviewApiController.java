@@ -1,8 +1,8 @@
 package com.cosmos.back.controller;
 
 import com.cosmos.back.dto.request.ReviewRequestDto;
-import com.cosmos.back.dto.response.place.TourResponseDto;
-import com.cosmos.back.dto.response.review.ReviewPlaceRepositoryDto;
+import com.cosmos.back.dto.response.review.ReviewResponseDto;
+import com.cosmos.back.model.Review;
 import com.cosmos.back.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +43,7 @@ public class ReviewApiController {
     @Operation(summary = "장소별 리뷰 모두 불러오기", description = "장소별로 리뷰를 모두 불러온다")
     @GetMapping("/reviews/places/{placeId}")
     public ResponseEntity<List> getReviesInPlace(@PathVariable Long placeId) {
-        List<ReviewPlaceRepositoryDto> reviewsInPlace = reviewService.getReviesInPlace(placeId);
+        List<ReviewResponseDto> reviewsInPlace = reviewService.getReviesInPlace(placeId);
 
         return new ResponseEntity<>(reviewsInPlace, HttpStatus.OK);
     }

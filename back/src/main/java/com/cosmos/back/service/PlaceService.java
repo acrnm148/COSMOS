@@ -3,7 +3,11 @@ package com.cosmos.back.service;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.User;
 import com.cosmos.back.model.UserPlace;
+import com.cosmos.back.model.place.Gugun;
 import com.cosmos.back.model.place.Place;
+import com.cosmos.back.model.place.Sido;
+import com.cosmos.back.repository.place.GugunRepository;
+import com.cosmos.back.repository.place.SidoRepository;
 import com.cosmos.back.repository.place.UserPlaceRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
@@ -11,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,8 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
     private final UserPlaceRepository userPlaceRepository;
+    private final SidoRepository sidoRepository;
+    private final GugunRepository gugunRepository;
 
     // QueryDsl로 관광 상세 정보 받아오기
     public TourResponseDto detailTour (Long placeId) {
@@ -93,5 +97,15 @@ public class PlaceService {
     // 이름으로 장소 검색
     public List<PlaceListResponseDto> searchPlacesByName (String name, Integer limit, Integer offset) {
         return placeRepository.findPlaceListByNameQueryDsl(name, limit, offset);
+    }
+
+    // 시도 리스트 받아오기
+    public List<Sido> listSido () {
+        return sidoRepository.findAll();
+    }
+
+    // 구군 리스트 받아오기
+    public List<Gugun> listGugun (String code) {
+        return gugunRepository.findBysidoCode(code);
     }
 }
