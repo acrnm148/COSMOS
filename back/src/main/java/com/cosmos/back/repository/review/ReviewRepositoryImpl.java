@@ -1,9 +1,16 @@
 package com.cosmos.back.repository.review;
 
+import com.cosmos.back.dto.response.review.ReviewPlaceRepositoryDto;
 import com.cosmos.back.model.QReview;
+import com.cosmos.back.model.QReviewCategory;
+import com.cosmos.back.model.QReviewPlace;
+import com.cosmos.back.model.place.QPlace;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -11,15 +18,52 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
+    //review 삭제
     @Override
-    public Long deleteReviewQueryDsl(Long reviewId, Long userSeq) {
+    public Long deleteReviewQueryDsl(Long reviewId) {
         QReview qReview = QReview.review;
 
-        Long execute = queryFactory
+        Long execute_review = queryFactory
                 .delete(qReview)
-                .where(qReview.id.eq(reviewId).and(qReview.user.userSeq.eq(userSeq)))
+                .where(qReview.id.eq(reviewId))
                 .execute();
 
-        return execute;
+        return  execute_review;
+    }
+
+    //reviewCategory 삭제
+    @Override
+    public Long deleteReviewCategoryQueryDsl(Long reviewId) {
+        QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
+
+        Long executeReviewCategory = queryFactory
+                .delete(qReviewCategory)
+                .where(qReviewCategory.review.id.eq(reviewId))
+                .execute();
+
+        return executeReviewCategory;
+    }
+
+    //reviewPlace 삭제
+    @Override
+    public Long deleteReviewPlaceQueryDsl(Long reviewId) {
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+
+        Long executeReviewPlace = queryFactory
+                .delete(qReviewPlace)
+                .where(qReviewPlace.review.id.eq(reviewId))
+                .execute();
+        return executeReviewPlace;
+    }
+
+    // 장소에 대한 리뷰 모두 불러오기
+    @Override
+    public List<ReviewPlaceRepositoryDto> getReviewInPlaceQueryDsl(Long placeId) {
+        QPlace qPlace = QPlace.place;
+
+        return queryFactory.select(Projections.constructor(ReviewPlaceRepositoryDto.class,
+                qPlace.
+                ))
+
     }
 }

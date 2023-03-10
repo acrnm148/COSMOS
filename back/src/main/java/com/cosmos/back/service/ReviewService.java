@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,7 +55,11 @@ public class ReviewService {
     // 리뷰 삭제하기
     @Transactional
     public Long deleteReview (Long reviewId, Long userSeq) {
-        Long execute = reviewRepository.deleteReviewQueryDsl(reviewId, userSeq);
+        Long executeReviewCategory = reviewRepository.deleteReviewCategoryQueryDsl(reviewId);
+        Long executeReviewPlace = reviewRepository.deleteReviewPlaceQueryDsl(reviewId);
+        Long executeReview = reviewRepository.deleteReviewQueryDsl(reviewId);
+
+        Long execute = executeReviewCategory * executeReviewPlace * executeReview;
 
         // 존재하지 않는 review 일 때 error 처리
         if (execute == 0) {
@@ -63,4 +68,13 @@ public class ReviewService {
 
         return execute;
     }
+
+    // 장소별 리뷰 모두 불러오기
+    public List getReviesInPlace (Long placeId) {
+
+
+
+        return
+    }
+
 }

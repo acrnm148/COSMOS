@@ -18,7 +18,8 @@ public class ReviewApiController {
 
     private final ReviewService reviewService;
 
-    @Operation(summary = "리뷰 등록", description = "리뷰를 등록함")
+    // 리뷰 생성하기
+    @Operation(summary = "리뷰 등록", description = "리뷰를 등록함, 헤더에 토큰 필요")
     @PostMapping("/reviews")
     public ResponseEntity<Long> createReview(@RequestBody ReviewRequestDto dto) {
         Long reviewId = reviewService.createReview(dto);
@@ -26,11 +27,21 @@ public class ReviewApiController {
         return new ResponseEntity<>(reviewId, HttpStatus.OK);
     }
 
-    @Operation(summary = "리뷰 삭제", description = "리뷰를 삭제함")
+    // 리뷰 삭제하기
+    @Operation(summary = "리뷰 삭제", description = "리뷰를 삭제함, 헤더에 토큰 필요")
     @DeleteMapping("/reviews/{reviewId}/users/{userSeq}")
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, @PathVariable Long userSeq) {
-        Long execute = reviewService.deleteReview(reviewId, userSeq);
+        reviewService.deleteReview(reviewId, userSeq);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 장소별 리뷰 모두 불러오기
+    @Operation(summary = "장소별 리뷰 모두 불러오기", description = "장소별로 리뷰를 모두 불러온다")
+    @GetMapping("/reviews/places/{placeId}")
+    public ResponseEntity<?> getReviesInPlace(@PathVariable Long placeId) {
+
+
+        return new ResponseEntity<>(HttpStatus.OK)
     }
 }
