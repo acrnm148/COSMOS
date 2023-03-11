@@ -2,12 +2,11 @@ package com.cosmos.back.oauth.service;
 
 import com.cosmos.back.oauth.provider.Token.KakaoToken;
 import com.cosmos.back.oauth.provider.profile.KakaoProfile;
-import com.cosmos.back.repository.UserRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cosmos.back.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -45,7 +44,6 @@ public class KakaoService {
         params.add("code", code);
         params.add("client_secret", client_secret);
 
-
         //request
         WebClient wc = WebClient.create(accessTokenUri);
         String response = wc.post()
@@ -57,7 +55,6 @@ public class KakaoService {
                 .block();
 
         System.out.println("response:" + response);
-
 
         //json형태로 변환
         ObjectMapper objectMapper = new ObjectMapper();
@@ -115,13 +112,13 @@ public class KakaoService {
         if(user ==null) {
             user = User.builder()
                     .userId(profile.getId())
-                    .password(null) //필요없으니 일단 아무거도 안넣음.
-                    .nickName(profile.getKakao_account().getProfile().getNickname())
-                    .profileImg(profile.getKakao_account().getProfile().getProfile_image_url())
+                    //.userName(profile.getKakao_account().getProfile().getNickname())
+                    .userName(profile.getKakao_account().getProfile().getNickname())
+                    //.phoneNumber(profile.getKakao_account().getProfile().getPhone_number())
+                    .profileImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
                     .email(profile.getKakao_account().getEmail())
                     .role("USER") //일단 유저로 넣음.
                     .createTime(LocalDateTime.now())
-                    .provider("kakao")
                     .build();
 
             userRepository.save(user);

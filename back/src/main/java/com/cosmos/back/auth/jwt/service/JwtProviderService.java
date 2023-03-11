@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cosmos.back.auth.jwt.JwtToken;
-import com.cosmos.back.auth.jwt.refreshToken.RefreshToken;
 import com.cosmos.back.auth.jwt.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
@@ -60,29 +59,16 @@ public class JwtProviderService {
         return accessToken;
     }
 
-    public String createRefreshToken(Long userSeq , String userId) {
-        Date now = new Date();
-
-        return JWT.create()
-                .withSubject(userId)
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.RefreshToken_TIME))
-                .withClaim("userSeq", userSeq)
-                .withClaim("userId", userId)
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
-    }
-
 
     /**
-     * refreshToken validation 체크(refresh token 이 넘어왔을때)
-     * 정상 - access 토큰 생성후 반환
-     * 비정상 - null
+     * refreshToken validation 체크 (access토큰의 유효기간이 끝났을 때)
+     * refresh 유효 O - access 토큰 생성후 반환
+     * refresh 유효 X - access, refresh 둘다 새로 생성해야하므로 null 반환
      */
-    public String validRefreshToken(RefreshToken refreshToken) {
-
-        String RefreshToken = refreshToken.getRefreshToken();
+    public String validRefreshToken(String refreshToken) {
 
         try {
-            DecodedJWT verify = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(RefreshToken);
+            DecodedJWT verify = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(refreshToken);
 
             //refresh 토큰의 만료시간이 지나지 않아 access 토큰만 새로 생성
             if(!verify.getExpiresAt().before(new Date())) {
@@ -90,8 +76,7 @@ public class JwtProviderService {
                 return accessToken;
             }
         }catch (Exception e) {
-
-            //refresh 토큰이 만료됨
+            //refresh 토큰이 만료되면 access토큰은 null을 반환한다. -> 어차피 access, refresh 둘 다 새로 생성해줄 것이므로 null 리턴
             return null;
         }
         return null;

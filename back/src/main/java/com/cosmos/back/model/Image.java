@@ -1,6 +1,7 @@
 package com.cosmos.back.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "image")
+@Builder
 public class Image {
 
     @Id
@@ -20,6 +22,6 @@ public class Image {
 
     private String link; // 이미지 링크
 
-    @Column(name = "couple_user_id")
-    private Long coupleUserId; // 커플ID
+    @Column(name = "couple_id")
+    private Long coupleId; // 커플ID
 }

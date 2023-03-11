@@ -3,10 +3,10 @@ package com.cosmos.back.auth.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
-import com.cosmos.back.auth.jwt.refreshToken.RefreshToken;
 import com.cosmos.back.model.User;
-import com.cosmos.back.repository.UserRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.auth.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -36,44 +36,39 @@ public class JwtService {
      * userSeq, userId를 넣음
      */
     @Transactional
-    public JwtToken getJwtToken(String userId) {
+    public JwtToken getJwtToken(Long userSeq) {
 
-        User user = userRepository.findByUserId(userId);
-        RefreshToken userRefreshToken = user.getJwtRefreshToken();
+        User user = userRepository.findByUserSeq(userSeq);
+        String redisUserSeq = userSeq.toString();
 
-        //처음 서비스를 이용하는 사용자(refresh 토큰이 없는 사용자)
-        if(userRefreshToken ==null) {
+        ValueOperations<String, String> loginValue = redisTemplate.opsForValue();
+        String refreshToken = loginValue.get(redisUserSeq);
+
+        //처음 서비스를 이용하는 사용자(refresh 토큰이 없는 사용자 = redis에 저장되지 않은 사용자)
+        if(refreshToken==null) { //redis에 저장되지 않았으면
 
             //access, refresh 토큰 생성
             JwtToken jwtToken = jwtProviderService.createJwtToken(user.getUserSeq(), user.getUserId());
 
-            //방법1. DB에 저장(refresh 토큰 저장)
-            //refreshToken 엔티티 생성
-            //RefreshToken refreshToken = new RefreshToken(jwtToken.getRefreshToken());
-            //user.createRefreshToken(refreshToken);
-            //방법2. Redis에 저장(refresh 토큰 저장)
-            ValueOperations<String, String> loginValueOperations = redisTemplate.opsForValue();
-            //loginValueOperations.set(accessToken, "logout"); // redis set 명령어
-            loginValueOperations.set(userId, jwtToken.getRefreshToken()); // redis set 명령어
-
+            //Redis에 refresh 토큰 저장
+            loginValue.set(redisUserSeq, jwtToken.getRefreshToken()); // redis set 명령어. (2543509554, exkdjf.kdsj.aflkd) 이런 형태로 저장
 
             return jwtToken;
         }
         //refresh 토큰이 있는 사용자(기존 사용자)
         else {
 
-            //유효하면 accesstoken 받아옴, 만료되면 null
-            String accessToken = jwtProviderService.validRefreshToken(userRefreshToken);
+            //유효하면 access 토큰 받아옴, 만료되면 null
+            String accessToken = jwtProviderService.validRefreshToken(refreshToken);
 
-            //refresh 토큰 기간이 유효
+            //refresh 토큰 유효할 때
             if(accessToken !=null) {
-                return new JwtToken(accessToken, userRefreshToken.getRefreshToken());
+                return new JwtToken(accessToken, refreshToken);
             }
-            else { //refresh 토큰 기간만료
+            else { // refresh 토큰 기간 만료
                 //새로운 access, refresh 토큰 생성
                 JwtToken newJwtToken = jwtProviderService.createJwtToken(user.getUserSeq(), user.getUserId());
 
-                user.SetRefreshToken(newJwtToken.getRefreshToken());
                 return newJwtToken;
             }
         }
@@ -82,60 +77,101 @@ public class JwtService {
     /**
      * access 토큰 validate
      */
-    public String validAccessToken(String accessToken) {
-
+    public Long validAccessToken(String accessToken) {
         try {
             //복호화
             DecodedJWT verify = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(accessToken);
             if(!verify.getExpiresAt().before(new Date())) {
-                return verify.getClaim("userId").asString();
+                return verify.getClaim("userSeq").asLong();
             }
-
         }catch (Exception e) {
+            System.out.println("[jwtService] access 토큰 만료");
             return null;
         }
         return null;
     }
 
     /**
-     * refresh 토큰 validate
+     * userSeq와 token의 userSeq 일치 여부 체크
+     *  & access토큰 유효기간 체크
+     */
+    public JwtState checkUserSeqWithAccess(Long userSeq, String accessToken) {
+        try {
+            //복호화
+            DecodedJWT verify = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(accessToken);
+            if(!verify.getExpiresAt().before(new Date())) {
+                Long findUserSeq = verify.getClaim("userSeq").asLong();
+                System.out.println("userSeq by token:"+findUserSeq +" / userSeq: "+userSeq);
+                if (findUserSeq.equals(userSeq)) {
+                    return JwtState.SUCCESS;
+                }
+                return JwtState.MISMATCH_USER;
+            }
+        }catch (Exception e) { //유효기간 지났을 때
+            System.out.println("[jwtService] access 토큰 만료");
+            return JwtState.EXPIRED_ACCESS;
+        }
+        return null;
+    }
+
+    /**
+     * [refresh 토큰 validate]
+     * access 토큰이 만료되었을 때 redis에서 refresh토큰 유효기간 체크 후
+     * access 토큰만 만료 -> access 토큰만 재발급
+     * refresh 토큰도 만료 -> access, refresh 둘 다 재발급
      */
     @Transactional
-    public JwtToken validRefreshToken(String userid, String refreshToken) {
+    public JwtToken validRefreshToken(Long userSeq) {
 
-        User user = userRepository.findByUserId(userid);
+        User user = userRepository.findByUserSeq(userSeq);
+        String redisUserSeq = userSeq.toString();
 
-        //전달받은 refresh 토큰과 DB의 refresh 토큰이 일치하는지 확인
-        RefreshToken findRefreshToken = sameCheckRefreshToken(user, refreshToken);
+        ValueOperations<String, String> loginValue = redisTemplate.opsForValue();
+        String refreshToken = loginValue.get(redisUserSeq);
 
         //refresh 토큰이 만료되지 않았으면 access 토큰은 null이 아니다.
-        String accessToken = jwtProviderService.validRefreshToken(findRefreshToken);
+        String accessToken = jwtProviderService.validRefreshToken(refreshToken);
 
         //refresh 토큰의 유효기간이 남아 access 토큰만 생성
         if(accessToken!=null) {
+            System.out.println("refresh 토큰 유효");
             return new JwtToken(accessToken, refreshToken);
         }
         //refresh 토큰이 만료됨 -> access, refresh 토큰 모두 재발급
-       else {
+        else {
+            System.out.println("refresh 토큰 만료");
+            //jwt 생성
             JwtToken newJwtToken = jwtProviderService.createJwtToken(user.getUserSeq(), user.getUserId());
-            user.SetRefreshToken(newJwtToken.getRefreshToken());
+
+            //redis에 있던 refresh토큰 삭제
+            loginValue.getAndDelete(redisUserSeq);
+
+            //redis에 새로 생성한 refresh토큰 저장
+            loginValue.set(redisUserSeq, newJwtToken.getRefreshToken());
+
             return newJwtToken;
         }
 
     }
 
     /**
-     * refreshtoken 중복 확인
+     * accesstoken 복호화해서 유저 시퀀스 추출
      */
-    public RefreshToken sameCheckRefreshToken(User user, String refreshToken) {
+    @Transactional
+    public Long getUserSeq(String token) {
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
+        Long userSeq = decodedJWT.getClaim("userSeq").asLong();
+        return userSeq;
+    }
 
-        //DB 에서 찾기
-        RefreshToken jwtRefreshToken = user.getJwtRefreshToken();
-
-        if(jwtRefreshToken.getRefreshToken().equals(refreshToken)){
-            return jwtRefreshToken;
-        }
-        return null;
+    /**
+     * accesstoken 복호화해서 유저 아이디 추출
+     */
+    @Transactional
+    public String getUserId(String token) {
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
+        String userId = decodedJWT.getClaim("userId").asString();
+        return userId;
     }
 
     /**
@@ -177,4 +213,11 @@ public class JwtService {
         return map;
     }
 
+    //userSeq와 토큰의 userSeq 불일치
+    public Map<String, String> mismatchUserResponse() {
+        Map<String ,String > map = new LinkedHashMap<>();
+        map.put("status", "401");
+        map.put("message", "유저 불일치");
+        return map;
+    }
 }

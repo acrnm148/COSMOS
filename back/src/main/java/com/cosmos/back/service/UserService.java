@@ -1,25 +1,19 @@
 package com.cosmos.back.service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.UserProfileDto;
 import com.cosmos.back.dto.UserUpdateDto;
-import com.cosmos.back.dto.request.JoinRequestDto;
-import com.cosmos.back.dto.response.JoinResponseDto;
-import com.cosmos.back.repository.UserRepository;
-import com.cosmos.back.auth.jwt.JwtProperties;
-import com.cosmos.back.auth.jwt.refreshToken.RefreshToken;
-import com.cosmos.back.auth.jwt.refreshToken.RefreshTokenRepository;
-import com.cosmos.back.auth.jwt.service.JwtProviderService;
+import com.cosmos.back.dto.request.TypeRequestDto;
+import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 실제 JWT 토큰과 관련된 서비스
@@ -30,11 +24,8 @@ import java.time.LocalDateTime;
 @Transactional(readOnly = true)
 public class UserService {
 
-    private final JwtProviderService jwtProviderService; //얘 추가하고 오류
-
+    private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-
     private final StringRedisTemplate redisTemplate;
 
     /**
@@ -42,31 +33,25 @@ public class UserService {
      * accessToken을 복호화(디코딩)해서 유저 정보 가져옴
      */
     @Transactional
-    public UserProfileDto getUser(String accessToken) {
+    public UserProfileDto getUser(Long userSeq) {
         System.out.println("getUser 함수 진입");
         try {
-            //복호화된 JWT
-            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(accessToken);
-            String userid = decodedJWT.getClaim("userid").asString();
-            User user = userRepository.findByUserId(userid);
-
-            System.out.println("현재 암호화된 비밀번호: "+user.getPassword());
+            User user = userRepository.findByUserSeq(userSeq);
 
             UserProfileDto userProfileDto = UserProfileDto.builder()
+                    .userSeq(user.getUserSeq())
                     .userId(user.getUserId())
-                    .profileImg(user.getProfileImg())
-                    .tel(user.getTel())
-                    .username(user.getUserName())
-                    .nickname(user.getNickName())
-                    .addr1(user.getAddr1())
-                    .addr2(user.getAddr2())
-                    .zipcode(user.getZipCode())
-                    .birth(user.getBirth())
-                    .birthYear(user.getBirthYear())
-                    .gender(user.getGender())
-                    .roles("USER")
+                    .userName(user.getUserName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .profileImgUrl(user.getProfileImgUrl())
+                    .coupleYn(user.getCoupleYn())
+                    .ageRange(user.getAgeRange())
                     .email(user.getEmail())
-                    .provider(user.getProvider())
+                    .birthday(user.getBirthday())
+                    .role("USER")
+                    .type1(user.getType1())
+                    .type2(user.getType2())
+                    .coupleUserId(user.getCoupleId())
                     .createTime(LocalDateTime.now())
                     .build();
 
@@ -79,23 +64,13 @@ public class UserService {
 
     /**
      * 유저 정보 수정
-     * 프로필이미지 변경, 비밀번호 변경
+     * (카카오톡 공유하기 -> 수정필요)
      */
     @Transactional
     public User updateUserInfo(UserUpdateDto dto) {
-        User user = userRepository.findByUserId(dto.getUserId());
-        if (dto.getTel() == null || dto.getNickname() == null ||
-           dto.getZipcode() == null || dto.getAddr1() == null ||
-            dto.getAddr2()==null) {
-            System.out.println("입력란이 비었습니다.");
-            return null;
-        }
-        user.setTel(dto.getTel());
-        user.setZipCode(dto.getZipcode());
-        user.setNickName(dto.getNickname());
-        user.setAddr1(dto.getAddr1());
-        user.setAddr2(dto.getAddr2());
-
+        User user = userRepository.findByUserSeq(dto.getUserSeq());
+        user.setCoupleYn("Y");
+        user.setCoupleId(dto.getCoupleId());
         userRepository.save(user);
         return user;
     }
@@ -104,30 +79,10 @@ public class UserService {
      * Redis를 이용한 로그아웃
      */
     @Transactional
-    public void logout(String accessToken) {
-        UserProfileDto user = getUser(accessToken);
-        String refreshToken = user.getRefreshToken();
-
-        //1. accessToken redisTemplate 블랙리스트 추가
-        //ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
-        //logoutValueOperations.set(accessToken, "logout"); // redis set 명령어
-
-        //2. refreshToken 삭제
-        //RefreshToken rf = refreshTokenRepository.findByRefreshToken(refreshToken).get();
-        //User userEntity = userRepository.findByUserId(user.getUserId());
-        //userEntity.setJwtRefreshToken(null);//부모에서 삭제
-        //refreshTokenRepository.deleteById(rf.getId());//자식에서 삭제
-    }
-
-    
-    /**
-     * accesstoken 복호화해서 유저 아이디 추출
-     */
-    @Transactional
-    public String getUserid(String token) {
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
-        String userid = decodedJWT.getClaim("userId").asString();
-        return userid;
+    public void logout(Long userSeq) {
+        String redisUserSeq = userSeq.toString();
+        redisTemplate.delete(redisUserSeq); //redis에서 refresh 토큰 삭제
+        System.out.println("로그아웃 완료, refresh토큰 삭제: "+userSeq);
     }
 
     /**
@@ -140,4 +95,50 @@ public class UserService {
         return false;
     }
 
+    /**
+     * 커플 연결 요청
+
+     public void makeCouple(Long userSeq, Long coupleUserSeq) {
+
+     }
+     */
+
+    /**
+     * 커플 연결 수락
+     */
+    public void acceptCouple(Long userSeq, Long coupleUserSeq, Long coupleId) {
+        User user = userRepository.findByUserSeq(userSeq);
+        User coupleUser = userRepository.findByUserSeq(coupleUserSeq);
+
+        user.setCoupleId(coupleId);
+        userRepository.save(user);
+        coupleUser.setCoupleId(coupleId);
+        userRepository.save(coupleUser);
+        System.out.println("커플 연결 수락");
+    }
+
+    /**
+     * 커플 연결 끊기
+     */
+    @Transactional
+    public void disconnectCouple(Long coupleId) {
+        List<User> couple = userRepository.findByCoupleId(coupleId);
+        couple.get(0).setCoupleYn("N");
+        couple.get(0).setCoupleId(null);
+        couple.get(1).setCoupleYn("N");
+        couple.get(1).setCoupleId(null);
+        userRepository.save(couple.get(0));
+        userRepository.save(couple.get(1));
+        System.out.println("두 유저의 커플 id 삭제");
+    }
+
+    /**
+     * 사용자 유형 등록
+     */
+    public User saveTypes(TypeRequestDto dto) {
+        User user = userRepository.findByUserSeq(dto.getUserSeq());
+        user.setType1(dto.getType1());
+        user.setType2(dto.getType2());
+        return userRepository.save(user);
+    }
 }
