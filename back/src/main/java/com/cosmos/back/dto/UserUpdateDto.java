@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserUpdateDto {
     private Long userSeq; //수정불가
-    private boolean coupleYn;
+    private String phoneNumber;
+    private String coupleYn;
     private Long coupleId;
 }

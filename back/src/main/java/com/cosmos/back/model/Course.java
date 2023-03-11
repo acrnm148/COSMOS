@@ -1,7 +1,9 @@
 package com.cosmos.back.model;
 
 import com.cosmos.back.model.place.Place;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,6 +45,7 @@ public class Course {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "plan_id")
     @JsonIgnore
+    @JsonBackReference
     private Plan plan;
 
     // 데이트 코스 - (데이트 코스 - 장소)
