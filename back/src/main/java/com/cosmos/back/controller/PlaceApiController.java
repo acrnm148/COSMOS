@@ -126,4 +126,12 @@ public class PlaceApiController {
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+    @Operation(summary = "시도구군으로 장소 검색", description = "시도구군으로 장소 검색")
+    @GetMapping("/places/search/sido/{sido}/gugun/{gugun}")
+    public ResponseEntity<List> search(@PathVariable String sido, @PathVariable String gugun, @RequestParam Integer limit, @RequestParam Integer offset) {
+        List<PlaceListResponseDto> list = placeService.searchPlacesBySidoGugun(sido, gugun, limit, offset);
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 }
