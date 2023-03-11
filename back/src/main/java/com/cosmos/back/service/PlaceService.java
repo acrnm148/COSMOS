@@ -108,4 +108,9 @@ public class PlaceService {
     public List<Gugun> listGugun (String code) {
         return gugunRepository.findBysidoCode(code);
     }
+
+    // 시도구군으로 장소 검색
+    public List<PlaceListResponseDto> searchPlacesBySidoGugun (String sido, String gugun, Integer limit, Integer offset) {
+        return placeRepository.findPlaceListBySidoGugunQueryDsl(sido, gugun, limit, offset);
+    }
 }
