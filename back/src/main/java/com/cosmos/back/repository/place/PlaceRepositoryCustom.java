@@ -32,4 +32,7 @@ public interface PlaceRepositoryCustom {
 
     // QueryDsl로 장소 리스트 가져오기 with Pagination
     public List<PlaceListResponseDto> findPlaceListByNameQueryDsl(String name, Integer limit, Integer offset);
+
+    // QueryDsl로 장소 리스트 가져오기(시도구군) with Pagination
+    public List<PlaceListResponseDto> findPlaceListBySidoGugunQueryDsl(String sido, String gugun, Integer limit, Integer offset);
 }
