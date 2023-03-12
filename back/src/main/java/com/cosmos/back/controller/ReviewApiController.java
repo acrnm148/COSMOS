@@ -45,7 +45,7 @@ public class ReviewApiController {
     @Operation(summary = "장소별 리뷰 모두 불러오기", description = "장소별로 리뷰를 모두 불러온다")
     @GetMapping("/reviews/places/{placeId}")
 
-    public ResponseEntity<List> findReviesInPlace(@PathVariable Long placeId) {
+    public ResponseEntity<List> findReviewsInPlace(@PathVariable Long placeId) {
         List<ReviewResponseDto> reviewsInPlace = reviewService.findReviesInPlace(placeId);
 
         return new ResponseEntity<>(reviewsInPlace, HttpStatus.OK);
@@ -55,7 +55,7 @@ public class ReviewApiController {
     @Operation(summary = "내 리뷰 모두 불러오기", description = "내가 쓴 리뷰를 모두 불러온다")
     @GetMapping("/reviews/users/{userSeq}")
     public ResponseEntity<List> findReviwesInUser(@PathVariable Long userSeq) {
-        List<Review> reviewsInUser = reviewService.findReviewsInUser(userSeq);
+        List<ReviewUserResponseDto> reviewsInUser = reviewService.findReviewsInUser(userSeq);
         return new ResponseEntity<>(reviewsInUser, HttpStatus.OK);
     }
 }

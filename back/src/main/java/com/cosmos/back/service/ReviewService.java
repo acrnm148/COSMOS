@@ -87,20 +87,23 @@ public class ReviewService {
     }
 
     // 내 리뷰 모두 불러오기
-    public List findReviewsInUser (Long userId) {
-        List<Review> review = reviewRepository.findReviewInUserQueryDsl(userId);
-        System.out.println("review! = " + review);
-//        List<ReviewUserResponseDto> list = new ArrayList<>();
-//        for (Review r : review) {
-//            ReviewUserResponseDto dto = ReviewUserResponseDto.builder()
-//                    .reviewId(r.getId())
-//                    .categories(r.getReviewCategories())
-//                    .score(r.getScore())
-//                    .contents(r.getContents())
-//                    .placeId()
-//        }
+    public List<ReviewUserResponseDto> findReviewsInUser (Long userSeq) {
+        List<Review> review = reviewRepository.findReviewInUserQueryDsl(userSeq);
 
-        return review;
+        List<ReviewUserResponseDto> list = new ArrayList<>();
+        for (Review r : review) {
+            ReviewUserResponseDto dto = ReviewUserResponseDto.builder()
+                    .reviewId(r.getId())
+                    .categories(r.getReviewCategories())
+                    .score(r.getScore())
+                    .contents(r.getContents())
+//                    .placeId(r.getReviewPlaces().get(0).getPlace().getId())
+                    .placeId(r.getReviewPlaces().get(0).getPlace().getId())
+                    .build();
+            list.add(dto);
+        }
+
+        return list;
     }
 
 }

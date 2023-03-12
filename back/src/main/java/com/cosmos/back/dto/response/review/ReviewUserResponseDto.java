@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class ReviewUserResponseDto {
     private Long reviewId;
-//    private List<ReviewCategory> categories;
+    private List<ReviewCategory> categories;
     private Integer score;
     private String contents;
     private Long placeId;

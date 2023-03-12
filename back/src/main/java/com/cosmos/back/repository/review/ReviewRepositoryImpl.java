@@ -75,17 +75,28 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .fetch();
     }
 
+    // 내 리뷰 모두 불러오기
     @Override
-    public List<Review> findReviewInUserQueryDsl(Long userId) {
+    public List<Review> findReviewInUserQueryDsl(Long userSeq) {
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
 
+//        List<Review> reviews = queryFactory.selectFrom(qReview)
+//                .distinct()
+//                .where(qReview.user.userSeq.eq(userSeq))
+//                .join(qReviewPlace)
+//                .on(qReview.id.eq(qReviewPlace.review.id))
+//                .join(qReviewCategory)
+//                .on(qReview.id.eq(qReviewCategory.review.id))
+//                .fetch();
+//        System.out.println("살려주세요! = " + reviews.get(0).getReviewPlaces().get(0).getPlace().getId());
+
         return queryFactory.selectFrom(qReview)
                 .distinct()
+                .where(qReview.user.userSeq.eq(userSeq))
                 .join(qReviewPlace)
                 .on(qReview.id.eq(qReviewPlace.review.id))
-                .where(qReview.user.userSeq.eq(userId))
                 .join(qReviewCategory)
                 .on(qReview.id.eq(qReviewCategory.review.id))
                 .fetch();

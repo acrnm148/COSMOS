@@ -19,7 +19,7 @@ public interface ReviewRepositoryCustom {
     public List<Review> findReviewInPlaceQueryDsl (Long placeId);
 
     // QueryDsl로 내 review 불러오기
-    public List<Review> findReviewInUserQueryDsl (Long userId);
+    public List<Review> findReviewInUserQueryDsl (Long userSeq);
 
 
 
