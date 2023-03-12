@@ -1,8 +1,8 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.auth.jwt.service.JwtService;
-import com.cosmos.back.dto.UserProfileDto;
-import com.cosmos.back.dto.UserUpdateDto;
+import com.cosmos.back.dto.user.UserProfileDto;
+import com.cosmos.back.dto.user.UserUpdateDto;
 import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.model.User;
 import lombok.RequiredArgsConstructor;
@@ -166,7 +166,7 @@ public class UserService {
      */
     public Long makeCoupleId() {
         Random random = new Random(); // 랜덤 객체 생성
-        Long coupleId = Long.valueOf(random.nextInt(1000000000));//n자리 미만의 난수 반환
+        Long coupleId = Long.valueOf(random.nextInt(1000000000));//10자리 미만의 난수 반환
         System.out.println("생성된 커플아이디: " +coupleId);
         return coupleId;
     }

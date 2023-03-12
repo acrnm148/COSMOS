@@ -2,8 +2,8 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
-import com.cosmos.back.dto.UserProfileDto;
-import com.cosmos.back.dto.UserUpdateDto;
+import com.cosmos.back.dto.user.UserProfileDto;
+import com.cosmos.back.dto.user.UserUpdateDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.service.UserService;

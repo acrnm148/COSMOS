@@ -1,6 +1,6 @@
 package com.cosmos.back.service;
 
-import com.cosmos.back.dto.request.PlanRequestDto;
+import com.cosmos.back.dto.PlanDto;
 import com.cosmos.back.model.Course;
 import com.cosmos.back.model.Plan;
 import com.cosmos.back.repository.course.CourseRepository;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -26,26 +25,15 @@ public class PlanService {
     /**
      * 커플 일정 생성
      */
-    public Long createPlan(PlanRequestDto dto) {
+    public Long createPlan(PlanDto dto) {
         Plan plan = Plan.builder()
                 .coupleId(dto.getCoupleId())
-                .mainCategory(dto.getMainCategory())
+                .planName(dto.getPlanName())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
+                .courses(dto.getCourses())
                 .createTime(now())
                 .build();
-
-        List<Long> courseIds = dto.getCourseIds();
-        List<Course> courses = new ArrayList<>();
-        if (courseIds != null) {
-            for (Long id : courseIds) {
-                Course course = courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
-                course.setPlan(plan); //course에 planId 추가
-                courseRepository.save(course);
-                courses.add(course);
-            }
-        }
-        //plan.setCourses(courses);
         planRepository.save(plan);
 
         System.out.println("커플 일정 생성 완료");
@@ -64,21 +52,11 @@ public class PlanService {
     /**
      * 커플 일정 수정
      */
-    public Plan updatePlan(PlanRequestDto dto) {
+    public Plan updatePlan(PlanDto dto) {
         Plan plan = planRepository.findByIdAndCoupleId(dto.getPlanId(), dto.getCoupleId());
         System.out.println("courses: ");
-        List<Long> courseIds = dto.getCourseIds();
-        List<Course> courses = new ArrayList<>();
-        if (courseIds != null) {
-            for (Long id : courseIds) {
-                Course course = courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
-                course.setPlan(plan); //course에 planId 수정
-                courseRepository.save(course);
-                courses.add(course);
-            }
-        }
-        //plan.setCourses(courses);
-        plan.setMainCategory(dto.getMainCategory());
+        plan.setCourses(dto.getCourses());
+        plan.setPlanName(dto.getPlanName());
         plan.setStartDate(dto.getStartDate());
         plan.setEndDate(dto.getEndDate());
         plan.setUpdateTime(now());
@@ -92,27 +70,39 @@ public class PlanService {
      */
     public void deletePlan(Long coupleId, Long planId) {
         Plan plan = planRepository.findByIdAndCoupleId(planId, coupleId);
+        System.out.println("커플 일정 삭제 완료, id:"+planId);
         planRepository.save(plan);
     }
 
     /**
-     * 커플 일정 월별 조회
-     * where date_format(create_time, '%Y')='2023' and date_format(create_time, '%m')='03';
+     * 커플 일정 월별 조회 month
      */
     public List<Plan> getPlanListByMonth(Long coupleId, String date) {
         String year = date.substring(0,4);
         String month = date.substring(5,7);
 
-        String YearMonth = year+"-"+month;
+        String YearMonthNow = year+"-"+month;
 
-        List<Plan> plansByMonth= planRepository.findByCoupleIdAndMonthQueryDsl(coupleId, YearMonth);
+        String newYear = "";
+        String newMonth = "";
+        if (month.equals("12")) {
+            newYear += Integer.parseInt(year)+1;
+            newMonth += "01";
+        } else {
+            newYear += year;
+            Integer tmp = Integer.parseInt(month)+1;
+            if (tmp < 10)
+            newMonth += "0"+tmp;
+        }
+        String YearMonthNext = newYear+"-"+newMonth;
+
+        List<Plan> plansByMonth= planRepository.findByCoupleIdAndMonthQueryDsl(coupleId, YearMonthNext,YearMonthNow);
 
         return plansByMonth;
     }
 
     /**
-     * 커플 일정 일별 조회
-     * where date(create_time)='2023-03-05';
+     * 커플 일정 일별 조회 day
      */
     public List<Plan> getPlanListByDay(Long coupleId, String date) {
         String year = date.substring(0,4);

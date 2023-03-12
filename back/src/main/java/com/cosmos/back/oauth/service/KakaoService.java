@@ -24,9 +24,8 @@ public class KakaoService {
 
     private final UserRepository userRepository;
 
-    //tify는 되는데 cosmos는 안된다..? 뭘놓친거지
-    private final String client_id = "097d883a03c0da953d919d990701da5f"; //tify:097d883a03c0da953d919d990701da5f //cosmos:f503e3ce0885d5fead6b5aa9010eb6fb
-    private final String client_secret = "af5un2n5wi857RPKyB7wBFPKhjBBebd4"; //tify:af5un2n5wi857RPKyB7wBFPKhjBBebd4  //cosmos:xuKpVEVMSbPB3Ikk4w0X2ziDNH3QWtKf
+    private final String client_id = "097d883a03c0da953d919d990701da5f";
+    private final String client_secret = "af5un2n5wi857RPKyB7wBFPKhjBBebd4";
     private final String redirect_uri = "http://localhost:8081/api/login/oauth2/code/kakao";
     private final String accessTokenUri = "https://kauth.kakao.com/oauth/token";
     private final String UserInfoUri = "https://kapi.kakao.com/v2/user/me";
@@ -107,7 +106,7 @@ public class KakaoService {
     @Transactional
     public User saveUser(String access_token) {
         KakaoProfile profile = findProfile(access_token); //사용자 정보 받아오기
-        User user = userRepository.findByUserId(profile.getId());
+        User user = userRepository.findByUserId(profile.getId()); //쿼리1
         System.out.println("유저 저장:"+profile);
 
         //처음이용자 강제 회원가입
@@ -131,9 +130,9 @@ public class KakaoService {
 
             user = User.builder()
                     .userId(profile.getId())
-                    //.userName(profile.getKakao_account().getProfile().getName()) //대부분name설정X
+                    //.userName(profile.getKakao_account().getProfile().getName()) //대부분 name 설정 X
                     .userName(profile.getKakao_account().getProfile().getNickname())
-                    //.phoneNumber(profile.getKakao_account().getPhone_number()) //접근권한X,직접입력해야함
+                    //.phoneNumber(profile.getKakao_account().getPhone_number()) //접근권한 X,직접 입력 해야함
                     .profileImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
                     .ageRange(newAgeRange)
                     .birthday(profile.getKakao_account().getBirthday())
@@ -143,7 +142,7 @@ public class KakaoService {
                     .createTime(LocalDateTime.now())
                     .build();
 
-            userRepository.save(user);
+            userRepository.save(user);  //쿼리2
         }
         return user;
     }

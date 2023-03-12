@@ -4,10 +4,7 @@ import com.cosmos.back.model.place.Place;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -21,7 +18,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "course")
-@Data
+@Getter
+@Setter
 @Builder
 public class Course {
 
@@ -32,38 +30,35 @@ public class Course {
 
     private String name; // 데이트 코스 이름
 
-    @Column(name = "start_date")
-    private String startDate; // 시작 날짜
-
-    @Column(name = "end_date")
-    private String endDate; // 끝 날짜
+    @Column(name = "date")
+    private String date; // 코스 날짜
 
     @Column(name = "sub_category")
     private String subCategory; // 소분류
 
     // 데이트 코스 - 일정
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "plan_id")
     @JsonIgnore
-    @JsonBackReference
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "plan_id") //외래키, 주인은 course
     private Plan plan;
 
     // 데이트 코스 - (데이트 코스 - 장소)
+    @JsonIgnore
     @OneToMany(mappedBy = "course")
     private List<CoursePlace> coursePlaces = new ArrayList<>();
 
     // 데이트 코스 - (유저 - 데이트 코스)
+    @JsonIgnore
     @OneToMany(mappedBy = "course")
     private List<UserCourse> userCourses = new ArrayList<>();
 
     // 생성 메서드
-    public static Course createCourse (String name, String startDate, String endDate, String subCategory) {
+    public static Course createCourse (String name, String date, String subCategory) {
         Course course = new Course();
 
         course.setPlan(null);
         course.setName(name);
-        course.setStartDate(startDate);
-        course.setEndDate(endDate);
+        course.setDate(date);
         course.setSubCategory(subCategory);
 
         return course;

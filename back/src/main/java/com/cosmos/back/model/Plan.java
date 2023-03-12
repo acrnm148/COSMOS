@@ -3,22 +3,21 @@ package com.cosmos.back.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Table(name = "plan")
 @Builder
 public class Plan {
@@ -27,8 +26,8 @@ public class Plan {
     @Column(name = "plan_id")
     private Long id;
 
-    @Column(name = "main_category")
-    private String mainCategory; // 대분류(일정 이름)
+    @Column(name = "plan_name")
+    private String planName; // 일정 이름
 
     @Column(name = "start_date")
     private String startDate; // 시작 날짜
@@ -46,8 +45,6 @@ public class Plan {
     private LocalDateTime updateTime; // 수정일자
 
     // 일정 - 데이트 코스
-//    @JsonIgnoreProperties({"plan"})
-//    @OneToMany(mappedBy = "plan")
-//    List<Course> courses;
-    //직렬화(serialize)해서 임시로 메모리에 올려두는 작업
+    @OneToMany(mappedBy = "plan")
+    List<Course> courses = new ArrayList<>();
 }

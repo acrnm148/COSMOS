@@ -1,4 +1,4 @@
-package com.cosmos.back.dto;
+package com.cosmos.back.dto.user;
 
 import com.cosmos.back.model.Review;
 import com.cosmos.back.model.UserCourse;

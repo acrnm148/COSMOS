@@ -1,6 +1,6 @@
 package com.cosmos.back.controller;
 
-import com.cosmos.back.dto.request.PlanRequestDto;
+import com.cosmos.back.dto.PlanDto;
 import com.cosmos.back.model.Plan;
 import com.cosmos.back.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "plan", description = "일정 API")
 @RestController
@@ -22,7 +23,7 @@ public class PlanApiController {
 
     @Operation(summary = "커플 일정 생성", description = "커플 일정 생성")
     @PostMapping("/plans")
-    public ResponseEntity<Long> createPlan(@RequestBody PlanRequestDto dto) {
+    public ResponseEntity<Long> createPlan(@RequestBody PlanDto dto) {
         Long planId = planService.createPlan(dto);
 
         return new ResponseEntity<>(planId, HttpStatus.OK);
@@ -40,7 +41,7 @@ public class PlanApiController {
     @Operation(summary = "커플 일정 수정", description = "커플 일정 수정")
     @PutMapping("/plans/{coupleId}/{planId}")
     public ResponseEntity<Plan> updatePlan(@PathVariable("planId") Long planId,
-                                           @RequestBody PlanRequestDto dto) {
+                                           @RequestBody PlanDto dto) {
         dto.setPlanId(planId);
         Plan plan = planService.updatePlan(dto);
 
@@ -57,18 +58,20 @@ public class PlanApiController {
     }
 
     @Operation(summary = "커플 일정 월별 조회(ex: 2023.01)", description = "커플 일정 월별 조회")
-    @GetMapping("/plans/month/{coupleId}/{date}") //2023.01
-    public ResponseEntity<?> getPlanListByMonth(@PathVariable("coupleId") Long coupleId,
-                                                @PathVariable("date") String date) {
+    @PostMapping("/plans/month") //2023.01
+    public ResponseEntity<?> getPlanListByMonth(@RequestBody Map<String, Object> map) {
+        Long coupleId = Long.valueOf((Integer) map.get("coupleId"));
+        String date = (String) map.get("date");
         List<Plan> plans = planService.getPlanListByMonth(coupleId, date);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);
     }
 
     @Operation(summary = "커플 일정 일별 조회(ex: 2023.01.30)", description = "커플 일정 일별 조회")
-    @GetMapping("/plans/day/{coupleId}/{date}") //2023.01.30
-    public ResponseEntity<?> getPlanListByDay(@PathVariable("coupleId") Long coupleId,
-                                              @PathVariable("date") String date) {
+    @PostMapping("/plans/day") //2023.01.30
+    public ResponseEntity<?> getPlanListByDay(@RequestBody Map<String, Object> map) {
+        Long coupleId = Long.valueOf((Integer) map.get("coupleId"));
+        String date = (String) map.get("date");
         List<Plan> plans = planService.getPlanListByDay(coupleId, date);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);

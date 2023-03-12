@@ -35,7 +35,7 @@ public class CourseService {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         // 데이트코스 저장
-        Course course = Course.createCourse(dto.getName(), dto.getStartDate(), dto.getEndDate(), dto.getSubCategory());
+        Course course = Course.createCourse(dto.getName(), dto.getDate(), dto.getSubCategory());
         courseRepository.save(course);
 
         // 유저_데이트코스 저장
