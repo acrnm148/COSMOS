@@ -18,8 +18,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "course")
-@Getter
-@Setter
+@Data
+@ToString(exclude = "plan")
 @Builder
 public class Course {
 
@@ -37,7 +37,7 @@ public class Course {
     private String subCategory; // 소분류
 
     @Column(name = "orders")
-    private String orders; // 순서
+    private Integer orders; // 순서
 
     // 데이트 코스 - 일정
     @JsonIgnore
@@ -56,15 +56,15 @@ public class Course {
     private List<UserCourse> userCourses = new ArrayList<>();
 
     // 생성 메서드
-    public static Course createCourse (String name, String date, String subCategory) {
+    public static Course createCourse (String name, String date, String subCategory, Integer orders) {
         Course course = new Course();
 
         course.setPlan(null);
         course.setName(name);
         course.setDate(date);
         course.setSubCategory(subCategory);
+        course.setOrders(orders);
 
         return course;
     }
-
 }

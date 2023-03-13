@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class CourseRequestDto {
     private String name;
     private String date;
+    private Integer idx;
     private String subCategory;
     private Long planId;
     private Long placeId;

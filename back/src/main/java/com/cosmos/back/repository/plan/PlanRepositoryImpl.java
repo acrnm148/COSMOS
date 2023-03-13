@@ -1,7 +1,9 @@
 package com.cosmos.back.repository.plan;
 
-import com.cosmos.back.model.Plan;
+import com.cosmos.back.dto.PlanCourseDto;
+import com.cosmos.back.model.QCourse;
 import com.cosmos.back.model.QPlan;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -24,13 +26,30 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
      * loe <=, goe >=
      */
     @Override
-    public List<Plan> findByCoupleIdAndMonthQueryDsl(Long coupleId, String yearMonthNext, String yearMonthNow) {
+    public List<PlanCourseDto> findByCoupleIdAndMonthQueryDsl(Long coupleId, String yearMonthNext, String yearMonthNow) {
         QPlan qPlan = QPlan.plan;
+        QCourse qCourse = QCourse.course;
 
-        List<Plan> result = queryFactory.selectFrom(qPlan)
+        List<PlanCourseDto> result = queryFactory.select(Projections.constructor(PlanCourseDto.class,
+                            qPlan.id,
+                            qPlan.coupleId,
+                            qPlan.planName,
+                            qPlan.startDate,
+                            qPlan.endDate,
+                            qPlan.createTime,
+                            qPlan.updateTime,
+                            qCourse.id,
+                            qCourse.name,
+                            qCourse.date,
+                            qCourse.subCategory,
+                            qCourse.orders
+                ))
+                .from(qPlan)
+                .leftJoin(qPlan.courses, qCourse)
                 .where(qPlan.coupleId.eq(coupleId)
                         .and(qPlan.startDate.lt(yearMonthNext))
-                        .and(qPlan.endDate.goe(yearMonthNow)))
+                        .and(qPlan.endDate.goe(yearMonthNow))
+                        .and(qCourse.date.like(yearMonthNow+"%")))
                 .fetch();
         return result;
     }
@@ -45,10 +64,27 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
      * loe <=, goe >=
      */
     @Override
-    public List<Plan> findByCoupleIdAndDayQueryDsl(Long coupleId, String yearMonthDay) {
+    public List<PlanCourseDto> findByCoupleIdAndDayQueryDsl(Long coupleId, String yearMonthDay) {
         QPlan qPlan = QPlan.plan;
+        QCourse qCourse = QCourse.course;
 
-        List<Plan> result = queryFactory.selectFrom(qPlan)
+        List<PlanCourseDto> result = queryFactory.select(Projections.constructor(PlanCourseDto.class,
+                        qPlan.id,
+                        qPlan.coupleId,
+                        qPlan.planName,
+                        qPlan.startDate,
+                        qPlan.endDate,
+                        qPlan.createTime,
+                        qPlan.updateTime,
+                        qCourse.id,
+                        qCourse.name,
+                        qCourse.date,
+                        qCourse.subCategory,
+                        qCourse.orders
+                ))
+                .from(qPlan)
+                .leftJoin(qPlan.courses, qCourse)
+                .on(qCourse.date.like(yearMonthDay+"%"))
                 .where(qPlan.coupleId.eq(coupleId)
                         .and(qPlan.startDate.loe(yearMonthDay))
                         .and(qPlan.endDate.goe(yearMonthDay)))

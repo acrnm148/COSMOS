@@ -1,12 +1,12 @@
 package com.cosmos.back.repository.plan;
 
-import com.cosmos.back.model.Plan;
+import com.cosmos.back.dto.PlanCourseDto;
 
 import java.util.List;
 
 public interface PlanRepositoryCustom {
 
-    public List<Plan> findByCoupleIdAndMonthQueryDsl(Long coupleId, String yearMonthNext, String yearMonthNow);
-    public List<Plan> findByCoupleIdAndDayQueryDsl(Long coupleId, String yearMonthDay);
+    public List<PlanCourseDto> findByCoupleIdAndMonthQueryDsl(Long coupleId, String yearMonthNext, String yearMonthNow);
+    public List<PlanCourseDto> findByCoupleIdAndDayQueryDsl(Long coupleId, String yearMonthDay);
     //public List<PlanResponseDto> findByPlanIdQueryDsl(Long planId);
 }

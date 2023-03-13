@@ -1,6 +1,7 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.dto.PlanDto;
+import com.cosmos.back.dto.PlanCourseDto;
 import com.cosmos.back.model.Course;
 import com.cosmos.back.model.Plan;
 import com.cosmos.back.repository.course.CourseRepository;
@@ -25,19 +26,26 @@ public class PlanService {
     /**
      * 커플 일정 생성
      */
-    public Long createPlan(PlanDto dto) {
+    public Plan createPlan(PlanDto dto) {
+        List<Course> newCourses = new ArrayList<> ();
+        List<Long> ids = dto.getCourseIds();
+        for (Long id : ids) {
+            Course course = courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
+            newCourses.add(course);
+        }
+
         Plan plan = Plan.builder()
                 .coupleId(dto.getCoupleId())
                 .planName(dto.getPlanName())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
-                .courses(dto.getCourses())
+                .courses(newCourses)
                 .createTime(now())
                 .build();
         planRepository.save(plan);
 
         System.out.println("커플 일정 생성 완료");
-        return plan.getId();
+        return plan;
     }
 
     /**
@@ -54,8 +62,9 @@ public class PlanService {
      */
     public Plan updatePlan(PlanDto dto) {
         Plan plan = planRepository.findByIdAndCoupleId(dto.getPlanId(), dto.getCoupleId());
-        System.out.println("courses: ");
-        plan.setCourses(dto.getCourses());
+        System.out.println("courses: "+dto.getCourses());
+
+        //plan.setCourses(dto.getCourses());
         plan.setPlanName(dto.getPlanName());
         plan.setStartDate(dto.getStartDate());
         plan.setEndDate(dto.getEndDate());
@@ -77,7 +86,7 @@ public class PlanService {
     /**
      * 커플 일정 월별 조회 month
      */
-    public List<Plan> getPlanListByMonth(Long coupleId, String date) {
+    public PlanDto getPlanListByMonth(Long coupleId, String date) {
         String year = date.substring(0,4);
         String month = date.substring(5,7);
 
@@ -96,23 +105,78 @@ public class PlanService {
         }
         String YearMonthNext = newYear+"-"+newMonth;
 
-        List<Plan> plansByMonth= planRepository.findByCoupleIdAndMonthQueryDsl(coupleId, YearMonthNext,YearMonthNow);
+        List<PlanCourseDto> plansByMonth= planRepository.findByCoupleIdAndMonthQueryDsl(coupleId, YearMonthNext,YearMonthNow);
+        List<Course> courses = new ArrayList<> ();
+        PlanDto result = new PlanDto();
+        Long lastPlanId = 0L;
+        for (PlanCourseDto planCourse : plansByMonth) {
+            if (!(lastPlanId.equals(planCourse.getPlanId()))) {
+                lastPlanId = planCourse.getPlanId();
+                result.setPlanId(planCourse.getPlanId());
+                result.setCoupleId(planCourse.getCoupleId());
+                result.setPlanName(planCourse.getPlanName());
+                result.setStartDate(planCourse.getStartDate());
+                result.setEndDate(planCourse.getEndDate());
+                result.setCreateTime(planCourse.getCreateTime());
+                result.setUpdateTime(planCourse.getUpdateTime());
+            }
+            if (planCourse.getId() != null) {
+                courses.add(Course.builder()
+                        .id(planCourse.getId())
+                        .name(planCourse.getName())
+                        .date(planCourse.getDate())
+                        .subCategory(planCourse.getSubCategory())
+                        .orders(planCourse.getOrders())
+                        .build());
+            }
+        }
+        result.setCourses(courses);
 
-        return plansByMonth;
+        if (result.getPlanId() == null) {
+            return null;
+        }
+        return result;
     }
 
     /**
      * 커플 일정 일별 조회 day
      */
-    public List<Plan> getPlanListByDay(Long coupleId, String date) {
+    public PlanDto getPlanListByDay(Long coupleId, String date) {
         String year = date.substring(0,4);
         String month = date.substring(5,7);
         String day = date.substring(8,10);
 
         String YearMonthDay = year+"-"+month+"-"+day;
 
-        List<Plan> plansByDay = planRepository.findByCoupleIdAndDayQueryDsl(coupleId, YearMonthDay);
-
-        return plansByDay;
+        List<PlanCourseDto> plansByDay = planRepository.findByCoupleIdAndDayQueryDsl(coupleId, YearMonthDay);
+        List<Course> courses = new ArrayList<> ();
+        PlanDto result = new PlanDto();
+        Long lastPlanId = 0L;
+        for (PlanCourseDto planCourse : plansByDay) {
+            if (!(lastPlanId.equals(planCourse.getPlanId()))) {
+                lastPlanId = planCourse.getPlanId();
+                result.setPlanId(planCourse.getPlanId());
+                result.setCoupleId(planCourse.getCoupleId());
+                result.setPlanName(planCourse.getPlanName());
+                result.setStartDate(planCourse.getStartDate());
+                result.setEndDate(planCourse.getEndDate());
+                result.setCreateTime(planCourse.getCreateTime());
+                result.setUpdateTime(planCourse.getUpdateTime());
+            }
+            if (planCourse.getId() != null) {
+                courses.add(Course.builder()
+                        .id(planCourse.getId())
+                        .name(planCourse.getName())
+                        .date(planCourse.getDate())
+                        .subCategory(planCourse.getSubCategory())
+                        .orders(planCourse.getOrders())
+                        .build());
+            }
+        }
+        result.setCourses(courses);
+        if (result.getPlanId() == null) {
+            return null;
+        }
+        return result;
     }
 }
