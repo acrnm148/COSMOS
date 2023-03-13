@@ -1,4 +1,5 @@
 import React from "react";
+import SearchIcon from "../../assets/search/SearchIcon.png";
 
 export default function PlaceSearch() {
   return (
@@ -10,6 +11,9 @@ export default function PlaceSearch() {
           <option value="">구/군</option>
           <option value="">동</option>
         </select>
+        <div className="bg-black">
+          <img src={SearchIcon} alt="" />
+        </div>
       </div>
     </div>
   );
