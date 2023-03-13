@@ -1,5 +1,6 @@
 package com.cosmos.back.controller;
 
+import com.cosmos.back.dto.request.AutoCompleteRequestDto;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.place.Gugun;
 import com.cosmos.back.model.place.Sido;
@@ -133,5 +134,13 @@ public class PlaceApiController {
         List<PlaceListResponseDto> list = placeService.searchPlacesBySidoGugun(sido, gugun, limit, offset);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @Operation(summary = "검색어 자동완성", description = "검색어 자동완성")
+    @PostMapping("/places/auto")
+    public ResponseEntity<List> search(@RequestBody AutoCompleteRequestDto dto) {
+        List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(dto.getSearchWord());
+
+        return new ResponseEntity<>(autoCompleteResponseDto, HttpStatus.OK);
     }
 }
