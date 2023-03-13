@@ -4,6 +4,8 @@ import Reco from "./pages/servey/Recoreconi"; //test용
 
 import SubLayout from "./layouts/SubLayout";
 import PlaceSearch from "./pages/search/PlaceSearch";
+import Login from "./pages/login/Login"
+import KakaoLogin from "./pages/login/KakaoLogin"
 
 // React Query
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -33,6 +35,8 @@ function App() {
             <Route element={<SubLayout />}>
               <Route path="/place/search" element={<PlaceSearch />} />
             </Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/login/oauth" element={<KakaoLogin />} />
           </Routes>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
