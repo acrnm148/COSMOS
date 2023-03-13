@@ -1,6 +1,7 @@
 package com.cosmos.back.controller;
 
 import com.cosmos.back.dto.request.CourseRequestDto;
+import com.cosmos.back.dto.request.CourseUpdateRequestDto;
 import com.cosmos.back.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,5 +32,11 @@ public class CourseApiController {
         Long id = courseService.deleteCourse(courseId);
 
         return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @Operation(summary = "코스 수정", description = "코스 수정")
+    @PutMapping("/courses/{courseId}")
+    public ResponseEntity<Long> updateCourse(@PathVariable Long courseId, @RequestBody CourseUpdateRequestDto dto) {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

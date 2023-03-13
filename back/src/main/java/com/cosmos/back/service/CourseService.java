@@ -73,4 +73,10 @@ public class CourseService {
 
         return courseId;
     }
+
+    // 코스 수정
+    @Transactional
+    public Long updateCourse (Long courseId, CourseRequestDto dto) {
+        String courseName =
+    }
 }
