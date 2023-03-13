@@ -178,12 +178,13 @@ public class JwtService {
      * json response
      */
     //로그인 성공
-    public Map<String , String> successLoginResponse(JwtToken jwtToken) {
+    public Map<String , String> successLoginResponse(JwtToken jwtToken, Long userSeq) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("status", "200");
         map.put("message", "accessToken, refreshToken 생성 완료");
         map.put("accessToken", jwtToken.getAccessToken());
         map.put("refreshToken", jwtToken.getRefreshToken());
+        map.put("userSeq", userSeq.toString());
         return map;
     }
 

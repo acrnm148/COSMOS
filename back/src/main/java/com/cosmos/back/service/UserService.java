@@ -103,7 +103,7 @@ public class UserService {
      * 커플 연결 수락
      */
     @Transactional
-    public Long acceptCouple(Long userSeq, Long coupleUserSeq) {
+    public Long acceptCouple(Long userSeq, Long coupleUserSeq, Long code) {
         User user = userRepository.findByUserSeq(userSeq);
         User coupleUser = userRepository.findByUserSeq(coupleUserSeq);
 
@@ -118,10 +118,10 @@ public class UserService {
             System.out.println("이미 커플인 유저입니다.");
             return null;
         }
-        Long coupleId = makeCoupleId(); //난수 생성
+        //Long coupleId = makeCoupleId(); //난수 생성
 
-        user.setCoupleId(coupleId);
-        coupleUser.setCoupleId(coupleId);
+        user.setCoupleId(code);
+        coupleUser.setCoupleId(code);
         user.setCoupleYn("Y");
         coupleUser.setCoupleYn("Y");
         userRepository.save(user);
@@ -129,9 +129,9 @@ public class UserService {
 
         System.out.println("user: "+user);
         System.out.println("coupleUser: "+coupleUser);
-        System.out.println("커플 연결 수락, 커플아이디:"+coupleId);
+        System.out.println("커플 연결 수락, 커플아이디:"+code);
 
-        return coupleId;
+        return code;
     }
 
     /**

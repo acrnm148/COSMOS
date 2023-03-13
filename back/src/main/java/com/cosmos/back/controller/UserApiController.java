@@ -125,7 +125,7 @@ public class UserApiController {
         //jwt토큰 Redis에 저장
         JwtToken jwtTokenDTO = jwtService.getJwtToken(saveUser.getUserSeq());
 
-        return jwtService.successLoginResponse(jwtTokenDTO);
+        return jwtService.successLoginResponse(jwtTokenDTO, saveUser.getUserSeq());
     }
     //직접 인가 코드 받기
     @GetMapping("/login/oauth2/code/kakao")
@@ -162,12 +162,13 @@ public class UserApiController {
      * 커플 연결 수락 - 카카오 공유하기에서 수락
      */
     @Operation(summary = "커플 연결 수락", description = "커플 연결 수락")
-    @PostMapping("/couples/accept")
-    public ResponseEntity<Long> acceptCouple(@RequestBody Map<String, Long> map) {
+    @PostMapping("/couples/accept/{coupleId}")
+    public ResponseEntity<Long> acceptCouple(@PathVariable("coupleId") Long code,
+            @RequestBody Map<String, Long> map) {
         Long userSeq = map.get("userSeq");
         Long coupleUserSeq = map.get("coupleUserSeq");
 
-        Long coupleId = userService.acceptCouple(userSeq, coupleUserSeq);
+        Long coupleId = userService.acceptCouple(userSeq, coupleUserSeq, code);
         if (coupleId == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -195,5 +196,15 @@ public class UserApiController {
         String type2 = map.get("type2").toString();
         User user = userService.saveTypes(userSeq, type1, type2);
         return new ResponseEntity<>(userSeq, HttpStatus.OK);
+    }
+
+    /**
+     * 난수 생성 후 리턴
+     */
+    @Operation(summary = "난수 생성 후 리턴", description = "난수 생성 후 리턴")
+    @GetMapping("/makeCoupleId")
+    public ResponseEntity<Long> makeCoupleId() {
+        Long code = userService.makeCoupleId();
+        return new ResponseEntity<>(code, HttpStatus.OK);
     }
 }
