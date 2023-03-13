@@ -27,6 +27,7 @@ const router = createBrowserRouter([
       { path: "/result/:cate/:cateNum", element: <ServeyResult /> },
     ],
   },
+  // 장소 검색 & 빅데이터 추천
   {
     path: "/place",
     element: <SubLayout />,

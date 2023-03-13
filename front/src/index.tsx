@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { BrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 
 // React Query
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -10,6 +10,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { RecoilRoot } from "recoil";
 
 import router from "./routes";
+import Loading from "./components/common/Loading";
+
 const client = new QueryClient();
 
 const root = ReactDOM.createRoot(
@@ -19,7 +21,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <RecoilRoot>
     <QueryClientProvider client={client}>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} fallbackElement={<Loading />} />
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
   </RecoilRoot>
