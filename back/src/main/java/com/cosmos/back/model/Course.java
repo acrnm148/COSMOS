@@ -1,9 +1,6 @@
 package com.cosmos.back.model;
 
-import com.cosmos.back.model.place.Place;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,8 +15,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "course")
-@Getter
-@Setter
+@Data
+@ToString(exclude = "plan")
 @Builder
 public class Course {
 
@@ -76,5 +73,4 @@ public class Course {
 
         return course;
     }
-
 }

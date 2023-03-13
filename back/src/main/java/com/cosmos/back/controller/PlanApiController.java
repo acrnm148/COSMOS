@@ -1,6 +1,7 @@
 package com.cosmos.back.controller;
 
 import com.cosmos.back.dto.PlanDto;
+import com.cosmos.back.dto.PlanCourseDto;
 import com.cosmos.back.model.Plan;
 import com.cosmos.back.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,10 +24,10 @@ public class PlanApiController {
 
     @Operation(summary = "커플 일정 생성", description = "커플 일정 생성")
     @PostMapping("/plans")
-    public ResponseEntity<Long> createPlan(@RequestBody PlanDto dto) {
-        Long planId = planService.createPlan(dto);
+    public ResponseEntity<Plan> createPlan(@RequestBody PlanDto dto) {
+        Plan plan = planService.createPlan(dto);
 
-        return new ResponseEntity<>(planId, HttpStatus.OK);
+        return new ResponseEntity<>(plan, HttpStatus.OK);
     }
 
     @Operation(summary = "커플 일정 상세보기", description = "커플 일정 상세보기")
@@ -39,10 +40,8 @@ public class PlanApiController {
     }
 
     @Operation(summary = "커플 일정 수정", description = "커플 일정 수정")
-    @PutMapping("/plans/{coupleId}/{planId}")
-    public ResponseEntity<Plan> updatePlan(@PathVariable("planId") Long planId,
-                                           @RequestBody PlanDto dto) {
-        dto.setPlanId(planId);
+    @PutMapping("/plans")
+    public ResponseEntity<Plan> updatePlan(@RequestBody PlanDto dto) {
         Plan plan = planService.updatePlan(dto);
 
         return new ResponseEntity<>(plan, HttpStatus.OK);
@@ -62,7 +61,7 @@ public class PlanApiController {
     public ResponseEntity<?> getPlanListByMonth(@RequestBody Map<String, Object> map) {
         Long coupleId = Long.valueOf((Integer) map.get("coupleId"));
         String date = (String) map.get("date");
-        List<Plan> plans = planService.getPlanListByMonth(coupleId, date);
+        PlanDto plans = planService.getPlanListByMonth(coupleId, date);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);
     }
@@ -72,7 +71,7 @@ public class PlanApiController {
     public ResponseEntity<?> getPlanListByDay(@RequestBody Map<String, Object> map) {
         Long coupleId = Long.valueOf((Integer) map.get("coupleId"));
         String date = (String) map.get("date");
-        List<Plan> plans = planService.getPlanListByDay(coupleId, date);
+        PlanDto plans = planService.getPlanListByDay(coupleId, date);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);
     }

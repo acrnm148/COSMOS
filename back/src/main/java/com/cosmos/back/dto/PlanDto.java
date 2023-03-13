@@ -19,6 +19,7 @@ public class PlanDto {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private List<Course> courses;
+    private List<Long> courseIds;
 
     /**
      * entity to dto
