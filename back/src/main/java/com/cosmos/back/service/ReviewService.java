@@ -13,14 +13,11 @@ import com.cosmos.back.repository.review.ReviewCategoryRepository;
 import com.cosmos.back.repository.review.ReviewRepository;
 import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +70,6 @@ public class ReviewService {
     }
 
     // 장소별 리뷰 모두 불러오기
-
     public List<ReviewResponseDto> findReviesInPlace (Long placeId) {
         List<Review> review = reviewRepository.findReviewInPlaceQueryDsl(placeId);
 
@@ -106,4 +102,25 @@ public class ReviewService {
         return list;
     }
 
+    // 리뷰 수정
+    @Transactional
+    public Long changeReview (Long reviewId, ReviewRequestDto dto) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+
+        review.setContents(dto.getContents());
+        review.setScore(dto.getScore());
+
+        List<ReviewCategory> list = reviewCategoryRepository.findAllByReviewId(reviewId);
+
+        for (ReviewCategory rc : list) {
+            reviewCategoryRepository.deleteById(rc.getId());
+        }
+
+        for (String category : dto.getCategories()) {
+            ReviewCategory reviewCategory = ReviewCategory.createReviewCategory(category, review);
+            reviewCategoryRepository.save(reviewCategory);
+        }
+
+        return review.getId();
+    }
 }
