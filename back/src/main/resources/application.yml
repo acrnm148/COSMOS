@@ -40,14 +40,3 @@ spring:
         order_updates: true
         format_sql: true
 
-
-#    <!--  transport.protocol">smtp</prop>
-#    <prop key="mail.smtp.auth">true</prop>
-#    <!-- gmail? ?? ???? ????? ?? SSLSocketFactory? ???? smtp ?? ??. -->
-#    <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
-#    <prop key="mail.smtp.starttls.enable">true</prop>
-#    <prop key="mail.debug">true</prop>
-#    <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
-
-
-
