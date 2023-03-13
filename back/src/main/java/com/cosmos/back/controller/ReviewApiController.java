@@ -58,4 +58,13 @@ public class ReviewApiController {
         List<ReviewUserResponseDto> reviewsInUser = reviewService.findReviewsInUser(userSeq);
         return new ResponseEntity<>(reviewsInUser, HttpStatus.OK);
     }
+
+    // 리뷰 수정
+    @Operation(summary = "내 리뷰 수정하기", description = "내가 쓴 리뷰를 수정한다")
+    @PutMapping("/reviews/{reviewId}")
+    public ResponseEntity<Long> changeReview(@PathVariable Long reviewId, @RequestBody ReviewRequestDto dto) {
+        Long id = reviewService.changeReview(reviewId, dto);
+
+        return new ResponseEntity<>(id, HttpStatus.OK);
+    }
 }
