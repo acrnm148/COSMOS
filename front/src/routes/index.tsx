@@ -9,6 +9,9 @@ import Servey from "../pages/servey/ServeyPage";
 import ServeyResult from "../pages/servey/ServeyResult";
 import SubLayout from "../layouts/SubLayout";
 import PlaceSearch from "../pages/search/PlaceSearch";
+import NoHeaderLayout from "../layouts/NoHeaderLayout";
+import KakaoLogin from "../pages/login/KakaoLogin";
+import Login from "../pages/login/Login";
 
 const router = createBrowserRouter([
   {
@@ -22,9 +25,9 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       { path: "/recoco", element: <Reco /> },
-      //   설문조사
-      { path: "/servey", element: <Servey /> },
-      { path: "/result/:cate/:cateNum", element: <ServeyResult /> },
+      //로그인
+      { path: "/login", element: <Login /> },
+      { path: "/login/ouath", element: <KakaoLogin />}
     ],
   },
   // 장소 검색 & 빅데이터 추천
@@ -33,6 +36,16 @@ const router = createBrowserRouter([
     element: <SubLayout />,
     errorElement: <NotFound />,
     children: [{ path: "search", element: <PlaceSearch /> }],
+  },
+  // 설문조사
+  {
+    path: "/servey",
+    element: <NoHeaderLayout />,
+    errorElement: <NotFound />,
+    children: [
+      // { path: "/date", element: <Servey /> },
+      // { path: "/result/:cate/:cateNum", element: <ServeyResult /> },
+    ],
   },
 ]);
 
