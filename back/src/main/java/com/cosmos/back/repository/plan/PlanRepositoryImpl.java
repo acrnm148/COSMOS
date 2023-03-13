@@ -1,6 +1,7 @@
 package com.cosmos.back.repository.plan;
 
 import com.cosmos.back.dto.PlanCourseDto;
+import com.cosmos.back.model.Plan;
 import com.cosmos.back.model.QCourse;
 import com.cosmos.back.model.QPlan;
 import com.querydsl.core.types.Projections;
@@ -50,6 +51,7 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
                         .and(qPlan.startDate.lt(yearMonthNext))
                         .and(qPlan.endDate.goe(yearMonthNow))
                         .and(qCourse.date.like(yearMonthNow+"%")))
+                .orderBy(qPlan.id.asc(), qCourse.orders.asc())
                 .fetch();
         return result;
     }
@@ -88,7 +90,22 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
                 .where(qPlan.coupleId.eq(coupleId)
                         .and(qPlan.startDate.loe(yearMonthDay))
                         .and(qPlan.endDate.goe(yearMonthDay)))
+                .orderBy(qPlan.id.asc(), qCourse.orders.asc())
                 .fetch();
+        return result;
+    }
+
+    @Override
+    public Plan findByIdAndCoupleId(Long planId, Long coupleId) {
+        QPlan qPlan = QPlan.plan;
+        QCourse qCourse = QCourse.course;
+        Plan result = queryFactory.selectFrom(qPlan)
+                .leftJoin(qPlan.courses, qCourse)
+                .where(qPlan.id.eq(planId)
+                        .and(qPlan.coupleId.eq(coupleId)))
+                .orderBy(qPlan.id.asc(), qCourse.orders.asc())
+                .fetchOne();
+
         return result;
     }
 }

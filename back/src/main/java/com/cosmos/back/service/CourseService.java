@@ -1,5 +1,6 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.dto.CourseDto;
 import com.cosmos.back.dto.request.CourseRequestDto;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
@@ -72,5 +73,23 @@ public class CourseService {
         courseRepository.deleteById(courseId);
 
         return courseId;
+    }
+
+    /**
+     * 내 모든 코스 보기
+     */
+    public List<CourseDto> getMyAllCourses(Long userSeq) {
+        List<CourseDto> courses = courseRepository.findAllByUserSeqQueryDSL(userSeq);
+        System.out.println("내 모든 코스:"+courses);
+        return courses;
+    }
+
+    /**
+     * 내 모든 코스 보기
+     */
+    public CourseDto getMyCourseDetail(Long userSeq, Long courseId) {
+        CourseDto course = courseRepository.findAllByUserSeqAndCourseIdQueryDSL(userSeq, courseId);
+        System.out.println("내 코스 상세:"+course);
+        return course;
     }
 }

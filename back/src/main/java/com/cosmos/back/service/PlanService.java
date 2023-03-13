@@ -27,21 +27,27 @@ public class PlanService {
      * 커플 일정 생성
      */
     public Plan createPlan(PlanDto dto) {
-        List<Course> newCourses = new ArrayList<> ();
-        List<Long> ids = dto.getCourseIds();
-        for (Long id : ids) {
-            Course course = courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
-            newCourses.add(course);
-        }
 
         Plan plan = Plan.builder()
                 .coupleId(dto.getCoupleId())
                 .planName(dto.getPlanName())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
-                .courses(newCourses)
+                //.courses(newCourses)
                 .createTime(now())
                 .build();
+
+        List<Course> newCourses = new ArrayList<> ();
+        List<Long> ids = dto.getCourseIds();
+        int order = 1;
+        for (Long id : ids) {
+            Course course = courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
+            course.setOrders(order++);
+            course.setPlan(plan);
+            newCourses.add(course);
+        }
+
+        plan.setCourses(newCourses);
         planRepository.save(plan);
 
         System.out.println("커플 일정 생성 완료");

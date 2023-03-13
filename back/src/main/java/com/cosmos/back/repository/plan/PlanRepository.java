@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface PlanRepository extends JpaRepository<Plan, Long>, PlanRepositoryCustom {
     public Optional<Plan> findById(Long planId);
-    public Plan findByIdAndCoupleId(Long planId, Long coupleId);
 }
