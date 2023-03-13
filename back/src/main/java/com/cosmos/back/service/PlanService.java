@@ -64,7 +64,13 @@ public class PlanService {
         Plan plan = planRepository.findByIdAndCoupleId(dto.getPlanId(), dto.getCoupleId());
         System.out.println("courses: "+dto.getCourses());
 
-        //plan.setCourses(dto.getCourses());
+        List<Long> courseIds = dto.getCourseIds();
+        List<Course> courses = new ArrayList<> ();
+        for (Long id: courseIds) {
+            Course course = courseRepository.findById(id).orElseThrow(()->new IllegalArgumentException("no such data"));
+            courses.add(course);
+        }
+        plan.setCourses(courses);
         plan.setPlanName(dto.getPlanName());
         plan.setStartDate(dto.getStartDate());
         plan.setEndDate(dto.getEndDate());
