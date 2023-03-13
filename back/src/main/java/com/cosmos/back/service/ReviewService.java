@@ -3,13 +3,12 @@ package com.cosmos.back.service;
 import com.cosmos.back.dto.request.ReviewRequestDto;
 import com.cosmos.back.dto.response.review.ReviewResponseDto;
 import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
-import com.cosmos.back.model.Review;
-import com.cosmos.back.model.ReviewCategory;
-import com.cosmos.back.model.ReviewPlace;
-import com.cosmos.back.model.User;
+import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.Place;
 import com.cosmos.back.repository.place.PlaceRepository;
+import com.cosmos.back.repository.review.ReviewAdjectiveRepository;
 import com.cosmos.back.repository.review.ReviewCategoryRepository;
+import com.cosmos.back.repository.review.ReviewNounRepository;
 import com.cosmos.back.repository.review.ReviewRepository;
 import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
@@ -29,6 +28,8 @@ public class ReviewService {
     private final ReviewCategoryRepository reviewCategoryRepository;
     private final PlaceRepository placeRepository;
     private final ReviewPlaceRepository reviewPlaceRepository;
+    private final ReviewAdjectiveRepository reviewAdjectiveRepository;
+    private final ReviewNounRepository reviewNounRepository;
 
     //리뷰 쓰기
     @Transactional
@@ -122,5 +123,22 @@ public class ReviewService {
         }
 
         return review.getId();
+    }
+
+    // 리뷰 닉네임 생성하기
+    public String findReviewNickName () {
+        List<Adjective> adjectives = reviewAdjectiveRepository.findAll();
+        List<Noun> nouns = reviewNounRepository.findAll();
+
+        Integer adjectivesSize = adjectives.size();
+        Integer nounsSize = nouns.size();
+
+        Integer randomAdjectiveIdx = (int) (Math.random() * adjectivesSize);
+        Integer randomNounIdx = (int) (Math.random() * nounsSize);
+
+        String randomAdjective = adjectives.get(randomAdjectiveIdx).getContents();
+        String randomNoun = nouns.get(randomNounIdx).getContents();
+
+        return randomAdjective + " " + randomNoun;
     }
 }

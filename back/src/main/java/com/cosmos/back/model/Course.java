@@ -36,6 +36,9 @@ public class Course {
     @Column(name = "sub_category")
     private String subCategory; // 소분류
 
+    @Column(name = "orders")
+    private String orders; // 순서
+
     // 데이트 코스 - 일정
     @JsonIgnore
     @ManyToOne(fetch = LAZY)
