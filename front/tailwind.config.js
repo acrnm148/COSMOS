@@ -20,7 +20,7 @@ module.exports = {
       },
       fontFamily :{
         baloo : ['Baloo 2', "cursive"],
-      }
+      },
     },
   },
   plugins: [],
