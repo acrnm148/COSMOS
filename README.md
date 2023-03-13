@@ -151,7 +151,12 @@
 ### 형상관리
 - Gitlab, Gather town, Notion, JIRA, Discord
 
-<br><br>
+<br>
+
+### 시스템 구성도
+
+![image-20230308204248100](assets/image-20230308204248100.png)
+
 ## 7️⃣ 팀 구성
 
 ### 슈의 비비빅데이터

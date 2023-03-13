@@ -5,9 +5,9 @@ import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.Place;
 import com.cosmos.back.repository.course.CoursePlaceRepository;
 import com.cosmos.back.repository.course.CourseRepository;
-import com.cosmos.back.repository.course.PlanRepository;
 import com.cosmos.back.repository.course.UserCourseRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
+import com.cosmos.back.repository.plan.PlanRepository;
 import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class CourseService {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         // 데이트코스 저장
-        Course course = Course.createCourse(dto.getName(), dto.getStartDate(), dto.getEndDate(), dto.getSubCategory());
+        Course course = Course.createCourse(dto.getName(), dto.getDate(), dto.getSubCategory());
         courseRepository.save(course);
 
         // 유저_데이트코스 저장

@@ -24,9 +24,8 @@ public class KakaoService {
 
     private final UserRepository userRepository;
 
-    //tify는 되는데 cosmos는 안된다..? 뭘놓친거지
-    private final String client_id = "097d883a03c0da953d919d990701da5f"; //tify:097d883a03c0da953d919d990701da5f //cosmos:f503e3ce0885d5fead6b5aa9010eb6fb
-    private final String client_secret = "af5un2n5wi857RPKyB7wBFPKhjBBebd4"; //tify:af5un2n5wi857RPKyB7wBFPKhjBBebd4  //cosmos:xuKpVEVMSbPB3Ikk4w0X2ziDNH3QWtKf
+    private final String client_id = "097d883a03c0da953d919d990701da5f";
+    private final String client_secret = "af5un2n5wi857RPKyB7wBFPKhjBBebd4";
     private final String redirect_uri = "http://localhost:8081/api/login/oauth2/code/kakao";
     private final String accessTokenUri = "https://kauth.kakao.com/oauth/token";
     private final String UserInfoUri = "https://kapi.kakao.com/v2/user/me";
@@ -43,6 +42,7 @@ public class KakaoService {
         params.add("redirect_uri", redirect_uri);
         params.add("code", code);
         params.add("client_secret", client_secret);
+        params.add("scope", "age_range,birthday");
 
         //request
         WebClient wc = WebClient.create(accessTokenUri);
@@ -106,24 +106,44 @@ public class KakaoService {
     @Transactional
     public User saveUser(String access_token) {
         KakaoProfile profile = findProfile(access_token); //사용자 정보 받아오기
-        User user = userRepository.findByUserId(profile.getId());
+        User user = userRepository.findByUserId(profile.getId()); //쿼리1
+        System.out.println("유저 저장:"+profile);
 
         //처음이용자 강제 회원가입
         if(user ==null) {
+            //연령대 저장
+            String newAgeRange = "";
+            String oldAgeRange = profile.getKakao_account().getAge_range();
+            switch (oldAgeRange) {
+                case "1~9": newAgeRange += "10대 미만"; break;
+                case "10~14": newAgeRange += "10대 초반"; break;
+                case "15~19": newAgeRange += "10대 후반"; break;
+                case "20~29": newAgeRange += "20"; break;
+                case "30~39": newAgeRange += "30"; break;
+                case "40~49": newAgeRange += "40"; break;
+                case "50~59": newAgeRange += "50"; break;
+                case "60~69": newAgeRange += "60"; break;
+                case "70~79": newAgeRange += "70"; break;
+                case "80~89": newAgeRange += "80"; break;
+                case "90~": newAgeRange += "90"; break;
+            }
+
             user = User.builder()
                     .userId(profile.getId())
-                    //.userName(profile.getKakao_account().getProfile().getNickname())
+                    //.userName(profile.getKakao_account().getProfile().getName()) //대부분 name 설정 X
                     .userName(profile.getKakao_account().getProfile().getNickname())
-                    //.phoneNumber(profile.getKakao_account().getProfile().getPhone_number())
+                    //.phoneNumber(profile.getKakao_account().getPhone_number()) //접근권한 X,직접 입력 해야함
                     .profileImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
+                    .ageRange(newAgeRange)
+                    .birthday(profile.getKakao_account().getBirthday())
                     .email(profile.getKakao_account().getEmail())
+                    .coupleYn("N")
                     .role("USER") //일단 유저로 넣음.
                     .createTime(LocalDateTime.now())
                     .build();
 
-            userRepository.save(user);
+            userRepository.save(user);  //쿼리2
         }
-
         return user;
     }
 }

@@ -2,9 +2,8 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
-import com.cosmos.back.dto.UserProfileDto;
-import com.cosmos.back.dto.UserUpdateDto;
-import com.cosmos.back.dto.request.TypeRequestDto;
+import com.cosmos.back.dto.user.UserProfileDto;
+import com.cosmos.back.dto.user.UserUpdateDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.service.UserService;
@@ -67,8 +66,9 @@ public class UserApiController {
      * 회원 정보 수정
      */
     @Operation(summary = "유저 정보 수정", description = "유저 정보 수정")
-    @PostMapping("/accounts/update")
-    public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateDto userUpdateDto, @RequestHeader(value = "Authorization") String token) {
+    @PutMapping("/accounts/update")
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateDto userUpdateDto,
+                                            @RequestHeader(value = "Authorization") String token) {
         //userSeq 일치, access토큰 유효 여부 체크
         token = token.substring(7);
         JwtState state = jwtService.checkUserSeqWithAccess(userUpdateDto.getUserSeq(), token);
@@ -159,54 +159,41 @@ public class UserApiController {
     }
 
     /**
-     * 커플 연결 요청 - 카카오 공유하기 요청 -> 백에서 하는게 아닌듯
-
-     @Operation(summary = "커플 연결 요청", description = "커플 연결 요청")
-     @GetMapping("/api/couples/{userSeq}/{coupleUserSeq}")
-     public ResponseEntity<?> requestCouple(@PathVariable("userSeq")Long userSeq, @PathVariable("coupleUserSeq")Long coupleUserSeq, @RequestHeader("Authorization") String token) {
-     //userSeq 일치, access토큰 유효 여부 체크
-     token = token.substring(7);
-     JwtState state = jwtService.checkUserSeqWithAccess(userSeq, token);
-     if (state.equals(JwtState.MISMATCH_USER)) { //userSeq 불일치
-     return ResponseEntity.ok().body(jwtService.mismatchUserResponse());
-     } else if (state.equals(JwtState.EXPIRED_ACCESS)) { //access 만료
-     return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
-     }
-
-     userService.makeCouple(userSeq, coupleUserSeq);
-     return ResponseEntity.ok().body("커플 연결이 요청되었습니다.");
-     }
-     */
-
-    /**
      * 커플 연결 수락 - 카카오 공유하기에서 수락
      */
     @Operation(summary = "커플 연결 수락", description = "커플 연결 수락")
-    @PostMapping("/api/couples/accept")
-    public ResponseEntity<?> acceptCouple(@RequestBody Long userSeq, Long coupleUserSeq, Long coupleId) {
+    @PostMapping("/couples/accept")
+    public ResponseEntity<Long> acceptCouple(@RequestBody Map<String, Long> map) {
+        Long userSeq = map.get("userSeq");
+        Long coupleUserSeq = map.get("coupleUserSeq");
 
-        userService.acceptCouple(userSeq, coupleUserSeq, coupleId);
-        return ResponseEntity.ok().body("커플 연결을 수락하셨습니다.");
+        Long coupleId = userService.acceptCouple(userSeq, coupleUserSeq);
+        if (coupleId == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(coupleId, HttpStatus.OK);
     }
 
     /**
      * 커플 연결 끊기
      */
     @Operation(summary = "커플 연결 끊기", description = "커플 연결 끊기")
-    @DeleteMapping("/api/couples/{coupleId}")
-    public ResponseEntity<?> disconnectCouple(@PathVariable("coupleId") Long coupleId) {
+    @DeleteMapping("/couples/{coupleId}")
+    public ResponseEntity<Long> disconnectCouple(@PathVariable("coupleId") Long coupleId) {
         userService.disconnectCouple(coupleId);
-        return ResponseEntity.ok().body("커플 연결을 끊습니다.");
+        return new ResponseEntity<>(coupleId, HttpStatus.OK);
     }
 
     /**
      * 사용자 유형 등록
      */
     @Operation(summary = "사용자 유형 등록", description = "사용자 유형 등록")
-    @PutMapping("/api/couples/type")
-    public ResponseEntity<?> saveTypes(@RequestBody TypeRequestDto dto) {
-        User user = userService.saveTypes(dto);
-        System.out.println("user가 등록되었습니다.");
-        return ResponseEntity.ok().body(user);
+    @PostMapping("/couples/type")
+    public ResponseEntity<Long> saveTypes(@RequestBody Map<String, Object> map) {
+        Long userSeq = Long.valueOf((Integer) map.get("userSeq"));
+        String type1 = map.get("type1").toString();
+        String type2 = map.get("type2").toString();
+        User user = userService.saveTypes(userSeq, type1, type2);
+        return new ResponseEntity<>(userSeq, HttpStatus.OK);
     }
 }

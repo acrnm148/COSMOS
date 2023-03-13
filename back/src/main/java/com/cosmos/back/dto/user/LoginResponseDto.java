@@ -1,4 +1,4 @@
-package com.cosmos.back.dto.response;
+package com.cosmos.back.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

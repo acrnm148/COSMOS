@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CourseRequestDto {
     private String name;
-    private String startDate;
-    private String endDate;
+    private String date;
     private String subCategory;
     private Long planId;
     private Long placeId;
