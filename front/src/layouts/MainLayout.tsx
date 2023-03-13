@@ -1,12 +1,12 @@
-import { Outlet } from 'react-router-dom';
-import Footer from '../fixtures/Footer';
-import Header from '../fixtures/Header';
+import { Outlet } from "react-router-dom";
+import Footer from "../components/common/Footer";
+import Header from "../components/common/Header";
 
 function MainLayout() {
   return (
     <>
       <Header />
-        <Outlet />
+      <Outlet />
       <Footer />
     </>
   );
