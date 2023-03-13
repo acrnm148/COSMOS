@@ -1,5 +1,9 @@
 import React from "react";
 
 export default function PlaceSearch() {
-  return <div>장소 검색</div>;
+  return (
+    <div className="text-center">
+      <h1>장소검색</h1>
+    </div>
+  );
 }

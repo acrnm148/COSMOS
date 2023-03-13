@@ -1,6 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Footer from "./fixtures/Footer";
-import Header from "./fixtures/Header";
 import Servey from "./pages/servey/ServeyPage";
 import Reco from "./pages/servey/Recoreconi"; //test용
 
@@ -12,7 +10,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 // Recoil
 import { RecoilRoot } from "recoil";
-import MainLayout from "./components/MainLayout";
+import MainLayout from "./layouts/MainLayout";
 import ServeyResult from "./pages/servey/ServeyResult";
 
 function App() {
