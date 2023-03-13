@@ -35,4 +35,7 @@ public interface PlaceRepositoryCustom {
 
     // QueryDsl로 장소 리스트 가져오기(시도구군) with Pagination
     public List<PlaceListResponseDto> findPlaceListBySidoGugunQueryDsl(String sido, String gugun, Integer limit, Integer offset);
+
+    // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
+    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String name);
 }
