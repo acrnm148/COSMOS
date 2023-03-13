@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,6 +15,7 @@ public class CourseRequestDto {
     private String name;
     private String date;
     private String subCategory;
+    private List<String> categories;
     private Long planId;
     private Long placeId;
     private Long userSeq;

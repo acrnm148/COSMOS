@@ -54,11 +54,12 @@ public class CoursePlace {
     }
 
     // 생성 메서드
-    public static CoursePlace createCoursePlace (Course course, Place place) {
+    public static CoursePlace createCoursePlace (Course course, Place place, Integer orders) {
         CoursePlace coursePlace = new CoursePlace();
 
         coursePlace.setCourse(course);
         coursePlace.setPlace(place);
+        coursePlace.setOrders(orders);
 
         return coursePlace;
     }

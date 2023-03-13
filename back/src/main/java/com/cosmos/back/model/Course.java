@@ -37,7 +37,12 @@ public class Course {
     private String subCategory; // 소분류
 
     @Column(name = "orders")
-    private String orders; // 순서
+    private Integer orders; // 순서
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_seq")
+    @JsonIgnore
+    private User user; // 유저
 
     // 데이트 코스 - 일정
     @JsonIgnore
@@ -50,19 +55,24 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<CoursePlace> coursePlaces = new ArrayList<>();
 
-    // 데이트 코스 - (유저 - 데이트 코스)
-    @JsonIgnore
-    @OneToMany(mappedBy = "course")
-    private List<UserCourse> userCourses = new ArrayList<>();
+    // 연관관계 메서드 - (코스 - 유저)
+    public void setUser(User user) {
+        this.user = user;
+        user.getCourses().add(this);
+    }
+
 
     // 생성 메서드
-    public static Course createCourse (String name, String date, String subCategory) {
+    public static Course createCourse (User user, String name, String date, String subCategory) {
         Course course = new Course();
+
+        course.setUser(user);
 
         course.setPlan(null);
         course.setName(name);
         course.setDate(date);
         course.setSubCategory(subCategory);
+        course.setOrders(0);
 
         return course;
     }

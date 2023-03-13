@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.*;
+
 @Entity
 @Table(name = "user")
 @NoArgsConstructor
@@ -46,10 +48,6 @@ public class User {
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
-    // 유저 - (유저 - 데이트 코스)
-    @OneToMany(mappedBy = "user")
-    List<UserCourse> userCourses = new ArrayList<>();
-
     // 유저 - 리뷰
     @OneToMany(mappedBy = "user")
     List<Review> reviews = new ArrayList<>();
@@ -57,4 +55,7 @@ public class User {
     // 유저 - (유저 - 장소)
     @OneToMany(mappedBy = "user")
     List<UserPlace> userPlaces = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<Course> courses = new ArrayList<>();
 }

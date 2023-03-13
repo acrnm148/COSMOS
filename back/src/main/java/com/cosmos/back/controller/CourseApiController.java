@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "course", description = "코스 API")
 @RestController
@@ -22,8 +19,17 @@ public class CourseApiController {
 
     @Operation(summary = "코스 생성", description = "코스 생성")
     @PostMapping("/courses")
-    public ResponseEntity<?> createCourse(@RequestBody CourseRequestDto dto) {
+    public ResponseEntity<Long> createCourse(@RequestBody CourseRequestDto dto) {
+        Long courseId = courseService.createCourse(dto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(courseId, HttpStatus.OK);
+    }
+
+    @Operation(summary = "코스 삭제", description = "코스 삭제")
+    @DeleteMapping("/courses/{courseId}")
+    public ResponseEntity<Long> deleteCourse(@PathVariable Long courseId) {
+        Long id = courseService.deleteCourse(courseId);
+
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }

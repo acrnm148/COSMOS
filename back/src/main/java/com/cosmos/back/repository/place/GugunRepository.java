@@ -1,6 +1,7 @@
 package com.cosmos.back.repository.place;
 
 import com.cosmos.back.model.place.Gugun;
+import com.cosmos.back.model.place.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
