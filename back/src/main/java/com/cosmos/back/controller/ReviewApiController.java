@@ -67,4 +67,12 @@ public class ReviewApiController {
 
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
+
+    // 리뷰 닉네임 생성
+    @Operation(summary = "리뷰 닉네임 생성하기", description = "리뷰 닉네임 생성한다")
+    @GetMapping("/reviews/nickname")
+    public ResponseEntity<String> findReviewNickName() {
+        String reviewNickName = reviewService.findReviewNickName();
+        return new ResponseEntity<>(reviewNickName, HttpStatus.OK);
+    }
 }
