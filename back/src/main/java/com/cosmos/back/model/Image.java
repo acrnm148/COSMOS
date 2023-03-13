@@ -20,7 +20,8 @@ public class Image {
     @Column(name = "image_id")
     private Long id;
 
-    private String link; // 이미지 링크
+    @Column(name = "image_url")
+    private String imageUrl; // 이미지 링크
 
     @Column(name = "couple_id")
     private Long coupleId; // 커플ID

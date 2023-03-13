@@ -42,7 +42,7 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
                             qCourse.name,
                             qCourse.date,
                             qCourse.subCategory,
-                            qCourse.idx
+                            qCourse.orders
                 ))
                 .from(qPlan)
                 .leftJoin(qPlan.courses, qCourse)
@@ -80,7 +80,7 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
                         qCourse.name,
                         qCourse.date,
                         qCourse.subCategory,
-                        qCourse.idx
+                        qCourse.orders
                 ))
                 .from(qPlan)
                 .leftJoin(qPlan.courses, qCourse)
@@ -88,7 +88,6 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
                 .where(qPlan.coupleId.eq(coupleId)
                         .and(qPlan.startDate.loe(yearMonthDay))
                         .and(qPlan.endDate.goe(yearMonthDay)))
-                        //.and())
                 .fetch();
         return result;
     }

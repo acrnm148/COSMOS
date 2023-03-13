@@ -132,7 +132,7 @@ public class PlanService {
                         .name(planCourse.getName())
                         .date(planCourse.getDate())
                         .subCategory(planCourse.getSubCategory())
-                        .idx(planCourse.getIdx())
+                        .orders(planCourse.getOrders())
                         .build());
             }
         }
@@ -175,7 +175,7 @@ public class PlanService {
                         .name(planCourse.getName())
                         .date(planCourse.getDate())
                         .subCategory(planCourse.getSubCategory())
-                        .idx(planCourse.getIdx())
+                        .orders(planCourse.getOrders())
                         .build());
             }
         }

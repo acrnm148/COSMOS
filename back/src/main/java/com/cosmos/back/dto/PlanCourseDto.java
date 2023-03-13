@@ -20,5 +20,5 @@ public class PlanCourseDto {
     private String name;
     private String date;
     private String subCategory;
-    private Integer idx;
+    private Integer orders;
 }
