@@ -2,6 +2,7 @@ package com.cosmos.back.service;
 
 import com.cosmos.back.dto.request.ReviewRequestDto;
 import com.cosmos.back.dto.response.review.ReviewResponseDto;
+import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
 import com.cosmos.back.model.Review;
 import com.cosmos.back.model.ReviewCategory;
 import com.cosmos.back.model.ReviewPlace;
@@ -72,12 +73,33 @@ public class ReviewService {
     }
 
     // 장소별 리뷰 모두 불러오기
-    public List<ReviewResponseDto> getReviesInPlace (Long placeId) {
+
+    public List<ReviewResponseDto> findReviesInPlace (Long placeId) {
         List<Review> review = reviewRepository.findReviewInPlaceQueryDsl(placeId);
 
         List<ReviewResponseDto> list = new ArrayList<>();
         for (Review r : review) {
             ReviewResponseDto dto = ReviewResponseDto.builder().reviewId(r.getId()).categories(r.getReviewCategories()).score(r.getScore()).contents(r.getContents()).userId(r.getUser().getUserSeq()).build();
+            list.add(dto);
+        }
+
+        return list;
+    }
+
+    // 내 리뷰 모두 불러오기
+    public List<ReviewUserResponseDto> findReviewsInUser (Long userSeq) {
+        List<Review> review = reviewRepository.findReviewInUserQueryDsl(userSeq);
+
+        List<ReviewUserResponseDto> list = new ArrayList<>();
+        for (Review r : review) {
+            ReviewUserResponseDto dto = ReviewUserResponseDto.builder()
+                    .reviewId(r.getId())
+                    .categories(r.getReviewCategories())
+                    .score(r.getScore())
+                    .contents(r.getContents())
+//                    .placeId(r.getReviewPlaces().get(0).getPlace().getId())
+                    .placeId(r.getReviewPlaces().get(0).getPlace().getId())
+                    .build();
             list.add(dto);
         }
 

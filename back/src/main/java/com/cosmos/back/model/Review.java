@@ -1,10 +1,7 @@
 package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -19,7 +16,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Table(name = "review")
 @Builder
-@Data
+@Getter
+@Setter
 public class Review {
 
     @Id
@@ -46,7 +44,7 @@ public class Review {
     private List<ReviewCategory> reviewCategories = new ArrayList<>();
 
     // 연관관계 메서드
-    public void setUser(User user) {
+    public void setCreateUser(User user) {
         this.user = user;
         user.getReviews().add(this);
     }
@@ -55,11 +53,7 @@ public class Review {
     public static Review createReview (User user, String contents, Integer score) {
         Review review = new Review();
 
-        review.setUser(user);
-//        for (Review r : user.getReviews()) {
-//            System.out.print(r.id + " ");
-//        }
-//        System.out.println();
+        review.setCreateUser(user);
         review.setContents(contents);
         review.setScore(score);
 
