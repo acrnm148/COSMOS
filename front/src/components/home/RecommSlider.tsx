@@ -21,7 +21,7 @@ export default function recommSlider() {
   const cardContent: { title: string; imgSrc: string }[] = [
     { title: "나를 위한 추천 코스", imgSrc: "slider1" },
     { title: "애인을 위한 추천 코스", imgSrc: "slider2" },
-    { title: "우리 커플을 위한 추천 코스", imgSrc: "slider2" },
+    { title: "우리 커플을 위한 추천 코스", imgSrc: "slider5" },
   ];
 
   return (
@@ -47,9 +47,10 @@ function Card(props: { content: string; imgSrc: string }) {
         </div>
         <img
           // src={props.imgSrc}
-          src={slider2}
+          // src={slider2}
+          src={require(`../../assets/home/${props.imgSrc}.png`)}
           alt="slide"
-          width="150px"
+          width="125px"
           className="absolute right-3 bottom-2 z-20"
         />
       </div>
