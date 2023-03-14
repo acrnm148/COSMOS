@@ -46,8 +46,8 @@ function Card(props: { content: string; imgSrc: string }) {
           코스 보러 가기 ▶
         </div>
         <img
-          src={props.imgSrc}
-          // src={slider2}
+          // src={props.imgSrc}
+          src={slider2}
           alt="slide"
           width="150px"
           className="absolute right-3 bottom-2 z-20"
