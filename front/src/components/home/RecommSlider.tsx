@@ -3,7 +3,8 @@ import Slider from "react-slick";
 import "../../css/slick.css";
 import "../../css/slickTheme.css";
 import slider1 from "../../assets/home/slider1.png";
-import slider2 from "../../assets/home/rabbit.png";
+import slider2 from "../../assets/home/slider2.png";
+import slider5 from "../../assets/home/slider5.png";
 
 export default function recommSlider() {
   var settings = {
@@ -45,10 +46,10 @@ function Card(props: { content: string; imgSrc: string }) {
           코스 보러 가기 ▶
         </div>
         <img
-          // src={props.imgSrc}
-          src={slider2}
+          src={props.imgSrc}
+          // src={slider2}
           alt="slide"
-          width="160px"
+          width="150px"
           className="absolute right-3 bottom-2 z-20"
         />
       </div>
