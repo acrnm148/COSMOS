@@ -1,13 +1,14 @@
 package com.cosmos.back.service;
 
-import com.cosmos.back.dto.CourseDto;
+import com.cosmos.back.dto.SimplePlaceDto;
+import com.cosmos.back.dto.response.CourseResponseDto;
+import com.cosmos.back.dto.MyCoursePlaceDto;
 import com.cosmos.back.dto.request.CourseRequestDto;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
 import com.cosmos.back.repository.course.CoursePlaceRepository;
 import com.cosmos.back.repository.course.CourseRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
-import com.cosmos.back.repository.plan.PlanRepository;
 import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -78,8 +79,46 @@ public class CourseService {
     /**
      * 내 모든 코스 보기
      */
-    public List<CourseDto> getMyAllCourses(Long userSeq) {
-        List<CourseDto> courses = courseRepository.findAllByUserSeqQueryDSL(userSeq);
+    public List<CourseResponseDto> getMyAllCourses(Long userSeq) {
+        List<MyCoursePlaceDto> myCoursePlaces = courseRepository.findAllByUserSeqQueryDSL(userSeq);
+
+        List<CourseResponseDto> courses = new ArrayList<> ();
+        List<MyCoursePlaceDto> coursePlaces = new ArrayList<> ();
+        Long courseId = 0L;
+
+        for (MyCoursePlaceDto dto : myCoursePlaces) {
+
+            if (!(courseId.equals(dto.getCourseId()))) {
+                List<SimplePlaceDto> simplePlaces = new ArrayList<> ();
+
+                CourseResponseDto course = CourseResponseDto.builder()
+                        .courseId(dto.getCourseId())
+                        .name(dto.getName())
+                        .date(dto.getName())
+                        .subCategory(dto.getSubCategory())
+                        .orders(dto.getOrders())
+                        .build();
+                for (MyCoursePlaceDto dto2 : myCoursePlaces) {
+                    if (!(courseId.equals(dto.getCourseId()))) {
+                        break;
+                    }
+                    simplePlaces.add(SimplePlaceDto.builder()
+                            .placeId(dto2.getPlaceId())
+                            .placeName(dto2.getPlaceName())
+                            .phoneNumber(dto2.getPhoneNumber())
+                            .latitude(dto2.getLatitude())
+                            .longitude(dto2.getLongitude())
+                            .thumbNailUrl(dto2.getThumbNailUrl())
+                            .address(dto2.getAddress())
+                            .build());
+                }
+                course.setDto( simplePlaces );
+                courses.add(course);
+            }
+        }
+
+//        System.out.println("내 모든 코스:"+myCoursePlaces);
+//        return myCoursePlaces;
         System.out.println("내 모든 코스:"+courses);
         return courses;
     }
@@ -87,8 +126,8 @@ public class CourseService {
     /**
      * 내 모든 코스 보기
      */
-    public CourseDto getMyCourseDetail(Long userSeq, Long courseId) {
-        CourseDto course = courseRepository.findAllByUserSeqAndCourseIdQueryDSL(userSeq, courseId);
+    public List<MyCoursePlaceDto> getMyCourseDetail(Long userSeq, Long courseId) {
+        List<MyCoursePlaceDto> course = courseRepository.findAllByUserSeqAndCourseIdQueryDSL(userSeq, courseId);
         System.out.println("내 코스 상세:"+course);
         return course;
     }

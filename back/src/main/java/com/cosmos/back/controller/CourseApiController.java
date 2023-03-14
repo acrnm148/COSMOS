@@ -2,10 +2,12 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.service.JwtService;
+import com.cosmos.back.dto.MyCoursePlaceDto;
 import com.cosmos.back.dto.request.CourseRequestDto;
+import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.model.Course;
+import com.cosmos.back.model.CoursePlace;
 import com.cosmos.back.service.CourseService;
-import com.cosmos.back.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -53,9 +55,10 @@ public class CourseApiController {
             return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
         }
 
-        List<Course> course = courseService.getMyAllCourses(userSeq);
+        List<CourseResponseDto> courses = courseService.getMyAllCourses(userSeq);
 
-        return new ResponseEntity<>( course, HttpStatus.OK);
+
+        return new ResponseEntity<>( courses, HttpStatus.OK);
     }
 
     @Operation(summary = "내 코스 상세 보기", description = "내 코스 상세 보기")
@@ -72,7 +75,7 @@ public class CourseApiController {
             return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
         }
 
-        Course course = courseService.getMyCourseDetail(userSeq, courseId);
+        List<MyCoursePlaceDto> course = courseService.getMyCourseDetail(userSeq, courseId);
 
         return new ResponseEntity<>( course , HttpStatus.OK);
     }

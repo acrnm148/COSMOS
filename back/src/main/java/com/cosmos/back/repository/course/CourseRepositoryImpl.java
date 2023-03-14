@@ -1,12 +1,8 @@
 package com.cosmos.back.repository.course;
 
-import com.cosmos.back.dto.CourseDto;
-import com.cosmos.back.dto.PlanCourseDto;
-import com.cosmos.back.dto.response.place.PlaceListResponseDto;
-import com.cosmos.back.model.Course;
-import com.cosmos.back.model.Plan;
-import com.cosmos.back.model.QCourse;
-import com.cosmos.back.model.QPlan;
+import com.cosmos.back.dto.response.CourseResponseDto;
+import com.cosmos.back.dto.MyCoursePlaceDto;
+import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.QPlace;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,53 +18,69 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<CourseDto> findAllByUserSeqQueryDSL(Long userSeq) {
+    public List<MyCoursePlaceDto> findAllByUserSeqQueryDSL(Long userSeq) {
         QCourse qCourse = QCourse.course;
+        QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
         QPlace qPlace = QPlace.place;
 
-        /*
-        List<CourseDto> result = queryFactory.select(Projections.constructor(CourseDto.class,
+        return queryFactory.select(Projections.constructor(MyCoursePlaceDto.class,
                         qCourse.id,
                         qCourse.name,
                         qCourse.date,
                         qCourse.subCategory,
-                        qCourse.orders
-                ))
-                .from(qCourse)
-                .where(qCourse.user.userSeq.eq(userSeq))
-                .fetch();
-
-        List<PlaceListResponseDto> places = queryFactory.select(Projections.constructor(PlaceListResponseDto.class,
+                        qCourse.orders,
                         qPlace.id,
                         qPlace.name,
-                        qPlace.address,
+                        qPlace.phoneNumber,
+                        qPlace.latitude,
+                        qPlace.longitude,
                         qPlace.thumbNailUrl,
-                        qPlace.detail
+                        qPlace.address
                 ))
-                .from(qPlace)
+                .from(qCourse)
+                .distinct()
                 .where(qCourse.user.userSeq.eq(userSeq))
+                .join(qCoursePlace)
+                .on(qCourse.id.eq(qCoursePlace.course.id))
+                .join(qPlace)
+                //.fetchJoin()
+                .on(qPlace.id.eq(qCoursePlace.place.id))
+                .orderBy( qCourse.id.asc())
                 .fetch();
+        //return null;
 
-        return result;
-        */
-        return null;
     }
 
     @Override
-    public CourseDto findAllByUserSeqAndCourseIdQueryDSL(Long userSeq, Long courseId) {
+    public List<MyCoursePlaceDto> findAllByUserSeqAndCourseIdQueryDSL(Long userSeq, Long courseId) {
         QCourse qCourse = QCourse.course;
+        QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
+        QPlace qPlace = QPlace.place;
 
-        CourseDto result = queryFactory.select(Projections.constructor(CourseDto.class,
+        return queryFactory.select(Projections.constructor(MyCoursePlaceDto.class,
                         qCourse.id,
                         qCourse.name,
                         qCourse.date,
                         qCourse.subCategory,
-                        qCourse.orders
+                        qCourse.orders,
+                        qPlace.id,
+                        qPlace.name,
+                        qPlace.phoneNumber,
+                        qPlace.latitude,
+                        qPlace.longitude,
+                        qPlace.thumbNailUrl,
+                        qPlace.address
                 ))
                 .from(qCourse)
+                .distinct()
                 .where(qCourse.user.userSeq.eq(userSeq)
                         .and(qCourse.id.eq(courseId)))
-                .fetchOne();
-        return result;
+                .join(qCoursePlace)
+                .on(qCourse.id.eq(qCoursePlace.course.id))
+                .join(qPlace)
+                .on(qPlace.id.eq(qCoursePlace.place.id))
+                .orderBy( qCourse.id.asc() )
+                .fetch();
+        //return null;
     }
 }
