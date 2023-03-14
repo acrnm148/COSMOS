@@ -27,7 +27,7 @@ const router = createBrowserRouter([
       { path: "/recoco", element: <Reco /> },
       //로그인
       { path: "/login", element: <Login /> },
-      { path: "/login/ouath", element: <KakaoLogin />}
+      { path: "/login/oauth", element: <KakaoLogin />}
     ],
   },
   // 장소 검색 & 빅데이터 추천
@@ -43,8 +43,8 @@ const router = createBrowserRouter([
     element: <NoHeaderLayout />,
     errorElement: <NotFound />,
     children: [
-      // { path: "/date", element: <Servey /> },
-      // { path: "/result/:cate/:cateNum", element: <ServeyResult /> },
+      { path: "", element: <Servey /> },
+      { path: "result/:cate/:cateNum", element: <ServeyResult /> },
     ],
   },
 ]);

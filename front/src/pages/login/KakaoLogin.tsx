@@ -20,12 +20,20 @@ export default function KakaoLogin(){
             }
           )
           .then((res: { data: { access_token: any; }; }) => {
-            console.log(res);
+            // sdk 를 못찾아서 초기화
+            if (!window.Kakao.isInitialized()){
+              window.Kakao.init(process.env.REACT_APP_KAKAO)
+          }
+          // 여기서 카카오 말고 res.data.access_token을 백엔드로 요청보내기
             window.Kakao.Auth.setAccessToken(res.data.access_token)
             window.Kakao.API.request({
               url: "/v2/user/me",
               success: function (response: any) {
+                console.log('정보 받는 부분')
                 console.log(response)
+                let userEmail = response.kakao_account.email
+                let userName = response.kakao_account.profile.nickname
+                let userProfile = response.kakao_account.profile.profile_image_url
               },
               fail: function (error: any) {
                 console.log(error)
