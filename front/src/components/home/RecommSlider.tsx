@@ -2,7 +2,6 @@ import React from "react";
 import Slider from "react-slick";
 import "../../css/slick.css";
 import "../../css/slickTheme.css";
-import Slider1 from "../../assets/home/slider1.png";
 
 export default function recommSlider() {
   var settings = {
@@ -16,28 +15,34 @@ export default function recommSlider() {
     arrows: false,
   };
 
+  const cardContent: string[] = [
+    "나를 위한 추천 코스",
+    "애인을 위한 추천 코스",
+    "우리 커플을 위한 추천 코스",
+  ];
+
   return (
     <Slider {...settings}>
-      <div>
-        <Card />
-      </div>
-      <div>
-        <p>애인을 위한 추천 코스</p>
-      </div>
-      <div>
-        <p>우리 커플을 위한 추천 코스</p>
-      </div>
+      {cardContent.map((e) => {
+        return (
+          <div>
+            <Card content={e} />
+          </div>
+        );
+      })}
     </Slider>
   );
 }
 
-function Card() {
+function Card(props: { content: string }) {
   return (
     <div>
-      <div className="absolute top-32 ml-5 p-1 px-2 text-base font-light text-white bg-lightMain rounded-full">
-        코스 보러 가기 ▶
+      <div className="list bg-lightMain4 w-full h-48 my-2 p-4 rounded-2xl">
+        <div className="content ml-3 mt-3 text-2xl font-bold">{props.content}</div>
+        <div className="absolute top-[136px] ml-3 p-1 px-2 text-base font-light text-white bg-lightMain rounded-full">
+          코스 보러 가기 ▶
+        </div>
       </div>
-      <img src={Slider1} />
     </div>
   );
 }
