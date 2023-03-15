@@ -9,26 +9,20 @@ export default function TMap({ state }: any) {
   }, [state]);
 
   useEffect(() => {
-    console.log(document.head);
     // 현재 좌표 위치
     const lat = position.center.lat;
     const lng = position.center.lng;
 
-    // Tmapv2 사용을 위해 script Element 생성
-    const scriptList = document.querySelectorAll("script[id='TMAP']");
+    // 추가적으로 생성되는 TMAP 에러 해결
+    const clearMap = document.querySelector("#TMapApp");
+    clearMap?.replaceChildren(); // 현재 맵 하위 자식 컨텐츠 전체 삭제
 
-    if (scriptList.length > 0) {
-      const test = document.getElementById("TMAP");
-      console.log(test?.parentNode);
-      for (var i = 0; i < scriptList.length; i++) {
-        scriptList[i].parentNode?.removeChild(scriptList[i]);
-      }
-      test?.parentNode?.removeChild(test);
-    } else {
-      const script = document.createElement("script");
-      script.setAttribute("id", "TMAP");
-      // 이후 여기에다가 Tmap 관련 코드 작성 d
-      script.innerHTML = `
+    // 이후 다시 좌푯값을 얻어와서 맵 생성
+    // Tmapv2 사용을 위해 script Element 생성
+    const script = document.createElement("script");
+    script.setAttribute("id", "TMAP");
+    // 이후 여기에다가 Tmap 관련 코드 작성 d
+    script.innerHTML = `
         function initTmap() {
             var map = new Tmapv2.Map("TMapApp", {
                 center: new Tmapv2.LatLng(${lat}, ${lng}),
@@ -40,30 +34,17 @@ export default function TMap({ state }: any) {
 
         initTmap();
         `;
-      if (lat !== 0 && lng !== 0) {
-        // 자바스크립트 형식으로 설정 후 document에 추가
-        script.type = "text/javascript";
-        script.async = true;
-        console.log(script);
-        document.head.appendChild(script);
-      }
+    if (lat !== 0 && lng !== 0) {
+      // 자바스크립트 형식으로 설정 후 document에 추가
+      script.type = "text/javascript";
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
+    const test = document.querySelectorAll<HTMLElement>("#TMAP");
+    for (let i = 0; i < test.length - 1; i++) {
+      test[i].style.display = "none";
     }
   }, [position]);
-  return (
-    <>
-      <div className="w-full h-[50vh]" id="TMapApp"></div>
-      <button
-        onClick={() =>
-          setPosition({
-            center: {
-              lat: 37.5652045,
-              lng: 126.98702028,
-            },
-          })
-        }
-      >
-        클릭
-      </button>
-    </>
-  );
+  return <div className="w-full h-[50vh] TMapApp" id="TMapApp"></div>;
 }
