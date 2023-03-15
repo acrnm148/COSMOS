@@ -7,7 +7,7 @@ RUN npm run build
 
 # 실제 컨테이너로 생성될 이미지를 생성하는 부분
 FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /var/jenkins_home/workspace/cosmos_deploy/front/dist /usr/share/nginx/html
+COPY --from=build-stage /var/jenkins_home/workspace/cosmos_deploy/front/build /usr/share/nginx/html
 COPY --from=build-stage /var/jenkins_home/workspace/cosmos_deploy/front/deploy_conf/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
