@@ -12,6 +12,7 @@ import PlaceSearch from "../pages/search/PlaceSearch";
 import NoHeaderLayout from "../layouts/NoHeaderLayout";
 import KakaoLogin from "../pages/login/KakaoLogin";
 import Login from "../pages/login/Login";
+import Landing from "../pages/LandingPage";
 
 const router = createBrowserRouter([
   {
@@ -27,8 +28,15 @@ const router = createBrowserRouter([
       { path: "/recoco", element: <Reco /> },
       //로그인
       { path: "/login", element: <Login /> },
-      { path: "/login/ouath", element: <KakaoLogin />}
+      { path: "/login/ouath", element: <KakaoLogin /> },
     ],
+  },
+  // 랜딩페이지
+  {
+    path: "/landing",
+    element: <NoHeaderLayout />,
+    errorElement: <NotFound />,
+    children: [{ path: "/landing", element: <Landing /> }],
   },
   // 장소 검색 & 빅데이터 추천
   {
