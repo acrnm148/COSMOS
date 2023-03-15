@@ -1,10 +1,15 @@
 import React, { useEffect } from "react";
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import { userState,userSeqState } from "../../recoil/states/UserState";
 
 declare const window: typeof globalThis & {
     Kakao: any;
   };
 export default function KakaoLogin(){
+  const [userSeq,setUserSeq] = useRecoilState(userSeqState);
+  const JWT_EXPIRRY_TIME = 24 * 3600 * 1000
+  
     useEffect(() => {
         let params = new URL(document.location.toString()).searchParams;
         let code = params.get("code");
@@ -40,14 +45,22 @@ export default function KakaoLogin(){
               },
             })
             ///////// 우리 서버에 로그인 요청 보내는 부분
-            // api
-            //   .post("/api/user/account/login/kakao", {
-            //     accessToken: res.data.access_token,
-            //   })
-            //   .then((res: any) => {
-            //     console.log(res);
-            //     })
+            const onRefresh = () =>{
+              axios.post("/api/accounts/auth/login/kakao",{
+                code : res.data.access_token
+              })
+              .then((res:any)=>{
+                // 응답받은 userSeq 저장
+                const getUserSeq = res.data.userId
+                setUserSeq(getUserSeq)
+                onLoginSuccess(getUserSeq)
+              })
+            }
+            const onLoginSuccess = (getUserSeq: number | null) => {
+              setTimeout(onRefresh, JWT_EXPIRRY_TIME - 60000)
+            }
             })
+            
           })
           return(
               <div>카카오 로그인 완료</div>
