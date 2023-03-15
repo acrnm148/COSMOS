@@ -15,3 +15,4 @@ EXPOSE 8081
 
 # jar 파일 
 ENTRYPOINT ["java", "-jar", "/app.jar"]
+
