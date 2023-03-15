@@ -2,11 +2,29 @@ import React, { useState } from "react";
 import ListCard from "../common/ListCard";
 import like from "../../assets/like.png";
 import noLike from "../../assets/no-like.png";
+import Swal from "sweetalert2";
 
 export default function ItemList() {
   const [isLike, setIsLike] = useState(false);
 
   const handleLikeButton = () => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "bottom-end",
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: false,
+    });
+
+    isLike
+      ? Toast.fire({
+          title: "해제되었습니다.",
+          icon: "success",
+        })
+      : Toast.fire({
+          title: "등록되었습니다.",
+          icon: "success",
+        });
     setIsLike((cur) => !cur);
   };
   return (

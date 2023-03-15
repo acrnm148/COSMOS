@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchIcon from "../../assets/search/SearchIcon.png";
 import "../../css/placeSearch.css";
 
@@ -11,6 +11,35 @@ export default function PlaceSearch() {
   const handleSearch = (e: any) => {
     setSearchWord(e.target.value);
   };
+
+  const [state, setState] = useState({
+    center: {
+      lat: 0,
+      lng: 0,
+    },
+  });
+
+  useEffect(() => {
+    // 사용자의 현재 위치 받아옴
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setState((prev) => ({
+          ...prev,
+          center: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+          isLoading: false,
+        }));
+      });
+    } else {
+      setState((prev) => ({
+        ...prev,
+        errMsg: "현재 위치 정보를 받아올 수 없습니다",
+        isLoading: false,
+      }));
+    }
+  }, []);
 
   // 자동완성 API
 
@@ -43,7 +72,7 @@ export default function PlaceSearch() {
         </button>
       </div>
       <hr className="my-[3vh]" />
-      <TMap />
+      <TMap state={state} />
       <hr className="my-[3vh]" />
       <ItemList />
     </div>
