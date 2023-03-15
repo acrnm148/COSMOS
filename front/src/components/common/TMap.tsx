@@ -21,6 +21,7 @@ export default function TMap({ state }: any) {
     // Tmapv2 사용을 위해 script Element 생성
     const script = document.createElement("script");
     script.setAttribute("id", "TMAP");
+
     // 이후 여기에다가 Tmap 관련 코드 작성 d
     script.innerHTML = `
         function initTmap() {
@@ -40,11 +41,6 @@ export default function TMap({ state }: any) {
       script.async = true;
       document.head.appendChild(script);
     }
-
-    const test = document.querySelectorAll<HTMLElement>("#TMAP");
-    for (let i = 0; i < test.length - 1; i++) {
-      test[i].style.display = "none";
-    }
   }, [position]);
-  return <div className="w-full h-[50vh] TMapApp" id="TMapApp"></div>;
+  return <div className="w-full h-[50vh] TMapApp z-0" id="TMapApp"></div>;
 }

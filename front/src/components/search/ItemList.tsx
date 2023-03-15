@@ -3,9 +3,18 @@ import ListCard from "../common/ListCard";
 import like from "../../assets/like.png";
 import noLike from "../../assets/no-like.png";
 import Swal from "sweetalert2";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 export default function ItemList() {
   const [isLike, setIsLike] = useState(false);
+  const [up, setUp] = useState(false);
+
+  const handleDropBtn = () => {
+    setUp((cur) => !cur);
+    const list = document.querySelector("#listBox") as HTMLElement;
+    list.style.marginTop = "-400px";
+  };
 
   const handleLikeButton = () => {
     const Toast = Swal.mixin({
@@ -28,7 +37,21 @@ export default function ItemList() {
     setIsLike((cur) => !cur);
   };
   return (
-    <div className="mb-[50px]">
+    <div className="mb-[50px] z-[100000] bg-black" id="listBox">
+      {up ? (
+        <ArrowDropDownIcon
+          fontSize="large"
+          color="disabled"
+          onClick={handleDropBtn}
+        />
+      ) : (
+        <ArrowDropUpIcon
+          fontSize="large"
+          color="disabled"
+          onClick={handleDropBtn}
+        />
+      )}
+
       <ListCard>
         <div className="flex flex-row relative">
           <div className="flex justify-center my-auto basis-3/12">

@@ -73,7 +73,7 @@ export default function PlaceSearch() {
       </div>
       <hr className="my-[3vh]" />
       <TMap state={state} />
-      <hr className="my-[3vh]" />
+      <hr className="mt-[3vh]" />
       <ItemList />
     </div>
   );
