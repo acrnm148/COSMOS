@@ -5,6 +5,7 @@ import noLike from "../../assets/no-like.png";
 import Swal from "sweetalert2";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import "../../css/listItem.css";
 
 export default function ItemList() {
   const [isLike, setIsLike] = useState(false);
@@ -13,7 +14,7 @@ export default function ItemList() {
   const handleDropBtn = () => {
     setUp((cur) => !cur);
     const list = document.querySelector("#listBox") as HTMLElement;
-    list.style.marginTop = "-400px";
+    up ? (list.style.marginTop = "0px") : (list.style.marginTop = "-400px");
   };
 
   const handleLikeButton = () => {
@@ -21,7 +22,7 @@ export default function ItemList() {
       toast: true,
       position: "bottom-end",
       showConfirmButton: false,
-      timer: 1000,
+      timer: 3000,
       timerProgressBar: false,
     });
 
@@ -37,7 +38,10 @@ export default function ItemList() {
     setIsLike((cur) => !cur);
   };
   return (
-    <div className="mb-[50px] z-[100000] bg-black" id="listBox">
+    <div
+      className="mb-[50px] z-[100000] bg-white h-[70vh] relative"
+      id="listBox"
+    >
       {up ? (
         <ArrowDropDownIcon
           fontSize="large"

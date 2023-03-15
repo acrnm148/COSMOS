@@ -42,5 +42,5 @@ export default function TMap({ state }: any) {
       document.head.appendChild(script);
     }
   }, [position]);
-  return <div className="w-full h-[50vh] TMapApp z-0" id="TMapApp"></div>;
+  return <div className="w-full h-[50vh] TMapApp" id="TMapApp"></div>;
 }
