@@ -97,48 +97,48 @@ export default function PlaceSearch() {
       <div className="flex mt-[10px] justify-center">
         <div className="flex flex-row flex-start flex-wrap  gap-1 w-[70vw]">
           {tag0 ? (
-            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
-              <span className="ml-1"># 음식</span>
+            <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="cursor-default ml-1"># 음식</span>
               <span className="mt-[-2px]" onClick={() => setTag0(false)}>
                 <CloseIcon fontSize="small" />
               </span>
             </button>
           ) : null}
           {tag1 ? (
-            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
-              <span className="ml-1"># 카페</span>
+            <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="cursor-default ml-1"># 카페</span>
               <span className="mt-[-2px]" onClick={() => setTag1(false)}>
                 <CloseIcon fontSize="small" />
               </span>
             </button>
           ) : null}
           {tag2 ? (
-            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
-              <span className="ml-1"># 문화</span>
+            <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="cursor-default ml-1"># 문화</span>
               <span className="mt-[-2px]" onClick={() => setTag2(false)}>
                 <CloseIcon fontSize="small" />
               </span>
             </button>
           ) : null}
           {tag3 ? (
-            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
-              <span className="ml-1"># 쇼핑</span>
+            <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="cursor-default ml-1"># 쇼핑</span>
               <span className="mt-[-2px]" onClick={() => setTag3(false)}>
                 <CloseIcon fontSize="small" />
               </span>
             </button>
           ) : null}
           {tag4 ? (
-            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
-              <span className="ml-1"># 관광</span>
+            <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="cursor-default ml-1"># 관광</span>
               <span className="mt-[-2px]" onClick={() => setTag4(false)}>
                 <CloseIcon fontSize="small" />
               </span>
             </button>
           ) : null}
           {tag5 ? (
-            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
-              <span className="ml-1"># 운동</span>
+            <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="cursor-default ml-1"># 운동</span>
               <span className="mt-[-2px]" onClick={() => setTag5(false)}>
                 <CloseIcon fontSize="small" />
               </span>
