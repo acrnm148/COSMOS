@@ -46,7 +46,11 @@ export default function PlaceRecommend() {
             <img src={LightBigData} className="w-[100%] max-w-[600px]" />
           ) : null}
         </div>
-        {selects[0] ? <div>지역</div> : selects[1] ? <div>카테고리</div> : null}
+        {selects[0] ? (
+          <div className="map-wrapper">지도</div>
+        ) : selects[1] ? (
+          <div>카테고리</div>
+        ) : null}
       </div>
     </div>
   );
