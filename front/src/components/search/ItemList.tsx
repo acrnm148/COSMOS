@@ -6,15 +6,32 @@ import Swal from "sweetalert2";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import "../../css/listItem.css";
+import Modal2 from "../common/ModalLarge";
 
 export default function ItemList() {
   const [isLike, setIsLike] = useState(false);
   const [up, setUp] = useState(false);
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    console.log("OPEN");
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   const handleDropBtn = () => {
     setUp((cur) => !cur);
     const list = document.querySelector("#listBox") as HTMLElement;
-    up ? (list.style.marginTop = "0px") : (list.style.marginTop = "-400px");
+    if (up) {
+      list.style.marginTop = "0px";
+      list.style.height = "70vh";
+    } else {
+      list.style.marginTop = "-400px";
+      list.style.height = "120vh";
+    }
   };
 
   const handleLikeButton = () => {
@@ -22,7 +39,7 @@ export default function ItemList() {
       toast: true,
       position: "bottom-end",
       showConfirmButton: false,
-      timer: 3000,
+      timer: 1500,
       timerProgressBar: false,
     });
 
@@ -57,7 +74,7 @@ export default function ItemList() {
       )}
 
       <ListCard>
-        <div className="flex flex-row relative">
+        <div className="flex flex-row relative" onClick={openModal}>
           <div className="flex justify-center my-auto basis-3/12">
             <img
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQC0rn6j8ZXwbLsoNdV5CEGem6iXs3JLMuykklndrH&s"
@@ -82,6 +99,7 @@ export default function ItemList() {
           </div>
         </div>
       </ListCard>
+      <Modal2 open={modalOpen} close={closeModal} header="가게명"></Modal2>
     </div>
   );
 }
