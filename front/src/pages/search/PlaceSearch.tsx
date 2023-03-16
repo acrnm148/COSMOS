@@ -4,9 +4,32 @@ import "../../css/placeSearch.css";
 
 import TMap from "../../components/common/TMap";
 import ItemList from "../../components/search/ItemList";
+import CloseIcon from "@mui/icons-material/Close";
+import Modal from "../../components/common/Modal";
+import Cinema from "../../assets/search/cinema.png";
+import Cutlery from "../../assets/search/cutlery.png";
+import Coffee from "../../assets/search/coffee-cup.png";
+import Shopping from "../../assets/search/shopping-cart.png";
+import Gym from "../../assets/search/gym.png";
+import Suitcase from "../../assets/search/suitcase.png";
 
 export default function PlaceSearch() {
   const [searchWord, setSearchWord] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const [tag0, setTag0] = useState(false);
+  const [tag1, setTag1] = useState(false);
+  const [tag2, setTag2] = useState(false);
+  const [tag3, setTag3] = useState(false);
+  const [tag4, setTag4] = useState(false);
+  const [tag5, setTag5] = useState(false);
 
   const handleSearch = (e: any) => {
     setSearchWord(e.target.value);
@@ -44,7 +67,7 @@ export default function PlaceSearch() {
   // 자동완성 API
 
   return (
-    <div className="text-center w-[90%] max-w-[950px]">
+    <div className="text-center w-[90%] max-w-[950px] mt-[100px]">
       <h1>장소검색</h1>
       <div className="flex flex-row justify-center">
         <select className="basis-1/6 border-4 border-lightMain opacity-50 rounded-lg rounded-r-none focus:outline-none">
@@ -55,13 +78,13 @@ export default function PlaceSearch() {
             구/군
           </option>
           <option className="options" value="">
-            동
+            장소명
           </option>
         </select>
         <input
           className="basis-4/6 border-4 border-lightMain opacity-50 rounded-lg rounded-l-none focus:outline-none"
           type="text"
-          placeholder="장소명으로 검색"
+          placeholder="데이트 지역(시/도, 구/군) / 장소명으로 검색"
           onChange={handleSearch}
         />
         <button
@@ -71,10 +94,120 @@ export default function PlaceSearch() {
           <img className="w-[32px]" src={SearchIcon} alt="검색" />
         </button>
       </div>
+      <div className="flex mt-[10px] justify-center">
+        <div className="flex flex-row flex-start flex-wrap  gap-1 w-[70vw]">
+          {tag0 ? (
+            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="ml-1"># 음식</span>
+              <span className="mt-[-2px]" onClick={() => setTag0(false)}>
+                <CloseIcon fontSize="small" />
+              </span>
+            </button>
+          ) : null}
+          {tag1 ? (
+            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="ml-1"># 카페</span>
+              <span className="mt-[-2px]" onClick={() => setTag1(false)}>
+                <CloseIcon fontSize="small" />
+              </span>
+            </button>
+          ) : null}
+          {tag2 ? (
+            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="ml-1"># 문화</span>
+              <span className="mt-[-2px]" onClick={() => setTag2(false)}>
+                <CloseIcon fontSize="small" />
+              </span>
+            </button>
+          ) : null}
+          {tag3 ? (
+            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="ml-1"># 쇼핑</span>
+              <span className="mt-[-2px]" onClick={() => setTag3(false)}>
+                <CloseIcon fontSize="small" />
+              </span>
+            </button>
+          ) : null}
+          {tag4 ? (
+            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="ml-1"># 관광</span>
+              <span className="mt-[-2px]" onClick={() => setTag4(false)}>
+                <CloseIcon fontSize="small" />
+              </span>
+            </button>
+          ) : null}
+          {tag5 ? (
+            <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+              <span className="ml-1"># 운동</span>
+              <span className="mt-[-2px]" onClick={() => setTag5(false)}>
+                <CloseIcon fontSize="small" />
+              </span>
+            </button>
+          ) : null}
+        </div>
+        <button
+          className="w-[75px] h-[30px] border-2 border-lightMain rounded-lg bg-lightMain text-white"
+          onClick={openModal}
+        >
+          검색필터
+        </button>
+      </div>
       <hr className="my-[3vh]" />
       <TMap state={state} />
       <hr className="mt-[3vh]" />
       <ItemList />
+      <Modal open={modalOpen} close={closeModal} header="장소 태그 선택">
+        <div className="modal-content">
+          <div onClick={() => setTag0((cur) => !cur)}>
+            <img
+              src={Cutlery}
+              alt=""
+              style={tag0 ? { opacity: 1 } : { opacity: 0.3 }}
+            />
+            음식
+          </div>
+          <div onClick={() => setTag1((cur) => !cur)}>
+            <img
+              src={Coffee}
+              alt=""
+              style={tag1 ? { opacity: 1 } : { opacity: 0.3 }}
+            />
+            카페
+          </div>
+          <div onClick={() => setTag2((cur) => !cur)}>
+            <img
+              src={Cinema}
+              alt=""
+              style={tag2 ? { opacity: 1 } : { opacity: 0.3 }}
+            />
+            문화
+          </div>
+          <div onClick={() => setTag3((cur) => !cur)}>
+            <img
+              src={Shopping}
+              alt=""
+              style={tag3 ? { opacity: 1 } : { opacity: 0.3 }}
+            />
+            쇼핑
+          </div>
+          <div onClick={() => setTag4((cur) => !cur)}>
+            <img
+              src={Suitcase}
+              alt=""
+              style={tag4 ? { opacity: 1 } : { opacity: 0.3 }}
+            />
+            관광
+          </div>
+          <div onClick={() => setTag5((cur) => !cur)}>
+            <img
+              src={Gym}
+              alt=""
+              style={tag5 ? { opacity: 1 } : { opacity: 0.3 }}
+            />
+            운동
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
