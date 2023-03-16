@@ -5,17 +5,27 @@ import CoupleIcon from "../../assets/footer/couple-icon.png";
 
 export default function Footer() {
   return (
-    <div className="text-xl font-bold">
+    <div className="text-xl font-bold z-[9999999]">
       <div className="fixed bottom-0 z-100 left-0 inset-x-0 bg-white h-20 w-full flex">
         <div className="menuItems m-auto w-full">
           <div className="float-left w-1/5 flex justify-center">
             <NavLink to="/">
-              <Icon icon="healthicons:ui-user-profile" color="#ff8e9e" width="45" height="45" />
+              <Icon
+                icon="healthicons:ui-user-profile"
+                color="#ff8e9e"
+                width="45"
+                height="45"
+              />
             </NavLink>
           </div>
           <div className="float-left w-1/5 flex justify-center">
             <NavLink to="/">
-              <Icon icon="mdi:cards-heart" color="#ff8e9e" width="45" height="45" />
+              <Icon
+                icon="mdi:cards-heart"
+                color="#ff8e9e"
+                width="45"
+                height="45"
+              />
             </NavLink>
           </div>
           <div className="float-left w-1/5 flex justify-center">
