@@ -5,7 +5,7 @@ import "../../css/placeSearch.css";
 import TMap from "../../components/common/TMap";
 import ItemList from "../../components/search/ItemList";
 import CloseIcon from "@mui/icons-material/Close";
-import Modal from "../../components/common/Modal";
+import Modal from "../../components/common/ModalSmall";
 import Cinema from "../../assets/search/cinema.png";
 import Cutlery from "../../assets/search/cutlery.png";
 import Coffee from "../../assets/search/coffee-cup.png";
@@ -14,7 +14,14 @@ import Gym from "../../assets/search/gym.png";
 import Suitcase from "../../assets/search/suitcase.png";
 
 export default function PlaceSearch() {
+  // 검색어
   const [searchWord, setSearchWord] = useState("");
+
+  const handleSearch = (e: any) => {
+    setSearchWord(e.target.value);
+  };
+
+  // 모달창
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -24,6 +31,7 @@ export default function PlaceSearch() {
     setModalOpen(false);
   };
 
+  // 검색 태그
   const [tag0, setTag0] = useState(false);
   const [tag1, setTag1] = useState(false);
   const [tag2, setTag2] = useState(false);
@@ -31,10 +39,7 @@ export default function PlaceSearch() {
   const [tag4, setTag4] = useState(false);
   const [tag5, setTag5] = useState(false);
 
-  const handleSearch = (e: any) => {
-    setSearchWord(e.target.value);
-  };
-
+  // TMap
   const [state, setState] = useState({
     center: {
       lat: 0,
@@ -146,7 +151,7 @@ export default function PlaceSearch() {
           ) : null}
         </div>
         <button
-          className="w-[75px] h-[30px] border-2 border-lightMain rounded-lg bg-lightMain text-white"
+          className="w-[8vw] min-w-[80px] h-[30px] border-2 border-lightMain rounded-lg bg-lightMain text-white text-[1rem]"
           onClick={openModal}
         >
           검색필터
