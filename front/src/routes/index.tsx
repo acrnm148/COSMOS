@@ -8,11 +8,12 @@ import NotFound from "../components/common/NotFound";
 import Servey from "../pages/servey/ServeyPage";
 import ServeyResult from "../pages/servey/ServeyResult";
 import SubLayout from "../layouts/SubLayout";
-import PlaceSearch from "../pages/search/PlaceSearch";
+import PlaceSearch from "../pages/place/PlaceSearch";
 import NoHeaderLayout from "../layouts/NoHeaderLayout";
 import KakaoLogin from "../pages/login/KakaoLogin";
 import Login from "../pages/login/Login";
 import Landing from "../pages/LandingPage";
+import PlaceRecommend from "../pages/place/PlaceRecommend";
 
 const router = createBrowserRouter([
   {
@@ -43,7 +44,10 @@ const router = createBrowserRouter([
     path: "/place",
     element: <SubLayout />,
     errorElement: <NotFound />,
-    children: [{ path: "search", element: <PlaceSearch /> }],
+    children: [
+      { path: "search", element: <PlaceSearch /> },
+      { path: "recommend", element: <PlaceRecommend /> },
+    ],
   },
   // 설문조사
   {
