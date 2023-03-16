@@ -14,7 +14,13 @@ export default function ItemList() {
   const handleDropBtn = () => {
     setUp((cur) => !cur);
     const list = document.querySelector("#listBox") as HTMLElement;
-    up ? (list.style.marginTop = "0px") : (list.style.marginTop = "-400px");
+    if (up) {
+      list.style.marginTop = "0px";
+      list.style.height = "70vh";
+    } else {
+      list.style.marginTop = "-400px";
+      list.style.height = "120vh";
+    }
   };
 
   const handleLikeButton = () => {
