@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import SearchIcon from "../../assets/search/SearchIcon.png";
+import SearchIcon from "../../assets/place/SearchIcon.png";
 import "../../css/placeSearch.css";
 
 import TMap from "../../components/common/TMap";
 import ItemList from "../../components/search/ItemList";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "../../components/common/ModalSmall";
-import Cinema from "../../assets/search/cinema.png";
-import Cutlery from "../../assets/search/cutlery.png";
-import Coffee from "../../assets/search/coffee-cup.png";
-import Shopping from "../../assets/search/shopping-cart.png";
-import Gym from "../../assets/search/gym.png";
-import Suitcase from "../../assets/search/suitcase.png";
+import Cinema from "../../assets/place/cinema.png";
+import Cutlery from "../../assets/place/cutlery.png";
+import Coffee from "../../assets/place/coffee-cup.png";
+import Shopping from "../../assets/place/shopping-cart.png";
+import Gym from "../../assets/place/gym.png";
+import Suitcase from "../../assets/place/suitcase.png";
 
 export default function PlaceSearch() {
   // 검색어
