@@ -99,7 +99,7 @@ export default function ItemList() {
           <div className="flex flex-col column-3 basis-8/12 text-left">
             <div className="font-bold text-lg">가게명</div>
             <div className="font-thin text-slate-400 text-sm">주소</div>
-            <div className="font-bold text-base mt-[5px]">상세설명</div>
+            <div className="text-base mt-[5px]">상세설명</div>
           </div>
           <div
             className="basis-1/12 absolute bottom-0 right-5"

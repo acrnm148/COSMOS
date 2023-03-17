@@ -12,14 +12,14 @@ export default function PlaceRecommend() {
       <div className="flex flex-row justify-center gap-[20vw]">
         {selects[0] ? (
           <div
-            className="w-[200px] p-5 rounded-lg font-bold bg-lightMain text-white cursor-pointer"
+            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain text-white cursor-pointer"
             onClick={() => setSelects([true, false])}
           >
             지역 선택
           </div>
         ) : (
           <div
-            className="w-[200px] p-5 rounded-lg font-bold bg-lightMain3 cursor-pointer"
+            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain2 text-white cursor-pointer"
             onClick={() => setSelects([true, false])}
           >
             지역 선택
@@ -27,14 +27,14 @@ export default function PlaceRecommend() {
         )}
         {selects[1] ? (
           <div
-            className="w-[200px] p-5 rounded-lg font-bold bg-lightMain text-white cursor-pointer"
+            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain text-white cursor-pointer"
             onClick={() => setSelects([false, true])}
           >
             카테고리 선택
           </div>
         ) : (
           <div
-            className="w-[200px] p-5 rounded-lg font-bold bg-lightMain3 cursor-pointer"
+            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain2 text-white cursor-pointer"
             onClick={() => setSelects([false, true])}
           >
             카테고리 선택
