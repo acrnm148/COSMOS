@@ -1,6 +1,8 @@
 package com.cosmos.back.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "adjective")
+@Builder
+@Data
 public class Adjective {
 
     @Id

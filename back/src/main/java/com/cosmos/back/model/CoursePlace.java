@@ -2,8 +2,7 @@ package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.cosmos.back.model.place.Place;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +13,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "courseplace")
+@Builder
+@Getter
+@Setter
 public class CoursePlace {
 
     @Id
@@ -26,7 +28,7 @@ public class CoursePlace {
     // (데이트 코스 - 장소) - 데이트 코스
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "course_id")
-    @JsonIgnore
+    //@JsonIgnore
     private Course course;
 
     // (데이트 코스 - 장소) - 장소
@@ -34,4 +36,34 @@ public class CoursePlace {
     @JoinColumn(name = "place_id")
     @JsonIgnore
     private Place place;
+
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "user_seq")
+//    @JsonIgnore
+//    private User user;
+
+
+    // 연관관계 메서드 - (데이트코스 - 데이트코스_장소)
+    public void setCourse(Course course) {
+        this.course = course;
+        course.getCoursePlaces().add(this);
+    }
+
+
+    // 연관관계 메서드 - (장소 - 데이트코스_장소)
+    public void setPlace(Place place) {
+        this.place = place;
+        place.getCoursePlaces().add(this);
+    }
+
+    // 생성 메서드
+    public static CoursePlace createCoursePlace (Course course, Place place, Integer orders) {
+        CoursePlace coursePlace = new CoursePlace();
+
+        coursePlace.setCourse(course);
+        coursePlace.setPlace(place);
+        coursePlace.setOrders(orders);
+
+        return coursePlace;
+    }
 }
