@@ -1,3 +1,16 @@
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
+    /* overflow: hidden; */
 }
+
+/* .ScrollSnapWrap {
+    scroll-snap-type: y mandatory;
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.SnapDiv {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    height: 100vh;
+} */
