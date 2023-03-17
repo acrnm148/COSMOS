@@ -22,6 +22,7 @@
     "react-router-dom": "^6.8.2",
     "react-scripts": "5.0.1",
     "react-slick": "^0.29.0",
+    "react-use-scroll-snap": "^0.0.4",
     "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.7.3",
     "tailwind-scroll-behavior": "^1.0.0",
