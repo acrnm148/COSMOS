@@ -1,28 +1,94 @@
 import React from "react";
-import SearchIcon from "../../assets/place/SearchIcon.png";
+import KoreaMap from "../common/Map/KoreaMap";
 
 export default function SelectRegion() {
+  const sido = [
+    {
+      sidoCode: 0,
+      name: "서울",
+    },
+    {
+      sidoCode: 1,
+      name: "부산",
+    },
+    {
+      sidoCode: 2,
+      name: "대구",
+    },
+    {
+      sidoCode: 3,
+      name: "인천",
+    },
+    {
+      sidoCode: 4,
+      name: "광주",
+    },
+    {
+      sidoCode: 5,
+      name: "대전",
+    },
+    {
+      sidoCode: 6,
+      name: "울산",
+    },
+    {
+      sidoCode: 7,
+      name: "경기",
+    },
+    {
+      sidoCode: 8,
+      name: "강원",
+    },
+    {
+      sidoCode: 9,
+      name: "충청북도",
+    },
+    {
+      sidoCode: 10,
+      name: "충청남도",
+    },
+    {
+      sidoCode: 11,
+      name: "전라북도",
+    },
+    {
+      sidoCode: 12,
+      name: "전라남도",
+    },
+    {
+      sidoCode: 13,
+      name: "경상북도",
+    },
+    {
+      sidoCode: 14,
+      name: "경상남도",
+    },
+    {
+      sidoCode: 15,
+      name: "제주도",
+    },
+    {
+      sidoCode: 16,
+      name: "세종",
+    },
+  ];
   return (
     <div>
       <div className="flex flex-row justify-end">
-        <select className="basis-1/4 border-4 border-lightMain opacity-50 rounded-lg rounded-r-none focus:outline-none">
+        <select className="h-[40px] border-4 border-lightMain opacity-50 rounded-lg rounded-r-none focus:outline-none">
           <option className="options" value="">
             구/군 선택
           </option>
         </select>
-        <select className="basis-1/4 border-4 border-lightMain opacity-50 rounded-lg rounded-l-none focus:outline-none">
+        <select className="h-[40px] border-4 border-lightMain opacity-50 rounded-lg rounded-l-none focus:outline-none">
           <option className="options" value="">
             동 선택
           </option>
         </select>
-        <button
-          className="flex flex-col justify-center items-center ml-4 bg-lightMain p-2 rounded-xl hover:opacity-80"
-          title="검색"
-        >
-          <img className="w-[32px]" src={SearchIcon} alt="검색" />
-        </button>
       </div>
-      <div></div>
+      <div>
+        <KoreaMap list={sido} />
+      </div>
     </div>
   );
 }
