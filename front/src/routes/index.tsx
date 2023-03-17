@@ -14,6 +14,7 @@ import KakaoLogin from "../pages/login/KakaoLogin";
 import Login from "../pages/login/Login";
 import Landing from "../pages/LandingPage";
 import PlaceRecommend from "../pages/place/PlaceRecommend";
+import MyPage from "../pages/mypage/MyPage";
 
 const router = createBrowserRouter([
   {
@@ -26,10 +27,11 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-      { path: "/recoco", element: <Reco /> },
       //로그인
       { path: "/login", element: <Login /> },
-      { path: "/login/ouath", element: <KakaoLogin /> },
+      { path: "/login/oauth", element: <KakaoLogin />},
+      // 마이페이지
+      { path: "/mypage", element:<MyPage />},
     ],
   },
   // 랜딩페이지
@@ -55,8 +57,8 @@ const router = createBrowserRouter([
     element: <NoHeaderLayout />,
     errorElement: <NotFound />,
     children: [
-      // { path: "/date", element: <Servey /> },
-      // { path: "/result/:cate/:cateNum", element: <ServeyResult /> },
+      { path: "", element: <Servey /> },
+      { path: "result/:cate/:cateNum", element: <ServeyResult /> },
     ],
   },
 ]);
