@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import LightBigData from "../../assets/place/light-bigdata.gif";
+import SelectRegion from "../../components/recommend/SelectRegion";
+import SelectCategory from "../../components/recommend/SelectCategory";
 
 export default function PlaceRecommend() {
   const [selects, setSelects] = useState([false, false]);
@@ -40,18 +42,12 @@ export default function PlaceRecommend() {
         )}
       </div>
       <hr className="my-[3vh]" />
-      <div>
-        <div className="flex justify-center w-[100%] mb-20">
-          {!selects[0] && !selects[1] ? (
-            <img src={LightBigData} className="w-[100%] max-w-[600px]" />
-          ) : null}
-        </div>
-        {selects[0] ? (
-          <div className="map-wrapper">지도</div>
-        ) : selects[1] ? (
-          <div>카테고리</div>
+      <div className="flex justify-center w-[100%]">
+        {!selects[0] && !selects[1] ? (
+          <img src={LightBigData} className="w-[100%] max-w-[600px]" />
         ) : null}
       </div>
+      {selects[0] ? <SelectRegion /> : selects[1] ? <SelectCategory /> : null}
     </div>
   );
 }
