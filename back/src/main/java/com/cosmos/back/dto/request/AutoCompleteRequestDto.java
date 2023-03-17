@@ -1,13 +1,14 @@
 package com.cosmos.back.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDto {
-    private String userid;
-    private String password;
+@AllArgsConstructor
+@Builder
+public class AutoCompleteRequestDto {
+    private String searchWord;
 }
