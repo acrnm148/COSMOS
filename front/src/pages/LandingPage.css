@@ -3,6 +3,31 @@ html {
     /* overflow: hidden; */
 }
 
+body {
+    /* margin: 0; */
+    /* overflow-y: hidden; */
+}
+
+.outer {
+    /* height: 100vh; */
+    overflow-y: auto;
+}
+
+.outer::-webkit-scrollbar {
+    display: none;
+}
+
+.inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
+}
+
+.inner2 {
+    height: 100vh;
+}
+
 /* .ScrollSnapWrap {
     scroll-snap-type: y mandatory;
     height: 100vh;
