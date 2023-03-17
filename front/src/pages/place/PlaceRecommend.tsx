@@ -47,7 +47,11 @@ export default function PlaceRecommend() {
           <img src={LightBigData} className="w-[100%] max-w-[600px]" />
         ) : null}
       </div>
-      {selects[0] ? <SelectRegion /> : selects[1] ? <SelectCategory /> : null}
+      {selects[0] ? (
+        <SelectRegion setSelects={setSelects} />
+      ) : selects[1] ? (
+        <SelectCategory />
+      ) : null}
     </div>
   );
 }
