@@ -48,7 +48,7 @@ public class Course {
     private Plan plan;
 
     // 데이트 코스 - (데이트 코스 - 장소)
-    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy = "course")
     private List<CoursePlace> coursePlaces = new ArrayList<>();
 

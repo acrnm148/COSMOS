@@ -2,10 +2,7 @@ package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.cosmos.back.model.place.Place;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -17,7 +14,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Table(name = "courseplace")
 @Builder
-@Data
+@Getter
+@Setter
 public class CoursePlace {
 
     @Id
@@ -30,7 +28,7 @@ public class CoursePlace {
     // (데이트 코스 - 장소) - 데이트 코스
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "course_id")
-    @JsonIgnore
+    //@JsonIgnore
     private Course course;
 
     // (데이트 코스 - 장소) - 장소
@@ -38,6 +36,11 @@ public class CoursePlace {
     @JoinColumn(name = "place_id")
     @JsonIgnore
     private Place place;
+
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "user_seq")
+//    @JsonIgnore
+//    private User user;
 
 
     // 연관관계 메서드 - (데이트코스 - 데이트코스_장소)
