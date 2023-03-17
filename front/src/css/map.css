@@ -2,7 +2,12 @@
   margin: auto;
 }
 .land {
-  fill: #d0d0d0;
+  fill: #ffb5c0;
+  stroke: white;
+  stroke-width: 1px;
+}
+.land.click {
+  fill: #ff8e9e;
 }
 .land:hover {
   fill: #ff8e9e;
