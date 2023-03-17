@@ -1,8 +1,7 @@
 package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,6 +15,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "review")
+@Builder
+@Getter
+@Setter
 public class Review {
 
     @Id
@@ -40,4 +42,22 @@ public class Review {
     // 리뷰 - 리뷰 상태
     @OneToMany(mappedBy = "review")
     private List<ReviewCategory> reviewCategories = new ArrayList<>();
+
+    // 연관관계 메서드
+    public void setCreateUser(User user) {
+        this.user = user;
+        user.getReviews().add(this);
+    }
+
+    // 생성 메서드
+    public static Review createReview (User user, String contents, Integer score) {
+        Review review = new Review();
+
+        review.setCreateUser(user);
+        review.setContents(contents);
+        review.setScore(score);
+
+        return review;
+    }
+
 }
