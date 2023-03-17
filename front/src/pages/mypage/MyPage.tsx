@@ -65,7 +65,7 @@ export default function MyPage(){
                         ['일광당', '삼락생태공원', '부산현대미술관'].map((item)=>{
                             return(
                                 <div className="w-1/3">
-                                    <div className="m-2 bg-lightMain4 h-28 rounded-md">이미지</div>
+                                    <div className="m-2 bg-lightMain4 h-28 rounded-md md:h-10rem">이미지</div>
                                     <div className="m-2 text-sm font-bold">{item}</div>
                                 </div>
                                 )
