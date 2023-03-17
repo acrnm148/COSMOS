@@ -15,12 +15,11 @@
 }
 .modal > section {
   width: 90%;
-  max-width: 450px;
   margin: 0 auto;
   border-radius: 0.3rem;
   background-color: #fff;
   animation: modal-show 0.3s;
-  overflow: hidden;
+  overflow: auto;
 }
 .modal > section > header {
   position: relative;
