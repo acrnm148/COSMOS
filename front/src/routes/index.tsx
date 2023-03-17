@@ -15,6 +15,13 @@ import Login from "../pages/login/Login";
 import Landing from "../pages/LandingPage";
 import PlaceRecommend from "../pages/place/PlaceRecommend";
 import MyPage from "../pages/mypage/MyPage";
+import { MonthSchedulePage } from "../pages/schedule/MonthSchedulePage";
+import { DaySchedulePage } from "../pages/schedule/DaySchedulePage";
+import { CreateSchedulePage } from "../pages/schedule/CreateSchedulePage";
+import { ScheduleDetail } from "../pages/schedule/ScheduleDetail";
+import { ScheduleReview } from "../pages/schedule/ScheduleReview";
+import { GalleryPage } from "../pages/schedule/GalleryPage";
+import ScheduleLayout from "../layouts/ScheduleLayout";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +68,20 @@ const router = createBrowserRouter([
       { path: "result/:cate/:cateNum", element: <ServeyResult /> },
     ],
   },
+  // 일정관리
+  {
+    path : '/schedule',
+    element : <ScheduleLayout />,
+    errorElement : <NotFound />,
+    children : [
+      { path : "month", element: <MonthSchedulePage />},
+      { path : "day", element: <DaySchedulePage />},
+      { path : "create", element: <CreateSchedulePage />},
+      { path : "detail", element : <ScheduleDetail />},
+      { path: "review", element : <ScheduleReview />},
+      { path : "gallery", element : <GalleryPage />},
+    ]
+  }
 ]);
 
 export default router;
