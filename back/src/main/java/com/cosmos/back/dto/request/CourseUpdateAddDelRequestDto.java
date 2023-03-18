@@ -5,17 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CourseRequestDto {
-    private String name;
-    private String date;
-    private String subCategory;
-    private List<String> categories;
+public class CourseUpdateAddDelRequestDto {
     private Long placeId;
-    private Long userSeq;
 }
