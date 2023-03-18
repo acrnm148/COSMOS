@@ -3,6 +3,7 @@ package com.cosmos.back.service;
 import com.cosmos.back.dto.SimplePlaceDto;
 import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
 import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
+import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.dto.MyCoursePlaceDto;
 import com.cosmos.back.dto.request.CourseRequestDto;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -153,5 +155,42 @@ public class CourseService {
         int size = course.getCoursePlaces().size();
         CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, ++size);
         coursePlaceRepository.save(coursePlace);
+    }
+
+    // 코스 수정(삭제)
+    @Transactional
+    public void updateCourseDelete (Long courseId, CourseUpdateAddDelRequestDto dto) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        List<CoursePlace> coursePlaces = course.getCoursePlaces();
+
+        int order = 1;
+        for (CoursePlace cp: coursePlaces) {
+            if (cp.getPlace().getId().equals(dto.getPlaceId())) {
+                courseRepository.deleteCoursePlaceQueryDSL(courseId, cp);
+            } else {
+                cp.setOrders(order++);
+                coursePlaceRepository.save(cp);
+            }
+        }
+    }
+
+    // 코스 수정(순서)
+    @Transactional
+    public void updateCourseOrders (Long courseId, CourseUpdateOrdersRequestDto dto) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        List<CoursePlace> coursePlaces = course.getCoursePlaces();
+
+        HashMap<Long, CoursePlace> map = new HashMap<>();
+
+        for (CoursePlace cp : coursePlaces) {
+            map.put(cp.getPlace().getId(), cp);
+        }
+
+        int orders = 1;
+        for (Long placeId: dto.getPlaces()) {
+            CoursePlace coursePlace = map.get(placeId);
+            coursePlace.setOrders(orders++);
+            coursePlaceRepository.save(coursePlace);
+        }
     }
 }

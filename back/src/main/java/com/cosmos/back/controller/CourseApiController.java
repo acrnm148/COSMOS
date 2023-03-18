@@ -6,6 +6,7 @@ import com.cosmos.back.dto.MyCoursePlaceDto;
 import com.cosmos.back.dto.request.CourseRequestDto;
 import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
 import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
+import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.model.Course;
 import com.cosmos.back.model.CoursePlace;
@@ -98,4 +99,17 @@ public class CourseApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(summary = "코스 수정(삭제)", description = "코스 장소 삭제")
+    @PutMapping("/courses/{courseId}/delete")
+    public ResponseEntity<?> updateCourseDelete(@PathVariable Long courseId, @RequestBody CourseUpdateAddDelRequestDto dto) {
+        courseService.updateCourseDelete(courseId, dto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(summary = "코스 수정(순서)", description = "코스 장소 순서 변경")
+    @PutMapping("/courses/{courseId}/orders")
+    public ResponseEntity<?> updateCourseOrders(@PathVariable Long courseId, @RequestBody CourseUpdateOrdersRequestDto dto) {
+        courseService.updateCourseOrders(courseId, dto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

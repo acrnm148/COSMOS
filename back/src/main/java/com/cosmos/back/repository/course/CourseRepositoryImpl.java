@@ -1,5 +1,6 @@
 package com.cosmos.back.repository.course;
 
+import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.dto.MyCoursePlaceDto;
 import com.cosmos.back.model.*;
@@ -82,5 +83,19 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
                 .orderBy( qCourse.id.asc() )
                 .fetch();
         //return null;
+    }
+
+    @Override
+    public Long deleteCoursePlaceQueryDSL(Long courseId, CoursePlace cp) {
+
+        QCourse course = QCourse.course;
+        QCoursePlace coursePlace = QCoursePlace.coursePlace;
+
+        long execute = queryFactory.delete(coursePlace)
+                .where(coursePlace.id.eq(cp.getId()))
+                .execute();
+
+        return execute;
+
     }
 }
