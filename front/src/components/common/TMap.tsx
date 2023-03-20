@@ -33,10 +33,10 @@ export default function TMap({ state }: any) {
             map: map,
           });
 
-          marker.on("Click", function () {
-            console.log("CLICK");
-            // document.getElementById("result").innerHTML = 'Mouse Click!';
-          });
+          // marker.on("Click", function () {
+          //   console.log("CLICK");
+          //   // document.getElementById("result").innerHTML = 'Mouse Click!';
+          // });
 
           setMapInstance(map);
         }

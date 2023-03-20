@@ -101,7 +101,7 @@ export default function SearchFilter() {
               alt=""
               style={tag0 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            음식
+            <p>음식</p>
           </div>
           <div
             className={tag1 ? "content-clicked" : ""}
@@ -112,7 +112,7 @@ export default function SearchFilter() {
               alt=""
               style={tag1 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            카페
+            <p>카페</p>
           </div>
           <div
             className={tag2 ? "content-clicked" : ""}
@@ -123,7 +123,7 @@ export default function SearchFilter() {
               alt=""
               style={tag2 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            문화
+            <p>문화</p>
           </div>
           <div
             className={tag3 ? "content-clicked" : ""}
@@ -134,7 +134,7 @@ export default function SearchFilter() {
               alt=""
               style={tag3 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            쇼핑
+            <p>쇼핑</p>
           </div>
           <div
             className={tag4 ? "content-clicked" : ""}
@@ -145,7 +145,7 @@ export default function SearchFilter() {
               alt=""
               style={tag4 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            관광
+            <p>관광</p>
           </div>
           <div
             className={tag5 ? "content-clicked" : ""}
@@ -156,7 +156,7 @@ export default function SearchFilter() {
               alt=""
               style={tag5 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            운동
+            <p>운동</p>
           </div>
         </div>
       </Modal>
