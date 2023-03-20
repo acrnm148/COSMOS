@@ -20,7 +20,6 @@ export default function PlaceSearch() {
       lng: 0,
     },
   });
-
   useEffect(() => {
     // 사용자의 현재 위치 받아옴
     if (navigator.geolocation) {
