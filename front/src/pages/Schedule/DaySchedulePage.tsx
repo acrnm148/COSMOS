@@ -4,6 +4,9 @@ import { PlaceItem } from "../../components/common/PlaceItem";
 import { ScheduleMonth } from "../../components/common/ScheduleMonth";
 import { WeekCalendar } from "../../components/common/WeekCalendar";
 
+// framer-motion
+import { motion } from "framer-motion";
+
 // 지울예정
 import 파주출판단지 from "../../assets/schedule/파주출판단지.png"
 import 녹두 from "../../assets/schedule/녹두.png"
@@ -30,7 +33,7 @@ export function DaySchedulePage(){
         setPlaces([...testPlace])
     },[])
 
-    // 드래그앤드랍
+    /////////////// 드래그앤드랍 ///////////////
     const draggingIdx = useRef<null | number>(null)
     const draggingOverIdx = useRef<null | number>(null)
     // 드래그 시작 (아이템 확인)
@@ -59,10 +62,26 @@ export function DaySchedulePage(){
         e.preventDefault()
     }
 
+    /////////////// motion framer ///////////////
+    const [isVisible, SetIsVisible] = useState<boolean>(true)
+    const hide = {
+        opacity : 0,
+        transitionEnd:{
+            display : "none"
+        }
+    }
+    const show = {
+        opacity: 1,
+        display: "block"
+      };
+    
+
     return (
         <div className="bg-lightMain2 h-screen">
-            <ScheduleMonth />
-            <div className="bg-white rounded-lg w-full h-full">
+            <motion.button onClick={()=>SetIsVisible(!isVisible)}>
+                <ScheduleMonth />
+            </motion.button>
+            <motion.div className="bg-white rounded-lg w-full h-full" animate={isVisible ? show : hide}>
                 <div className="ml-2 mr-2 flex flex-col items-center content-center">
                     <div className="flex flex-col w-full justify-center md:w-5/6 lg:w-4/6">
                         <WeekCalendar />
@@ -90,7 +109,7 @@ export function DaySchedulePage(){
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     )
 }
