@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-
+import LightMarker from "../../assets/place/light-marker.png";
 export default function TMap({ state }: any) {
   const [position, setPosition] = useState(state);
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
@@ -27,10 +27,15 @@ export default function TMap({ state }: any) {
             zoom: 15,
           });
 
-          const marker = new window.Tmapv2.Marker(mapRef.current, {
+          const marker = new window.Tmapv2.Marker({
             position: new window.Tmapv2.LatLng(lat, lng),
-            Icon: "http://tmapapi.sktelecom.com/resources/images/common/pin_car.png",
+            icon: LightMarker,
             map: map,
+          });
+
+          marker.on("Click", function () {
+            console.log("CLICK");
+            // document.getElementById("result").innerHTML = 'Mouse Click!';
           });
 
           setMapInstance(map);
@@ -41,5 +46,5 @@ export default function TMap({ state }: any) {
     }
   }, [state]);
 
-  return <div className="w-full h-[50vh]" ref={mapRef}></div>;
+  return <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>;
 }

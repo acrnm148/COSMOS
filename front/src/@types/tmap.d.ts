@@ -13,7 +13,9 @@ declare global {
       constructor(latitude: number, longitude: number);
     }
     class Marker {
-      constructor(element: HTMLElement, options: MarkerOptions);
+      constructor(options: MarkerOptions);
+      on(click: string, fn: Function): void;
+      // on: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
     }
 
     interface MapOptions {
@@ -24,7 +26,7 @@ declare global {
     }
     interface MarkerOptions {
       position: LatLng;
-      Icon: string;
+      icon: string;
       map: Map;
     }
   }
