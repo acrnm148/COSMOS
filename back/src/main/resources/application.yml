@@ -7,7 +7,7 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
-    password: 'cosmos104'
+    password: cosmos104
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://j8e104.p.ssafy.io:3306/cosmos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
