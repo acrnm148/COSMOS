@@ -34,8 +34,9 @@ public class ImageService {
 
     // 사진 삭제
     @Transactional
-    public void deleteImage(Long imageId) {
+    public void deleteImage(Long imageId, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
         imageRepository.deleteById(imageId);
+
     }
 
     // 사진 전체 조회
