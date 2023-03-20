@@ -2,6 +2,8 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.place.Gugun;
+import com.cosmos.back.model.place.Sido;
 import com.cosmos.back.service.PlaceService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +17,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -211,7 +216,7 @@ class PlaceApiControllerTest {
     // HTTP Status 200, Service에서 ResponseDto를 형식에 맞게 잘 받아오는지 테스트
     public void 쇼핑정보() throws Exception {
 
-        ShoppingResponseDto mockDto = ShoppingResponseDto.builder().name("레져").build();
+        ShoppingResponseDto mockDto = ShoppingResponseDto.builder().name("쇼핑").build();
 
         // mocking
         when(placeService.detailShopping(anyLong()))
@@ -223,10 +228,186 @@ class PlaceApiControllerTest {
 
         String response = mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andReturn().
-                getResponse().
-                getContentAsString();
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         Assertions.assertThat(response).contains("쇼핑");
+    }
+
+    @Test
+    @DisplayName("PlaceApiController 장소 찜")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    // HTTP Status 200, Service에서 ResponseDto를 형식에 맞게 잘 받아오는지 테스트
+    public void 장소_찜() throws Exception {
+        // mocking
+        when(placeService.likePlace(anyLong(), anyLong())).thenReturn(1995L);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/api/places/1/users/1")
+                .accept(MediaType.APPLICATION_JSON);
+
+        String response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assertions.assertThat(response).isEqualTo("1995");
+    }
+
+    @Test
+    @DisplayName("PlaceApiController 장소 찜 삭제")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    // HTTP Status 200, Service에서 ResponseDto를 형식에 맞게 잘 받아오는지 테스트
+    public void 장소_찜삭제() throws Exception {
+        // mocking
+        when(placeService.deleteLikePlace(anyLong(), anyLong())).thenReturn(1995L);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .delete("/api/places/1/users/1")
+                .accept(MediaType.APPLICATION_JSON);
+
+        String response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assertions.assertThat(response).isEqualTo("1995");
+    }
+
+    @Test
+    @DisplayName("PlaceApiController 이름으로 장소 검색")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    // HTTP Status 200, Service에서 ResponseDto를 형식에 맞게 잘 받아오는지 테스트
+    public void 이름으로_장소_검색() throws Exception {
+        PlaceListResponseDto mockDto1 = PlaceListResponseDto.builder().name("mcokDto1").build();
+        PlaceListResponseDto mockDto2 = PlaceListResponseDto.builder().address("mock address").build();
+        PlaceListResponseDto mockDto3 = PlaceListResponseDto.builder().score(4.98).build();
+        PlaceListResponseDto mockDto4 = PlaceListResponseDto.builder().thumbNailUrl("mock thumbnail url").build();
+        PlaceListResponseDto mockDto5 = PlaceListResponseDto.builder().detail("mock detail").build();
+
+        List<PlaceListResponseDto> mockList = new ArrayList<>();
+        mockList.add(mockDto1);
+        mockList.add(mockDto2);
+        mockList.add(mockDto3);
+        mockList.add(mockDto4);
+        mockList.add(mockDto5);
+
+        when(placeService.searchPlacesByName(anyString(), anyInt(), anyInt())).thenReturn(mockList);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/api/places/장소?limit=15&offset=0")
+                .accept(MediaType.APPLICATION_JSON);
+
+        String response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assertions.assertThat(response).contains("mcokDto1");
+        Assertions.assertThat(response).contains("mock address");
+        Assertions.assertThat(response).contains("4.98");
+        Assertions.assertThat(response).contains("mock thumbnail url");
+        Assertions.assertThat(response).contains("mock detail");
+    }
+
+    @Test
+    @DisplayName("PlaceApiController 시도 가져오기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void 시도_가져오기() throws Exception {
+        Sido sido1 = Sido.builder().sidoName("서울특별시").sidoCode("11").build();
+        Sido sido2 = Sido.builder().sidoName("부산광역시").sidoCode("26").build();
+
+        List<Sido> mockList = new ArrayList<>();
+
+        mockList.add(sido1);
+        mockList.add(sido2);
+
+        when(placeService.listSido()).thenReturn(mockList);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/api/sido")
+                .accept(MediaType.APPLICATION_JSON);
+
+        String response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assertions.assertThat(response).contains("서울특별시");
+        Assertions.assertThat(response).contains("부산광역시");
+        Assertions.assertThat(response).contains("11");
+        Assertions.assertThat(response).contains("26");
+    }
+
+    @Test
+    @DisplayName("PlaceApiController 구군 가져오기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void 구군_가져오기() throws Exception {
+        Gugun gugun1 = Gugun.builder().gugunName("종로구").gugunCode("11110").build();
+        Gugun gugun2 = Gugun.builder().gugunName("동대문구").gugunCode("11230").build();
+
+        List<Gugun> mockList = new ArrayList<>();
+
+        mockList.add(gugun1);
+        mockList.add(gugun2);
+
+        when(placeService.listGugun(anyString())).thenReturn(mockList);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/api/gugun/11")
+                .accept(MediaType.APPLICATION_JSON);
+
+        String response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assertions.assertThat(response).contains("종로구");
+        Assertions.assertThat(response).contains("11110");
+        Assertions.assertThat(response).contains("동대문구");
+        Assertions.assertThat(response).contains("11230");
+    }
+
+    @Test
+    @DisplayName("PlaceApiController 시도 구군으로 장소 검색")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void 시도_구군으로_장소_검색() throws Exception {
+        PlaceListResponseDto place1 = PlaceListResponseDto.builder().name("장소1995L").build();
+        PlaceListResponseDto place2 = PlaceListResponseDto.builder().detail("장소 상세 1995").build();
+        PlaceListResponseDto place3 = PlaceListResponseDto.builder().address("장소 주소 1995").build();
+        PlaceListResponseDto place4 = PlaceListResponseDto.builder().thumbNailUrl("장소 썸네일 1995").build();
+        PlaceListResponseDto place5 = PlaceListResponseDto.builder().score(1995.02).build();
+
+        List<PlaceListResponseDto> mockList = new ArrayList<>();
+
+        mockList.add(place1);
+        mockList.add(place2);
+        mockList.add(place3);
+        mockList.add(place4);
+        mockList.add(place5);
+
+        when(placeService.searchPlacesBySidoGugun(anyString(), anyString(), anyInt(), anyInt())).thenReturn(mockList);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/api/places/search/sido/11/gugun/11230?limit=15&offset=0")
+                .accept(MediaType.APPLICATION_JSON);
+
+        String response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assertions.assertThat(response).contains("장소1995L");
+        Assertions.assertThat(response).contains("장소 상세 1995");
+        Assertions.assertThat(response).contains("장소 주소 1995");
+        Assertions.assertThat(response).contains("장소 썸네일 1995");
+        Assertions.assertThat(response).contains("1995.02");
     }
 }

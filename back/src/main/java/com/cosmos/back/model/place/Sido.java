@@ -1,6 +1,7 @@
 package com.cosmos.back.model.place;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -14,6 +15,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Table(name = "sido_code")
 @Getter
+@Builder
 // 시도
 public class Sido {
 
