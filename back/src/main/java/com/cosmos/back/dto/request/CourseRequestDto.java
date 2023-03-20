@@ -14,10 +14,8 @@ import java.util.List;
 public class CourseRequestDto {
     private String name;
     private String date;
-    private Integer idx;
     private String subCategory;
     private List<String> categories;
-    private Long planId;
     private Long placeId;
     private Long userSeq;
 }

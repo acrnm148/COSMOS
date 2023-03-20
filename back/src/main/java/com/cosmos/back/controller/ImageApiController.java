@@ -22,9 +22,9 @@ public class ImageApiController {
     private final ImageService imageService;
 
     @Operation(summary = "사진 등록", description = "사진을 등록함")
-    @PostMapping("/pictures")
-    public ResponseEntity<?> createImage(@RequestBody ImageRequestDto dto) {
-        imageService.createImage(dto);
+    @PostMapping("/pictures/{coupleId}")
+    public ResponseEntity<?> createImage(@RequestBody ImageRequestDto dto, @PathVariable Long coupleId) {
+        imageService.createImage(dto, coupleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

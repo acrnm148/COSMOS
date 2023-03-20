@@ -1,5 +1,6 @@
 package com.cosmos.back.controller;
 
+import com.cosmos.back.annotation.RedisCached;
 import com.cosmos.back.dto.request.AutoCompleteRequestDto;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.place.Gugun;
