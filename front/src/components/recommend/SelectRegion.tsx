@@ -105,10 +105,10 @@ export default function SelectRegion({ setSelects }: any) {
       });
 
       Swal.fire({
-        title: "구/군 선택 완료!",
-        text: "카테고리 선택으로 넘어가시겠습니까?",
+        title: `${selectSido} ${selGugun} 선택 완료!`,
+        text: "카테고리 선택으로 이동됩니다.",
         icon: "success",
-        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        confirmButtonColor: "#FF8E9E", // confrim 버튼 색깔 지정
         confirmButtonText: "확인", // confirm 버튼 텍스트 지정
       }).then((result) => {
         if (result.isConfirmed) {

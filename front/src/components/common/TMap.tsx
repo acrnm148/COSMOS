@@ -27,13 +27,13 @@ export default function TMap({ state }: any) {
             zoom: 15,
           });
 
-          setMapInstance(map);
-
           const marker = new window.Tmapv2.Marker(mapRef.current, {
             position: new window.Tmapv2.LatLng(lat, lng),
             Icon: "http://tmapapi.sktelecom.com/resources/images/common/pin_car.png",
             map: map,
           });
+
+          setMapInstance(map);
         }
       }
     } else {
