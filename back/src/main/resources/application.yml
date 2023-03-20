@@ -1,6 +1,5 @@
 server:
   port: 8081
-
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -48,6 +47,3 @@ cloud:
     credentials:
       accessKey: AKIASSX7K6T2I5UYR2ET
       secretKey: 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
-
-
-
