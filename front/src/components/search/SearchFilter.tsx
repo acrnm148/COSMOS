@@ -92,7 +92,10 @@ export default function SearchFilter() {
         size="small"
       >
         <div className="modal-content">
-          <div onClick={() => setTag0((cur) => !cur)}>
+          <div
+            className={tag0 ? "content-clicked" : ""}
+            onClick={() => setTag0((cur) => !cur)}
+          >
             <img
               src={Cutlery}
               alt=""
@@ -100,7 +103,10 @@ export default function SearchFilter() {
             />
             음식
           </div>
-          <div onClick={() => setTag1((cur) => !cur)}>
+          <div
+            className={tag1 ? "content-clicked" : ""}
+            onClick={() => setTag1((cur) => !cur)}
+          >
             <img
               src={Coffee}
               alt=""
@@ -108,7 +114,10 @@ export default function SearchFilter() {
             />
             카페
           </div>
-          <div onClick={() => setTag2((cur) => !cur)}>
+          <div
+            className={tag2 ? "content-clicked" : ""}
+            onClick={() => setTag2((cur) => !cur)}
+          >
             <img
               src={Cinema}
               alt=""
@@ -116,7 +125,10 @@ export default function SearchFilter() {
             />
             문화
           </div>
-          <div onClick={() => setTag3((cur) => !cur)}>
+          <div
+            className={tag3 ? "content-clicked" : ""}
+            onClick={() => setTag3((cur) => !cur)}
+          >
             <img
               src={Shopping}
               alt=""
@@ -124,7 +136,10 @@ export default function SearchFilter() {
             />
             쇼핑
           </div>
-          <div onClick={() => setTag4((cur) => !cur)}>
+          <div
+            className={tag4 ? "content-clicked" : ""}
+            onClick={() => setTag4((cur) => !cur)}
+          >
             <img
               src={Suitcase}
               alt=""
@@ -132,7 +147,10 @@ export default function SearchFilter() {
             />
             관광
           </div>
-          <div onClick={() => setTag5((cur) => !cur)}>
+          <div
+            className={tag5 ? "content-clicked" : ""}
+            onClick={() => setTag5((cur) => !cur)}
+          >
             <img
               src={Gym}
               alt=""
