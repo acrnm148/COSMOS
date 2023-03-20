@@ -92,53 +92,71 @@ export default function SearchFilter() {
         size="small"
       >
         <div className="modal-content">
-          <div onClick={() => setTag0((cur) => !cur)}>
+          <div
+            className={tag0 ? "content-clicked" : ""}
+            onClick={() => setTag0((cur) => !cur)}
+          >
             <img
               src={Cutlery}
               alt=""
               style={tag0 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            음식
+            <p>음식</p>
           </div>
-          <div onClick={() => setTag1((cur) => !cur)}>
+          <div
+            className={tag1 ? "content-clicked" : ""}
+            onClick={() => setTag1((cur) => !cur)}
+          >
             <img
               src={Coffee}
               alt=""
               style={tag1 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            카페
+            <p>카페</p>
           </div>
-          <div onClick={() => setTag2((cur) => !cur)}>
+          <div
+            className={tag2 ? "content-clicked" : ""}
+            onClick={() => setTag2((cur) => !cur)}
+          >
             <img
               src={Cinema}
               alt=""
               style={tag2 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            문화
+            <p>문화</p>
           </div>
-          <div onClick={() => setTag3((cur) => !cur)}>
+          <div
+            className={tag3 ? "content-clicked" : ""}
+            onClick={() => setTag3((cur) => !cur)}
+          >
             <img
               src={Shopping}
               alt=""
               style={tag3 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            쇼핑
+            <p>쇼핑</p>
           </div>
-          <div onClick={() => setTag4((cur) => !cur)}>
+          <div
+            className={tag4 ? "content-clicked" : ""}
+            onClick={() => setTag4((cur) => !cur)}
+          >
             <img
               src={Suitcase}
               alt=""
               style={tag4 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            관광
+            <p>관광</p>
           </div>
-          <div onClick={() => setTag5((cur) => !cur)}>
+          <div
+            className={tag5 ? "content-clicked" : ""}
+            onClick={() => setTag5((cur) => !cur)}
+          >
             <img
               src={Gym}
               alt=""
               style={tag5 ? { opacity: 1 } : { opacity: 0.3 }}
             />
-            운동
+            <p>운동</p>
           </div>
         </div>
       </Modal>

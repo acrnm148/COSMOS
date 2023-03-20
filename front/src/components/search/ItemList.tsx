@@ -48,7 +48,9 @@ export default function ItemList() {
     }
   };
 
-  const handleLikeButton = () => {
+  const handleLikeButton = (e: React.MouseEvent) => {
+    // 모달창 생성 이벤트 방지
+    e.stopPropagation();
     const Toast = Swal.mixin({
       toast: true,
       position: "bottom-end",
