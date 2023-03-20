@@ -5,7 +5,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   redis:
-    host: localhost
+    host: j8e104.p.ssafy.io
     port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
