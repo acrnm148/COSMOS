@@ -11,11 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CourseRequestDto {
-    private String name;
-    private String date;
-    private String subCategory;
-    private List<String> categories;
-    private Long placeId;
-    private Long userSeq;
+public class CourseUpdateOrdersRequestDto {
+    private List<Long> places;
 }

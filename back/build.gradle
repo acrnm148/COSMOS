@@ -67,11 +67,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
 
-    //sping mail server
-    implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.1'
-    //java mail
-    implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
-    implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.18'
+    //S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     // mockito
     testImplementation 'org.mockito:mockito-core:3.11.2'

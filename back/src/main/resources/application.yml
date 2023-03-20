@@ -9,12 +9,12 @@ spring:
     port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql://13.125.214.115:3306/tify?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-    #username: rising88
-    #password: Tify123!
-    url: jdbc:mysql://j8e104.p.ssafy.io:3306/cosmos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+#    url: jdbc:mysql://j8e104.p.ssafy.io/:3306/cosmos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+#    username: root
+#    password: cosmos1234
+    url: jdbc:mysql://localhost:3306/cosmos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
     username: root
-    password: cosmos1234
+    password: 1234
     hikari:
       pool-name: jpa-hikari-pool
       maximum-pool-size: 5
@@ -39,4 +39,15 @@ spring:
         order_inserts: true
         order_updates: true
         format_sql: true
+cloud:
+  aws:
+    s3:
+      bucket: cosmoss3
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: AKIASSX7K6T2I5UYR2ET
+      secretKey: 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
+
+
 
