@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
@@ -36,9 +37,11 @@ public class RedisConfig {
      * 어플리케이션에서 사용할 redisTemplate 설정
      */
     @Bean
-    public RedisTemplate<?,?> redisTemplate() {
-        RedisTemplate<?,?> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String,Object> redisTemplate() {
+        RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
         return redisTemplate;
     }
 
