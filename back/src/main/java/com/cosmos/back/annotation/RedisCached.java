@@ -11,19 +11,16 @@ public @interface RedisCached {
 
     /**
      * main cache key name
-     * @return
      */
     String key();
 
     /**
      * expire time
-     * @return
      */
-    int expire() default 1800;
+    int expire(); //default 1800;
 
     /**
      * force proceed method
-     * @return
      */
     boolean replace() default false;
 }
