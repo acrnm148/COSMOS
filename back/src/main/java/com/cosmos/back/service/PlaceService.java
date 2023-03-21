@@ -129,9 +129,6 @@ public class PlaceService {
         return gugunDtoList;
     }
 
-    /**
-     * test??
-     */
     // 시도구군으로 장소 검색
     @RedisCached(key = "searchPlacesBySidoGugun", expire = 7200)
     public List<PlaceListResponseDto> searchPlacesBySidoGugun (@RedisCachedKeyParam(key = "sido")String sido, @RedisCachedKeyParam(key = "gugun")String gugun, Integer limit, Integer offset) {
@@ -140,9 +137,6 @@ public class PlaceService {
         return list;
     }
 
-    /**
-     * test??
-     */
     // 장소 검색 자동 완성
     @RedisCached(key = "autoCompleteSearchPlacesByName", expire = 7200)
     public List<AutoCompleteResponseDto> autoCompleteSearchPlacesByName (@RedisCachedKeyParam(key = "name") String name) {
