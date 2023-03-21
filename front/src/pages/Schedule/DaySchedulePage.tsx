@@ -25,7 +25,12 @@ const testPlace:Place[] = [{idx:0,name:'파주 출판단지', imgUrl:파주출�
                         {idx:1,name:'베지앙', imgUrl:베지앙, category:'카페', location:"경기도", date:'2023년 2월 28일'},
                         {idx:2,name:'녹두', imgUrl:녹두, category:'음식', location:"경기도", date:'2023년 2월 28일'}
 ]
-export function DaySchedulePage(){
+interface Props {
+    week? : Date[] | string,
+    day? : Date | string
+}
+export function DaySchedulePage({week ='', day = ''}:Props){
+
     const [scheduleTitle, setScheduleTitle] = useState('파릇파릇파주여행')
     const [places, setPlaces] = useState<Place[]>([])
     // 일정 정보 초기화
