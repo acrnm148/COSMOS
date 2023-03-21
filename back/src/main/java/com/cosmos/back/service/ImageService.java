@@ -3,6 +3,7 @@ package com.cosmos.back.service;
 import com.cosmos.back.annotation.RedisCached;
 import com.cosmos.back.annotation.RedisCachedKeyParam;
 import com.cosmos.back.annotation.RedisEvict;
+import com.cosmos.back.config.RedisDB;
 import com.cosmos.back.dto.request.ImageRequestDto;
 import com.cosmos.back.dto.response.ImageResponseDto;
 import com.cosmos.back.model.Image;
@@ -34,9 +35,9 @@ public class ImageService {
 
     // 사진 삭제
     @Transactional
+    @RedisEvict(key = "image")
     public void deleteImage(Long imageId, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
         imageRepository.deleteById(imageId);
-
     }
 
     // 사진 전체 조회
