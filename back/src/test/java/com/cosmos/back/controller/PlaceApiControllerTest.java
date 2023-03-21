@@ -5,6 +5,7 @@ import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.place.Gugun;
 import com.cosmos.back.model.place.Sido;
 import com.cosmos.back.service.PlaceService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,9 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,6 +34,9 @@ class PlaceApiControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private PlaceService placeService;
@@ -409,5 +415,38 @@ class PlaceApiControllerTest {
         Assertions.assertThat(response).contains("장소 주소 1995");
         Assertions.assertThat(response).contains("장소 썸네일 1995");
         Assertions.assertThat(response).contains("1995.02");
+    }
+
+    @Test
+    @DisplayName("PlaceApiController 검색어 자동완성")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void 검색어_자동완성() throws Exception {
+        AutoCompleteResponseDto dto1 = AutoCompleteResponseDto.builder().name("장시우 생일은 1995.02.03").build();
+        AutoCompleteResponseDto dto2 = AutoCompleteResponseDto.builder().name("반유진 생일은 1999.03.23").build();
+
+        List<AutoCompleteResponseDto> mockList = new ArrayList<>();
+
+        mockList.add(dto1);
+        mockList.add(dto2);
+
+        when(placeService.autoCompleteSearchPlacesByName(anyString())).thenReturn(mockList);
+
+        Map<String, String> autoCompleteRequestDto = new HashMap<>();
+        autoCompleteRequestDto.put("searchWord", "장시우 생일은 1995.02.03");
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/api/places/auto")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(autoCompleteRequestDto))
+                .accept(MediaType.APPLICATION_JSON);
+
+        String response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assertions.assertThat(response).contains("장시우 생일은 1995.02.03");
+        Assertions.assertThat(response).contains("반유진 생일은 1999.03.23");
     }
 }
