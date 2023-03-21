@@ -9,6 +9,45 @@ plugins {
     id 'org.springframework.boot' version '2.7.8'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" //querydsl
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+jacocoTestCoverageVerification {
+    // 이 커버리지 기준은 이 글의 맨 아래에서 다시 설명하겠습니다.
+    violationRules {
+        rule {
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.10
+            }
+        }
+    }
+}
+
+test {
+    finalizedBy jacocoTestReport // test 작업이 끝나고 jacocoTestReport를 실행
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    // dependsOn : 이 작업에 지정된 종속성을 추가
+    dependsOn test // jacocoTestReport 에 test라는 종속성을 추가
 }
 
 group = 'com.tify'
