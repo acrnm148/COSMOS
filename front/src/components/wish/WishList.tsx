@@ -1,9 +1,13 @@
 import WishPlace from "../wish/WishPlace";
 import WishCourse from "../wish/WishCourse";
+import CourseDetail from "../wish/CourseDetail";
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function WishList() {
     const [toggle, setToggle] = useState(true); // 장소: true / 코스: false
+    const { wishId } = useParams();
+    const navigate = useNavigate();
 
     return (
         <div>
@@ -15,6 +19,7 @@ export default function WishList() {
                     }
                     onClick={() => {
                         setToggle(true);
+                        navigate("/wish");
                     }}
                 >
                     장소
@@ -26,14 +31,17 @@ export default function WishList() {
                     }
                     onClick={() => {
                         setToggle(false);
+                        navigate("/wish");
                     }}
                 >
                     코스
                 </div>
             </div>
 
-            {toggle && <WishPlace />}
-            {!toggle && <WishCourse />}
+            {wishId === undefined ? toggle && <WishPlace /> : null}
+            {wishId === undefined ? !toggle && <WishCourse /> : null}
+
+            {wishId != undefined && <CourseDetail id={wishId} />}
         </div>
     );
 }

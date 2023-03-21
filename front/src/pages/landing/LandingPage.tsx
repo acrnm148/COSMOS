@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import LightLanding from "../assets/landing/light-landing.gif";
-import Login from "../pages/login/Login";
-import "./LandingPage.css";
+import LightLanding from "../../assets/landing/light-landing.gif";
+import Login from "../login/Login";
+import "../../css/LandingPage.css";
 import useScrollSnap from "react-use-scroll-snap";
 
 export default function LandingPage() {
