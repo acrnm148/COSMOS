@@ -1,7 +1,6 @@
 package com.cosmos.back.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jdk.jfr.Description;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
