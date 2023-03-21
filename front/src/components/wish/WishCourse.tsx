@@ -1,4 +1,3 @@
-import StarIcon from "@mui/icons-material/Star";
 import { Icon } from "@iconify/react";
 import Swal from "sweetalert2";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -88,7 +87,9 @@ export default function WishCourse() {
     return (
         <div>
             <div className="mx-5 mt-5 h-full">
-                <div className="title font-medium text-xl inline-block">찜한 코스</div>
+                <div className="title font-medium text-xl inline-block">
+                    찜한 코스
+                </div>
                 <div className="cnt ml-2 font-bold text-red-600 text-xl inline-block">
                     {list.length}
                 </div>
