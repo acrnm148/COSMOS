@@ -49,7 +49,7 @@ class ReviewApiControllerTest {
 
         String content = objectMapper.writeValueAsString(new ReviewRequestDto(1L, 1L, new ArrayList<>(), 100, "좋습니다."));
 
-        when(reviewService.createReview(any())).thenReturn(100L);
+        when(reviewService.createReview(any(), any())).thenReturn(100L);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .post("/api/reviews")
