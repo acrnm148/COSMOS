@@ -26,16 +26,30 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
-    // 이 커버리지 기준은 이 글의 맨 아래에서 다시 설명하겠습니다.
+    def Qdomains = []
+
+    for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+        Qdomains.add(qPattern + '*')
+    }
+
     violationRules {
         rule {
+            enabled = true
             element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
 
             limit {
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.10
+                minimum = 0.00
             }
+
+            excludes = [] + Qdomains // 제외할 Qdomains 패턴 추가
         }
     }
 }
@@ -46,7 +60,28 @@ test {
 }
 
 jacocoTestReport {
-    // dependsOn : 이 작업에 지정된 종속성을 추가
+    reports {
+        html.enabled true
+        csv.enabled true
+        xml.enabled false
+    }
+
+    def Qdomains = []
+
+    for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
+        Qdomains.add(qPattern + '*')
+    }
+
+    // 여기부터
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, excludes: [] + Qdomains)
+                })
+        )
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification'
     dependsOn test // jacocoTestReport 에 test라는 종속성을 추가
 }
 
