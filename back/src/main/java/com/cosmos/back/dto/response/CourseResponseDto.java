@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -14,12 +15,10 @@ import java.util.List;
 @Data
 @Builder
 public class CourseResponseDto {
-    private Long courseId;
     private String name;
     private String date;
-    private String subCategory;
+    private Long courseId;
+    private List<SimplePlaceDto> dto = new ArrayList<>();
     private Integer orders;
-    private List<SimplePlaceDto> dto;
-
 }
 

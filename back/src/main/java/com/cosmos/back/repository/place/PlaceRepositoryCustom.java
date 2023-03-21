@@ -1,6 +1,7 @@
 package com.cosmos.back.repository.place;
 
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.place.Place;
 
 import java.util.List;
 
@@ -38,4 +39,10 @@ public interface PlaceRepositoryCustom {
 
     // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
     public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String name);
+
+    // QueryDsl로 장소별 별점 평점 가져오기
+    public Double findScoreByPlaceIdQueryDsl(Long placeId);
+
+    // QueryDsl로 시도, 구군, 타입별 장소 리스트 가져오기
+    public List<Place> findAllByTypeAndSidoAndGugun(String type, String sido, String gugun);
 }
