@@ -12,6 +12,8 @@ import com.cosmos.back.model.Course;
 import com.cosmos.back.model.CoursePlace;
 import com.cosmos.back.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,10 +33,10 @@ public class CourseApiController {
 
     @Operation(summary = "코스 생성", description = "코스 생성")
     @PostMapping("/courses")
-    public ResponseEntity<Long> createCourse(@RequestBody CourseRequestDto dto) {
-        Long courseId = courseService.createCourse(dto);
+    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) {
+        CourseResponseDto courseResponseDto = courseService.createCourse(dto);
 
-        return new ResponseEntity<>(courseId, HttpStatus.OK);
+        return new ResponseEntity<>(courseResponseDto, HttpStatus.OK);
     }
 
     @Operation(summary = "코스 삭제", description = "코스 삭제")

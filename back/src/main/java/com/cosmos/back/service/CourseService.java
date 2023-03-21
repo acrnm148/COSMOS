@@ -34,34 +34,53 @@ public class CourseService {
 
     // 코스 생성
     @Transactional
-    public Long createCourse(CourseRequestDto dto) {
+    public CourseResponseDto createCourse(CourseRequestDto dto) {
         Long userSeq = dto.getUserSeq();
-        Long placeId = dto.getPlaceId();
 
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         // 데이트코스 저장
-        Course course = Course.createCourse(user, dto.getName(), dto.getDate(), dto.getSubCategory());
+        Course course = Course.createCourse(user);
         courseRepository.save(course);
 
         List<Place> places = new ArrayList<>();
 
         for (String category : dto.getCategories()) {
-            places.add(chooseOne(category));
+            places.add(chooseOne(category, dto.getSido(), dto.getGugun()));
         }
+
+        CourseResponseDto courseResponseDto = new CourseResponseDto();
+        courseResponseDto.setCourseId(course.getId());
 
         // 순서
         int orders = 1;
         for (Place p : places) {
-            CoursePlace coursePlace = CoursePlace.createCoursePlace(course, p, orders++);
+            CoursePlace coursePlace = CoursePlace.createCoursePlace(course, p, orders);
+
+            SimplePlaceDto placeDto = new SimplePlaceDto();
+
+            placeDto.setPlaceId(p.getId());
+            placeDto.setPlaceName(p.getName());
+            placeDto.setLatitude(p.getLatitude());
+            placeDto.setLongitude(p.getLongitude());
+            placeDto.setThumbNailUrl(p.getThumbNailUrl());
+            placeDto.setAddress(p.getAddress());
+            placeDto.setOverview(p.getDetail());
+            placeDto.setOrders(orders++);
+
+            Double score = placeRepository.findScoreByPlaceIdQueryDsl(p.getId());
+            placeDto.setScore(score);
+
+            courseResponseDto.getDto().add(placeDto);
+
             coursePlaceRepository.save(coursePlace);
         }
 
-        return course.getId();
+        return courseResponseDto;
     }
 
-    public Place chooseOne(String type) {
-        List<Place> places = placeRepository.findAllByType(type);
+    public Place chooseOne(String type, String sido, String gugun) {
+        List<Place> places = placeRepository.findAllByTypeAndSidoAndGugun(type, sido, gugun);
 
         // 빅데이터 알고리즘
         return places.get(0);
@@ -101,7 +120,6 @@ public class CourseService {
                         .courseId(dto.getCourseId())
                         .name(dto.getName())
                         .date(dto.getName())
-                        .subCategory(dto.getSubCategory())
                         .orders(dto.getOrders())
                         .build();
                 for (MyCoursePlaceDto dto2 : myCoursePlaces) {
@@ -143,7 +161,6 @@ public class CourseService {
     public Long updateCourseContents (Long courseId, CourseUpdateContentsRequestDto dto) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
         course.setName(dto.getName());
-        course.setSubCategory(dto.getSubCategory());
         courseRepository.save(course);
         return course.getId();
     }

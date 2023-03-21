@@ -42,7 +42,6 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
                             qCourse.id,
                             qCourse.name,
                             qCourse.date,
-                            qCourse.subCategory,
                             qCourse.orders
                 ))
                 .from(qPlan)
@@ -81,7 +80,6 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
                         qCourse.id,
                         qCourse.name,
                         qCourse.date,
-                        qCourse.subCategory,
                         qCourse.orders
                 ))
                 .from(qPlan)
