@@ -113,7 +113,7 @@ public class PlaceApiController {
     }
 
     // 시도 리스트 가져오기
-    @Operation(summary = "시도 리스트 가져오기", description = "시도 리스트 가져오기")
+    @Operation(summary = "시도 리스트 가져오기", description = "시/도 코드, 시/도 이름을 반환한다")
     @GetMapping("/sido")
     public ResponseEntity<List> sidoList() {
         List<Sido> list = placeService.listSido();
@@ -122,7 +122,7 @@ public class PlaceApiController {
     }
 
     // 시도에 따른 구군 리스트 가져오기
-    @Operation(summary = "구군 리스트 가져오기", description = "구군 리스트 가져오기")
+    @Operation(summary = "구군 리스트 가져오기", description = "시/도의 code 번호를 queryString형식으로 보내주어야 한다.(ex: /gugun/11)")
     @GetMapping("/gugun/{sido}")
     public ResponseEntity<List> gugunList(@PathVariable String sido) {
         List<GugunDto> list = placeService.listGugun(sido);
@@ -136,6 +136,12 @@ public class PlaceApiController {
         List<PlaceListResponseDto> list = placeService.searchPlacesBySidoGugun(sido, gugun, limit, offset);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @Operation(summary = "시/도, 구/군, 검색어, 검색 필터으로 검색", description = "시/도, 구/군, 검색어, 검색 필터를 자유롭게 입력 후 요청(limit과 offset 설정 필요)")
+    @GetMapping("/places/search/sido/{sido}/gugun/{gugun}/text/{text}/filter/{filter}")
+    public ResponseEntity<List> searchPlace(@PathVariable String sido, @PathVariable String gugun, @PathVariable String text, @PathVariable String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
+        List<PlaceSearchListResponseDto> list = placeService
     }
 
     @Operation(summary = "검색어 자동완성", description = "검색어 자동완성")

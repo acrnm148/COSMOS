@@ -140,6 +140,10 @@ public class PlaceService {
         return list;
     }
 
+    public List<PlaceSearchListResponseDto> searchPlacesBySidoGugunTextFilter (String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+
+    }
+
     /**
      * test??
      */

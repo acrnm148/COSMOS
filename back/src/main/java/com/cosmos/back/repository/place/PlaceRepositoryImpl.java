@@ -3,6 +3,7 @@ package com.cosmos.back.repository.place;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.QReview;
 import com.cosmos.back.model.QReviewPlace;
+import com.cosmos.back.model.QUserPlace;
 import com.cosmos.back.model.place.*;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -337,6 +338,39 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .on(qReviewPlace.review.id.eq(qReview.id))
                 .where(qPlace.address.contains(sido).and(qPlace.address.contains(gugun)))
                 .groupBy(qPlace.id)
+                .limit(limit)
+                .offset(offset)
+                .fetch();
+    }
+
+    @Override
+    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+        QPlace qPlace = QPlace.place;
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QUserPlace qUserPlace = QUserPlace.userPlace;
+
+        return queryFactory.select(Projections.constructor(PlaceSearchListResponseDto.class,
+                    qPlace.id,
+                    qPlace.name,
+                    qPlace.address,
+                    qReview.score.avg(),
+                    qPlace.thumbNailUrl,
+                    qPlace.detail,
+                    qPlace.latitude,
+                    qPlace.longitude,
+                    qPlace.type
+                ))
+                .from(qPlace)
+                .leftJoin(qReviewPlace)
+                .on(qPlace.id.eq(qReviewPlace.place.id))
+                .leftJoin(qReview)
+                .on(qReviewPlace.review.id.eq(qReview.id))
+                .fetchJoin()
+                .where(qPlace.address.contains(sido)
+                        .and(qPlace.address.contains(gugun))
+                        .and(qPlace.name.contains(text))
+                        .and(qPlace.type.contains(filter)))
                 .limit(limit)
                 .offset(offset)
                 .fetch();
