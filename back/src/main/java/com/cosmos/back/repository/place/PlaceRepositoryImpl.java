@@ -357,4 +357,32 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .limit(10)
                 .fetch();
     }
+
+    // QueryDsl로 장소별 별점 평점 가져오기
+    @Override
+    public Double findScoreByPlaceIdQueryDsl(Long placeId) {
+        QPlace qPlace = QPlace.place;
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+
+        return queryFactory.select(qReview.score.avg())
+                .from(qPlace)
+                .leftJoin(qReviewPlace)
+                .on(qPlace.id.eq(qReviewPlace.place.id))
+                .leftJoin(qReview)
+                .fetchJoin()
+                .on(qReviewPlace.review.id.eq(qReview.id))
+                .where(qPlace.id.eq(placeId))
+                .groupBy(qPlace.id)
+                .fetchOne();
+    }
+
+    // QueryDsl로 시도, 구군, 타입별 장소 리스트 가져오기
+    @Override
+    public List<Place> findAllByTypeAndSidoAndGugun(String type, String sido, String gugun) {
+        QPlace qPlace = QPlace.place;
+        return queryFactory.selectFrom(qPlace)
+                .where(qPlace.type.eq(type).and(qPlace.address.contains(sido).and(qPlace.address.contains(gugun))))
+                .fetch();
+    }
 }
