@@ -110,8 +110,9 @@ public class ReviewService {
     }
 
     // 리뷰 수정
+    @RedisEvict(key = "review")
     @Transactional
-    public Long changeReview (Long reviewId, ReviewRequestDto dto) {
+    public Long changeReview (Long reviewId, ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         review.setContents(dto.getContents());

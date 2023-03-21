@@ -110,7 +110,7 @@ public class PlaceService {
     }
 
     // 시도 리스트 받아오기
-    //@RedisCached(key = "listSido", expire = 7200)
+    @RedisCached(key = "listSido", expire = 7200)
     public List<Sido> listSido () {
         return sidoRepository.findAll();
     }
@@ -129,13 +129,23 @@ public class PlaceService {
         return gugunDtoList;
     }
 
+    /**
+     * test??
+     */
     // 시도구군으로 장소 검색
-    public List<PlaceListResponseDto> searchPlacesBySidoGugun (String sido, String gugun, Integer limit, Integer offset) {
-        return placeRepository.findPlaceListBySidoGugunQueryDsl(sido, gugun, limit, offset);
+    @RedisCached(key = "searchPlacesBySidoGugun", expire = 7200)
+    public List<PlaceListResponseDto> searchPlacesBySidoGugun (@RedisCachedKeyParam(key = "sido")String sido, @RedisCachedKeyParam(key = "gugun")String gugun, Integer limit, Integer offset) {
+        List<PlaceListResponseDto> list = placeRepository.findPlaceListBySidoGugunQueryDsl(sido, gugun, limit, offset);
+        System.out.println(list);
+        return list;
     }
 
+    /**
+     * test??
+     */
     // 장소 검색 자동 완성
-    public List<AutoCompleteResponseDto> autoCompleteSearchPlacesByName (String name) {
+    @RedisCached(key = "autoCompleteSearchPlacesByName", expire = 7200)
+    public List<AutoCompleteResponseDto> autoCompleteSearchPlacesByName (@RedisCachedKeyParam(key = "name") String name) {
         return placeRepository.findPlaceListByNameAutoCompleteQueryDsl(name);
     }
 }

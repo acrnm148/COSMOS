@@ -63,7 +63,7 @@ public class ReviewApiController {
     @Operation(summary = "내 리뷰 수정하기", description = "내가 쓴 리뷰를 수정한다")
     @PutMapping("/reviews/{reviewId}")
     public ResponseEntity<Long> changeReview(@PathVariable Long reviewId, @RequestBody ReviewRequestDto dto) {
-        Long id = reviewService.changeReview(reviewId, dto);
+        Long id = reviewService.changeReview(reviewId, dto, dto.getUserSeq());
 
         return new ResponseEntity<>(id, HttpStatus.OK);
     }

@@ -11,9 +11,9 @@ import java.util.List;
 import static javax.persistence.FetchType.*;
 
 @Entity
+@Builder
 @Table(name = "sido_code")
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 // 시도
@@ -26,7 +26,9 @@ public class Sido {
     @Column(name = "name")
     private String sidoName;
 
+    /*
     @OneToMany(mappedBy = "sido")
     @JsonIgnore
     private List<Gugun> guguns = new ArrayList<>();
+    */
 }
