@@ -33,10 +33,14 @@ export default function TMap({ state }: any) {
             map: map,
           });
 
-          // marker.on("Click", function () {
-          //   console.log("CLICK");
-          //   // document.getElementById("result").innerHTML = 'Mouse Click!';
-          // });
+          // 웹
+          marker.addListener("click", function () {
+            console.log("CLICK");
+          });
+          // 앱
+          marker.addListener("touchstart", function () {
+            console.log("터치!");
+          });
 
           setMapInstance(map);
         }
