@@ -1,5 +1,7 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.RedisCached;
+import com.cosmos.back.annotation.RedisCachedKeyParam;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.User;
 import com.cosmos.back.model.UserPlace;
@@ -86,6 +88,9 @@ public class PlaceService {
     public Long deleteLikePlace (Long placeId, Long userSeq) {
         Long execute = userPlaceRepository.deleteUserPlaceQueryDsl(placeId, userSeq);
 
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        System.out.println(place.getUserPlaces().size());
+
         // 존재하지 않는 UserPlace 일 때 error 처리
         if (execute == 0) {
             throw new IllegalStateException("존재하지 않는 찜 입니다.");
@@ -95,7 +100,8 @@ public class PlaceService {
     }
 
     // 이름으로 장소 검색
-    public List<PlaceListResponseDto> searchPlacesByName (String name, Integer limit, Integer offset) {
+    @RedisCached(key = "searchPlaceByName", expire = 60)
+    public List<PlaceListResponseDto> searchPlacesByName (@RedisCachedKeyParam(key = "name") String name, Integer limit, Integer offset) {
         return placeRepository.findPlaceListByNameQueryDsl(name, limit, offset);
     }
 

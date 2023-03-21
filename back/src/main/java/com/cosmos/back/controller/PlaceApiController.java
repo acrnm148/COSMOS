@@ -1,5 +1,6 @@
 package com.cosmos.back.controller;
 
+import com.cosmos.back.annotation.RedisCached;
 import com.cosmos.back.dto.request.AutoCompleteRequestDto;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.place.Gugun;
@@ -96,10 +97,10 @@ public class PlaceApiController {
 
     @Operation(summary = "장소 찜 삭제", description = "장소를 찜 해제함")
     @DeleteMapping("/places/{placeId}/users/{userSeq}")
-    public ResponseEntity<?> deleteLikePlace(@PathVariable Long placeId, @PathVariable Long userSeq) {
+    public ResponseEntity<Long> deleteLikePlace(@PathVariable Long placeId, @PathVariable Long userSeq) {
         Long execute = placeService.deleteLikePlace(placeId, userSeq);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(execute, HttpStatus.OK);
     }
 
     @Operation(summary = "이름으로 장소 검색", description = "이름으로 장소 검색")

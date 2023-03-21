@@ -307,7 +307,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .leftJoin(qReview)
                 .fetchJoin()
                 .on(qReviewPlace.review.id.eq(qReview.id))
-                .where(qPlace.name.eq(name))
+                .where(qPlace.name.contains(name))
                 .groupBy(qPlace.id)
                 .limit(limit)
                 .offset(offset)
