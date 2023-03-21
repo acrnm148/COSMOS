@@ -12,7 +12,7 @@ import PlaceSearch from "../pages/place/PlaceSearch";
 import NoHeaderLayout from "../layouts/NoHeaderLayout";
 import KakaoLogin from "../pages/login/KakaoLogin";
 import Login from "../pages/login/Login";
-import Landing from "../pages/LandingPage";
+import Landing from "../pages/landing/LandingPage";
 import PlaceRecommend from "../pages/place/PlaceRecommend";
 import MyPage from "../pages/mypage/MyPage";
 import { MonthSchedulePage } from "../pages/schedule/MonthSchedulePage";
@@ -23,6 +23,7 @@ import { ScheduleReview } from "../pages/schedule/ScheduleReview";
 import { GalleryPage } from "../pages/schedule/GalleryPage";
 import ScheduleLayout from "../layouts/ScheduleLayout";
 import WishList from "../pages/wish/WishList";
+import CourseDetail from "../components/wish/CourseDetail";
 
 const router = createBrowserRouter([
     {
@@ -47,7 +48,10 @@ const router = createBrowserRouter([
         path: "/wish",
         element: <SubLayout />,
         errorElement: <NotFound />,
-        children: [{ path: "/wish", element: <WishList /> }],
+        children: [
+            { path: "", element: <WishList /> },
+            { path: "/wish/course/:wishId", element: <WishList /> },
+        ],
     },
     // 랜딩페이지
     {
