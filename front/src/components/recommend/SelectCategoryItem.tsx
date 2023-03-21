@@ -11,7 +11,7 @@ export default function SelectCategoryItem({ tags }: any) {
   const [tag, setTag] = useState(tags);
 
   return (
-    <div className="flex flex-row justify-center gap-[5vw]">
+    <div className="flex flex-row justify-center gap-[20px]">
       <span className="icon-span">
         <img className="love-icon" src={LoveIcon} alt="" />
       </span>

@@ -7,8 +7,7 @@ export default function PlaceRecommend() {
   const [selects, setSelects] = useState([false, false]);
 
   return (
-    <div className="text-center w-[90%] max-w-[950px] mt-[100px]">
-      <h1>코스추천</h1>
+    <div className="text-center w-[90%] max-w-[950px] mt-[50px]">
       <div className="flex flex-row justify-center gap-[20vw]">
         {selects[0] ? (
           <div
