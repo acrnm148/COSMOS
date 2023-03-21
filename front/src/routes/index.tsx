@@ -23,7 +23,7 @@ import { ScheduleReview } from "../pages/schedule/ScheduleReview";
 import { GalleryPage } from "../pages/schedule/GalleryPage";
 import ScheduleLayout from "../layouts/ScheduleLayout";
 import WishList from "../pages/wish/WishList";
-import CourseDetail from "../components/wish/CourseDetail";
+import PlaceResult from "../pages/place/PlaceResult";
 
 const router = createBrowserRouter([
     {
@@ -68,6 +68,7 @@ const router = createBrowserRouter([
         children: [
             { path: "search", element: <PlaceSearch /> },
             { path: "recommend", element: <PlaceRecommend /> },
+            { path: "result", element: <PlaceResult /> },
         ],
     },
     // 설문조사

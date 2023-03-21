@@ -45,24 +45,22 @@ export default function PlaceSearch() {
   // 자동완성 API
 
   return (
-    <div className="text-center w-[90%] max-w-[950px] mt-[100px]">
-      <h1>장소검색</h1>
+    <div className="text-center w-[90%] max-w-[950px] mt-[50px]">
       <div className="flex flex-row justify-center">
         <select className="basis-1/6 border-4 border-lightMain opacity-50 rounded-lg rounded-r-none focus:outline-none">
           <option className="options" value="">
             시/도
           </option>
+        </select>
+        <select className="basis-1/6 border-4 border-lightMain opacity-50 rounded-lg rounded-r-none rounded-l-none focus:outline-none">
           <option className="options" value="">
             구/군
-          </option>
-          <option className="options" value="">
-            장소명
           </option>
         </select>
         <input
           className="basis-4/6 border-4 border-lightMain opacity-50 rounded-lg rounded-l-none focus:outline-none"
           type="text"
-          placeholder="데이트 지역(시/도, 구/군) / 장소명으로 검색"
+          placeholder="장소명으로 검색"
           onChange={handleSearch}
         />
         <button

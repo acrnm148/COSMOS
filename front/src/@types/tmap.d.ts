@@ -14,7 +14,7 @@ declare global {
     }
     class Marker {
       constructor(options: MarkerOptions);
-      on(click: string, fn: Function): void;
+      addListener(click: string, fn: Function): void;
       // on: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
     }
 
