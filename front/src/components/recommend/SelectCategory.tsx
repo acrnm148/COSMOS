@@ -4,6 +4,7 @@ import SelectCategoryItem from "./SelectCategoryItem";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Logo from "../../assets/login/pinkCosmos.png";
+import Loading from "../../assets/loading/modal-loading.gif";
 
 export default function SelectCategory() {
   const navigate = useNavigate();
@@ -65,18 +66,13 @@ export default function SelectCategory() {
         // 만약 모달창에서 confirm 버튼을 눌렀다면
 
         Swal.fire({
-          imageUrl: Logo,
-          imageWidth: 200,
-          imageHeight: 200,
-          imageAlt: "대체 이미지",
-          title: "L O A D I N G . . .",
-          timer: 3000,
+          html: `<div>
+                  <img class="modal-loading" src=${Logo} />
+                  <img class="modal-loading" src=${Loading} />
+                </div>`,
+          timer: 4000,
           timerProgressBar: true,
           showConfirmButton: false,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
         }).then(() => {
           // 추천 코스 페이지로 이동
           navigate("/place/result");
@@ -86,7 +82,7 @@ export default function SelectCategory() {
   };
 
   return (
-    <div className="mb-[90px]">
+    <div className="mb-[90px] overflow-auto">
       <div
         className="text-right cursor-pointer"
         title="추가"
@@ -100,7 +96,7 @@ export default function SelectCategory() {
         })}
       </div>
       <button
-        className="float-right mr-[10px] text-white bg-lightMain p-[10px] rounded-lg hover:bg-lightMain2"
+        className="float-right mr-[10px] mt-[20px] text-white bg-lightMain p-[10px] rounded-lg hover:bg-lightMain2"
         onClick={handleComplete}
       >
         선택 완료
