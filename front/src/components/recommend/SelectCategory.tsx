@@ -79,7 +79,7 @@ export default function SelectCategory() {
           },
         }).then(() => {
           // 추천 코스 페이지로 이동
-          navigate("/");
+          navigate("/place/result");
         });
       }
     });
