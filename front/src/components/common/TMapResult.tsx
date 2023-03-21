@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import LightMarker from "../../assets/place/light-marker.png";
-export default function TMap({ state }: any) {
+export default function TMapResult({ state, marker }: any) {
+  console.log("TMAP");
   const [position, setPosition] = useState(state);
+  const [markers, setMarkers] = useState(marker);
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
   // 지도 div
   const mapRef = useRef<HTMLDivElement>(null);
@@ -27,20 +29,27 @@ export default function TMap({ state }: any) {
             zoom: 15,
           });
 
-          const marker = new window.Tmapv2.Marker({
-            position: new window.Tmapv2.LatLng(lat, lng),
-            icon: LightMarker,
-            map: map,
-          });
+          console.log(markers);
+          for (let i = 0; i < markers.length; i++) {
+            const placeId = markers[i].placeId;
+            const marker = new window.Tmapv2.Marker({
+              position: new window.Tmapv2.LatLng(
+                markers[i].lat,
+                markers[i].lng
+              ),
+              icon: LightMarker,
+              map: map,
+            });
 
-          // 웹
-          marker.addListener("click", function () {
-            console.log("CLICK");
-          });
-          // 앱
-          marker.addListener("touchstart", function () {
-            console.log("터치!");
-          });
+            // 웹
+            marker.addListener("click", function () {
+              console.log("CLICK", placeId);
+            });
+            // 앱
+            marker.addListener("touchstart", function () {
+              console.log("터치!");
+            });
+          }
 
           setMapInstance(map);
         }
@@ -48,7 +57,7 @@ export default function TMap({ state }: any) {
     } else {
       console.error("TmapV2 API is not loaded");
     }
-  }, [state]);
+  }, []);
 
   return <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>;
 }
