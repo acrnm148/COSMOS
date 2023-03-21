@@ -2,7 +2,10 @@ package com.cosmos.back.service;
 
 import com.cosmos.back.annotation.RedisCached;
 import com.cosmos.back.annotation.RedisCachedKeyParam;
+import com.cosmos.back.dto.GugunDto;
+import com.cosmos.back.dto.response.ImageResponseDto;
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.Image;
 import com.cosmos.back.model.User;
 import com.cosmos.back.model.UserPlace;
 import com.cosmos.back.model.place.Gugun;
@@ -17,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -106,13 +110,23 @@ public class PlaceService {
     }
 
     // 시도 리스트 받아오기
+    //@RedisCached(key = "listSido", expire = 7200)
     public List<Sido> listSido () {
         return sidoRepository.findAll();
     }
 
     // 구군 리스트 받아오기
-    public List<Gugun> listGugun (String code) {
-        return gugunRepository.findBysidoCode(code);
+    @RedisCached(key = "listGugun", expire = 7200)
+    public List<GugunDto> listGugun (@RedisCachedKeyParam(key = "code") String code) {
+        List<Gugun> gugunList = gugunRepository.findBysidoCode(code);
+        List<GugunDto> gugunDtoList = new ArrayList<>();
+        for (Gugun item : gugunList) {
+            gugunDtoList.add(GugunDto.builder()
+                            .gugunCode(item.getGugunCode())
+                            .gugunName(item.getGugunName())
+                    .build());
+        }
+        return gugunDtoList;
     }
 
     // 시도구군으로 장소 검색

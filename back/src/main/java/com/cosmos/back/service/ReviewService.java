@@ -1,5 +1,8 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.RedisCached;
+import com.cosmos.back.annotation.RedisCachedKeyParam;
+import com.cosmos.back.annotation.RedisEvict;
 import com.cosmos.back.dto.request.ReviewRequestDto;
 import com.cosmos.back.dto.response.review.ReviewResponseDto;
 import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
@@ -33,8 +36,9 @@ public class ReviewService {
 
     //리뷰 쓰기
     @Transactional
-    public Long createReview(ReviewRequestDto dto) {
-        Long userSeq = dto.getUserSeq();
+    @RedisEvict(key = "review")
+    public Long createReview(ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
+        //Long userSeq = dto.getUserSeq();
 
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
         Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
@@ -55,7 +59,8 @@ public class ReviewService {
 
     // 리뷰 삭제하기
     @Transactional
-    public Long deleteReview (Long reviewId, Long userSeq) {
+    @RedisEvict(key = "review")
+    public Long deleteReview (Long reviewId, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
         Long executeReviewCategory = reviewRepository.deleteReviewCategoryQueryDsl(reviewId);
         Long executeReviewPlace = reviewRepository.deleteReviewPlaceQueryDsl(reviewId);
         Long executeReview = reviewRepository.deleteReviewQueryDsl(reviewId);
@@ -84,7 +89,8 @@ public class ReviewService {
     }
 
     // 내 리뷰 모두 불러오기
-    public List<ReviewUserResponseDto> findReviewsInUser (Long userSeq) {
+    @RedisCached(key = "review", expire = 240)
+    public List<ReviewUserResponseDto> findReviewsInUser (@RedisCachedKeyParam(key = "userSeq") Long userSeq) {
         List<Review> review = reviewRepository.findReviewInUserQueryDsl(userSeq);
 
         List<ReviewUserResponseDto> list = new ArrayList<>();
