@@ -1,0 +1,13 @@
+#listBox {
+  transition: all 0.5s;
+}
+.slick-dots {
+  text-align: center;
+}
+.slider-img {
+  text-align: center;
+}
+.slider-img img {
+  width: 40%;
+  margin: auto;
+}
