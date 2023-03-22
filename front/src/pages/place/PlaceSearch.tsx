@@ -17,6 +17,7 @@ export default function PlaceSearch() {
   const [searchWord, setSearchWord] = useState("");
 
   console.log(sido);
+
   const handleSearch = (e: any) => {
     setSearchWord(e.target.value);
   };
@@ -63,7 +64,6 @@ export default function PlaceSearch() {
         ) : (
           <GugunList selectedSidoCode={sido} setGugun={setGugun} />
         )}
-
         <input
           className="basis-4/6 border-4 border-lightMain opacity-50 rounded-lg rounded-l-none focus:outline-none"
           type="text"
