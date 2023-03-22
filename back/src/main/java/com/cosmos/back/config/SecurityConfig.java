@@ -4,7 +4,7 @@ package com.cosmos.back.config;
 
 import com.cosmos.back.auth.jwt.filter.JwtAuthorizationFilter;
 import com.cosmos.back.auth.jwt.service.JwtService;
-import com.cosmos.back.repository.UserRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
