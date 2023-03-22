@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GugunRepository extends JpaRepository<Gugun, String> {
+public interface GugunRepository extends JpaRepository<Gugun, Integer> {
     @Query(value = "SELECT * FROM gugun_code gc WHERE gc.sido_code = :sidoCode", nativeQuery = true)
-    public List<Gugun> findBysidoCode(@Param("sidoCode") String sidoCode);
+    public List<Gugun> findBysidoCode(@Param("sidoCode") Integer sidoCode);
 }
