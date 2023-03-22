@@ -1,6 +1,7 @@
 package com.cosmos.back.controller;
 
 import com.cosmos.back.annotation.RedisCached;
+import com.cosmos.back.dto.GugunDto;
 import com.cosmos.back.dto.request.AutoCompleteRequestDto;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.place.Gugun;
@@ -124,7 +125,7 @@ public class PlaceApiController {
     @Operation(summary = "구군 리스트 가져오기", description = "구군 리스트 가져오기")
     @GetMapping("/gugun/{sido}")
     public ResponseEntity<List> gugunList(@PathVariable String sido) {
-        List<Gugun> list = placeService.listGugun(sido);
+        List<GugunDto> list = placeService.listGugun(sido);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }

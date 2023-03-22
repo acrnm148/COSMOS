@@ -80,7 +80,7 @@ class ReviewServiceTest {
         when(reviewRepository.save(any())).thenReturn(mockReview);
 
 
-        Long id = reviewService.createReview(mockDto);
+        Long id = reviewService.createReview(mockDto, mockDto.getUserSeq());
 
         assertEquals(mockReview.getContents(), "가지 마세요");
     }

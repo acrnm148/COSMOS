@@ -1,9 +1,7 @@
 package com.cosmos.back.model.place;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -14,6 +12,8 @@ import static javax.persistence.FetchType.*;
 @Getter
 @Table(name = "gugun_code")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 // 구군
 public class Gugun {
 
