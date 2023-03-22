@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import LightMarker from "../../assets/place/light-marker.png";
 export default function TMapResult({ state, marker }: any) {
-  console.log("TMAP");
   const [position, setPosition] = useState(state);
   const [markers, setMarkers] = useState(marker);
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
@@ -29,7 +28,6 @@ export default function TMapResult({ state, marker }: any) {
             zoom: 15,
           });
 
-          console.log(markers);
           for (let i = 0; i < markers.length; i++) {
             const placeId = markers[i].placeId;
             const marker = new window.Tmapv2.Marker({
