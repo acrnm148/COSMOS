@@ -41,7 +41,7 @@ public interface PlaceRepositoryCustom {
     public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset);
 
     // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
-    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String name);
+    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String searchWord);
 
     // QueryDsl로 장소별 별점 평점 가져오기
     public Double findScoreByPlaceIdQueryDsl(Long placeId);

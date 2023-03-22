@@ -90,8 +90,8 @@ public class PlaceService {
      */
     // 장소 검색 자동 완성
     @RedisCached(key = "autoCompleteSearchPlacesByName", expire = 7200)
-    public List<AutoCompleteResponseDto> autoCompleteSearchPlacesByName (@RedisCachedKeyParam(key = "name") String name) {
-        return placeRepository.findPlaceListByNameAutoCompleteQueryDsl(name);
+    public List<AutoCompleteResponseDto> autoCompleteSearchPlacesByName (@RedisCachedKeyParam(key = "searchWord") String searchWord) {
+        return placeRepository.findPlaceListByNameAutoCompleteQueryDsl(searchWord);
     }
 
     ///////////////////////////////완성 로직///////////////////////////////////////
