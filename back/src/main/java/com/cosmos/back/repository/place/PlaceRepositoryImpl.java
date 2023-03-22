@@ -3,6 +3,7 @@ package com.cosmos.back.repository.place;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.QReview;
 import com.cosmos.back.model.QReviewPlace;
+import com.cosmos.back.model.QUser;
 import com.cosmos.back.model.QUserPlace;
 import com.cosmos.back.model.place.*;
 import com.querydsl.core.types.ExpressionUtils;
@@ -343,8 +344,33 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetch();
     }
 
+//    @Override
+//    public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl (Long placeId, Long userSeq) {
+//        QUserPlace qUserPlace = QUserPlace.userPlace;
+//        QPlace qPlace = QPlace.place;
+//
+//        Boolean result;
+//
+//        Integer like = queryFactory
+//                .selectOne()
+//                .from(qUserPlace)
+//                .where(qUserPlace.user.userSeq.eq(userSeq).and(qPlace.id.eq(qUserPlace.place.id)))
+//                .fetchFirst();
+//
+//        System.out.println("like 이것은 무엇이려나 = " + like);
+//
+//        if (like > 0) {
+//            result = true;
+//        } else {
+//            result = false;
+//        }
+//
+//        return result;
+//    }
+
+    // 시/도, 구/군, 검색어, 검색필터를 통한 장소 검색
     @Override
-    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
         QPlace qPlace = QPlace.place;
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
@@ -359,18 +385,22 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qPlace.detail,
                     qPlace.latitude,
                     qPlace.longitude,
-                    qPlace.type
+                    qPlace.type,
+                    qUserPlace.id.count().gt(0)
                 ))
                 .from(qPlace)
                 .leftJoin(qReviewPlace)
-                .on(qPlace.id.eq(qReviewPlace.place.id))
+                .on(qReviewPlace.review.id.eq(qPlace.id))
                 .leftJoin(qReview)
-                .on(qReviewPlace.review.id.eq(qReview.id))
+                .on(qReview.id.eq(qReviewPlace.review.id))
                 .fetchJoin()
+                .leftJoin(qUserPlace)
+                .on(qPlace.id.eq(qUserPlace.place.id))
                 .where(qPlace.address.contains(sido)
                         .and(qPlace.address.contains(gugun))
                         .and(qPlace.name.contains(text))
                         .and(qPlace.type.contains(filter)))
+                .groupBy(qPlace.id)
                 .limit(limit)
                 .offset(offset)
                 .fetch();
