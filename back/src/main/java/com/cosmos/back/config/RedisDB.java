@@ -1,9 +1,10 @@
 package com.cosmos.back.config;
 
-import com.google.common.base.CaseFormat;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import redis.clients.jedis.Jedis;
 
@@ -47,9 +48,14 @@ public class RedisDB {
 
     public <T> void set(String key, Object value, Class<T> tClass) {
         try {
-            String camelKey = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, key); // returns CAMEL_CASE
             jedis.connect();
-            jedis.set(camelKey, gson.toJson(value, tClass));
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.setFieldNamingStrategy(new CustomNamingConfig());
+            Gson gson = gsonBuilder.create();
+
+            jedis.set(key, gson.toJson(value, tClass));
+
         } catch (Throwable t) {
             t.printStackTrace();
         } finally {
