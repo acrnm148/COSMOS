@@ -404,7 +404,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
 
     // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
     @Override
-    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String name) {
+    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String searchWord) {
         QPlace qPlace = QPlace.place;
 
         return queryFactory.select(Projections.constructor(AutoCompleteResponseDto.class,
@@ -413,7 +413,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qPlace.thumbNailUrl
                 ))
                 .from(qPlace)
-                .where(qPlace.name.contains(name))
+                .where(qPlace.name.contains(searchWord))
                 .limit(10)
                 .fetch();
     }
