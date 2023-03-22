@@ -3,8 +3,6 @@ import ListCard from "../common/ListCard";
 import like from "../../assets/like.png";
 import noLike from "../../assets/no-like.png";
 import Swal from "sweetalert2";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import "../../css/listItem.css";
 import Modal from "../common/Modal";
 import Slider from "react-slick";
@@ -15,9 +13,7 @@ import StarIcon from "@mui/icons-material/Star";
 
 export default function ItemList() {
   const [isLike, setIsLike] = useState(false);
-  const [up, setUp] = useState(false);
   const [review, setReview] = useState(false);
-
   const [modalOpen, setModalOpen] = useState(false);
 
   const settings = {
@@ -34,18 +30,6 @@ export default function ItemList() {
   };
   const closeModal = () => {
     setModalOpen(false);
-  };
-
-  const handleDropBtn = () => {
-    setUp((cur) => !cur);
-    const list = document.querySelector("#listBox") as HTMLElement;
-    if (up) {
-      list.style.marginTop = "0px";
-      list.style.height = "70vh";
-    } else {
-      list.style.marginTop = "-400px";
-      list.style.height = "120vh";
-    }
   };
 
   const handleLikeButton = (e: React.MouseEvent) => {
@@ -71,26 +55,12 @@ export default function ItemList() {
     setIsLike((cur) => !cur);
   };
   return (
-    <div
-      className="mb-[50px] z-[100000] bg-white h-[70vh] relative"
-      id="listBox"
-    >
-      {up ? (
-        <ArrowDropDownIcon
-          fontSize="large"
-          color="disabled"
-          onClick={handleDropBtn}
-        />
-      ) : (
-        <ArrowDropUpIcon
-          fontSize="large"
-          color="disabled"
-          onClick={handleDropBtn}
-        />
-      )}
-
+    <>
       <ListCard>
-        <div className="flex flex-row relative" onClick={openModal}>
+        <div
+          className="flex flex-row relative card-content"
+          onClick={openModal}
+        >
           <div className="flex justify-center my-auto basis-3/12">
             <img
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQC0rn6j8ZXwbLsoNdV5CEGem6iXs3JLMuykklndrH&s"
@@ -211,6 +181,6 @@ export default function ItemList() {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }
