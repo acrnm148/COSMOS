@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Cosmos from "../../assets/login/pinkCosmos.png"
+import Cosmos from "../../src/assets/login/pinkCosmos.png"
 
 declare const window: typeof globalThis & {
     Kakao: any;
@@ -19,12 +19,12 @@ export default function Login(){
     }
     return(
         <>
-            <div className="w-full flex flex-col content-center justify-center p-10 items-center">
-                <img src={Cosmos} alt="" />
-                <p className="text-sm">간편하게 코스모스를 시작해보세요</p>
+            <div className="flex flex-col content-center justify-center p-10 items-center">
+                {/* <img src={Cosmos} alt="" /> */}
+                <p>간편하게 코스모스를 시작해보세요</p>
                 <button 
                     onClick={KakaoLogin}
-                    className="h-12 w-5/6 rounded-md flex justify-center"
+                    className="h-12 w-5/6 rounded-md"
                 >
                     <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222"
                 alt="카카오 로그인 버튼" />

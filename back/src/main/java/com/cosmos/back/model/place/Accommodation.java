@@ -1,7 +1,10 @@
 package com.cosmos.back.model.place;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -13,6 +16,8 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @DiscriminatorValue("accommodation")
 @Table(name = "accommodation")
+@Getter
+@SuperBuilder
 public class Accommodation extends Place {
 
     @Column(name = "acceptable_people")
@@ -37,7 +42,7 @@ public class Accommodation extends Place {
     private String reservationPage; // 예약안내 홈페이지
 
     @Column(name = "pickup_yn")
-    private String pickUpYn; // 픽업 서비스 가능 여부
+    private String pickupYn; // 픽업 서비스 가능 여부
 
     @Column(name = "karaoke_yn")
     private String karaokeYn; // 노래방 존재 여부
