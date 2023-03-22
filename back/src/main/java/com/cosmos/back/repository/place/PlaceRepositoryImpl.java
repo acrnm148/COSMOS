@@ -344,7 +344,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetch();
     }
 
-    // 장소 좋아요 확인하기
+    // 장소 찜 확인하기
     @Override
     public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl (Long placeId, Long userSeq) {
         QUserPlace qUserPlace = QUserPlace.userPlace;
@@ -392,6 +392,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetchJoin()
                 .leftJoin(qUserPlace)
                 .on(qPlace.id.eq(qUserPlace.place.id))
+                .fetchJoin()
                 .where(qPlace.address.contains(sido)
                         .and(qPlace.address.contains(gugun))
                         .and(qPlace.name.contains(text))

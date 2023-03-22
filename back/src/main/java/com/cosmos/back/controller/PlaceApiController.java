@@ -58,12 +58,16 @@ public class PlaceApiController {
 //    }
 
     @Operation(summary = "검색어 자동완성", description = "검색어의 낱말을 포함한 가게 이름을 나열함")
-    @GetMapping("/places/auto/{searchWord}")
-    public ResponseEntity<?> search(@PathVariable String searchWord) {
-        System.out.println("searchWord = " + searchWord);
-        List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(searchWord);
-
-        return new ResponseEntity<>(autoCompleteResponseDto, HttpStatus.OK);
+    @GetMapping(value = {"/places/auto/{searchWord}",
+            "/places/auto/"
+    })
+    public ResponseEntity<?> search(@PathVariable(required = false) String searchWord) {
+        if (searchWord != null) {
+            List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(searchWord);
+            return new ResponseEntity<>(autoCompleteResponseDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
     }
 
     /////////////////////////////////완성////////////////////////////////////////
@@ -165,7 +169,7 @@ public class PlaceApiController {
         if (text == null) {text = "";}
         if (filter == null) {filter = "";}
 
-        List<PlaceSearchListResponseDto> list = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
+        List<PlaceFilterResponseDto> list = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
