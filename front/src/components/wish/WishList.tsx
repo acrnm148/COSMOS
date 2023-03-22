@@ -11,7 +11,7 @@ export default function WishList() {
 
     return (
         <div>
-            <div className="menu w-full h-16 flex items-center">
+            <div className="menu w-full h-16 bg-white flex items-center overflow-hidden">
                 <div
                     className={
                         "placeBtn w-1/2 h-full pt-[18px] float-left text-center text-xl" +
@@ -27,7 +27,9 @@ export default function WishList() {
                 <div
                     className={
                         "courseBtn w-1/2 h-full pt-[18px] float-left text-center text-xl" +
-                        (!toggle ? " font-bold border-b-4 border-lightMain" : "")
+                        (!toggle
+                            ? " font-bold border-b-4 border-lightMain"
+                            : "")
                     }
                     onClick={() => {
                         setToggle(false);

@@ -1,5 +1,4 @@
 import { Icon } from "@iconify/react";
-import Swal from "sweetalert2";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export default function WishCourse() {

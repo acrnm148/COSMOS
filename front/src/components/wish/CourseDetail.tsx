@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import TMapResult from "../common/TMapResult";
-import { useRef } from "react";
-import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
+import ListCard from "../common/ListCard";
+import { Icon } from "@iconify/react";
 
 interface Place {
     idx: number;
@@ -10,17 +10,19 @@ interface Place {
     category: string;
     location: string;
     date: string;
+    phoneNumber: string;
 }
 
 const testPlace: Place[] = [
     {
         idx: 0,
-        name: "해운대 우시야 ",
+        name: "해운대 우시야",
         thumbNailUrl:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
         category: "음식",
         location: "부산",
         date: "2023년 2월 28일",
+        phoneNumber: "010-1234-5678",
     },
     {
         idx: 1,
@@ -30,6 +32,7 @@ const testPlace: Place[] = [
         category: "카페",
         location: "부산",
         date: "2023년 2월 28일",
+        phoneNumber: "051-351-2345",
     },
     {
         idx: 2,
@@ -39,6 +42,7 @@ const testPlace: Place[] = [
         category: "문화",
         location: "부산",
         date: "2023년 2월 28일",
+        phoneNumber: "010-1234-5678",
     },
 ];
 
@@ -72,27 +76,71 @@ export default function CourseDetail(props: { id: any }) {
         setPlaces([...testPlace]);
     }, []);
 
-    const sheetRef = useRef<BottomSheetRef>(null);
-
     return (
         <div>
-            <TMapResult state={state} marker={marker} />
+            <div className="text-center w-full max-w-[950px] overflow-y-scroll">
+                <TMapResult state={state} marker={marker} className="fixed" />
 
-            <BottomSheet open ref={sheetRef}>
-                <button
-                    onClick={() => {
-                        // Full typing for the arguments available in snapTo, yay!!
-                        {
-                            sheetRef.current &&
-                                sheetRef.current.snapTo(
-                                    ({ maxHeight }) => maxHeight
-                                );
-                        }
-                    }}
-                >
-                    Expand to full height
-                </button>
-            </BottomSheet>
+                <ListCard height={70}>
+                    {testPlace.map((a: Place) => (
+                        <Item item={a}></Item>
+                    ))}
+                </ListCard>
+            </div>
+
+            <div className="btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]">
+                <div className="float-left w-1/3 m-auto">
+                    <Icon
+                        icon="material-symbols:share-outline"
+                        width="20"
+                        height="20"
+                        className="inline-block mr-2 mb-1 "
+                    />
+                    공유
+                </div>
+                <div className="float-left w-1/3 m-auto">
+                    <Icon
+                        icon="material-symbols:edit-outline-rounded"
+                        width="22"
+                        height="22"
+                        className="inline-block mr-2 mb-1"
+                    />
+                    편집
+                </div>
+                <div className="float-left w-1/3 m-auto">
+                    <Icon
+                        icon="material-symbols:delete-forever-outline"
+                        width="22"
+                        height="22"
+                        className="inline-block mr-2 mb-1"
+                    />
+                    삭제
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function Item(props: { item: Place }) {
+    return (
+        <div>
+            <div className="idx absolute left-3 pt-1 bg-lightMain text-white w-10 h-10 rounded-full text-xl font-bold">
+                {props.item.idx}
+            </div>
+            <div className="col-md-4 mb-4 ml-4 mr-4 p-3 bg-calendarGray rounded-lg">
+                <img
+                    className="float-left w-24 h-24 mr-4 rounded-md"
+                    src={props.item.thumbNailUrl}
+                    alt="img"
+                />
+                <div className="text-left mt-2 mb-2">
+                    <div className="font-bold mb-2">{props.item.name}</div>
+                    <div className="mb-2 text-sm text-gray-500">
+                        {props.item.location}
+                    </div>
+                    <div className="text-sm">{props.item.phoneNumber}</div>
+                </div>
+            </div>
         </div>
     );
 }
