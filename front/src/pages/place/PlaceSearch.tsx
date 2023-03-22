@@ -10,12 +10,13 @@ import GugunList from "../../components/search/GugunList";
 
 export default function PlaceSearch() {
   // 시/도
-  const [sido, setSido] = useState({ code: "0", name: "" });
+  const [sido, setSido] = useState();
   // 구/군
-  const [gugun, setGugun] = useState({ code: "0", name: "" });
+  const [gugun, setGugun] = useState();
   // 검색어
   const [searchWord, setSearchWord] = useState("");
 
+  console.log(sido);
   const handleSearch = (e: any) => {
     setSearchWord(e.target.value);
   };
@@ -55,7 +56,14 @@ export default function PlaceSearch() {
     <div className="text-center w-[90%] max-w-[950px] mt-[50px]">
       <div className="flex flex-row justify-center">
         <SidoList setSido={setSido} />
-        <GugunList selectedSidoCode={sido} setGugun={setGugun} />
+        {sido === undefined ? (
+          <select className="basis-1/6 border-4 border-lightMain opacity-50 rounded-lg rounded-r-none rounded-l-none focus:outline-none">
+            <option value="">구/군 선택</option>
+          </select>
+        ) : (
+          <GugunList selectedSidoCode={sido} setGugun={setGugun} />
+        )}
+
         <input
           className="basis-4/6 border-4 border-lightMain opacity-50 rounded-lg rounded-l-none focus:outline-none"
           type="text"
