@@ -59,7 +59,7 @@ public class PlaceApiController {
 
     @Operation(summary = "검색어 자동완성", description = "검색어의 낱말을 포함한 가게 이름을 나열함")
     @GetMapping("/places/auto/{searchWord}")
-    public ResponseEntity<List> search(@PathVariable String searchWord) {
+    public ResponseEntity<?> search(@PathVariable String searchWord) {
         System.out.println("searchWord = " + searchWord);
         List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(searchWord);
 

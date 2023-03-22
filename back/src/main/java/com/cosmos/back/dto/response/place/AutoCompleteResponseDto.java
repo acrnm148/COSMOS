@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class AutoCompleteResponseDto {
-
     private Long placeId;
     private String name;
     private String thumbNailUrl;
