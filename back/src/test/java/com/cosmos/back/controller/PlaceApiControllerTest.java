@@ -1,6 +1,7 @@
 package com.cosmos.back.controller;
 
 import com.cosmos.back.annotation.EnableMockMvc;
+import com.cosmos.back.dto.GugunDto;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.place.Gugun;
 import com.cosmos.back.model.place.Sido;
@@ -362,7 +363,10 @@ class PlaceApiControllerTest {
         mockList.add(gugun1);
         mockList.add(gugun2);
 
-        when(placeService.listGugun(anyString())).thenReturn(mockList);
+        List<GugunDto> mockDtoList = new ArrayList<>();
+        mockDtoList.add(new GugunDto(gugun1.getGugunName(), gugun1.getGugunCode()));
+
+        when(placeService.listGugun(anyString())).thenReturn(mockDtoList);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/api/gugun/11")

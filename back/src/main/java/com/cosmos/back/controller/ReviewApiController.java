@@ -27,7 +27,7 @@ public class ReviewApiController {
     @Operation(summary = "리뷰 등록", description = "리뷰를 등록함, 헤더에 토큰 필요")
     @PostMapping("/reviews")
     public ResponseEntity<Long> createReview(@RequestBody ReviewRequestDto dto) {
-        Long reviewId = reviewService.createReview(dto);
+        Long reviewId = reviewService.createReview(dto, dto.getUserSeq());
 
         return new ResponseEntity<>(reviewId, HttpStatus.OK);
     }
@@ -63,7 +63,7 @@ public class ReviewApiController {
     @Operation(summary = "내 리뷰 수정하기", description = "내가 쓴 리뷰를 수정한다")
     @PutMapping("/reviews/{reviewId}")
     public ResponseEntity<Long> changeReview(@PathVariable Long reviewId, @RequestBody ReviewRequestDto dto) {
-        Long id = reviewService.changeReview(reviewId, dto);
+        Long id = reviewService.changeReview(reviewId, dto, dto.getUserSeq());
 
         return new ResponseEntity<>(id, HttpStatus.OK);
     }

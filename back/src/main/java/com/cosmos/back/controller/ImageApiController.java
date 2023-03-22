@@ -29,9 +29,9 @@ public class ImageApiController {
     }
 
     @Operation(summary = "사진 삭제", description = "사진을 삭제함")
-    @DeleteMapping("/pictures/{imageId}")
-    public ResponseEntity<?> deleteImage(@PathVariable Long imageId) {
-        imageService.deleteImage(imageId);
+    @DeleteMapping("/pictures/{imageId}/{coupleId}")
+    public ResponseEntity<?> deleteImage(@PathVariable("imageId") Long imageId, @PathVariable("coupleId") Long coupleId) {
+        imageService.deleteImage(imageId, coupleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
