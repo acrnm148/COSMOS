@@ -40,22 +40,22 @@ public class PlaceApiController {
         return new ResponseEntity<>(execute, HttpStatus.OK);
     }
 
-    @Operation(summary = "이름으로 장소 검색", description = "이름으로 장소 검색")
-    @GetMapping("/places/{name}")
-    public ResponseEntity<List> search(@PathVariable String name, @RequestParam Integer limit, @RequestParam Integer offset) {
-        List<PlaceListResponseDto> list = placeService.searchPlacesByName(name, limit, offset);
-
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-
-
-    @Operation(summary = "시도구군으로 장소 검색", description = "시도구군으로 장소 검색")
-    @GetMapping("/places/search/sido/{sido}/gugun/{gugun}")
-    public ResponseEntity<List> search(@PathVariable String sido, @PathVariable String gugun, @RequestParam Integer limit, @RequestParam Integer offset) {
-        List<PlaceListResponseDto> list = placeService.searchPlacesBySidoGugun(sido, gugun, limit, offset);
-
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
+//    @Operation(summary = "이름으로 장소 검색", description = "이름으로 장소 검색")
+//    @GetMapping("/places/{name}")
+//    public ResponseEntity<List> search(@PathVariable String name, @RequestParam Integer limit, @RequestParam Integer offset) {
+//        List<PlaceListResponseDto> list = placeService.searchPlacesByName(name, limit, offset);
+//
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//    }
+//
+//
+//    @Operation(summary = "시도구군으로 장소 검색", description = "시도구군으로 장소 검색")
+//    @GetMapping("/places/search/sido/{sido}/gugun/{gugun}")
+//    public ResponseEntity<List> search(@PathVariable String sido, @PathVariable String gugun, @RequestParam Integer limit, @RequestParam Integer offset) {
+//        List<PlaceListResponseDto> list = placeService.searchPlacesBySidoGugun(sido, gugun, limit, offset);
+//
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//    }
 
     @Operation(summary = "검색어 자동완성", description = "검색어 자동완성")
     @PostMapping("/places/auto")
@@ -86,33 +86,65 @@ public class PlaceApiController {
     }
 
     @Operation(summary = "장소 상세 정보 가져오기", description = "장소의 고유 placeId와 type(\"tour\", \"festival\", \"accommodation\", \"restaurant\", \"cafe\", \"shopping\", \"leisure\", \"culture\")을 요청해야함")
-    @GetMapping("/places/detail/id/{placeId}/type/{type}")
-    public ResponseEntity<?> detailPlace(@PathVariable Long placeId, @PathVariable String type) {
+    @GetMapping("/places/detail/users/{userSeq}/placeId/{placeId}/type/{type}")
+    public ResponseEntity<?> detailPlace(@PathVariable Long userSeq, @PathVariable Long placeId, @PathVariable String type) {
         switch (type) {
             case "tour":
-                TourResponseDto tourResponseDto = placeService.detailTour(placeId);
-                return new ResponseEntity<>(tourResponseDto, HttpStatus.OK);
+                TourResponseDto tourResponseDto = placeService.detailTour(placeId, userSeq);
+                if (tourResponseDto == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(tourResponseDto, HttpStatus.OK);
+                }
             case "festival":
-                FestivalResponseDto festivalResponseDto = placeService.detailFestival(placeId);
-                return new ResponseEntity<>(festivalResponseDto, HttpStatus.OK);
+                FestivalResponseDto festivalResponseDto = placeService.detailFestival(placeId, userSeq);
+                if (festivalResponseDto == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(festivalResponseDto, HttpStatus.OK);
+                }
             case "accommodation":
-                AccommodationResponseDto accommodationResponseDto = placeService.detailAccommodation(placeId);
-                return new ResponseEntity<>(accommodationResponseDto, HttpStatus.OK);
+                AccommodationResponseDto accommodationResponseDto = placeService.detailAccommodation(placeId, userSeq);
+                if (accommodationResponseDto == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(accommodationResponseDto, HttpStatus.OK);
+                }
             case "restaurant":
-                RestaurantResponseDto restaurantResponseDto = placeService.detailRestaurant(placeId);
-                return new ResponseEntity<>(restaurantResponseDto, HttpStatus.OK);
+                RestaurantResponseDto restaurantResponseDto = placeService.detailRestaurant(placeId, userSeq);
+                if (restaurantResponseDto == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(restaurantResponseDto, HttpStatus.OK);
+                }
             case "cafe":
-                CafeResponseDto cafeResponseDto = placeService.detailCafe(placeId);
-                return new ResponseEntity<>(cafeResponseDto, HttpStatus.OK);
+                CafeResponseDto cafeResponseDto = placeService.detailCafe(placeId, userSeq);
+                if (cafeResponseDto == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(cafeResponseDto, HttpStatus.OK);
+                }
             case "shopping":
-                ShoppingResponseDto shoppingResponseDto = placeService.detailShopping(placeId);
-                return new ResponseEntity<>(shoppingResponseDto, HttpStatus.OK);
+                ShoppingResponseDto shoppingResponseDto = placeService.detailShopping(placeId, userSeq);
+                if (shoppingResponseDto == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(shoppingResponseDto, HttpStatus.OK);
+                }
             case "leisure":
-                LeisureResponseDto leisureResponseDto = placeService.detailLeisure(placeId);
-                return new ResponseEntity<>(leisureResponseDto, HttpStatus.OK);
+                LeisureResponseDto leisureResponseDto = placeService.detailLeisure(placeId, userSeq);
+                if (leisureResponseDto == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(leisureResponseDto, HttpStatus.OK);
+                }
             case "culture":
-                CultureResponseDto cultureResponseDto = placeService.detailCulture(placeId);
-                return new ResponseEntity<>(cultureResponseDto, HttpStatus.OK);
+                CultureResponseDto cultureResponseDto = placeService.detailCulture(placeId, userSeq);
+                if (cultureResponseDto == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(cultureResponseDto, HttpStatus.OK);
+                }
             default: return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }

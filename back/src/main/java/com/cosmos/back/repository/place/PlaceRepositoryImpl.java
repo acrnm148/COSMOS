@@ -81,7 +81,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         qFestival.takenTime
                 ))
                 .from(qFestival)
-                .where(qFestival.id.eq(placeId))
+                .where(qFestival.id.eq(placeId).and(qFestival.startDate.gt("20230322")))
                 .fetchOne();
     }
 
@@ -344,29 +344,26 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetch();
     }
 
-//    @Override
-//    public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl (Long placeId, Long userSeq) {
-//        QUserPlace qUserPlace = QUserPlace.userPlace;
-//        QPlace qPlace = QPlace.place;
-//
-//        Boolean result;
-//
-//        Integer like = queryFactory
-//                .selectOne()
-//                .from(qUserPlace)
-//                .where(qUserPlace.user.userSeq.eq(userSeq).and(qPlace.id.eq(qUserPlace.place.id)))
-//                .fetchFirst();
-//
-//        System.out.println("like 이것은 무엇이려나 = " + like);
-//
-//        if (like > 0) {
-//            result = true;
-//        } else {
-//            result = false;
-//        }
-//
-//        return result;
-//    }
+    // 장소 좋아요 확인하기
+    @Override
+    public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl (Long placeId, Long userSeq) {
+        QUserPlace qUserPlace = QUserPlace.userPlace;
+        QPlace qPlace = QPlace.place;
+        Boolean result;
+
+        Integer like = queryFactory
+                .selectOne()
+                .from(qUserPlace)
+                .where(qUserPlace.user.userSeq.eq(userSeq).and(qUserPlace.place.id.eq(placeId)))
+                .fetchFirst();
+
+        if (like == null) {
+            result = false;
+        } else {
+            result = true;
+        }
+        return result;
+    }
 
     // 시/도, 구/군, 검색어, 검색필터를 통한 장소 검색
     @Override
@@ -385,8 +382,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qPlace.detail,
                     qPlace.latitude,
                     qPlace.longitude,
-                    qPlace.type,
-                    qUserPlace.id.count().gt(0)
+                    qPlace.type
                 ))
                 .from(qPlace)
                 .leftJoin(qReviewPlace)
