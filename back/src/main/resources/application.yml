@@ -47,6 +47,7 @@ spring:
         order_inserts: true
         order_updates: true
         format_sql: true
+
 cloud:
   aws:
     s3:

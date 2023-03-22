@@ -1,5 +1,6 @@
 package com.cosmos.back.config;
 
+import com.google.common.base.CaseFormat;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,8 +47,9 @@ public class RedisDB {
 
     public <T> void set(String key, Object value, Class<T> tClass) {
         try {
+            String camelKey = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, key); // returns CAMEL_CASE
             jedis.connect();
-            jedis.set(key, gson.toJson(value, tClass));
+            jedis.set(camelKey, gson.toJson(value, tClass));
         } catch (Throwable t) {
             t.printStackTrace();
         } finally {
