@@ -61,6 +61,7 @@ public class RedisCacheAspect {
                 }
             }
 
+            System.out.println(methodInfo);
             cacheParameterMethodInfoMap.put(key, methodInfo);
         }
 

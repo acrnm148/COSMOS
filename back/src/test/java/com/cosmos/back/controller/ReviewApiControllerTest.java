@@ -42,7 +42,7 @@ class ReviewApiControllerTest {
     private ReviewService reviewService;
 
     @Test
-    @DisplayName("ReviewApiController 리뷰 정보")
+    @DisplayName("ReviewApiController 리뷰 등록")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     // HTTP Status 200, Service에서 ResponseDto를 형식에 맞게 잘 받아오는지 테스트
     public void 리뷰정보() throws Exception {
