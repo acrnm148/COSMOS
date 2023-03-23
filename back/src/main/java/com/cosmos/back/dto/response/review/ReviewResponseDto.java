@@ -12,11 +12,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class ReviewResponseDto {
     private Long reviewId;
     private List<ReviewCategory> categories;
     private Integer score;
     private String contents;
     private Long userId;
+    private String nickname;
+    private String createdTime;
+    private String img1;
+    private String img2;
+    private String img3;
 }
