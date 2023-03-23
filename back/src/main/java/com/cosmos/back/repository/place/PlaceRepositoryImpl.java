@@ -344,7 +344,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetch();
     }
 
-    // 장소 좋아요 확인하기
+    // 장소 찜 확인하기
     @Override
     public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl (Long placeId, Long userSeq) {
         QUserPlace qUserPlace = QUserPlace.userPlace;
@@ -392,6 +392,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetchJoin()
                 .leftJoin(qUserPlace)
                 .on(qPlace.id.eq(qUserPlace.place.id))
+                .fetchJoin()
                 .where(qPlace.address.contains(sido)
                         .and(qPlace.address.contains(gugun))
                         .and(qPlace.name.contains(text))
@@ -404,7 +405,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
 
     // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
     @Override
-    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String name) {
+    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String searchWord) {
         QPlace qPlace = QPlace.place;
 
         return queryFactory.select(Projections.constructor(AutoCompleteResponseDto.class,
@@ -413,7 +414,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qPlace.thumbNailUrl
                 ))
                 .from(qPlace)
-                .where(qPlace.name.contains(name))
+                .where(qPlace.name.contains(searchWord))
                 .limit(10)
                 .fetch();
     }

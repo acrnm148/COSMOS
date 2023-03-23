@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Tag(name = "place", description = "장소 API")
 @RestController
@@ -57,12 +59,18 @@ public class PlaceApiController {
 //        return new ResponseEntity<>(list, HttpStatus.OK);
 //    }
 
-    @Operation(summary = "검색어 자동완성", description = "검색어 자동완성")
-    @PostMapping("/places/auto/{searchWord}")
-    public ResponseEntity<?> search(@PathVariable String searchWord) {
-        List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(searchWord);
 
-        return new ResponseEntity<>(autoCompleteResponseDto, HttpStatus.OK);
+    @Operation(summary = "검색어 자동완성", description = "검색어의 낱말을 포함한 가게 이름을 나열함")
+    @GetMapping(value = {"/places/auto/{searchWord}",
+            "/places/auto/"
+    })
+    public ResponseEntity<?> search(@PathVariable(required = false) String searchWord) {
+        if (searchWord != null) {
+            List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(searchWord);
+            return new ResponseEntity<>(autoCompleteResponseDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
     }
 
     /////////////////////////////////완성////////////////////////////////////////
@@ -149,21 +157,22 @@ public class PlaceApiController {
         }
     }
 
-    @Operation(summary = "시/도, 구/군, 검색어, 검색 필터으로 검색", description = "시/도(필수값), 구/군(필수값), 검색어(필수x), 검색 필터(필수x)를 자유롭게 입력 후 요청(limit과 offset 설정 필요)")
+    @Operation(summary = "시/도, 구/군, 검색어, 검색 필터으로 검색", description = "유저Id, 시/도(필수x), 구/군(필수x), 검색어(필수x), 검색 필터(필수x)를 자유롭게 입력 후 요청(limit과 offset 설정 필요)")
     @GetMapping( value = {"/places/search/users/{userSeq}/sido/{sido}/gugun/{gugun}/text/{text}/filter/{filter}",
             "/places/search/users/{userSeq}/sido/{sido}/gugun/{gugun}/text/filter/{filter}",
             "/places/search/users/{userSeq}/sido/{sido}/gugun/{gugun}/text/{text}/filter/",
-            "/places/search/users/{userSeq}/sido/{sido}/gugun/{gugun}/text/filter/"
+            "/places/search/users/{userSeq}/sido/{sido}/gugun/{gugun}/text/filter/",
+            "/places/search/users/{userSeq}/sido/gugun/text/{text}/filter/{filter}",
+            "/places/search/users/{userSeq}/sido/gugun/text/{text}/filter/",
+            "/places/search/users/{userSeq}/sido/gugun/text/filter/{filter}"
     })
-    public ResponseEntity<List> searchPlace(@PathVariable Long userSeq, @PathVariable String sido, @PathVariable String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
-        if (text == null) {
-            text = "";
-        }
-        if (filter == null) {
-            filter = "";
-        }
+    public ResponseEntity<Map> searchPlace(@PathVariable Long userSeq, @PathVariable(required = false) String sido, @PathVariable(required = false) String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
+        if (sido == null) {sido = "";}
+        if (gugun == null) {gugun = "";}
+        if (text == null) {text = "";}
+        if (filter == null) {filter = "";}
 
-        List<PlaceSearchListResponseDto> list = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
+        Map<String, Object> list = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.cosmos.back.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,18 @@ public class Review {
 
     private Integer score; // 별점
 
+    private String nickname; // 닉네임
+
+    @JsonFormat(pattern = "yyyyMMdd")
+    @Column(name = "created_time")
+    private String createdTime; // 리뷰 생성 시간
+
+    private String img1; // 이미지 1
+
+    private String img2; // 이미지 1
+
+    private String img3; // 이미지 1
+
     // 리뷰 - 유저
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_seq")
@@ -54,12 +67,24 @@ public class Review {
     }
 
     // 생성 메서드
-    public static Review createReview (User user, String contents, Integer score) {
+    public static Review createReview (User user, String contents, Integer score, String formatedNow, List<String> urls, String nickName) {
         Review review = new Review();
 
         review.setCreateUser(user);
         review.setContents(contents);
         review.setScore(score);
+        review.setCreatedTime(formatedNow);
+        review.setNickname(nickName);
+        int urlSize = urls.size();
+        for (int i = 0 ; i < urlSize; i++) {
+            if (i == 0) {
+                review.setImg1(urls.get(i));
+            } else if (i == 1) {
+                review.setImg2(urls.get(i));
+            } else {
+                review.setImg3(urls.get(i));
+            }
+        }
 
         return review;
     }
