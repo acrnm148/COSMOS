@@ -2,7 +2,11 @@ package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.cosmos.back.model.place.Place;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Setter;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 

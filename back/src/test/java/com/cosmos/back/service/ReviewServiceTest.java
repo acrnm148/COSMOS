@@ -5,11 +5,11 @@ import com.cosmos.back.dto.request.ReviewRequestDto;
 import com.cosmos.back.model.Review;
 import com.cosmos.back.model.User;
 import com.cosmos.back.model.place.Place;
-import com.cosmos.back.repository.UserRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.review.ReviewCategoryRepository;
 import com.cosmos.back.repository.review.ReviewRepository;
 import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,7 +80,7 @@ class ReviewServiceTest {
         when(reviewRepository.save(any())).thenReturn(mockReview);
 
 
-        Long id = reviewService.createReview(mockDto);
+        Long id = reviewService.createReview(mockDto, mockDto.getUserSeq());
 
         assertEquals(mockReview.getContents(), "가지 마세요");
     }

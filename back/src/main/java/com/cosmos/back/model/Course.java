@@ -1,7 +1,11 @@
 package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -30,9 +34,6 @@ public class Course {
     @Column(name = "date")
     private String date; // 코스 날짜
 
-    @Column(name = "sub_category")
-    private String subCategory; // 소분류
-
     @Column(name = "orders")
     private Integer orders; // 순서
 
@@ -60,15 +61,14 @@ public class Course {
 
 
     // 생성 메서드
-    public static Course createCourse (User user, String name, String date, String subCategory) {
+    public static Course createCourse (User user) {
         Course course = new Course();
 
         course.setUser(user);
 
         course.setPlan(null);
-        course.setName(name);
-        course.setDate(date);
-        course.setSubCategory(subCategory);
+        course.setName(null);
+        course.setDate(null);
         course.setOrders(0);
 
         return course;
