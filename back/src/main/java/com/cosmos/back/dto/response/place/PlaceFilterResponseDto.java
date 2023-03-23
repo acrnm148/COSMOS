@@ -5,12 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AutoCompleteResponseDto {
-    private Long placeId;
-    private String name;
-    private String thumbNailUrl;
+public class PlaceFilterResponseDto {
+    private String filter;
+    private List<PlaceSearchListResponseDto> places;
 }
