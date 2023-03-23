@@ -3,6 +3,8 @@ package com.cosmos.back.repository.place;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.QReview;
 import com.cosmos.back.model.QReviewPlace;
+import com.cosmos.back.model.QUser;
+import com.cosmos.back.model.QUserPlace;
 import com.cosmos.back.model.place.*;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -79,7 +81,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         qFestival.takenTime
                 ))
                 .from(qFestival)
-                .where(qFestival.id.eq(placeId))
+                .where(qFestival.id.eq(placeId).and(qFestival.startDate.gt("20230322")))
                 .fetchOne();
     }
 
@@ -342,9 +344,67 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetch();
     }
 
+    // 장소 좋아요 확인하기
+    @Override
+    public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl (Long placeId, Long userSeq) {
+        QUserPlace qUserPlace = QUserPlace.userPlace;
+        QPlace qPlace = QPlace.place;
+        Boolean result;
+
+        Integer like = queryFactory
+                .selectOne()
+                .from(qUserPlace)
+                .where(qUserPlace.user.userSeq.eq(userSeq).and(qUserPlace.place.id.eq(placeId)))
+                .fetchFirst();
+
+        if (like == null) {
+            result = false;
+        } else {
+            result = true;
+        }
+        return result;
+    }
+
+    // 시/도, 구/군, 검색어, 검색필터를 통한 장소 검색
+    @Override
+    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+        QPlace qPlace = QPlace.place;
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QUserPlace qUserPlace = QUserPlace.userPlace;
+
+        return queryFactory.select(Projections.constructor(PlaceSearchListResponseDto.class,
+                    qPlace.id,
+                    qPlace.name,
+                    qPlace.address,
+                    qReview.score.avg(),
+                    qPlace.thumbNailUrl,
+                    qPlace.detail,
+                    qPlace.latitude,
+                    qPlace.longitude,
+                    qPlace.type
+                ))
+                .from(qPlace)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.review.id.eq(qPlace.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
+                .leftJoin(qUserPlace)
+                .on(qPlace.id.eq(qUserPlace.place.id))
+                .where(qPlace.address.contains(sido)
+                        .and(qPlace.address.contains(gugun))
+                        .and(qPlace.name.contains(text))
+                        .and(qPlace.type.contains(filter)))
+                .groupBy(qPlace.id)
+                .limit(limit)
+                .offset(offset)
+                .fetch();
+    }
+
     // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
     @Override
-    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String name) {
+    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String searchWord) {
         QPlace qPlace = QPlace.place;
 
         return queryFactory.select(Projections.constructor(AutoCompleteResponseDto.class,
@@ -353,7 +413,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qPlace.thumbNailUrl
                 ))
                 .from(qPlace)
-                .where(qPlace.name.contains(name))
+                .where(qPlace.name.contains(searchWord))
                 .limit(10)
                 .fetch();
     }
