@@ -3,45 +3,108 @@ import TMapResult from "../common/TMapResult";
 import ListCard from "../common/ListCard";
 
 interface Place {
-    idx: number;
-    name: string;
+    placeId: number;
+    placeName: string;
     thumbNailUrl: string;
-    category: string;
-    location: string;
+    address: string;
     date: string;
     phoneNumber: string;
+    score: number;
+    orders: number; // 코스 순서
+    latitude: string; // 위도
+    longitude: string; // 경도
+    overview: string; // 개요
 }
 
-const testPlace: Place[] = [
+const coursePlace: Place[] = [
     {
-        idx: 1,
-        name: "해운대 우시야",
+        placeId: 1,
+        placeName: "해운대 우시야",
         thumbNailUrl:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
-        category: "음식",
-        location: "부산",
+        address: "부산 해운대구 우동1로38번길 2",
         date: "2023년 2월 28일",
         phoneNumber: "010-1234-5678",
+        score: 3.5,
+        orders: 1,
+        latitude: "37.566481622437934",
+        longitude: "126.98502302169841",
+        overview:
+            "서울 광화문에 위치한 사발은 새로운 스타일의 퓨전국수, 덮밥, 국밥을 정성스롭고 아름답게 대접합니다.",
     },
     {
-        idx: 2,
-        name: "읍천리",
+        placeId: 2,
+        placeName: "읍천리",
         thumbNailUrl:
             "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
-        category: "카페",
-        location: "부산",
+        address: "서울 종로구 자하문로7길 11",
         date: "2023년 2월 28일",
-        phoneNumber: "051-351-2345",
+        phoneNumber: "051-351-1234",
+        score: 4.5,
+        orders: 2,
+        latitude: "37.566481622437934",
+        longitude: "126.98502302169841",
+        overview: "숙성사시미 전문 캐쥬얼 스시야",
     },
     {
-        idx: 3,
-        name: "서면 CGV",
+        placeId: 3,
+        placeName: "서면 CGV",
         thumbNailUrl:
             "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
-        category: "문화",
-        location: "부산",
+        address: "부산 해운대구 우동1로38번길 2",
+        date: "2023년 2월 28일",
+        phoneNumber: "010-5678-4321",
+        score: 5.0,
+        orders: 3,
+        latitude: "37.566481622437934",
+        longitude: "126.98502302169841",
+        overview: "부산 소고기 오마카세 수요미식회에도 나온 맛있는 소고기",
+    },
+];
+
+const wishPlace: Place[] = [
+    {
+        placeId: 1,
+        placeName: "해운대 우시야",
+        thumbNailUrl:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
+        address: "부산 해운대구 우동1로38번길 2",
         date: "2023년 2월 28일",
         phoneNumber: "010-1234-5678",
+        score: 3.5,
+        orders: 0,
+        latitude: "37.566481622437934",
+        longitude: "126.98502302169841",
+        overview:
+            "서울 광화문에 위치한 사발은 새로운 스타일의 퓨전국수, 덮밥, 국밥을 정성스롭고 아름답게 대접합니다.",
+    },
+    {
+        placeId: 7,
+        placeName: "찜한 읍천리",
+        thumbNailUrl:
+            "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
+        address: "서울 종로구 자하문로7길 11",
+        date: "2023년 2월 28일",
+        phoneNumber: "051-351-1234",
+        score: 4.5,
+        orders: 0,
+        latitude: "37.567481622437934",
+        longitude: "126.98602302169841",
+        overview: "숙성사시미 전문 캐쥬얼 스시야",
+    },
+    {
+        placeId: 8,
+        placeName: "찜한 서면 CGV",
+        thumbNailUrl:
+            "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
+        address: "부산 해운대구 우동1로38번길 2",
+        date: "2023년 2월 28일",
+        phoneNumber: "010-5678-4321",
+        score: 5.0,
+        orders: 0,
+        latitude: "37.567381622437934",
+        longitude: "126.98502302169841",
+        overview: "부산 소고기 오마카세 수요미식회에도 나온 맛있는 소고기",
     },
 ];
 
@@ -69,15 +132,34 @@ export default function CourseEdit(props: { id: any }) {
             lng: 126.98502302169841,
         },
     ];
+
     const [places, setPlaces] = useState<Place[]>([]);
+    const [wishPlaces, setWishPlaces] = useState<Place[]>([]);
+
+    const [placeMap, setPlaceMap] = useState<Place[]>([]);
+    let copy = [...wishPlace];
 
     useEffect(() => {
-        setPlaces([...testPlace]);
+        setPlaces([...coursePlace]);
+    }, []);
+    useEffect(() => {
+        setWishPlaces([...wishPlace]);
+    }, []);
+    useEffect(() => {
+        const set = new Set();
+        places.map((a) => set.add(a.placeId));
+        wishPlace.map((a) => set.add(a.placeId));
+
+        copy.map((a, i) => {
+            if (set.has(a.placeId)) {
+                copy.splice(i, 1);
+            }
+        });
     }, []);
 
     return (
         <div>
-            <div className="text-center w-full max-w-[950px] overflow-y-scroll">
+            <div className="text-center w-full max-w-[950px]">
                 <TMapResult state={state} marker={marker} className="fixed" />
 
                 <ListCard height={false}>
@@ -85,7 +167,11 @@ export default function CourseEdit(props: { id: any }) {
                         계획할 장소를 순서대로 눌러주세요!
                     </div>
 
-                    {testPlace.map((a: Place) => (
+                    {coursePlace.map((a: Place) => (
+                        <Item item={a}></Item>
+                    ))}
+
+                    {copy.map((a: Place) => (
                         <Item item={a}></Item>
                     ))}
                 </ListCard>
@@ -99,6 +185,11 @@ export default function CourseEdit(props: { id: any }) {
 }
 
 function Item(props: { item: Place }) {
+    let address =
+        props.item.address.length > 10
+            ? props.item.address.slice(0, 10).concat("...")
+            : props.item.address;
+
     return (
         <div>
             <div className="col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-calendarGray rounded-lg flex">
@@ -107,20 +198,23 @@ function Item(props: { item: Place }) {
                     src={props.item.thumbNailUrl}
                     alt="img"
                 />
-
                 <div className="text-left mt-2">
-                    <div className="font-bold mb-2">{props.item.name}</div>
-                    <div className="mb-2 text-sm text-gray-500">
-                        {props.item.location}
-                    </div>
-                    <div className="text-sm border-2 border-lightMain2 bg-white py-1 px-3 rounded">
+                    <div className="font-bold mb-2">{props.item.placeName}</div>
+                    <div className="mb-2 text-sm text-gray-500">{address}</div>
+                    <div className="text-sm border-2 border-calendarDark bg-white py-1 px-3 rounded">
                         유사 장소 추천
                     </div>
                 </div>
 
-                <div className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl">
-                    {props.item.idx}
-                </div>
+                {props.item.orders > 0 && (
+                    <div className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl">
+                        {props.item.orders}
+                    </div>
+                )}
+
+                {props.item.orders === 0 && (
+                    <div className="idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"></div>
+                )}
             </div>
         </div>
     );

@@ -14,7 +14,7 @@ export default function WishList() {
 
     return (
         <div>
-            <div className="menu w-full h-16 bg-white flex items-center overflow-hidden">
+            <div className="menu w-full h-16 bg-white flex items-center">
                 <div
                     className={
                         "placeBtn w-1/2 h-full pt-[18px] float-left text-center text-xl" +
