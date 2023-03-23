@@ -24,7 +24,7 @@ export default function GugunList({ selectedSidoCode, setGugun }: any) {
 
   return (
     <select
-      className="basis-1/6 border-4 border-lightMain opacity-50 rounded-lg rounded-r-none rounded-l-none focus:outline-none"
+      className="h-12 w-[30%] border-4 border-lightMain opacity-50 rounded-lg focus:outline-none"
       onChange={handleGugunSelect}
     >
       <option value="">구/군 선택</option>

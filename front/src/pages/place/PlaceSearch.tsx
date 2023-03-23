@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import SearchIcon from "../../assets/place/SearchIcon.png";
 import "../../css/placeSearch.css";
-
+import SearchWait from "../../assets/place/search-wait.png";
 import TMap from "../../components/common/TMap";
 import ItemList from "../../components/search/ItemList";
 import SearchFilter from "../../components/search/SearchFilter";
 import SidoList from "../../components/search/SidoList";
 import GugunList from "../../components/search/GugunList";
+import SearchWordList from "../../components/search/SearchWordList";
 
 export default function PlaceSearch() {
   // 시/도
@@ -16,7 +17,6 @@ export default function PlaceSearch() {
   // 검색어
   const [searchWord, setSearchWord] = useState("");
 
-  console.log(sido);
   const handleSearch = (e: any) => {
     setSearchWord(e.target.value);
   };
@@ -51,21 +51,22 @@ export default function PlaceSearch() {
   }, []);
 
   // 자동완성 API
-
+  useEffect(() => {}, [searchWord]);
   return (
-    <div className="text-center w-[90%] max-w-[950px] mt-[50px]">
-      <div className="flex flex-row justify-center">
+    <div className="text-center w-[90%] mt-[50px]">
+      <div className="flex flex-row gap-2 justify-center mb-5">
         <SidoList setSido={setSido} />
         {sido === undefined ? (
-          <select className="basis-1/6 border-4 border-lightMain opacity-50 rounded-lg rounded-r-none rounded-l-none focus:outline-none">
+          <select className="h-12 w-[30%] border-4 border-lightMain opacity-50 rounded-lg focus:outline-none">
             <option value="">구/군 선택</option>
           </select>
         ) : (
           <GugunList selectedSidoCode={sido} setGugun={setGugun} />
         )}
-
+      </div>
+      <div className="flex flex-row justify-center">
         <input
-          className="basis-4/6 border-4 border-lightMain opacity-50 rounded-lg rounded-l-none focus:outline-none"
+          className="w-[80%] h-12 border-4 border-lightMain opacity-50 rounded-lg focus:outline-none"
           type="text"
           placeholder="장소명으로 검색"
           onChange={handleSearch}
@@ -77,9 +78,20 @@ export default function PlaceSearch() {
           <img className="w-[32px]" src={SearchIcon} alt="검색" />
         </button>
       </div>
-      <SearchFilter />
+      {sido !== undefined && gugun !== undefined ? <SearchFilter /> : null}
+      <div className="w-[80%] max-h-[20vh] m-auto">
+        {searchWord === null ? null : (
+          <SearchWordList searchWord={searchWord} />
+        )}
+      </div>
       <hr className="my-[3vh]" />
-      <TMap state={state} />
+      {sido !== undefined && gugun !== undefined ? (
+        <TMap state={state} />
+      ) : (
+        <div className="w-full h-[50vh]">
+          <img className="h-full m-auto rounded-lg" src={SearchWait} />
+        </div>
+      )}
       <hr className="mt-[3vh]" />
       <ItemList />
     </div>
