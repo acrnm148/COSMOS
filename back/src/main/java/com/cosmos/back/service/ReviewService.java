@@ -18,7 +18,10 @@ import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -33,25 +36,35 @@ public class ReviewService {
     private final ReviewPlaceRepository reviewPlaceRepository;
     private final ReviewAdjectiveRepository reviewAdjectiveRepository;
     private final ReviewNounRepository reviewNounRepository;
+    private final S3Service s3Service;
 
     //리뷰 쓰기
     @Transactional
     @RedisEvict(key = "review")
-    public Long createReview(ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
-        //Long userSeq = dto.getUserSeq();
+    public Long createReview(ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq, List<MultipartFile> multipartFile) {
 
-        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data")); // 유저
         Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
-        Review review = Review.createReview(user, dto.getContents(), dto.getScore());
+        String nickName = findReviewNickName(); // 닉네임
+
+        LocalDate now = LocalDate.now(); // 현재 날짜 구하기 (시스템 시계, 시스템 타임존)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd"); // 포맷 작성
+        String formatedNow = now.format(formatter); // 포맷으로 날짜 변경
+
+        List<String> urls = s3Service.uploadFiles(multipartFile); // 사진 S3로부터 이미지 받아오기
+
+        Review review = Review.createReview(user, dto.getContents(), dto.getScore(), formatedNow, urls, nickName);
         Review new_review = reviewRepository.save(review);
 
         ReviewPlace reviewPlace = ReviewPlace.createReviewPlace(review, place);
         reviewPlaceRepository.save(reviewPlace);
 
-        for (String category : dto.getCategories()) {
-            ReviewCategory reviewCategory = ReviewCategory.createReviewCategory(category, review);
-            reviewCategoryRepository.save(reviewCategory);
+        if (dto.getCategories() != null) {
+            for (String category : dto.getCategories()) {
+                ReviewCategory reviewCategory = ReviewCategory.createReviewCategory(category, review);
+                reviewCategoryRepository.save(reviewCategory);
+            }
         }
 
         return new_review.getId();
@@ -75,13 +88,30 @@ public class ReviewService {
         return execute;
     }
 
+    // 커플 및 유저의 특정 장소에 대한 리뷰 불러오기
+    public List<ReviewResponseDto> findReviewsInPlaceUserCouple (Long userSeq, Long coupleId, Long placeId) {
+        return null;
+    }
+
+
     // 장소별 리뷰 모두 불러오기
-    public List<ReviewResponseDto> findReviesInPlace (Long placeId) {
+    public List<ReviewResponseDto> findReviewsInPlace (Long placeId) {
         List<Review> review = reviewRepository.findReviewInPlaceQueryDsl(placeId);
 
         List<ReviewResponseDto> list = new ArrayList<>();
         for (Review r : review) {
-            ReviewResponseDto dto = ReviewResponseDto.builder().reviewId(r.getId()).categories(r.getReviewCategories()).score(r.getScore()).contents(r.getContents()).userId(r.getUser().getUserSeq()).build();
+            ReviewResponseDto dto = ReviewResponseDto.builder()
+                    .reviewId(r.getId())
+                    .categories(r.getReviewCategories())
+                    .score(r.getScore())
+                    .contents(r.getContents())
+                    .userId(r.getUser().getUserSeq())
+                    .nickname(r.getNickname())
+                    .createdTime(r.getCreatedTime())
+                    .img1(r.getImg1())
+                    .img2(r.getImg2())
+                    .img3(r.getImg3())
+                    .build();
             list.add(dto);
         }
 

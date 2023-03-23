@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Tag(name = "place", description = "장소 API")
 @RestController
@@ -58,12 +60,16 @@ public class PlaceApiController {
 //    }
 
     @Operation(summary = "검색어 자동완성", description = "검색어의 낱말을 포함한 가게 이름을 나열함")
-    @GetMapping("/places/auto/{searchWord}")
-    public ResponseEntity<?> search(@PathVariable String searchWord) {
-        System.out.println("searchWord = " + searchWord);
-        List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(searchWord);
-
-        return new ResponseEntity<>(autoCompleteResponseDto, HttpStatus.OK);
+    @GetMapping(value = {"/places/auto/{searchWord}",
+            "/places/auto/"
+    })
+    public ResponseEntity<?> search(@PathVariable(required = false) String searchWord) {
+        if (searchWord != null) {
+            List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(searchWord);
+            return new ResponseEntity<>(autoCompleteResponseDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
     }
 
     /////////////////////////////////완성////////////////////////////////////////
@@ -159,13 +165,13 @@ public class PlaceApiController {
             "/places/search/users/{userSeq}/sido/gugun/text/{text}/filter/",
             "/places/search/users/{userSeq}/sido/gugun/text/filter/{filter}"
     })
-    public ResponseEntity<List> searchPlace(@PathVariable Long userSeq, @PathVariable(required = false) String sido, @PathVariable(required = false) String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
+    public ResponseEntity<Map> searchPlace(@PathVariable Long userSeq, @PathVariable(required = false) String sido, @PathVariable(required = false) String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
         if (sido == null) {sido = "";}
         if (gugun == null) {gugun = "";}
         if (text == null) {text = "";}
         if (filter == null) {filter = "";}
 
-        List<PlaceSearchListResponseDto> list = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
+        Map<String, Object> list = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
