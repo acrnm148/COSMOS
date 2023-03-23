@@ -31,7 +31,10 @@ public class KakaoService {
     // develop
 //    private final String redirect_uri = "http://j8e104.p.ssafy.io:8081/api/login/oauth2/code/kakao";
     // deploy
-    private final String redirect_uri = "https://j8e104.p.ssafy.io/api/login/oauth2/code/kakao";
+//    private final String redirect_uri = "https://j8e104.p.ssafy.io/api/login/oauth2/code/kakao";
+    // front test
+    private final String redirect_uri = "http://localhost:3000/login/oauth";
+
     private final String accessTokenUri = "https://kauth.kakao.com/oauth/token";
     private final String UserInfoUri = "https://kapi.kakao.com/v2/user/me";
 

@@ -59,6 +59,7 @@ public class PlaceApiController {
 //        return new ResponseEntity<>(list, HttpStatus.OK);
 //    }
 
+
     @Operation(summary = "검색어 자동완성", description = "검색어의 낱말을 포함한 가게 이름을 나열함")
     @GetMapping(value = {"/places/auto/{searchWord}",
             "/places/auto/"

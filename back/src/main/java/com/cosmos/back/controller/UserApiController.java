@@ -125,7 +125,7 @@ public class UserApiController {
         //jwt토큰 Redis에 저장
         JwtToken jwtTokenDTO = jwtService.getJwtToken(saveUser.getUserSeq());
 
-        return jwtService.successLoginResponse(jwtTokenDTO, saveUser.getUserSeq());
+        return jwtService.successLoginResponse(jwtTokenDTO, saveUser.getUserSeq(), saveUser.getCoupleId());
     }
     //직접 인가 코드 받기
     @GetMapping("/login/oauth2/code/kakao")
