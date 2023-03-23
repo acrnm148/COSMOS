@@ -58,9 +58,9 @@ public class PlaceApiController {
 //    }
 
     @Operation(summary = "검색어 자동완성", description = "검색어 자동완성")
-    @PostMapping("/places/auto")
-    public ResponseEntity<List> search(@RequestBody AutoCompleteRequestDto dto) {
-        List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(dto.getSearchWord());
+    @PostMapping("/places/auto/{searchWord}")
+    public ResponseEntity<?> search(@PathVariable String searchWord) {
+        List<AutoCompleteResponseDto> autoCompleteResponseDto = placeService.autoCompleteSearchPlacesByName(searchWord);
 
         return new ResponseEntity<>(autoCompleteResponseDto, HttpStatus.OK);
     }

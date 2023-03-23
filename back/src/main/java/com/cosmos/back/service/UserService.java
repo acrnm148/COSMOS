@@ -50,6 +50,7 @@ public class UserService {
                     .role("USER")
                     .type1(user.getType1())
                     .type2(user.getType2())
+                    .coupleId(user.getCoupleId())
                     .coupleUserId(user.getCoupleId())
                     .createTime(LocalDateTime.now())
                     .build();
