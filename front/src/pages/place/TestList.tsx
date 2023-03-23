@@ -15,6 +15,31 @@ export default function TestList({ items }: any) {
     ) {
       return;
     }
+
+    const start = result.source.index;
+    const end = result.destination.index;
+
+    const totalItem = Array.from(item);
+    const itemLength = totalItem.length;
+
+    if (start < end) {
+      const thisItem = totalItem.splice(start, 1);
+      const middleItem = totalItem.splice(start, end - start);
+      const startItem = totalItem.splice(0, start);
+      const endItem = totalItem;
+      const newItem = startItem.concat(middleItem, thisItem, endItem);
+
+      setItems(newItem);
+    } else {
+      const thisItem = totalItem.splice(start, 1);
+      const middleItem = totalItem.splice(end, start - end);
+      const endItem = totalItem.splice(end, itemLength);
+      const startItem = totalItem;
+      console.log(startItem, thisItem, middleItem, endItem);
+      const newItem = startItem.concat(thisItem, middleItem, endItem);
+
+      setItems(newItem);
+    }
   };
 
   return (
