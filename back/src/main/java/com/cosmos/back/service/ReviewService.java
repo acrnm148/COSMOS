@@ -89,8 +89,21 @@ public class ReviewService {
     }
 
     // 커플 및 유저의 특정 장소에 대한 리뷰 불러오기
-    public List<ReviewResponseDto> findReviewsInPlaceUserCouple (Long userSeq, Long coupleId, Long placeId) {
-        return null;
+    public List<Review> findReviewsInPlaceUserCouple (Long userSeq, Long coupleId, Long placeId) {
+        List<Review> reviews = new ArrayList<>();
+        if (coupleId != null) {
+            List<User> users = userRepository.findByCoupleId(coupleId);
+
+            for (User u : users) {
+                List<Review> data = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(u.getUserSeq(), placeId);
+    //                for (Review r : data) {
+    //                    reviews.add(r);
+    //                }
+            }
+        } else {
+            reviews = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(userSeq, placeId);
+        }
+        return reviews;
     }
 
 

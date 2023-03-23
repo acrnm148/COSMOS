@@ -58,6 +58,28 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         return executeReviewPlace;
     }
 
+    // 장소별로 유저, 커플아이디를 이용해 리뷰 모두 불러오기
+    @Override
+    public List<Review> findReviewInPlaceUserCoupleQueryDsl(Long userSeq, Long placeId) {
+        QReview qReview = QReview.review;
+        QUser qUser = QUser.user;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
+
+        return queryFactory.selectFrom(qReview)
+                .leftJoin(qReviewPlace)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .leftJoin(qReviewCategory)
+                .on(qReview.id.eq(qReviewCategory.review.id))
+                .leftJoin(qUser)
+                .on(qUser.userSeq.eq(qReview.user.userSeq))
+                .fetchJoin()
+                .where(qReview.user.userSeq.eq(userSeq)
+                        .and(qReviewPlace.place.id.eq(placeId)))
+                .fetch();
+    }
+
+
     // 장소에 대한 리뷰 모두 불러오기
     @Override
     public List<Review> findReviewInPlaceQueryDsl(Long placeId) {
