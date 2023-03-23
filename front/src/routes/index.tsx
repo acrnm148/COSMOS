@@ -50,7 +50,8 @@ const router = createBrowserRouter([
         errorElement: <NotFound />,
         children: [
             { path: "", element: <WishList /> },
-            { path: "/wish/course/:wishId", element: <WishList /> },
+            { path: "/wish/course/:courseId", element: <WishList /> },
+            { path: "/wish/course/:editId/edit", element: <WishList /> },
         ],
     },
     // 랜딩페이지

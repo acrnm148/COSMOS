@@ -107,13 +107,13 @@ function Item(props: { item: any }) {
     const navigate = useNavigate();
 
     return (
-        <div
-            className="mb-5"
-            onClick={() => {
-                navigate(`/wish/course/${props.item.id}`);
-            }}
-        >
-            <div className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg">
+        <div className="mb-5">
+            <div
+                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg"
+                onClick={() => {
+                    navigate(`/wish/course/${props.item.id}`);
+                }}
+            >
                 <div className="font-bold mb-3">{props.item.courseName}</div>
 
                 <div className="w-full h-36 flex overflow-x-scroll scrollbar-hide">
@@ -141,7 +141,12 @@ function Item(props: { item: any }) {
                     />
                     공유
                 </div>
-                <div className="float-left w-1/3 m-auto">
+                <div
+                    className="float-left w-1/3 m-auto"
+                    onClick={() => {
+                        navigate(`/wish/course/${props.item.id}/edit`);
+                    }}
+                >
                     <Icon
                         icon="material-symbols:edit-outline-rounded"
                         width="22"

@@ -3,11 +3,14 @@ import WishCourse from "../wish/WishCourse";
 import CourseDetail from "../wish/CourseDetail";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import CourseEdit from "./CourseEdit";
 
 export default function WishList() {
     const [toggle, setToggle] = useState(true); // 장소: true / 코스: false
-    const { courseId } = useParams();
+    const { courseId, editId } = useParams();
     const navigate = useNavigate();
+
+    console.log(courseId);
 
     return (
         <div>
@@ -40,10 +43,17 @@ export default function WishList() {
                 </div>
             </div>
 
-            {courseId === undefined ? toggle && <WishPlace /> : null}
-            {courseId === undefined ? !toggle && <WishCourse /> : null}
+            {courseId === undefined && editId === undefined
+                ? toggle && <WishPlace />
+                : null}
+            {courseId === undefined && editId === undefined
+                ? !toggle && <WishCourse />
+                : null}
 
             {courseId != undefined && <CourseDetail id={courseId} />}
+            {courseId === undefined && editId != undefined ? (
+                <CourseEdit id={editId} />
+            ) : null}
         </div>
     );
 }
