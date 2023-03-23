@@ -14,14 +14,14 @@ export const userSeqState = atom({
 })
 
 // accessToken, userSeq, coupleId
-interface acToken {
-  ac : string,
-}
-
+// string
 export const acTokenState = atom({
   key : 'userInfoState',
+  default : ''
 })
 
+// string
 export const coupleIdState = atom({
-  key : 'coupleIdState'
+  key : 'coupleIdState',
+  default : ''
 })

@@ -23,8 +23,8 @@ export default function KakaoLogin(){
   const params = new URLSearchParams(window.location.search);
   let code: any = params.get('code')
   useEffect(() => {
-    console.log('heyhyehey 카카오로그인 들어옴', code)
-    // cosmosLogin(code)
+    // console.log('heyhyehey 카카오로그인 들어옴', code)
+    cosmosLogin(code)
   })
         async function cosmosLogin(code:string){
             axios({
@@ -37,6 +37,8 @@ export default function KakaoLogin(){
                 const getUserSeq = res.data.userId
                 setUserSeq(getUserSeq)
                 if (res.data.coupleId){
+                  // coupleId가 유효하면 10 길이의 난수
+                  // 유효하지 않으면 "0" :string
                   setCoupleId(res.data.coupleId)
                 }
                 setAcToken(res.data.accessToken)
@@ -53,6 +55,6 @@ export default function KakaoLogin(){
         }
       // })
       return(
-          <div>카카오로그인 코드</div>
+          <div>카카오로그인 코드: {code} </div>
       )
 }
