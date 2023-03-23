@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function WishList() {
     const [toggle, setToggle] = useState(true); // 장소: true / 코스: false
-    const { wishId } = useParams();
+    const { courseId } = useParams();
     const navigate = useNavigate();
 
     return (
@@ -40,10 +40,10 @@ export default function WishList() {
                 </div>
             </div>
 
-            {wishId === undefined ? toggle && <WishPlace /> : null}
-            {wishId === undefined ? !toggle && <WishCourse /> : null}
+            {courseId === undefined ? toggle && <WishPlace /> : null}
+            {courseId === undefined ? !toggle && <WishCourse /> : null}
 
-            {wishId != undefined && <CourseDetail id={wishId} />}
+            {courseId != undefined && <CourseDetail id={courseId} />}
         </div>
     );
 }
