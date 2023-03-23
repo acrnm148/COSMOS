@@ -79,7 +79,7 @@ public class PlaceService {
     }
 
     // 시도 리스트 받아오기
-    @RedisCached(key = "listSido", expire = 7200)
+    //@RedisCached(key = "listSido", expire = 7200)
     public List<Sido> listSido () {
         return sidoRepository.findAll();
     }
