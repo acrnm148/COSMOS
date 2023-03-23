@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -97,18 +99,24 @@ public class PlaceService {
     }
 
     // 장소 검색(시/도, 구/군, 검색어, 검색필터)
-    public List<PlaceFilterResponseDto> searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+    public Map<String, Object> searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+        Map<String, Object> map = new HashMap<>();
         // filter 공백 split으로 여러개 받아오기
         String[] filters = filter.split(" ");
         List<PlaceFilterResponseDto> places = new ArrayList<>();
-
+        Double LatitudeCenter = 0.0;
+        Double LongitudeCenter = 0.0;
+        Double size = 0.0;
         // filter 별로 장소 조사 진행
         for (String f : filters) {
             List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, f, limit, offset);
             for (PlaceSearchListResponseDto dto : list) {
                 boolean execute = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(dto.getPlaceId(), userSeq);
                 dto.setLike(execute);
+                LatitudeCenter += Double.parseDouble(dto.getLatitude());
+                LongitudeCenter += Double.parseDouble(dto.getLongitude());
             }
+            size += list.size();
 
             // {필터 : 리스트} 형식으로 저장
             PlaceFilterResponseDto result = new PlaceFilterResponseDto();
@@ -116,7 +124,13 @@ public class PlaceService {
             result.setPlaces(list);
             places.add(result);
         }
-        return places;
+        LatitudeCenter /= size;
+        LongitudeCenter /= size;
+        
+        map.put("places", places);
+        map.put("midLatitude", LatitudeCenter);
+        map.put("midLongitude", LongitudeCenter);
+        return map;
     }
 
     // QueryDsl로 관광 상세 정보 받아오기
