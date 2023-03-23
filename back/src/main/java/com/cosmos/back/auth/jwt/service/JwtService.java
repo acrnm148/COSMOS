@@ -179,6 +179,7 @@ public class JwtService {
      */
     //로그인 성공
     public Map<String , String> successLoginResponse(JwtToken jwtToken, Long userSeq, Long coupleId) {
+        if (coupleId == null) coupleId = 0L;
         Map<String, String> map = new LinkedHashMap<>();
         map.put("status", "200");
         map.put("message", "accessToken, refreshToken 생성 완료");
