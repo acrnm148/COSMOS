@@ -51,7 +51,8 @@ public class ReviewApiController {
     })
     public ResponseEntity<List> findReviewInPlaceAndUser(@PathVariable Long userSeq, @PathVariable(required = false) Long coupleId, @PathVariable Long placeId) {
         if (coupleId == null) {coupleId = null;} // 커플 아이디가 없을 경우
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<Review> list = reviewService.findReviewsInPlaceUserCouple(userSeq, coupleId, placeId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
 
