@@ -15,7 +15,7 @@ interface Place {
 
 const testPlace: Place[] = [
     {
-        idx: 0,
+        idx: 1,
         name: "해운대 우시야",
         thumbNailUrl:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
@@ -25,7 +25,7 @@ const testPlace: Place[] = [
         phoneNumber: "010-1234-5678",
     },
     {
-        idx: 1,
+        idx: 2,
         name: "읍천리",
         thumbNailUrl:
             "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
@@ -35,7 +35,7 @@ const testPlace: Place[] = [
         phoneNumber: "051-351-2345",
     },
     {
-        idx: 2,
+        idx: 3,
         name: "서면 CGV",
         thumbNailUrl:
             "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
@@ -81,7 +81,7 @@ export default function CourseDetail(props: { id: any }) {
             <div className="text-center w-full max-w-[950px] overflow-y-scroll">
                 <TMapResult state={state} marker={marker} className="fixed" />
 
-                <ListCard height={70}>
+                <ListCard height={false}>
                     {testPlace.map((a: Place) => (
                         <Item item={a}></Item>
                     ))}
