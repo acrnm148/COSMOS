@@ -67,7 +67,7 @@ export default function ServeyPage() {
     if (serveyPg === 10 && cate && cateNumCode) {
       setTimeout(() => {
         console.log("cate", cate, "cateNumCode", cateNumCode);
-        navigate(`/result/${cate}/${cateNumCode}`);
+        navigate(`/servey/result/${cate}/${cateNumCode}`);
       }, 2000);
     }
   }, [cate, cateNumCode]);

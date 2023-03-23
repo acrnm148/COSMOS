@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
 import { userSeqState } from "../../recoil/states/UserState"
 
@@ -15,30 +16,53 @@ interface userInfo {
     'birthYear' : number,
     'coupleUserId' : number
 }
+
+declare const window: typeof globalThis & {
+    Kakao: any;
+  };
+
 export default function MyPage(){
     const userSeq = useRecoilState(userSeqState)
     const [userInfo, setUserInfo] = useState<userInfo>()
     const [coupleInfo, setCoupleInfo] = useState<userInfo>()
+    const navigate = useNavigate();
     useEffect(()=>{
         if (userSeq){
-            console.log('로그인된유저', userSeq)
-            const bringUser = (seq:number, me:string) =>{
-                axios.get((`/api/accounts/userInfo/${seq}`))
-                    .then((res) =>{
-                        if(me==='me'){setUserInfo( res.data )}
-                        else {setCoupleInfo(res.data)}
+            // console.log('로그인된유저', userSeq)
+            // const bringUser = (seq:number, me:string) =>{
+            //     axios.get((`/api/accounts/userInfo/${seq}`))
+            //         .then((res) =>{
+            //             if(me==='me'){setUserInfo( res.data )}
+            //             else {setCoupleInfo(res.data)}
 
-                        if((!coupleInfo) && (userInfo?.coupleUserId)){
-                            bringUser(userInfo.coupleUserId, 'you')
-                        }
-                    })
-                    .catch((err)=>{
-                        console.log('err', err)
-                    })
-            }
-            bringUser(Number(userSeq), 'me')
+            //             if((!coupleInfo) && (userInfo?.coupleUserId)){
+            //                 bringUser(userInfo.coupleUserId, 'you')
+            //             }
+            //         })
+            //         .catch((err)=>{
+            //             console.log('err', err)
+            //         })
+            // }
+            // bringUser(Number(userSeq), 'me')
         } 
     })
+
+    // l64l1viXs2NeolymgS89Ptyh0kCfP_ZfLNdhhb5uCj1y6gAAAYcHIpJS
+    function deleteCookie() {
+        document.cookie = 'authorize-access-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      }
+    function kakaoLogout(){
+        // if (!window.Kakao.isInitialized()){
+        //     window.Kakao.init(process.env.REACT_APP_KAKAO)
+        // }
+        if(window.Kakao.Auth.getAccessToken()){
+            console.log('카카오 엑세스 토큰', window.Kakao.Auth.getAccessToken())
+        }
+        window.Kakao.Auth.logout(()=>{
+            navigate("/")
+        })
+            
+    }
     return(
         <div className="flex w-full items-center content-center ">
             <div className="w-full flex flex-col justify-center md:w-5/6 lg:w-3/6">
@@ -57,7 +81,7 @@ export default function MyPage(){
                     <div className="h-20 w-full border-solid border-2 border-lightMain4  flex justify-center items-center">취향설문 다시하기</div>
 
                 </div>
-
+                <div onClick={kakaoLogout} className="cursor-pointer bg-lightMain p-10 text-white">로그아웃</div>
                 <div className="recent w-full m-2">
                     <div className="ml-4 mr-4 text-lightMain2 font-bold">최근 본 내역</div>
                     <div className="recentItem flex justify-around">
@@ -73,6 +97,7 @@ export default function MyPage(){
                         }
                     </div>
                 </div>
+                <div onClick={()=>kakaoLogout()} className="cursor-pointer">로그아웃</div>
             </div>
         </div>
     )

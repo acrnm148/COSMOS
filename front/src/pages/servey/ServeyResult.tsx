@@ -1,8 +1,10 @@
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useEffect, useState, } from "react";
 import { useParams } from "react-router";
 
 import "../../css/serveyResult.css"
+import axios from 'axios';
+import { coupleIdState } from '../../recoil/states/UserState';
 
 // 설문조사 결과 이미지
 const backgroundImage = {
@@ -74,10 +76,24 @@ export default function ServeyPage(){
     const secondKeyword = cate != null ? codeName[cate.slice(1,2) as keyof typeof codeName] : ''
     const thirdKeyword = cate != null ? codeName[cate.slice(2,3) as keyof typeof codeName] : ''
 
+    // 커플ID
+    const [coupleId, setCoupleId] = useRecoilState(coupleIdState)
+
     useEffect(() => {
+        // 카카오 sdk 찾도록 초기화
         if (!window.Kakao.isInitialized()){
             window.Kakao.init(process.env.REACT_APP_KAKAO)
         }
+
+        // 커플ID 생성요청 
+        axios({
+            url : "https://j8e104.p.ssafy.io/api/makeCoupleId",
+            method: 'GET',
+            })
+            .then((res:any)=>{
+                console.log('coupleId = ', res.data)
+                // setCoupleId(res.data)
+            })
     })
     const shareKakao = () => {
         window.Kakao.Link.sendDefault({
@@ -155,7 +171,7 @@ export default function ServeyPage(){
                             <p className="mt-5 mb-2 text-xs">애인에게 코드를 공유하고 코스모스의 커플 서비스를 사용하세요</p>
                             <button
                                 onClick={shareKakao}
-                                className="w-full flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain6 text-darkBackground2"
+                                className="cursor-pointer w-full flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain6 text-darkBackground2"
                             >
                                 카카오톡 공유하기
                             </button>
