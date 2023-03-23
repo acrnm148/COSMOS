@@ -17,6 +17,8 @@ export default function PlaceSearch() {
   // 검색어
   const [searchWord, setSearchWord] = useState("");
 
+  console.log(sido);
+
   const handleSearch = (e: any) => {
     setSearchWord(e.target.value);
   };
