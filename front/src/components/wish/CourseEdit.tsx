@@ -80,7 +80,7 @@ const wishPlace: Place[] = [
     },
     {
         placeId: 7,
-        placeName: "찜한 읍천리",
+        placeName: "2222 읍천리",
         thumbNailUrl:
             "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
         address: "서울 종로구 자하문로7길 11",
@@ -94,7 +94,7 @@ const wishPlace: Place[] = [
     },
     {
         placeId: 8,
-        placeName: "찜한 서면 CGV",
+        placeName: "2222 서면 CGV",
         thumbNailUrl:
             "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
         address: "부산 해운대구 우동1로38번길 2",
@@ -104,7 +104,7 @@ const wishPlace: Place[] = [
         orders: 0,
         latitude: "37.567381622437934",
         longitude: "126.98502302169841",
-        overview: "부산 소고기 오마 카세 수요미식회에도 나온 맛있는 소고기",
+        overview: "부산 소고기 오마카세 수요미식회에도 나온 맛있는 소고기",
     },
 ];
 
