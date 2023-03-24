@@ -14,6 +14,7 @@ import com.cosmos.back.repository.course.CourseRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,23 +36,47 @@ public class CourseService {
     // 코스 생성
     @Transactional
     public CourseResponseDto createCourse(CourseRequestDto dto) {
-        Long userSeq = dto.getUserSeq();
+        // 1. 데이트 코스 생성 후 저장
+        Course course = saveCourse(dto.getUserSeq());
 
-        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        // 카테고리별 장소 가져오기
+        List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun());
 
-        // 데이트코스 저장
-        Course course = Course.createCourse(user);
-        courseRepository.save(course);
-
-        List<Place> places = new ArrayList<>();
-
-        for (String category : dto.getCategories()) {
-            places.add(chooseOne(category, dto.getSido(), dto.getGugun()));
-        }
-
+        // return 해줄 CourseResponseDto 생성 후 courseId 넣기
         CourseResponseDto courseResponseDto = new CourseResponseDto();
         courseResponseDto.setCourseId(course.getId());
 
+        // CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+        saveSimplePlaceDtoList(course, courseResponseDto, places);
+
+        return courseResponseDto;
+    }
+
+    // 데이트 코스 생성 후 저장
+    @Transactional
+    public Course saveCourse(Long userSeq) {
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+
+        Course course = Course.createCourse(user);
+        courseRepository.save(course);
+
+        return course;
+    }
+
+    // 카테고리별 장소 가져오기
+    public List<Place> selectPlaces (List<String> categories, String sido, String gugun) {
+        List<Place> places = new ArrayList<>();
+
+        for (String category : categories) {
+            places.add(chooseOne(category, sido, gugun));
+        }
+
+        return places;
+    }
+
+    // CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+    @Transactional
+    public void saveSimplePlaceDtoList(Course course, CourseResponseDto courseResponseDto, List<Place> places) {
         // 순서
         int orders = 1;
         for (Place p : places) {
@@ -75,8 +100,6 @@ public class CourseService {
 
             coursePlaceRepository.save(coursePlace);
         }
-
-        return courseResponseDto;
     }
 
     public Place chooseOne(String type, String sido, String gugun) {
