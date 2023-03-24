@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class AutoCompleteResponseDto {
     private Long placeId;
     private String name;
+    private String address;
     private String thumbNailUrl;
 }
