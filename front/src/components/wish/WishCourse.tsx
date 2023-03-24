@@ -1,7 +1,19 @@
 import { Icon } from "@iconify/react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { getWishCourseList } from "../../apis/api/wish";
+import { useQuery } from "react-query";
+import { useRecoilState } from "recoil";
+import { userSeqState } from "../../recoil/states/UserState";
 
 export default function WishCourse() {
+    const userSeq = useRecoilState(userSeqState);
+    const { data, isLoading } = useQuery({
+        queryKey: ["getWishCourseList", "userSeq"],
+        queryFn: () => getWishCourseList(userSeq[0]),
+    });
+
+    console.log(data);
+
     let list: any = [
         {
             id: 0,
