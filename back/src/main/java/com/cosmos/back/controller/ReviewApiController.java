@@ -45,7 +45,7 @@ public class ReviewApiController {
     }
 
     // 장소별로 유저, 커플 유저의 리뷰 모두 불러오기
-    @Operation(summary = "장소별로 유저, 커플 유저의 리뷰 모두 불러오기", description = "userSeq, coupleId(필수x), placeId를 입력해주면 커플이 있을 경우 커플 모두의 리뷰, 솔로인 경우 솔로만 리뷰 조회")
+    @Operation(summary = "장소별로 유저, 커플 유저의 리뷰 모두 불러오기", description = "userSeq, coupleId(필수x), placeId를 입력해주면 커플이 있을 경우 커플 모두의 리뷰, 솔로인 경우 솔로만 리뷰 조회 [프런트에서 리뷰 순서는 정해줘야할 듯합니다.]")
     @GetMapping(value = {"/reviews/users/{userSeq}/coupleId/{coupleId}/places/{placeId}",
             "/reviews/users/{userSeq}/coupleId/places/{placeId}"
     })
