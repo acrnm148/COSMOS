@@ -30,3 +30,21 @@ export const getListWithSearchWord = async (searchWord: string) => {
   const { data } = await defaultInstance.get(`places/auto/${searchWord}`);
   return data;
 };
+
+/**
+ * @param {number} userSeq : 사용자번호
+ * @param {number} placeId : 장소 ID
+ * @param {string} type: 장소 유형
+ * GET : 장소의 상세 정보를 가져온다.
+ * @returns {장소 type마다 다름}
+ */
+export const getPlaceDetail = async (
+  userSeq: number,
+  placeId: number,
+  type: string
+) => {
+  const { data } = await defaultInstance.get(
+    `places/detail/users/${userSeq}/placeId/${placeId}/type/${type}`
+  );
+  return data;
+};
