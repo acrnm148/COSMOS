@@ -28,10 +28,11 @@ import SearchLayout from "../layouts/SearchLayout";
 // import Test from "../pages/place/Test"; // 드래그앤드롭
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Home />,
-      },
+  {
+    path: "/",
+    element: <Home />,
+    errorElement: <NotFound />,
+    children: [
       //로그인
       { path: "/login", element: <Login /> },
       { path: "/login/oauth", element: <KakaoLogin /> },
