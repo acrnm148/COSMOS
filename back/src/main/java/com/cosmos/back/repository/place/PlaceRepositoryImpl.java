@@ -409,9 +409,10 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         QPlace qPlace = QPlace.place;
 
         return queryFactory.select(Projections.constructor(AutoCompleteResponseDto.class,
-                    qPlace.id,
-                    qPlace.name,
-                    qPlace.thumbNailUrl
+                        qPlace.id,
+                        qPlace.name,
+                        qPlace.address,
+                        qPlace.thumbNailUrl
                 ))
                 .from(qPlace)
                 .where(qPlace.name.contains(searchWord))
