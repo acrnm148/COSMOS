@@ -32,7 +32,7 @@ public class CoursePlace {
     // (데이트 코스 - 장소) - 데이트 코스
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "course_id")
-    //@JsonIgnore
+    @JsonIgnore
     private Course course;
 
     // (데이트 코스 - 장소) - 장소

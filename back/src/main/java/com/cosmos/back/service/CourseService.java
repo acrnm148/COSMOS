@@ -71,7 +71,7 @@ public class CourseService {
             Double score = placeRepository.findScoreByPlaceIdQueryDsl(p.getId());
             placeDto.setScore(score);
 
-            courseResponseDto.getDto().add(placeDto);
+            courseResponseDto.getPlaces().add(placeDto);
 
             coursePlaceRepository.save(coursePlace);
         }
@@ -84,6 +84,16 @@ public class CourseService {
 
         // 빅데이터 알고리즘
         return places.get(0);
+    }
+
+    // 코스 찜
+    @Transactional
+    public Long likeCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+
+        course.setWish(true);
+
+        return course.getId();
     }
 
     // 코스 삭제
@@ -100,51 +110,35 @@ public class CourseService {
         return courseId;
     }
 
-
     /**
-     * 내 모든 코스 보기
+     * 내 찜한 코스 보기
      */
-    public List<CourseResponseDto> getMyAllCourses(Long userSeq) {
-        List<MyCoursePlaceDto> myCoursePlaces = courseRepository.findAllByUserSeqQueryDSL(userSeq);
+    public List<CourseResponseDto> listLikeCourse(Long userSeq) {
+        // CourseResponseDto의 name, date, courseId, orders를 가져온다.
+        List<CourseResponseDto> list = courseRepository.findAllCourseByUserSeq(userSeq);
 
-        List<CourseResponseDto> courses = new ArrayList<> ();
-        List<MyCoursePlaceDto> coursePlaces = new ArrayList<> ();
-        Long courseId = 0L;
+        for (CourseResponseDto dto : list) {
+            List<SimplePlaceDto> places = new ArrayList<>();
 
-        for (MyCoursePlaceDto dto : myCoursePlaces) {
+            // 해당 코스들의 placeId와 courseId를 가져온다.
+            List<CoursePlace> coursePlaces = coursePlaceRepository.findAllByCourseId(dto.getCourseId());
 
-            if (!(courseId.equals(dto.getCourseId()))) {
-                List<SimplePlaceDto> simplePlaces = new ArrayList<> ();
+            for (CoursePlace coursePlace : coursePlaces) {
+                // 해당 placeId로 평점을 제외한 나머지 것들을 가져온다.
+                SimplePlaceDto place = placeRepository.findSimplePlaceDtoByPlaceIdQueryDsl(coursePlace.getPlace().getId(), coursePlace.getCourse().getId());
 
-                CourseResponseDto course = CourseResponseDto.builder()
-                        .courseId(dto.getCourseId())
-                        .name(dto.getName())
-                        .date(dto.getName())
-                        .orders(dto.getOrders())
-                        .build();
-                for (MyCoursePlaceDto dto2 : myCoursePlaces) {
-                    if (!(courseId.equals(dto.getCourseId()))) {
-                        break;
-                    }
-                    simplePlaces.add(SimplePlaceDto.builder()
-                            .placeId(dto2.getPlaceId())
-                            .placeName(dto2.getPlaceName())
-                            .phoneNumber(dto2.getPhoneNumber())
-                            .latitude(dto2.getLatitude())
-                            .longitude(dto2.getLongitude())
-                            .thumbNailUrl(dto2.getThumbNailUrl())
-                            .address(dto2.getAddress())
-                            .build());
-                }
-                course.setDto( simplePlaces );
-                courses.add(course);
+                // 해당 SimplePlaceDto에 평점을 가져온다.
+                Double score = placeRepository.findScoreByPlaceIdQueryDsl(coursePlace.getPlace().getId());
+
+                place.setScore(score);
+
+                places.add(place);
             }
+
+            dto.setPlaces(places);
         }
 
-//        System.out.println("내 모든 코스:"+myCoursePlaces);
-//        return myCoursePlaces;
-        System.out.println("내 모든 코스:"+courses);
-        return courses;
+        return list;
     }
 
     /**
