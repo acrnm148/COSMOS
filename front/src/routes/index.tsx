@@ -24,6 +24,7 @@ import { GalleryPage } from "../pages/schedule/GalleryPage";
 import ScheduleLayout from "../layouts/ScheduleLayout";
 import WishList from "../pages/wish/WishList";
 import PlaceResult from "../pages/place/PlaceResult";
+import SearchLayout from "../layouts/SearchLayout";
 // import Test from "../pages/place/Test"; // 드래그앤드롭
 
 const router = createBrowserRouter([
@@ -67,11 +68,16 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <NotFound />,
     children: [
-      { path: "search", element: <PlaceSearch /> },
       { path: "recommend", element: <PlaceRecommend /> },
       { path: "result", element: <PlaceResult /> },
       // { path: "drag", element: <Test /> },
     ],
+  },
+  {
+    path: "/place",
+    element: <SearchLayout />,
+    errorElement: <NotFound />,
+    children: [{ path: "search", element: <PlaceSearch /> }],
   },
   // 설문조사
   {
