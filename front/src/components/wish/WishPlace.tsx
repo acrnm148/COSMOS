@@ -53,7 +53,7 @@ export default function WishPlace() {
 
                 <div className="mt-4 h-[480px] overflow-y-auto">
                     {list.map((a: propsType) => (
-                        <Item item={a}></Item>
+                        <Item key={a.id} item={a}></Item>
                     ))}
                 </div>
 

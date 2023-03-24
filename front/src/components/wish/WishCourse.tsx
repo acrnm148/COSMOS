@@ -95,7 +95,7 @@ export default function WishCourse() {
 
                 <div className="mt-4 h-[540px] overflow-y-auto">
                     {list.map((a: any) => (
-                        <Item item={a}></Item>
+                        <Item key={a.id} item={a}></Item>
                     ))}
                 </div>
             </div>
@@ -119,7 +119,10 @@ function Item(props: { item: any }) {
                 <div className="w-full h-36 flex overflow-x-scroll scrollbar-hide">
                     {props.item.place.map((a: any) => {
                         return (
-                            <div className="float-left flex-none w-32 h-28 mr-3 text-center">
+                            <div
+                                key={a.placeId}
+                                className="float-left flex-none w-32 h-28 mr-3 text-center"
+                            >
                                 <img
                                     className="w-32 h-24 rounded-lg"
                                     src={a.thumbNailUrl}
