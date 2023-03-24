@@ -47,7 +47,7 @@ const router = createBrowserRouter([
   // 찜 목록
   {
     path: "/wish",
-    element: <SubLayout />,
+    element: <MainLayout />,
     errorElement: <NotFound />,
     children: [
       { path: "", element: <WishList /> },
@@ -57,14 +57,14 @@ const router = createBrowserRouter([
   // 랜딩페이지
   {
     path: "/landing",
-    element: <NoHeaderLayout />,
+    element: <SubLayout />,
     errorElement: <NotFound />,
     children: [{ path: "/landing", element: <Landing /> }],
   },
   // 장소 검색 & 빅데이터 추천
   {
     path: "/place",
-    element: <SubLayout />,
+    element: <MainLayout />,
     errorElement: <NotFound />,
     children: [
       { path: "search", element: <PlaceSearch /> },
