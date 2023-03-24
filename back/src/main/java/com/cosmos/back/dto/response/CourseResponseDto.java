@@ -18,7 +18,14 @@ public class CourseResponseDto {
     private String name;
     private String date;
     private Long courseId;
-    private List<SimplePlaceDto> dto = new ArrayList<>();
+    private List<SimplePlaceDto> places = new ArrayList<>();
     private Integer orders;
+
+    public CourseResponseDto (String name, String date, Long courseId, Integer orders) {
+        this.name = name;
+        this.date = date;
+        this.courseId = courseId;
+        this.orders = orders;
+    }
 }
 

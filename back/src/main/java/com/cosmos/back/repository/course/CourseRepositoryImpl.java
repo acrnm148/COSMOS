@@ -19,39 +19,6 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<MyCoursePlaceDto> findAllByUserSeqQueryDSL(Long userSeq) {
-        QCourse qCourse = QCourse.course;
-        QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
-        QPlace qPlace = QPlace.place;
-
-        return queryFactory.select(Projections.constructor(MyCoursePlaceDto.class,
-                        qCourse.id,
-                        qCourse.name,
-                        qCourse.date,
-                        qCourse.orders,
-                        qPlace.id,
-                        qPlace.name,
-                        qPlace.phoneNumber,
-                        qPlace.latitude,
-                        qPlace.longitude,
-                        qPlace.thumbNailUrl,
-                        qPlace.address
-                ))
-                .from(qCourse)
-                .distinct()
-                .where(qCourse.user.userSeq.eq(userSeq))
-                .join(qCoursePlace)
-                .on(qCourse.id.eq(qCoursePlace.course.id))
-                .join(qPlace)
-                //.fetchJoin()
-                .on(qPlace.id.eq(qCoursePlace.place.id))
-                .orderBy( qCourse.id.asc())
-                .fetch();
-        //return null;
-
-    }
-
-    @Override
     public List<MyCoursePlaceDto> findAllByUserSeqAndCourseIdQueryDSL(Long userSeq, Long courseId) {
         QCourse qCourse = QCourse.course;
         QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
@@ -95,5 +62,21 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
 
         return execute;
 
+    }
+
+    // 내 찜한 코스 보기
+    @Override
+    public List<CourseResponseDto> findAllCourseByUserSeq(Long userSeq) {
+        QCourse qCourse = QCourse.course;
+
+        return queryFactory.select(Projections.constructor(CourseResponseDto.class,
+                    qCourse.name,
+                    qCourse.date,
+                    qCourse.id,
+                    qCourse.orders
+                ))
+                .from(qCourse)
+                .where(qCourse.user.userSeq.eq(userSeq).and(qCourse.wish.eq(true)))
+                .fetch();
     }
 }

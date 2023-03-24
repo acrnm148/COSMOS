@@ -1,10 +1,8 @@
 package com.cosmos.back.repository.place;
 
+import com.cosmos.back.dto.SimplePlaceDto;
 import com.cosmos.back.dto.response.place.*;
-import com.cosmos.back.model.QReview;
-import com.cosmos.back.model.QReviewPlace;
-import com.cosmos.back.model.QUser;
-import com.cosmos.back.model.QUserPlace;
+import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -430,6 +428,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         return queryFactory.select(qReview.score.avg())
                 .from(qPlace)
                 .leftJoin(qReviewPlace)
+                .fetchJoin()
                 .on(qPlace.id.eq(qReviewPlace.place.id))
                 .leftJoin(qReview)
                 .fetchJoin()
@@ -446,5 +445,30 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         return queryFactory.selectFrom(qPlace)
                 .where(qPlace.type.eq(type).and(qPlace.address.contains(sido).and(qPlace.address.contains(gugun))))
                 .fetch();
+    }
+
+    // QueryDsl로 SimplePlaceDto 내용 가져오기
+    @Override
+    public SimplePlaceDto findSimplePlaceDtoByPlaceIdQueryDsl(Long placeId, Long courseId) {
+        QPlace qPlace = QPlace.place;
+        QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
+
+        return queryFactory.select(Projections.constructor(SimplePlaceDto.class,
+                    qPlace.id,
+                    qPlace.name,
+                    qPlace.latitude,
+                    qPlace.longitude,
+                    qPlace.thumbNailUrl,
+                    qPlace.address,
+                    qPlace.detail,
+                    qCoursePlace.orders,
+                    qPlace.phoneNumber
+                ))
+                .from(qPlace)
+                .leftJoin(qCoursePlace)
+                .fetchJoin()
+                .on(qPlace.id.eq(qCoursePlace.place.id).and(qCoursePlace.course.id.eq(courseId)))
+                .where(qPlace.id.eq(placeId))
+                .fetchOne();
     }
 }
