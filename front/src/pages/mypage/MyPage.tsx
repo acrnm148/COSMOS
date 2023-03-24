@@ -1,9 +1,11 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
 import { LUser, userState } from "../../recoil/states/UserState"
-// import { acTokenState, coupleIdState, isLoggedInState, userSeqState } from "../../recoil/states/UserState"
+import { getUserInfo  } from "../../apis/api/user"
+import { useQuery } from "react-query"
+import { UserDispatch } from "../../layouts/MainLayout"
 
 interface userInfo {
     'userId' : number,
@@ -21,42 +23,43 @@ interface userInfo {
 declare const window: typeof globalThis & {
     Kakao: any;
   };
+  
+  export default function MyPage(){
+      const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
+      const [userInfo, setUserInfo] = useState<userInfo>()
+      const [coupleInfo, setCoupleInfo] = useState<userInfo>()
+      const navigate = useNavigate();
+      let dispatch = useContext(UserDispatch);
+      const {data} =  useQuery({
+          queryKey: ["getUserInfo"],
+          queryFn: () => getUserInfo(LoginUser.seq,dispatch)
+        })
+  
+        useEffect(()=>{
+            if (LoginUser.seq > -1){
+                console.log('로그인된유저', LoginUser.seq)
+                console.log('data',data)
+                
+                // const bringUser = (seq:number, me:string) =>{
+                //     axios.get((`https://j8e104.p.ssafy.io/api/accounts/userInfo/${seq}`), 
+                //     )
+                //         .then((res) =>{
+                //             if(me === 'me'){setUserInfo( res.data )}
+                //             else {setCoupleInfo(res.data)}
+    
+                //             if((!coupleInfo) && (userInfo?.coupleUserId)){
+                //                 bringUser(userInfo.coupleUserId, 'you')
+                //             }
+                //         })
+                //         .catch((err)=>{
+                //             console.log('err', err)
+                //         })
+                // }
+                // bringUser(Number(LoginUser.seq), 'me')
+            } 
+        })
+    
 
-export default function MyPage(){
-    const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
-    const [userInfo, setUserInfo] = useState<userInfo>()
-    const [coupleInfo, setCoupleInfo] = useState<userInfo>()
-    const navigate = useNavigate();
-    useEffect(()=>{
-        // console.log('seq',LoginUser.seq)
-        // console.log('ac', LoginUser.acToken)
-        // console.log('coupleInfo', LoginUser.coupleId)
-        // console.log('loggedin', LoginUser.isLoggedIn)
-        if (LoginUser.seq){
-            console.log('로그인된유저', LoginUser.seq)
-            const bringUser = (seq:number, me:string) =>{
-                axios.get((`https://j8e104.p.ssafy.io/api/accounts/userInfo/${seq}`), 
-                )
-                    .then((res) =>{
-                        if(me === 'me'){setUserInfo( res.data )}
-                        else {setCoupleInfo(res.data)}
-
-                        if((!coupleInfo) && (userInfo?.coupleUserId)){
-                            bringUser(userInfo.coupleUserId, 'you')
-                        }
-                    })
-                    .catch((err)=>{
-                        console.log('err', err)
-                    })
-            }
-            bringUser(Number(LoginUser.seq), 'me')
-        } 
-    })
-
-    // l64l1viXs2NeolymgS89Ptyh0kCfP_ZfLNdhhb5uCj1y6gAAAYcHIpJS
-    function deleteCookie() {
-        document.cookie = 'authorize-access-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-      }
     function kakaoLogout(){
         // if (!window.Kakao.isInitialized()){
         //     window.Kakao.init(process.env.REACT_APP_KAKAO)
@@ -69,6 +72,7 @@ export default function MyPage(){
         })
             
     }
+
     return(
         <div className="flex w-full items-center content-center ">
             <div className="w-full flex flex-col justify-center md:w-5/6 lg:w-3/6">
