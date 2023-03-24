@@ -20,3 +20,13 @@ export const getGugunList = async (sido: string) => {
   const { data } = await defaultInstance.get(`gugun/${sido}`);
   return data;
 };
+
+/**
+ * @param {string} word : 검색어
+ * GET : 검색어의 낱말을 포함한 가게 정보를 나열한다.
+ * @returns {PlaceholderInSubject, name, thumbNailUrl}
+ */
+export const getListWithSearchWord = async (searchWord: string) => {
+  const { data } = await defaultInstance.get(`places/auto/${searchWord}`);
+  return data;
+};
