@@ -1,6 +1,4 @@
-import StarIcon from "@mui/icons-material/Star";
 import { Icon } from "@iconify/react";
-import Swal from "sweetalert2";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export default function WishCourse() {
@@ -88,14 +86,16 @@ export default function WishCourse() {
     return (
         <div>
             <div className="mx-5 mt-5 h-full">
-                <div className="title font-medium text-xl inline-block">찜한 코스</div>
+                <div className="title font-medium text-xl inline-block">
+                    찜한 코스
+                </div>
                 <div className="cnt ml-2 font-bold text-red-600 text-xl inline-block">
                     {list.length}
                 </div>
 
                 <div className="mt-4 h-[540px] overflow-y-auto">
                     {list.map((a: any) => (
-                        <Item item={a}></Item>
+                        <Item key={a.id} item={a}></Item>
                     ))}
                 </div>
             </div>
@@ -107,19 +107,22 @@ function Item(props: { item: any }) {
     const navigate = useNavigate();
 
     return (
-        <div
-            className="mb-5"
-            onClick={() => {
-                navigate(`/wish/course/${props.item.id}`);
-            }}
-        >
-            <div className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg">
+        <div className="mb-5">
+            <div
+                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg"
+                onClick={() => {
+                    navigate(`/wish/course/${props.item.id}`);
+                }}
+            >
                 <div className="font-bold mb-3">{props.item.courseName}</div>
 
                 <div className="w-full h-36 flex overflow-x-scroll scrollbar-hide">
                     {props.item.place.map((a: any) => {
                         return (
-                            <div className="float-left flex-none w-32 h-28 mr-3 text-center">
+                            <div
+                                key={a.placeId}
+                                className="float-left flex-none w-32 h-28 mr-3 text-center"
+                            >
                                 <img
                                     className="w-32 h-24 rounded-lg"
                                     src={a.thumbNailUrl}
@@ -141,7 +144,12 @@ function Item(props: { item: any }) {
                     />
                     공유
                 </div>
-                <div className="float-left w-1/3 m-auto">
+                <div
+                    className="float-left w-1/3 m-auto"
+                    onClick={() => {
+                        navigate(`/wish/course/${props.item.id}/edit`);
+                    }}
+                >
                     <Icon
                         icon="material-symbols:edit-outline-rounded"
                         width="22"

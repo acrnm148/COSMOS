@@ -1,4 +1,4 @@
-import StarIcon from "@mui/icons-material/Star";
+import { Star } from "@mui/icons-material";
 import { Icon } from "@iconify/react";
 import Swal from "sweetalert2";
 
@@ -44,14 +44,16 @@ export default function WishPlace() {
     return (
         <div>
             <div className="mx-5 mt-5 h-full">
-                <div className="title font-medium text-xl inline-block">찜한 장소</div>
+                <div className="title font-medium text-xl inline-block">
+                    찜한 장소
+                </div>
                 <div className="cnt ml-2 font-bold text-red-600 text-xl inline-block">
                     {list.length}
                 </div>
 
                 <div className="mt-4 h-[480px] overflow-y-auto">
                     {list.map((a: propsType) => (
-                        <Item item={a}></Item>
+                        <Item key={a.id} item={a}></Item>
                     ))}
                 </div>
 
@@ -116,7 +118,12 @@ function Item(props: { item: propsType }) {
                     />
                 )}
                 {!props.item.heart && (
-                    <Icon icon="mdi:cards-heart-outline" color="#ff8e9e" width="28" height="28" />
+                    <Icon
+                        icon="mdi:cards-heart-outline"
+                        color="#ff8e9e"
+                        width="28"
+                        height="28"
+                    />
                 )}
             </div>
 
@@ -128,8 +135,10 @@ function Item(props: { item: propsType }) {
             />
 
             <div className="star ml-2 mb-1">
-                <StarIcon fontSize="small" sx={{ color: "#FF8E9E" }} />
-                <p className="inline-block text-sm ml-1 text-lightMain">{props.item.star}</p>
+                <Star fontSize="small" sx={{ color: "#FF8E9E" }} />
+                <p className="inline-block text-sm ml-1 text-lightMain">
+                    {props.item.star}
+                </p>
             </div>
             <div className="mb-2 text-sm text-gray-500">{address}</div>
             <div className="text-sm">{content}</div>

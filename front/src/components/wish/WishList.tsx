@@ -3,15 +3,16 @@ import WishCourse from "../wish/WishCourse";
 import CourseDetail from "../wish/CourseDetail";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import CourseEdit from "./CourseEdit";
 
 export default function WishList() {
     const [toggle, setToggle] = useState(true); // 장소: true / 코스: false
-    const { wishId } = useParams();
+    const { courseId, editId } = useParams();
     const navigate = useNavigate();
 
     return (
         <div>
-            <div className="menu w-full h-16 flex items-center">
+            <div className="menu w-full h-16 bg-white flex items-center">
                 <div
                     className={
                         "placeBtn w-1/2 h-full pt-[18px] float-left text-center text-xl" +
@@ -27,7 +28,9 @@ export default function WishList() {
                 <div
                     className={
                         "courseBtn w-1/2 h-full pt-[18px] float-left text-center text-xl" +
-                        (!toggle ? " font-bold border-b-4 border-lightMain" : "")
+                        (!toggle
+                            ? " font-bold border-b-4 border-lightMain"
+                            : "")
                     }
                     onClick={() => {
                         setToggle(false);
@@ -38,10 +41,17 @@ export default function WishList() {
                 </div>
             </div>
 
-            {wishId === undefined ? toggle && <WishPlace /> : null}
-            {wishId === undefined ? !toggle && <WishCourse /> : null}
+            {courseId === undefined && editId === undefined
+                ? toggle && <WishPlace />
+                : null}
+            {courseId === undefined && editId === undefined
+                ? !toggle && <WishCourse />
+                : null}
 
-            {wishId != undefined && <CourseDetail id={wishId} />}
+            {courseId != undefined && <CourseDetail id={courseId} />}
+            {courseId === undefined && editId != undefined ? (
+                <CourseEdit id={editId} />
+            ) : null}
         </div>
     );
 }
