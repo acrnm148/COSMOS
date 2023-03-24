@@ -28,6 +28,7 @@ public class UserProfileDto {
     private String type1;
     private String type2;
     private Long coupleUserId;
+    private Long coupleId;
     private LocalDateTime createTime;
 
     private List<Review> reviews = new ArrayList<>();//유저-리뷰

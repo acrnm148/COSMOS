@@ -27,11 +27,13 @@ public class KakaoService {
     private final String client_id = "097d883a03c0da953d919d990701da5f";
     private final String client_secret = "af5un2n5wi857RPKyB7wBFPKhjBBebd4";
     // localhost
-    private final String redirect_uri = "http://localhost:8081/api/login/oauth2/code/kakao";
+//    private final String redirect_uri = "http://localhost:8081/api/login/oauth2/code/kakao";
     // develop
-//    private final String redirect_uri = "http://j8e104.p.ssafy.io:8081/api/login/oauth2/code/kakao";
+    private final String redirect_uri = "http://j8e104.p.ssafy.io:8081/api/login/oauth2/code/kakao";
     // deploy
 //    private final String redirect_uri = "https://j8e104.p.ssafy.io/api/login/oauth2/code/kakao";
+    // front test
+//    private final String redirect_uri = "http://localhost:3000/login/oauth";
     private final String accessTokenUri = "https://kauth.kakao.com/oauth/token";
     private final String UserInfoUri = "https://kapi.kakao.com/v2/user/me";
 
