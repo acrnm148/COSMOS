@@ -34,9 +34,10 @@ public class CafeResponseDto {
     private String takeoutYn;
     private String reserveInfo;
     private String openTime;
+    private Double score;
     private boolean like;
 
-    public CafeResponseDto(Long placeId, String type, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String playground, String dayOff, String representativeMenu, String totalMenu, String smokingYn, String cardYn, String takeoutYn, String reserveInfo, String openTime) {
+    public CafeResponseDto(Long placeId, String type, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String playground, String dayOff, String representativeMenu, String totalMenu, String smokingYn, String cardYn, String takeoutYn, String reserveInfo, String openTime, Double score) {
         this.placeId = placeId;
         this.type = type;
         this.name = name;
@@ -61,5 +62,6 @@ public class CafeResponseDto {
         this.takeoutYn = takeoutYn;
         this.reserveInfo = reserveInfo;
         this.openTime = openTime;
+        this.score = score;
     }
 }

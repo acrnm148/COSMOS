@@ -37,9 +37,10 @@ public class AccommodationResponseDto {
     private String bbqYn;
     private String gymYn;
     private String refund;
+    private Double score;
     private boolean like;
 
-    public AccommodationResponseDto(Long placeId, String type, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String acceptablePeople, String roomNum, String roomType, String cookYn, String checkIn, String checkOut, String reservationPage, String pickupYn, String karaokeYn, String bbqYn, String gymYn, String refund) {
+    public AccommodationResponseDto(Long placeId, String type, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String acceptablePeople, String roomNum, String roomType, String cookYn, String checkIn, String checkOut, String reservationPage, String pickupYn, String karaokeYn, String bbqYn, String gymYn, String refund, Double score) {
         this.placeId = placeId;
         this.type = type;
         this.name = name;
@@ -67,5 +68,6 @@ public class AccommodationResponseDto {
         this.bbqYn = bbqYn;
         this.gymYn = gymYn;
         this.refund = refund;
+        this.score = score;
     }
 }
