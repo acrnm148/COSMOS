@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import TMapResult from "../common/TMapResult";
 import ListCard from "../common/ListCard";
 
@@ -104,7 +104,7 @@ const wishPlace: Place[] = [
         orders: 0,
         latitude: "37.567381622437934",
         longitude: "126.98502302169841",
-        overview: "부산 소고기 오마카세 수요미식회에도 나온 맛있는 소고기",
+        overview: "부산 소고기 오마 카세 수요미식회에도 나온 맛있는 소고기",
     },
 ];
 
@@ -136,26 +136,40 @@ export default function CourseEdit(props: { id: any }) {
     const [places, setPlaces] = useState<Place[]>([]);
     const [wishPlaces, setWishPlaces] = useState<Place[]>([]);
 
-    const [placeMap, setPlaceMap] = useState<Place[]>([]);
-    let copy = [...wishPlace];
-
+    let copy: Place[] = [];
+    const set = new Set();
     useEffect(() => {
         setPlaces([...coursePlace]);
-    }, []);
-    useEffect(() => {
-        setWishPlaces([...wishPlace]);
-    }, []);
-    useEffect(() => {
-        const set = new Set();
-        places.map((a) => set.add(a.placeId));
-        wishPlace.map((a) => set.add(a.placeId));
 
-        copy.map((a, i) => {
-            if (set.has(a.placeId)) {
-                copy.splice(i, 1);
+        places.map((a) => set.add(a.placeId));
+        wishPlace.map((a: Place) => {
+            if (!set.has(a.placeId)) {
+                copy.push(a);
+                set.add(a.placeId);
             }
         });
+
+        setWishPlaces([...copy]);
+        console.log(wishPlaces);
     }, []);
+
+    // let copy = [...wishPlace];
+    // useEffect(() => {
+    //     const set = new Set();
+    //     places.map((a) => set.add(a.placeId));
+    //     copy.map((a, i) => {
+    //         if (set.has(a.placeId)) {
+    //             copy.splice(i, 1);
+    //         }
+    //     });
+    //     // setCopyWishSet([...copy]);
+
+    //     deleteId();
+    // }, [copyWishSet]);
+
+    // const deleteId = useCallback(() => {
+    //     setCopyWishSet([...copy]);
+    // }, [copyWishSet]);
 
     return (
         <div>
@@ -167,12 +181,12 @@ export default function CourseEdit(props: { id: any }) {
                         계획할 장소를 순서대로 눌러주세요!
                     </div>
 
-                    {coursePlace.map((a: Place) => (
-                        <Item item={a}></Item>
+                    {places.map((a: Place) => (
+                        <Item key={a.placeId} item={a}></Item>
                     ))}
 
-                    {copy.map((a: Place) => (
-                        <Item item={a}></Item>
+                    {wishPlaces.map((a: Place) => (
+                        <Item key={a.placeId} item={a}></Item>
                     ))}
                 </ListCard>
             </div>
@@ -201,7 +215,7 @@ function Item(props: { item: Place }) {
                 <div className="text-left mt-2">
                     <div className="font-bold mb-2">{props.item.placeName}</div>
                     <div className="mb-2 text-sm text-gray-500">{address}</div>
-                    <div className="text-sm border-2 border-calendarDark bg-white py-1 px-3 rounded">
+                    <div className="text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
                         유사 장소 추천
                     </div>
                 </div>
