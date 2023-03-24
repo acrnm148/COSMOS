@@ -2,7 +2,8 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
-import { userSeqState } from "../../recoil/states/UserState"
+import { LUser, userState } from "../../recoil/states/UserState"
+// import { acTokenState, coupleIdState, isLoggedInState, userSeqState } from "../../recoil/states/UserState"
 
 interface userInfo {
     'userId' : number,
@@ -22,28 +23,33 @@ declare const window: typeof globalThis & {
   };
 
 export default function MyPage(){
-    const userSeq = useRecoilState(userSeqState)
+    const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
     const [userInfo, setUserInfo] = useState<userInfo>()
     const [coupleInfo, setCoupleInfo] = useState<userInfo>()
     const navigate = useNavigate();
     useEffect(()=>{
-        if (userSeq){
-            // console.log('로그인된유저', userSeq)
-            // const bringUser = (seq:number, me:string) =>{
-            //     axios.get((`/api/accounts/userInfo/${seq}`))
-            //         .then((res) =>{
-            //             if(me==='me'){setUserInfo( res.data )}
-            //             else {setCoupleInfo(res.data)}
+        // console.log('seq',LoginUser.seq)
+        // console.log('ac', LoginUser.acToken)
+        // console.log('coupleInfo', LoginUser.coupleId)
+        // console.log('loggedin', LoginUser.isLoggedIn)
+        if (LoginUser.seq){
+            console.log('로그인된유저', LoginUser.seq)
+            const bringUser = (seq:number, me:string) =>{
+                axios.get((`https://j8e104.p.ssafy.io/api/accounts/userInfo/${seq}`), 
+                )
+                    .then((res) =>{
+                        if(me === 'me'){setUserInfo( res.data )}
+                        else {setCoupleInfo(res.data)}
 
-            //             if((!coupleInfo) && (userInfo?.coupleUserId)){
-            //                 bringUser(userInfo.coupleUserId, 'you')
-            //             }
-            //         })
-            //         .catch((err)=>{
-            //             console.log('err', err)
-            //         })
-            // }
-            // bringUser(Number(userSeq), 'me')
+                        if((!coupleInfo) && (userInfo?.coupleUserId)){
+                            bringUser(userInfo.coupleUserId, 'you')
+                        }
+                    })
+                    .catch((err)=>{
+                        console.log('err', err)
+                    })
+            }
+            bringUser(Number(LoginUser.seq), 'me')
         } 
     })
 

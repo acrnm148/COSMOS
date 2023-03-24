@@ -1,4 +1,6 @@
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import { userState } from "../../recoil/states/UserState";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 const axiosApi = (baseURL: any) => {
@@ -33,9 +35,10 @@ const axiosAuthApi = (baseURL: any) => {
   });
   instance.interceptors.request.use(
     (config) => {
-      const access_token = localStorage.getItem("accessToken");
-      if (access_token) {
-        config.headers.AccessToken = "Bearer " + access_token;
+      // const access_token = localStorage.getItem("accessToken");
+      const [user, setUser] = useRecoilState(userState)
+      if (user.acToken) {
+        config.headers.AccessToken = "Bearer " + user.acToken;
       }
       return config;
     },
@@ -101,4 +104,5 @@ const axiosAuthApi = (baseURL: any) => {
 };
 
 export const defaultInstance = axiosApi(BASE_URL);
-// export const authInstance = axiosAuthApi(BASE_URL);
+
+export const authInstance = axiosAuthApi(BASE_URL);
