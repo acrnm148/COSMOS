@@ -24,6 +24,7 @@ import { GalleryPage } from "../pages/schedule/GalleryPage";
 import ScheduleLayout from "../layouts/ScheduleLayout";
 import WishList from "../pages/wish/WishList";
 import PlaceResult from "../pages/place/PlaceResult";
+// import Test from "../pages/place/Test"; // 드래그앤드롭
 
 const router = createBrowserRouter([
     {
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
     // 찜 목록
     {
         path: "/wish",
-        element: <SubLayout />,
+        element: <MainLayout />,
         errorElement: <NotFound />,
         children: [
             { path: "", element: <WishList /> },
@@ -57,19 +58,20 @@ const router = createBrowserRouter([
     // 랜딩페이지
     {
         path: "/landing",
-        element: <NoHeaderLayout />,
+        element: <SubLayout />,
         errorElement: <NotFound />,
         children: [{ path: "/landing", element: <Landing /> }],
     },
     // 장소 검색 & 빅데이터 추천
     {
         path: "/place",
-        element: <SubLayout />,
+        element: <MainLayout />,
         errorElement: <NotFound />,
         children: [
             { path: "search", element: <PlaceSearch /> },
             { path: "recommend", element: <PlaceRecommend /> },
             { path: "result", element: <PlaceResult /> },
+            // { path: "drag", element: <Test /> },
         ],
     },
     // 설문조사

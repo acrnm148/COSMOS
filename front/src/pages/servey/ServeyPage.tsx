@@ -67,7 +67,7 @@ export default function ServeyPage() {
     if (serveyPg === 10 && cate && cateNumCode) {
       setTimeout(() => {
         console.log("cate", cate, "cateNumCode", cateNumCode);
-        navigate(`/result/${cate}/${cateNumCode}`);
+        navigate(`/servey/result/${cate}/${cateNumCode}`);
       }, 2000);
     }
   }, [cate, cateNumCode]);
@@ -77,7 +77,7 @@ export default function ServeyPage() {
   }
   return (
     <>
-      <div className="h-screen p-6 bg-darkBackground place-content-center text-darkMain">
+      <div className="h-screen w-full max-w-[500px] m-auto p-6 bg-darkBackground place-content-center text-darkMain m-auto">
         <p>현재페이지 : {serveyPg}</p> {/* 삭제예정 */}
         <div className="flex content-center w-full items-start h-full">
           {serveyPg === 0 && (
@@ -105,7 +105,7 @@ export default function ServeyPage() {
           {serveyPg === 8 && <Servey8 />}
           {serveyPg === 9 && <Servey9 />}
           {serveyPg === 10 && (
-            <div className="flex w-full h-full justify-center items-center flex-col">
+            <div className="flex w-screen h-screen justify-center items-center flex-col">
               <iframe src="https://embed.lottiefiles.com/animation/101474"></iframe>
               <h1 className="font-bold font-baloo text-2xl mb-3">
                 데이트 취향설문 결과 분석중

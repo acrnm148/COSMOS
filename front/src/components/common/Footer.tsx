@@ -6,7 +6,7 @@ import CoupleIcon from "../../assets/footer/couple-icon.png";
 export default function Footer() {
   return (
     <div className="text-xl font-bold z-[9999999]">
-      <div className="fixed bottom-0 z-100 left-0 inset-x-0 bg-white h-20 w-full flex">
+      <div className="w-screen max-w-[1200px] m-auto fixed bottom-0 z-100 left-0 inset-x-0 bg-white h-20 w-full flex">
         <div className="menuItems m-auto w-full">
           <div className="float-left w-1/5 flex justify-center">
             <NavLink to="/">

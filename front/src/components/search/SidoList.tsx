@@ -22,7 +22,7 @@ export default function SidoList({ setSido }: any) {
 
   return (
     <select
-      className="basis-1/6 border-4 border-lightMain opacity-50 rounded-lg rounded-r-none focus:outline-none"
+      className="h-12 w-[30%] border-4 border-lightMain opacity-50 rounded-lg focus:outline-none"
       onChange={handleSidoSelect}
     >
       <option value="">시/도 선택</option>
