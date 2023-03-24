@@ -26,6 +26,23 @@ const axiosApi = (baseURL: any) => {
 //       return Promise.reject(error);
 //     }
 //   );
+const axiosAuthApi = (baseURL: any) => {
+  const instance = axios.create({
+    baseURL,
+    withCredentials: true,
+  });
+  instance.interceptors.request.use(
+    (config) => {
+      const access_token = localStorage.getItem("accessToken");
+      if (access_token) {
+        config.headers.AccessToken = "Bearer " + access_token;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
 
 //   instance.interceptors.response.use(
 //     (response) => {
@@ -81,6 +98,7 @@ const axiosApi = (baseURL: any) => {
 //   );
 //   return instance;
 // };
+};
 
 export const defaultInstance = axiosApi(BASE_URL);
 // export const authInstance = axiosAuthApi(BASE_URL);

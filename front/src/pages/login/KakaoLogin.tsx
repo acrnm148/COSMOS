@@ -1,68 +1,60 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { userState,userSeqState } from "../../recoil/states/UserState";
+import { isLoggedInState,userSeqState, acTokenState, coupleIdState } from "../../recoil/states/UserState";
+import { useNavigate } from 'react-router';
+import { useMutation, useQuery } from "react-query";
+import { loginCosmos } from "../../apis/api/login";
 
 declare const window: typeof globalThis & {
     Kakao: any;
+    document:any;
   };
 export default function KakaoLogin(){
-  const [userSeq,setUserSeq] = useRecoilState(userSeqState);
   const JWT_EXPIRRY_TIME = 24 * 3600 * 1000
+  const navigate = useNavigate();
   
-    useEffect(() => {
-        let params = new URL(document.location.toString()).searchParams;
-        let code = params.get("code");
-        let grant_type = "authorization_code";
-        let client_id = process.env.REACT_APP_KAKAO_CLIENT_ID;
-        axios
-          .post(
-            `https://kauth.kakao.com/oauth/token?grant_type=${grant_type}&client_id=${client_id}&redirect_uri=${process.env.REACT_APP_BASE_URL}&code=${code}`,
-            {
-              headers: {
-                "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-              },
-            }
-          )
-          .then((res: { data: { access_token: any; }; }) => {
-            // sdk 를 못찾아서 초기화
-            if (!window.Kakao.isInitialized()){
-              window.Kakao.init(process.env.REACT_APP_KAKAO)
-          }
-          // 여기서 카카오 말고 res.data.access_token을 백엔드로 요청보내기
-            window.Kakao.Auth.setAccessToken(res.data.access_token)
-            window.Kakao.API.request({
-              url: "/v2/user/me",
-              success: function (response: any) {
-                console.log('정보 받는 부분')
-                console.log(response)
-                let userEmail = response.kakao_account.email
-                let userName = response.kakao_account.profile.nickname
-                let userProfile = response.kakao_account.profile.profile_image_url
-              },
-              fail: function (error: any) {
-                console.log(error)
-              },
-            })
-            ///////// 우리 서버에 로그인 요청 보내는 부분
-            const onRefresh = () =>{
-              axios.post("/api/accounts/auth/login/kakao",{
-                code : res.data.access_token
+  // userInfo recoil
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState)
+  const [userSeq,setUserSeq] = useRecoilState(userSeqState);
+  const [acToken, setAcToken] = useRecoilState(acTokenState)
+  const [coupleId, setCoupleId] = useRecoilState(coupleIdState)
+  
+  const params = new URLSearchParams(window.location.search);
+  let code: any = params.get('code')
+  useEffect(() => {
+    // console.log('heyhyehey 카카오로그인 들어옴', code)
+    cosmosLogin(code)
+  })
+        async function cosmosLogin(code:string){
+            axios({
+              url : "https://j8e104.p.ssafy.io/api/accounts/auth/login/kakao",
+              method: 'GET',
+              params: {code},
               })
               .then((res:any)=>{
                 // 응답받은 userSeq 저장
                 const getUserSeq = res.data.userId
                 setUserSeq(getUserSeq)
-                onLoginSuccess(getUserSeq)
+                if (res.data.coupleId){
+                  // coupleId가 유효하면 10 길이의 난수
+                  // 유효하지 않으면 "0" :string
+                  setCoupleId(res.data.coupleId)
+                }
+                setAcToken(res.data.accessToken)
+                // 로그인 여부 true로
+                setIsLoggedIn(true)
+
+
+                console.log('코스모스 로그인 성공', res.data)
+                return navigate("/")
               })
-            }
-            const onLoginSuccess = (getUserSeq: number | null) => {
-              setTimeout(onRefresh, JWT_EXPIRRY_TIME - 60000)
-            }
-            })
-            
-          })
-          return(
-              <div>카카오 로그인 완료</div>
-          )
+              .catch((err:any) => {
+                console.log('코스모스 로그인 실패', err)
+              })
+        }
+      // })
+      return(
+          <div>카카오로그인 코드: {code} </div>
+      )
 }

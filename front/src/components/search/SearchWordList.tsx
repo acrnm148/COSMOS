@@ -14,9 +14,7 @@ export default function SearchWordList({ searchWord }: any) {
     <>
       {data.length === 0
         ? null
-        : data.map((item: any) => {
-            <div key={item.placeId}>{item.name}</div>;
-          })}
+        : data.map((item: any) => <div key={item.placeId}>{item.name}</div>)}
     </>
   );
 }
