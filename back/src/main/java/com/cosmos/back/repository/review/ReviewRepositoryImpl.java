@@ -62,18 +62,12 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     @Override
     public List<Review> findReviewInPlaceUserCoupleQueryDsl(Long userSeq, Long placeId) {
         QReview qReview = QReview.review;
-        QUser qUser = QUser.user;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
-        QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
 
         return queryFactory.selectFrom(qReview)
                 .leftJoin(qReviewPlace)
-                .on(qReview.id.eq(qReviewPlace.review.id))
-                .leftJoin(qReviewCategory)
-                .on(qReview.id.eq(qReviewCategory.review.id))
-                .leftJoin(qUser)
-                .on(qUser.userSeq.eq(qReview.user.userSeq))
-                .fetchJoin()
+                .on(qReviewPlace.review.id.eq(qReview.id))
+                .distinct()
                 .where(qReview.user.userSeq.eq(userSeq)
                         .and(qReviewPlace.place.id.eq(placeId)))
                 .fetch();
@@ -104,16 +98,6 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
 
-//        List<Review> reviews = queryFactory.selectFrom(qReview)
-//                .distinct()
-//                .where(qReview.user.userSeq.eq(userSeq))
-//                .join(qReviewPlace)
-//                .on(qReview.id.eq(qReviewPlace.review.id))
-//                .join(qReviewCategory)
-//                .on(qReview.id.eq(qReviewCategory.review.id))
-//                .fetch();
-//        System.out.println("살려주세요! = " + reviews.get(0).getReviewPlaces().get(0).getPlace().getId());
-
         return queryFactory.selectFrom(qReview)
                 .distinct()
                 .where(qReview.user.userSeq.eq(userSeq))
@@ -122,22 +106,5 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .join(qReviewCategory)
                 .on(qReview.id.eq(qReviewCategory.review.id))
                 .fetch();
-
-
-//        return queryFactory.select(Projections.constructor(ReviewUserResponseDto.class,
-//                qReview.id,
-//                qReview.score,
-////                qReviewCategory.reviewCategoryCode,
-//                qReview.contents,
-//                qReviewPlace.place.id
-//                ))
-//                .from(qReview)
-//                .distinct()
-//                .join(qReviewPlace)
-//                .on(qReview.id.eq(qReviewPlace.review.id))
-//                .join(qReviewCategory)
-//                .on(qReview.id.eq(qReviewCategory.review.id))
-//                .where(qReview.user.userSeq.eq(userId))
-//                .fetch();
     }
 }

@@ -74,10 +74,14 @@ public class ReviewService {
     @Transactional
     @RedisEvict(key = "review")
     public Long deleteReview (Long reviewId, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
+        // 카테고리 삭제(1)
         Long executeReviewCategory = reviewRepository.deleteReviewCategoryQueryDsl(reviewId);
+        // 리뷰와 장소 연결 삭제(2)
         Long executeReviewPlace = reviewRepository.deleteReviewPlaceQueryDsl(reviewId);
+        // 리뷰 내용 삭제(3)
         Long executeReview = reviewRepository.deleteReviewQueryDsl(reviewId);
 
+        // 모두 삭제한 후 제대로 삭제됬는지 확인
         Long execute = executeReviewCategory * executeReviewPlace * executeReview;
 
         // 존재하지 않는 review 일 때 error 처리
@@ -89,19 +93,50 @@ public class ReviewService {
     }
 
     // 커플 및 유저의 특정 장소에 대한 리뷰 불러오기
-    public List<Review> findReviewsInPlaceUserCouple (Long userSeq, Long coupleId, Long placeId) {
-        List<Review> reviews = new ArrayList<>();
+    public List<ReviewResponseDto> findReviewsInPlaceUserCouple (Long userSeq, Long coupleId, Long placeId) {
+        List<ReviewResponseDto> reviews = new ArrayList<>();
+
+        // 커플일 경우
         if (coupleId != null) {
+            // 커플에 해당하는 유저를 조회
             List<User> users = userRepository.findByCoupleId(coupleId);
 
+            // 해당 커플의 유저를 한 명씩 돌면서 각자쓴 리뷰를 합친다.
             for (User u : users) {
                 List<Review> data = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(u.getUserSeq(), placeId);
-    //                for (Review r : data) {
-    //                    reviews.add(r);
-    //                }
+                    for (Review r : data) {
+                        ReviewResponseDto dto = ReviewResponseDto.builder()
+                                .reviewId(r.getId())
+                                .categories(r.getReviewCategories())
+                                .score(r.getScore())
+                                .contents(r.getContents())
+                                .userId(u.getUserSeq())
+                                .nickname(r.getNickname())
+                                .createdTime(r.getCreatedTime())
+                                .img1(r.getImg1())
+                                .img2(r.getImg2())
+                                .img3(r.getImg3())
+                                .build();
+                        reviews.add(dto);
+                    }
             }
-        } else {
-            reviews = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(userSeq, placeId);
+        } else { // 솔로일 경우 자신의 리뷰를 불러온다.
+            List<Review> data = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(userSeq, placeId);
+            for (Review r : data) {
+                ReviewResponseDto dto = ReviewResponseDto.builder()
+                        .reviewId(r.getId())
+                        .categories(r.getReviewCategories())
+                        .score(r.getScore())
+                        .contents(r.getContents())
+                        .userId(userSeq)
+                        .nickname(r.getNickname())
+                        .createdTime(r.getCreatedTime())
+                        .img1(r.getImg1())
+                        .img2(r.getImg2())
+                        .img3(r.getImg3())
+                        .build();
+                reviews.add(dto);
+            }
         }
         return reviews;
     }
@@ -112,6 +147,7 @@ public class ReviewService {
         List<Review> review = reviewRepository.findReviewInPlaceQueryDsl(placeId);
 
         List<ReviewResponseDto> list = new ArrayList<>();
+        // ReviewResponseDto에 맞게 데이터 정제하여 List에 추가한다
         for (Review r : review) {
             ReviewResponseDto dto = ReviewResponseDto.builder()
                     .reviewId(r.getId())
@@ -137,13 +173,13 @@ public class ReviewService {
         List<Review> review = reviewRepository.findReviewInUserQueryDsl(userSeq);
 
         List<ReviewUserResponseDto> list = new ArrayList<>();
+        // Dto 형식에 맞춰서 Review 내용 중에 맞는 것을 골라 넣는다
         for (Review r : review) {
             ReviewUserResponseDto dto = ReviewUserResponseDto.builder()
                     .reviewId(r.getId())
                     .categories(r.getReviewCategories())
                     .score(r.getScore())
                     .contents(r.getContents())
-//                    .placeId(r.getReviewPlaces().get(0).getPlace().getId())
                     .placeId(r.getReviewPlaces().get(0).getPlace().getId())
                     .build();
             list.add(dto);
@@ -180,12 +216,15 @@ public class ReviewService {
         List<Adjective> adjectives = reviewAdjectiveRepository.findAll();
         List<Noun> nouns = reviewNounRepository.findAll();
 
+        // 인덱스로 랜덤하게 추출하기 위해 배열 크기 측정
         Integer adjectivesSize = adjectives.size();
         Integer nounsSize = nouns.size();
 
+        // 랜덤으로 형용사 명사의 인덱스를 가져온다.
         Integer randomAdjectiveIdx = (int) (Math.random() * adjectivesSize);
         Integer randomNounIdx = (int) (Math.random() * nounsSize);
 
+        // 해당 숫자를 활용해서 각 테이블에서 문자 추출
         String randomAdjective = adjectives.get(randomAdjectiveIdx).getContents();
         String randomNoun = nouns.get(randomNounIdx).getContents();
 
