@@ -4,6 +4,7 @@ package com.cosmos.back.repository.review;
 import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
 
 import com.cosmos.back.model.Review;
+import com.cosmos.back.model.ReviewCategory;
 
 
 import java.util.List;

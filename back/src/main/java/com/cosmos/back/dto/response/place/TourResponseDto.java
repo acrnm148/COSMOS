@@ -30,9 +30,10 @@ public class TourResponseDto {
     private String insideYn;
     private String dayOff;
     private String program;
+    private Double score;
     private boolean like;
 
-    public TourResponseDto(Long placeId, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String type, String petYn, String introduce, String insideYn, String dayOff, String program) {
+    public TourResponseDto(Long placeId, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String type, String petYn, String introduce, String insideYn, String dayOff, String program, Double score) {
         this.placeId = placeId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -53,5 +54,6 @@ public class TourResponseDto {
         this.insideYn = insideYn;
         this.dayOff = dayOff;
         this.program = program;
+        this.score = score;
     }
 }
