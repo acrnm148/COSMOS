@@ -7,8 +7,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.cosmos.back.controller.SseController.sseEmitters;
-
 @RequiredArgsConstructor
 @Service
 public class NotificationService {
