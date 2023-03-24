@@ -28,13 +28,7 @@ import SearchLayout from "../layouts/SearchLayout";
 // import Test from "../pages/place/Test"; // 드래그앤드롭
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    errorElement: <NotFound />,
-    children: [
-      {
-        index: true,
+    {
         path: "/",
         element: <Home />,
       },
