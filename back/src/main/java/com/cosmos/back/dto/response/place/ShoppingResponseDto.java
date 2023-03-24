@@ -32,9 +32,10 @@ public class ShoppingResponseDto {
     private String cardYn;
     private String openTime;
     private String openDay;
+    private Double score;
     private boolean like;
 
-    public ShoppingResponseDto(Long placeId, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String type, String shoppingList, String dayOff, String strollerYn, String petYn, String cardYn, String openTime, String openDay) {
+    public ShoppingResponseDto(Long placeId, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String type, String shoppingList, String dayOff, String strollerYn, String petYn, String cardYn, String openTime, String openDay, Double score) {
         this.placeId = placeId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -57,5 +58,6 @@ public class ShoppingResponseDto {
         this.cardYn = cardYn;
         this.openTime = openTime;
         this.openDay = openDay;
+        this.score = score;
     }
 }

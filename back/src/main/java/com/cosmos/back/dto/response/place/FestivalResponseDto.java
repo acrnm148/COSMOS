@@ -30,9 +30,10 @@ public class FestivalResponseDto {
     private String endDate;
     private String price;
     private String takenTime;
+    private Double score;
     private boolean like;
 
-    public FestivalResponseDto(Long placeId, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String type, String introduce, String startDate, String endDate, String price, String takenTime) {
+    public FestivalResponseDto(Long placeId, String name, String phoneNumber, String latitude, String longitude, String thumbNailUrl, String detail, String parkingYn, String address, String img1, String img2, String img3, String img4, String img5, String type, String introduce, String startDate, String endDate, String price, String takenTime, Double score) {
         this.placeId = placeId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -53,5 +54,6 @@ public class FestivalResponseDto {
         this.endDate = endDate;
         this.price = price;
         this.takenTime = takenTime;
+        this.score = score;
     }
 }
