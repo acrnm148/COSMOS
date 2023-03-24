@@ -1,5 +1,6 @@
 package com.cosmos.back.repository.place;
 
+import com.cosmos.back.dto.SimplePlaceDto;
 import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.place.Place;
 
@@ -52,4 +53,6 @@ public interface PlaceRepositoryCustom {
     // QueryDsl로 찜한 거 가져오기
     public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl(Long placeId, Long userSeq);
 
+    // QueryDsl로 SimplePlaceDto 내용 가져오기
+    public SimplePlaceDto findSimplePlaceDtoByPlaceIdQueryDsl(Long placeId, Long courseId);
 }

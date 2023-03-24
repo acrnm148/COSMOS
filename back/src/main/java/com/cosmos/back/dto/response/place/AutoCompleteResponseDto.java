@@ -14,4 +14,5 @@ public class AutoCompleteResponseDto {
     private String name;
     private String address;
     private String thumbNailUrl;
+    private String type;
 }

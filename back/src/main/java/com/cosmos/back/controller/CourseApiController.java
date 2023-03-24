@@ -37,7 +37,15 @@ public class CourseApiController {
         return new ResponseEntity<>(courseResponseDto, HttpStatus.OK);
     }
 
-    @Operation(summary = "코스 삭제", description = "코스 삭제")
+    @Operation(summary = "코스 찜", description = "코스 찜")
+    @PutMapping("/courses/{courseId}")
+    public ResponseEntity<Long> likeCourse(@PathVariable Long courseId) {
+        Long id = courseService.likeCourse(courseId);
+
+        return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @Operation(summary = "코스 찜 삭제", description = "코스 찜 삭제")
     @DeleteMapping("/courses/{courseId}")
     public ResponseEntity<Long> deleteCourse(@PathVariable Long courseId) {
         Long id = courseService.deleteCourse(courseId);
@@ -45,8 +53,8 @@ public class CourseApiController {
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
-    @Operation(summary = "내 모든 코스 보기", description = "내 모든 코스 보기")
-    @GetMapping("/courses/{userSeq}")
+    @Operation(summary = "내 찜한 코스 보기", description = "내 찜한 코스 보기")
+    @GetMapping("/courses/users/{userSeq}")
     public ResponseEntity<?> getMyAllCourses(@PathVariable("userSeq") Long userSeq,
                                                 @RequestHeader(value = "Authorization") String token) {
         //userSeq 일치, access토큰 유효 여부 체크
@@ -58,10 +66,10 @@ public class CourseApiController {
             return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
         }
 
-        List<CourseResponseDto> courses = courseService.getMyAllCourses(userSeq);
+        List<CourseResponseDto> courses = courseService.listLikeCourse(userSeq);
 
 
-        return new ResponseEntity<>( courses, HttpStatus.OK);
+        return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
     @Operation(summary = "내 코스 상세 보기", description = "내 코스 상세 보기")
