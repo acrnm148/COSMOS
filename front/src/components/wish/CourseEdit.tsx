@@ -104,7 +104,7 @@ const wishPlace: Place[] = [
         orders: 0,
         latitude: "37.567381622437934",
         longitude: "126.98502302169841",
-        overview: "부산 소고기 오마카세 수요미식회에도 나온 맛있는 소고기",
+        overview: "부산 소고기 오마카 세 수요미식회에도 나온 맛있는 소고기",
     },
 ];
 
@@ -133,7 +133,7 @@ export default function CourseEdit(props: { id: any }) {
         },
     ];
 
-    const [places, setPlaces] = useState<Place[]>([]);
+    const [places, setPlaces] = useState<Place[]>([...coursePlace]);
     const [wishPlaces, setWishPlaces] = useState<Place[]>([]);
 
     let copy: Place[] = [];
@@ -141,7 +141,7 @@ export default function CourseEdit(props: { id: any }) {
     useEffect(() => {
         setPlaces([...coursePlace]);
 
-        places.map((a) => set.add(a.placeId));
+        coursePlace.map((a) => set.add(a.placeId));
         wishPlace.map((a: Place) => {
             if (!set.has(a.placeId)) {
                 copy.push(a);
@@ -150,26 +150,7 @@ export default function CourseEdit(props: { id: any }) {
         });
 
         setWishPlaces([...copy]);
-        console.log(wishPlaces);
     }, []);
-
-    // let copy = [...wishPlace];
-    // useEffect(() => {
-    //     const set = new Set();
-    //     places.map((a) => set.add(a.placeId));
-    //     copy.map((a, i) => {
-    //         if (set.has(a.placeId)) {
-    //             copy.splice(i, 1);
-    //         }
-    //     });
-    //     // setCopyWishSet([...copy]);
-
-    //     deleteId();
-    // }, [copyWishSet]);
-
-    // const deleteId = useCallback(() => {
-    //     setCopyWishSet([...copy]);
-    // }, [copyWishSet]);
 
     return (
         <div>
