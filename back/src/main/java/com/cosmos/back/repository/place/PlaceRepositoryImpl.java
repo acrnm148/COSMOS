@@ -410,7 +410,8 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         qPlace.id,
                         qPlace.name,
                         qPlace.address,
-                        qPlace.thumbNailUrl
+                        qPlace.thumbNailUrl,
+                        qPlace.type
                 ))
                 .from(qPlace)
                 .where(qPlace.name.contains(searchWord))
