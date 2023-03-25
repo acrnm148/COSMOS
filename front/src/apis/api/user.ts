@@ -13,4 +13,12 @@ import { AxiosAuthApi, defaultInstance } from "../utils"
     return data
   };
 
+/**
+ * POST : 마이페이지 접근시 유저 데이터 요청
+ */
+ export const makeCouple = async (coupleId:number|string, ac:string|null) => {
+  const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac)
+    const {data} = await instance.get(`couples/accept/${Number(coupleId)}`)
+  return data
+};
 

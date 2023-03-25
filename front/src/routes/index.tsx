@@ -37,18 +37,20 @@ const router = createBrowserRouter([
       { path: "", element: <Home /> },
       // 마이페이지
       { path: "mypage", element: <MyPage /> },
+      // 로그인
+      { path: "login", element:<Login />},
+      { path: "login/oauth", element: <KakaoLogin />}
     ],
   },
-  // 로그인
-  {
-    path: "/login",
-    element : <Login />,
-    errorElement: <NotFound />,
-    children: [
-      { path: "", element: <Login /> },
-      { path: "oauth", element: <KakaoLogin /> },
-    ]
-  },
+  // {
+  //   path: "/login",
+  //   element : <Login />,
+  //   errorElement: <NotFound />,
+  //   children: [
+  //     { path: "", element: <Login /> },
+  //     { path: "oauth", element: <KakaoLogin /> },
+  //   ]
+  // },
   // 찜 목록
   {
     path: "/wish",
@@ -90,6 +92,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { path: "", element: <Servey /> },
+      { path: ":coupleId", element: <Servey /> },
       { path: "result/:cate/:cateNum", element: <ServeyResult /> },
     ],
   },

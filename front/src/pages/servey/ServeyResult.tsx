@@ -1,9 +1,14 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { useEffect, useState, } from "react";
+import { useContext, useEffect, useState, } from "react";
 import { useParams } from "react-router";
 
 import "../../css/serveyResult.css"
 import axios from 'axios';
+import { userState } from '../../recoil/states/UserState';
+import { useQuery } from 'react-query';
+import { UserDispatch } from '../../layouts/MainLayout';
+import { makeCouple } from '../../apis/api/user';
+import { invitedCoupleId } from '../../recoil/states/ServeyPageState';
 // import { coupleIdState } from '../../recoil/states/UserState';
 
 // 설문조사 결과 이미지
@@ -76,24 +81,35 @@ export default function ServeyPage(){
     const secondKeyword = cate != null ? codeName[cate.slice(1,2) as keyof typeof codeName] : ''
     const thirdKeyword = cate != null ? codeName[cate.slice(2,3) as keyof typeof codeName] : ''
 
-    // 커플ID
-    // const [coupleId, setCoupleId] = useRecoilState(coupleIdState)
+    // 생성된 유저 coupleId recoil에 저장
+    const [user, setUser] = useRecoilState(userState)
+ 
+    let coupleId:any
+    // 커플초대로 온 경우 recoil에 담아둔 커플Id 유저정보에 저장
+    const [invited, setInvited] = useRecoilState(invitedCoupleId)
+    let dispatch = useContext(UserDispatch);
+    if (invited){
+        coupleId = invited
+        // 커플매칭 요청
+        const { data } = useQuery({
+            queryKey: ["makeCouple"],
+            queryFn: () => makeCouple(coupleId, dispatch)
+        });
+    } else{
+        // 커플Id 생성 요청
+        const { data } = useQuery({
+            queryKey: ["getCoupleId"],
+            queryFn: () => getCoupleId()
+        });
+        coupleId = data
+    }
+   setUser({...user, coupleId : coupleId})
 
     useEffect(() => {
         // 카카오 sdk 찾도록 초기화
         if (!window.Kakao.isInitialized()){
             window.Kakao.init(process.env.REACT_APP_KAKAO)
         }
-
-        // 커플ID 생성요청 
-        axios({
-            url : "https://j8e104.p.ssafy.io/api/makeCoupleId",
-            method: 'GET',
-            })
-            .then((res:any)=>{
-                console.log('coupleId = ', res.data)
-                // setCoupleId(res.data)
-            })
     })
     const shareKakao = () => {
         window.Kakao.Link.sendDefault({
@@ -111,8 +127,8 @@ export default function ServeyPage(){
                 {
                     title:'데이트 취향설문하기',
                     link:{
-                        webUrl:'http://localhost:3000/servey',
-                        mobileWebUrl : 'http://localhost:3000/servey',
+                        webUrl:`http://localhost:3000/servey/${coupleId}`,
+                        mobileWebUrl : `http://localhost:3000/servey/${coupleId}`,
                     }
                 }
             ]
@@ -162,11 +178,17 @@ export default function ServeyPage(){
                                 </div>
                             </div>
                         </div>
+                        {
+                            // 커플 초대로 설문을 마친사람
+
+                            // 커플Id가 없는사람
+
+                        }
                         <div className="w-full p-2 flex flex-col items-center text-sm ">
                             <button
                                 className="w-full h-10 flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain5 text-darkBackground2"
                             >
-                                난수가 들어가는 자리입니다
+                                {coupleId}
                             </button>
                             <p className="mt-5 mb-2 text-xs">애인에게 코드를 공유하고 코스모스의 커플 서비스를 사용하세요</p>
                             <button
@@ -182,3 +204,7 @@ export default function ServeyPage(){
         </>
     )
 }
+function getCoupleId(): any {
+    throw new Error('Function not implemented.');
+}
+
