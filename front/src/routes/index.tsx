@@ -30,15 +30,24 @@ import SearchLayout from "../layouts/SearchLayout";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <MainLayout />,
     errorElement: <NotFound />,
     children: [
-      //로그인
-      { path: "/login", element: <Login /> },
-      { path: "/login/oauth", element: <KakaoLogin /> },
+      // 홈
+      { path: "", element: <Home /> },
       // 마이페이지
-      { path: "/mypage", element: <MyPage /> },
+      { path: "mypage", element: <MyPage /> },
     ],
+  },
+  // 로그인
+  {
+    path: "/login",
+    element : <Login />,
+    errorElement: <NotFound />,
+    children: [
+      { path: "", element: <Login /> },
+      { path: "oauth", element: <KakaoLogin /> },
+    ]
   },
   // 찜 목록
   {
