@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { useRecoilState } from "recoil";
-import { isLoggedInState,userSeqState, acTokenState, coupleIdState } from "../../recoil/states/UserState";
+import { useRecoilState, useSetRecoilState } from "recoil";
+// import { isLoggedInState,userSeqState, acTokenState, coupleIdState } from "../../recoil/states/UserState";
 import { useNavigate } from 'react-router';
 import { useMutation, useQuery } from "react-query";
-import { loginCosmos } from "../../apis/api/login";
+import { LUser, userState } from "../../recoil/states/UserState";
 
 declare const window: typeof globalThis & {
     Kakao: any;
@@ -14,11 +14,8 @@ export default function KakaoLogin(){
   const JWT_EXPIRRY_TIME = 24 * 3600 * 1000
   const navigate = useNavigate();
   
-  // userInfo recoil
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState)
-  const [userSeq,setUserSeq] = useRecoilState(userSeqState);
-  const [acToken, setAcToken] = useRecoilState(acTokenState)
-  const [coupleId, setCoupleId] = useRecoilState(coupleIdState)
+  // userState recoil
+  const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
   
   const params = new URLSearchParams(window.location.search);
   let code: any = params.get('code')
@@ -34,16 +31,13 @@ export default function KakaoLogin(){
               })
               .then((res:any)=>{
                 // 응답받은 userSeq 저장
-                const getUserSeq = res.data.userId
-                setUserSeq(getUserSeq)
-                if (res.data.coupleId){
-                  // coupleId가 유효하면 10 길이의 난수
-                  // 유효하지 않으면 "0" :string
-                  setCoupleId(res.data.coupleId)
-                }
-                setAcToken(res.data.accessToken)
-                // 로그인 여부 true로
-                setIsLoggedIn(true)
+                const us = res.data.userSeq
+                setLoginUser((user)=>({
+                  ...{seq : us, 
+                    isLoggedIn : true, 
+                    acToken: res.data.accessToken, 
+                    coupleId: res.data.coupleId}
+                }))
 
 
                 console.log('코스모스 로그인 성공', res.data)
