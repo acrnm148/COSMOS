@@ -15,7 +15,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     @Query("select n from Notification n " +
             "where n.receiver.userSeq = :userSeq " +
             "order by n.id desc")
-    List<Notification> findAllByMemberId(@Param("userSeq") Long userSeq);
+    List<Notification> findAllByUserSeq(@Param("userSeq") Long userSeq);
 
     /**
      * 안읽은 알림 개수
@@ -24,4 +24,18 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             "where n.receiver.userSeq = :userSeq and " +
             "n.isRead = false")
     Long countUnReadNotifications(@Param("userSeq") Long userSeq);
+
+    /**
+     * 읽은 알림 개수
+     */
+    @Query("select count(n) from Notification n " +
+            "where n.receiver.userSeq = :userSeq and " +
+            "n.isRead = true")
+    Long countReadNotifications(@Param("userSeq") Long userSeq);
+
+    void deleteById(Long notiId);
+
+    @Query("delete from Notification n " +
+            "where n.receiver.userSeq = :userSeq")
+    void deleteByReceiver(Long userSeq);
 }

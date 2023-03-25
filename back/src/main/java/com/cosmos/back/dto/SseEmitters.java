@@ -1,6 +1,5 @@
 package com.cosmos.back.dto;
 
-import com.cosmos.back.util.NotiUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.stereotype.Component;
@@ -45,23 +44,23 @@ public class SseEmitters {
         });
     }
 
-    public void noti(String eventName) {
-        noti(eventName, NotiUtil.mapOf());
-    }
+//    public void noti(String eventName) {
+//        noti(eventName, NotiUtil.mapOf());
+//    }
 
-    public void noti(String eventName, Map<String, Object> data) {
-        emitters.forEach(emitter -> {
-            try {
-                emitter.send(
-                        SseEmitter.event()
-                                .name(eventName)
-                                .data(data)
-                );
-            } catch (ClientAbortException e) {
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+//    public void noti(String eventName, Map<String, Object> data) {
+//        emitters.forEach(emitter -> {
+//            try {
+//                emitter.send(
+//                        SseEmitter.event()
+//                                .name(eventName)
+//                                .data(data)
+//                );
+//            } catch (ClientAbortException e) {
+//
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//    }
 }
