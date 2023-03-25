@@ -27,28 +27,28 @@ public class SseController {
     private final NotificationService notificationService;
     private final JwtService jwtService;
 
-    @Operation(summary = "알림 구독(SSE에 연결)", description = "알림을 구독한다.(SSE에 연결)")
-    @GetMapping(value = "/noti/subscribe/{userSeq}", produces = "text/event-stream")
+    @Operation(summary = "알림 구독(SSE에 연결)", description = "알림 구독(SSE에 연결)")
+    @GetMapping(value = "/noti/subscribe/{userSeq}", produces = "text/event-stream") //produces: response의 content-type
     public SseEmitter subscribe(@PathVariable("userSeq") Long userSeq,
                                 @RequestHeader(value = "lastEventId", required = false, defaultValue = "") String lastEventId) {
         return notificationService.subscribe(userSeq, lastEventId);
     }
 
-    @Operation(summary = "알림 조회", description = "알림을 모두 조회한다.")
+    @Operation(summary = "알림 조회", description = "알림 조회")
     @GetMapping(value = "/noti/list/{userSeq}")
     public ResponseEntity<?> findAllNotifications(@PathVariable("userSeq") Long userSeq) {
         List<NotificationDto> notifications = notificationService.findAllNotifications(userSeq);
         return ResponseEntity.ok().body(notifications);
     }
 
-    @Operation(summary = "안읽은 알림 개수", description = "안읽은 알림 개수를 리턴한다.")
+    @Operation(summary = "안읽은 알림 개수", description = "안읽은 알림 개수 리턴")
     @GetMapping(value = "/noti/unread/{userSeq}")
     public ResponseEntity<?> countUnReadNotifications(@PathVariable("userSeq") Long userSeq) {
         Long count = notificationService.countUnReadNotifications(userSeq);
         return ResponseEntity.ok().body(count);
     }
 
-    @Operation(summary = "읽은 알림 개수", description = "읽은 알림 개수를 리턴한다.")
+    @Operation(summary = "읽은 알림 개수", description = "읽은 알림 개수 리턴")
     @GetMapping(value = "/noti/read/{userSeq}")
     public ResponseEntity<?> countReadNotifications(@PathVariable("userSeq") Long userSeq) {
         Long count = notificationService.countReadNotifications(userSeq);
