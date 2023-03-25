@@ -8,7 +8,7 @@ import { userState } from '../../recoil/states/UserState';
 import { useQuery } from 'react-query';
 import { UserDispatch } from '../../layouts/MainLayout';
 import { makeCouple } from '../../apis/api/user';
-import { invitedCoupleId } from '../../recoil/states/ServeyPageState';
+import { inviteCoupleId, invitedCoupleId } from '../../recoil/states/ServeyPageState';
 // import { coupleIdState } from '../../recoil/states/UserState';
 
 // 설문조사 결과 이미지
@@ -86,14 +86,15 @@ export default function ServeyPage(){
  
     let coupleId:any
     // 커플초대로 온 경우 recoil에 담아둔 커플Id 유저정보에 저장
-    const [invited, setInvited] = useRecoilState(invitedCoupleId)
+    const [invited, x] = useRecoilState(invitedCoupleId)
+    const [invite, xx] = useRecoilState(inviteCoupleId)
     let dispatch = useContext(UserDispatch);
     if (invited){
         coupleId = invited
         // 커플매칭 요청
         const { data } = useQuery({
             queryKey: ["makeCouple"],
-            queryFn: () => makeCouple(coupleId, dispatch)
+            queryFn: () => makeCouple(coupleId, user.seq, Number(invite))
         });
     } else{
         // 커플Id 생성 요청
@@ -127,8 +128,8 @@ export default function ServeyPage(){
                 {
                     title:'데이트 취향설문하기',
                     link:{
-                        webUrl:`http://localhost:3000/servey/${coupleId}`,
-                        mobileWebUrl : `http://localhost:3000/servey/${coupleId}`,
+                        webUrl:`http://localhost:3000/servey/${coupleId}/${user.seq}`,
+                        mobileWebUrl : `http://localhost:3000/servey/${coupleId}/${user.seq}`,
                     }
                 }
             ]

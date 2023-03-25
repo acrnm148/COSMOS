@@ -1,4 +1,4 @@
-import { invitedCoupleId, serveyChoice, serveyPage } from "../../recoil/states/ServeyPageState";
+import { inviteCoupleId, invitedCoupleId, serveyChoice, serveyPage } from "../../recoil/states/ServeyPageState";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 import Servey1 from "./Servey1";
@@ -25,13 +25,15 @@ export default function ServeyPage() {
   const [isLoggedIn, setLoggedIn] = useState(false)
 
   const [invitedId, setInvitedId] = useRecoilState(invitedCoupleId)
+  const [x, setInviteId] = useRecoilState(inviteCoupleId)
   const param = useParams()
   let coupleId: string
-  if(param.coupleId){
+  if((param.coupleId) && (param.inviteId)){
     // 커플매칭을 위해 들어온사람
     // 1. recoil에 커플매칭 대기상태 표시, 커플Id저장
     coupleId = param.coupleId
     setInvitedId(coupleId)
+    setInviteId(param.inviteId)
     // 2. 로그인 후 설문페이지로 돌아오도록 
   }
   

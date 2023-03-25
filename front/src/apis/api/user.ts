@@ -16,9 +16,8 @@ import { AxiosAuthApi, defaultInstance } from "../utils"
 /**
  * POST : 마이페이지 접근시 유저 데이터 요청
  */
- export const makeCouple = async (coupleId:number|string, ac:string|null) => {
-  const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac)
-    const {data} = await instance.get(`couples/accept/${Number(coupleId)}`)
+ export const makeCouple = async (coupleId:number|string, userSeq:number, coupleUserSeq:number) => {
+    const {data} = await defaultInstance.post(`couples/accept/${Number(coupleId)}`, {'userSeq':userSeq, 'coupleUserSeq':coupleUserSeq})
   return data
 };
 

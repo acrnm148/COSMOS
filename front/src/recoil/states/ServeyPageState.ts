@@ -43,3 +43,8 @@ export const invitedCoupleId = atom({
     key: 'invitedCoupleId',
     default : ''
 })
+
+export const inviteCoupleId = atom({
+    key: 'inviteCoupleId',
+    default : '',
+})

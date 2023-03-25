@@ -92,7 +92,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { path: "", element: <Servey /> },
-      { path: ":coupleId", element: <Servey /> },
+      { path: ":coupleId/:inviteId", element: <Servey /> },
       { path: "result/:cate/:cateNum", element: <ServeyResult /> },
     ],
   },
