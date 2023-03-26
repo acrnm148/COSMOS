@@ -1,8 +1,14 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.annotation.EnableMockMvc;
+import com.cosmos.back.dto.GugunDto;
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.place.Gugun;
+import com.cosmos.back.model.place.Sido;
+import com.cosmos.back.repository.place.GugunRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
+import com.cosmos.back.repository.place.SidoRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -19,12 +29,57 @@ import static org.mockito.Mockito.*;
 @EnableMockMvc
 @SpringBootTest
 class PlaceServiceTest {
+
+    @MockBean
+    private SidoRepository sidoRepository;
+
+    @MockBean
+    private GugunRepository gugunRepository;
+
+    @Autowired
+    private PlaceService placeService;
+
+    @Test
+    @DisplayName("시/도 리스트 받아오기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void listSidoServiceTest() throws Exception {
+        //given
+        List<Sido> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            list.add(Sido.builder().sidoCode("testCode").sidoName("testName").build());
+        }
+        when(sidoRepository.findAll()).thenReturn(list);
+
+        //when
+        List<Sido> sidoList = placeService.listSido();
+
+        //then
+        assertThat(sidoList.size()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("구/군 리스트 받아오기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void listGugunServiceTest() throws Exception {
+        //given
+        List<Gugun> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            list.add(Gugun.builder().gugunCode("1").gugunName("gugunTest").build());
+        }
+        when(gugunRepository.findBysidoCode(anyInt())).thenReturn(list);
+
+        //when
+        List<GugunDto> gugunDtoList = placeService.listGugun(1);
+
+        System.out.println("list = " + list);
+        System.out.println("gugunDtoList = " + gugunDtoList);
+        //then
+        assertThat(gugunDtoList.size()).isEqualTo(5);
+    }
 //
 //    @MockBean
 //    private PlaceRepository placeRepository;
 //
-//    @Autowired
-//    private PlaceService placeService;
 //
 //    @Test
 //    @DisplayName("PlaceService 문화생활정보")

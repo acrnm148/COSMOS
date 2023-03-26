@@ -84,6 +84,7 @@ public class PlaceService {
         return sidoRepository.findAll();
     }
 
+
     // 구군 리스트 받아오기
     @RedisCached(key = "listGugun", expire = 7200)
     public List<GugunDto> listGugun (@RedisCachedKeyParam(key = "code") Integer code) {
@@ -95,6 +96,7 @@ public class PlaceService {
                     .gugunName(item.getGugunName())
                     .build());
         }
+        System.out.println("gugunDtoList = 캭" + gugunDtoList);
         return gugunDtoList;
     }
 
