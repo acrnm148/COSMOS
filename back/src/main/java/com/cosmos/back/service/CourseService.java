@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,15 +40,15 @@ public class CourseService {
         // 1. 데이트 코스 생성 후 저장
         Course course = saveCourse(dto.getUserSeq());
 
-        // 카테고리별 장소 가져오기
+        // 2. 카테고리별 장소 가져오기
         List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun());
 
-        // return 해줄 CourseResponseDto 생성 후 courseId 넣기
+        // 3. return 해줄 CourseResponseDto 생성 후 courseId 넣기
         CourseResponseDto courseResponseDto = new CourseResponseDto();
         courseResponseDto.setCourseId(course.getId());
 
-        // CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
-        saveSimplePlaceDtoList(course, courseResponseDto, places);
+        // 4. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+        List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
 
         return courseResponseDto;
     }
@@ -76,30 +77,35 @@ public class CourseService {
 
     // CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
     @Transactional
-    public void saveSimplePlaceDtoList(Course course, CourseResponseDto courseResponseDto, List<Place> places) {
+    public List<Long> saveSimplePlaceDtoList(Course course, CourseResponseDto courseResponseDto, List<Place> places) {
+        List<Long> coursePlaceIds = new ArrayList<>();
+
         // 순서
         int orders = 1;
-        for (Place p : places) {
-            CoursePlace coursePlace = CoursePlace.createCoursePlace(course, p, orders);
+        for (Place place : places) {
+            CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, orders);
 
             SimplePlaceDto placeDto = new SimplePlaceDto();
 
-            placeDto.setPlaceId(p.getId());
-            placeDto.setPlaceName(p.getName());
-            placeDto.setLatitude(p.getLatitude());
-            placeDto.setLongitude(p.getLongitude());
-            placeDto.setThumbNailUrl(p.getThumbNailUrl());
-            placeDto.setAddress(p.getAddress());
-            placeDto.setOverview(p.getDetail());
+            placeDto.setPlaceId(place.getId());
+            placeDto.setPlaceName(place.getName());
+            placeDto.setLatitude(place.getLatitude());
+            placeDto.setLongitude(place.getLongitude());
+            placeDto.setThumbNailUrl(place.getThumbNailUrl());
+            placeDto.setAddress(place.getAddress());
+            placeDto.setOverview(place.getDetail());
             placeDto.setOrders(orders++);
 
-            Double score = placeRepository.findScoreByPlaceIdQueryDsl(p.getId());
+            Double score = placeRepository.findScoreByPlaceIdQueryDsl(place.getId());
             placeDto.setScore(score);
 
             courseResponseDto.getPlaces().add(placeDto);
 
             coursePlaceRepository.save(coursePlace);
+            coursePlaceIds.add(coursePlace.getId());
         }
+
+        return coursePlaceIds;
     }
 
     public Place chooseOne(String type, String sido, String gugun) {
