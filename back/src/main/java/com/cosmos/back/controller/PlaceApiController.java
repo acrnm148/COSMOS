@@ -42,23 +42,6 @@ public class PlaceApiController {
         return new ResponseEntity<>(execute, HttpStatus.OK);
     }
 
-//    @Operation(summary = "이름으로 장소 검색", description = "이름으로 장소 검색")
-//    @GetMapping("/places/{name}")
-//    public ResponseEntity<List> search(@PathVariable String name, @RequestParam Integer limit, @RequestParam Integer offset) {
-//        List<PlaceListResponseDto> list = placeService.searchPlacesByName(name, limit, offset);
-//
-//        return new ResponseEntity<>(list, HttpStatus.OK);
-//    }
-//
-//
-//    @Operation(summary = "시도구군으로 장소 검색", description = "시도구군으로 장소 검색")
-//    @GetMapping("/places/search/sido/{sido}/gugun/{gugun}")
-//    public ResponseEntity<List> search(@PathVariable String sido, @PathVariable String gugun, @RequestParam Integer limit, @RequestParam Integer offset) {
-//        List<PlaceListResponseDto> list = placeService.searchPlacesBySidoGugun(sido, gugun, limit, offset);
-//
-//        return new ResponseEntity<>(list, HttpStatus.OK);
-//    }
-
 
     @Operation(summary = "검색어 자동완성", description = "검색어의 낱말을 포함한 가게 이름을 나열함")
     @GetMapping(value = {"/places/auto/{searchWord}",
@@ -72,8 +55,6 @@ public class PlaceApiController {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
     }
-
-    /////////////////////////////////완성////////////////////////////////////////
 
     // 시도 리스트 가져오기
     @Operation(summary = "시도 리스트 가져오기", description = "시/도 코드, 시/도 이름을 반환한다")
@@ -153,7 +134,7 @@ public class PlaceApiController {
                 } else {
                     return new ResponseEntity<>(cultureResponseDto, HttpStatus.OK);
                 }
-            default: return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            default: return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -172,8 +153,8 @@ public class PlaceApiController {
         if (text == null) {text = "";}
         if (filter == null) {filter = "";}
 
-        Map<String, Object> list = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
+        Map<String, Object> map = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
 
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
