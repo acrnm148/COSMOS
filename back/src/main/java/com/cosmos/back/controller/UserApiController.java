@@ -4,6 +4,7 @@ import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.dto.user.UserProfileDto;
 import com.cosmos.back.dto.user.UserUpdateDto;
+import com.cosmos.back.service.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.service.UserService;
@@ -30,6 +31,7 @@ public class UserApiController {
     private final JwtService jwtService;
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final NotificationService notificationService;
 
     @Operation(summary = "서버 테스트", description = "서버 테스트")
     @GetMapping("/home")
@@ -124,6 +126,9 @@ public class UserApiController {
         User saveUser = kakaoService.saveUser(oauthToken.getAccess_token());
         //jwt토큰 Redis에 저장
         JwtToken jwtTokenDTO = jwtService.getJwtToken(saveUser.getUserSeq());
+
+        //로그인 시 SSE 연결
+        notificationService.subscribe(saveUser.getUserSeq(), null);
 
         return jwtService.successLoginResponse(jwtTokenDTO, saveUser.getUserSeq(), saveUser.getCoupleId());
     }
