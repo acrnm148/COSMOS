@@ -43,6 +43,7 @@ export default function PlaceSearch() {
       lng: 0,
     },
   });
+  const [markers, setMarkers] = useState();
 
   // 자동완성 API
   useEffect(() => {
@@ -50,7 +51,7 @@ export default function PlaceSearch() {
   }, [searchWord]);
 
   return (
-    <div className="text-center w-[90%] mt-[50px] h-screen mb-10">
+    <div className="text-center w-[90%] mt-[50px] mb-20">
       <div className="flex flex-row gap-2 justify-center mb-5">
         <SidoList setSido={setSido} />
         {sido === undefined ? (
@@ -86,7 +87,7 @@ export default function PlaceSearch() {
       ) : null}
       <hr className="my-[3vh]" />
       {state.center.lat !== 0 && state.center.lng !== 0 ? (
-        <TMap state={state} />
+        <TMap state={state} markers={markers} />
       ) : (
         <div className="w-full h-[50vh]">
           <img className="h-full m-auto rounded-lg" src={SearchWait} />
@@ -96,6 +97,7 @@ export default function PlaceSearch() {
       <ListItems
         items={items}
         setState={setState}
+        setMarkers={setMarkers}
         sido={sido}
         gugun={gugun}
         text={searchWord}

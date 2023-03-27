@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import LightMarker from "../../assets/place/light-marker.png";
-export default function TMap({ state }: any) {
+export default function TMap({ state, markers }: any) {
   const [position, setPosition] = useState(state);
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
   // 지도 div
@@ -27,19 +27,24 @@ export default function TMap({ state }: any) {
             zoom: 15,
           });
 
-          const marker = new window.Tmapv2.Marker({
-            position: new window.Tmapv2.LatLng(lat, lng),
-            icon: LightMarker,
-            map: map,
-          });
+          markers.map((item: any) => {
+            const marker = new window.Tmapv2.Marker({
+              position: new window.Tmapv2.LatLng(
+                item.center.lat,
+                item.center.lng
+              ),
+              icon: LightMarker,
+              map: map,
+            });
 
-          // 웹
-          marker.addListener("click", function () {
-            console.log("CLICK");
-          });
-          // 앱
-          marker.addListener("touchstart", function () {
-            console.log("터치!");
+            // 웹
+            marker.addListener("click", function () {
+              console.log("CLICK");
+            });
+            // 앱
+            marker.addListener("touchstart", function () {
+              console.log("터치!");
+            });
           });
 
           setMapInstance(map);
