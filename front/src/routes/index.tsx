@@ -33,21 +33,20 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <NotFound />,
     children: [
-      // 홈
-      { path: "", element: <Home /> },
-      // 로그인
-      { path: "login", element:<Login />},
-      { path: "login/oauth", element: <KakaoLogin />}
+      { index: true, path: "/", element: <Home /> },
+      //로그인
+      { path: "/login", element: <Login /> },
+      { path: "/login/oauth", element: <KakaoLogin /> },
+      // 마이페이지
+      { path: "/mypage", element: <MyPage /> },
     ],
   },
   // mypage
   {
     path: "/mypage",
-    element : <MainLayout />,
+    element: <MainLayout />,
     errorElement: <NotFound />,
-    children: [
-      { path: "", element:<MyPage />  },
-    ]
+    children: [{ path: "", element: <MyPage /> }],
   },
   // 찜 목록
   {

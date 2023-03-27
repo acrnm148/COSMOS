@@ -3,7 +3,7 @@ import SearchIcon from "../../assets/place/SearchIcon.png";
 import "../../css/placeSearch.css";
 import SearchWait from "../../assets/place/search-wait.png";
 import TMap from "../../components/common/TMap";
-import ItemList from "../../components/search/ItemList";
+import ListItems from "../../components/search/ListItems";
 import SearchFilter from "../../components/search/SearchFilter";
 import SidoList from "../../components/search/SidoList";
 import GugunList from "../../components/search/GugunList";
@@ -19,6 +19,8 @@ export default function PlaceSearch() {
   const [gugun, setGugun] = useState();
   // 검색어
   const [searchWord, setSearchWord] = useState("");
+  // 필터
+  const [filter, setFilter] = useState("");
   // 아이템리스트
   const [items, setItems] = useState();
   // 검색어 자동완성 박스
@@ -41,34 +43,14 @@ export default function PlaceSearch() {
       lng: 0,
     },
   });
-  // useEffect(() => {
-  //   // 사용자의 현재 위치 받아옴
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       setState((prev) => ({
-  //         ...prev,
-  //         center: {
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         },
-  //         isLoading: false,
-  //       }));
-  //     });
-  //   } else {
-  //     setState((prev) => ({
-  //       ...prev,
-  //       errMsg: "현재 위치 정보를 받아올 수 없습니다",
-  //       isLoading: false,
-  //     }));
-  //   }
-  // }, []);
 
   // 자동완성 API
   useEffect(() => {
     setClickBg(false);
   }, [searchWord]);
+
   return (
-    <div className="text-center w-[90%] mt-[50px]">
+    <div className="text-center w-[90%] mt-[50px] h-screen mb-10">
       <div className="flex flex-row gap-2 justify-center mb-5">
         <SidoList setSido={setSido} />
         {sido === undefined ? (
@@ -89,7 +71,7 @@ export default function PlaceSearch() {
           onClick={handleSearchInput}
         />
         <div className="w-[80%] m-auto relative">
-          {searchWord === null ? null : (
+          {searchWord === "" ? null : (
             <SearchWordList
               searchWord={searchWord}
               setSearchWord={setSearchWord}
@@ -99,7 +81,9 @@ export default function PlaceSearch() {
         </div>
       </div>
 
-      {sido !== undefined && gugun !== undefined ? <SearchFilter /> : null}
+      {sido !== undefined && gugun !== undefined ? (
+        <SearchFilter filter={filter} setFilter={setFilter} />
+      ) : null}
       <hr className="my-[3vh]" />
       {state.center.lat !== 0 && state.center.lng !== 0 ? (
         <TMap state={state} />
@@ -109,7 +93,14 @@ export default function PlaceSearch() {
         </div>
       )}
       <hr className="mt-[3vh]" />
-      <ItemList items={items} setState={setState} />
+      <ListItems
+        items={items}
+        setState={setState}
+        sido={sido}
+        gugun={gugun}
+        text={searchWord}
+        filter={filter}
+      />
     </div>
   );
 }

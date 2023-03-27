@@ -10,19 +10,17 @@ import StarIcon from "@mui/icons-material/Star";
 import Swal from "sweetalert2";
 
 import { useQuery } from "react-query";
-import { getPlaceDetail } from "../../apis/api/place";
+import { getPlaceDetail, likePlace, dislikePlace } from "../../apis/api/place";
 
 export default function SearchModalItem({
   modalOpen,
-  setModalOpen,
-  isLike,
+  closeModal,
   setIsLike,
-  handleLikeButton,
-  items,
+  placeId,
+  type,
   setState,
 }: any) {
   const [review, setReview] = useState(false);
-
   const settings = {
     dots: true,
     infinite: true,
@@ -31,23 +29,19 @@ export default function SearchModalItem({
     slidesToScroll: 1,
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-
   const { data, isLoading } = useQuery({
-    queryKey: ["getPlaceDetail"],
-    queryFn: () => getPlaceDetail(1, items.placeId, items.type),
+    queryKey: ["getPlaceDetail", placeId, type],
+    queryFn: () => getPlaceDetail(1, placeId, type),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === null) return null;
 
   return (
     <Modal open={modalOpen} close={closeModal} header="장소 상세" size="large">
       <div className="text-left overflow-auto">
         <div className="flex flex-row gap-2">
           <h1 className="text-2xl font-bold">{data.name}</h1>
-          <div onClick={handleLikeButton}>
+          <div>
             {data.like ? (
               <img
                 src={likeBtn}

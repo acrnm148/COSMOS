@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "../common/Modal";
 import Cinema from "../../assets/place/cinema.png";
@@ -8,7 +8,7 @@ import Shopping from "../../assets/place/shopping-cart.png";
 import Gym from "../../assets/place/gym.png";
 import Suitcase from "../../assets/place/suitcase.png";
 
-export default function SearchFilter() {
+export default function SearchFilter({ filter, setFilter }: any) {
   // 모달창
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -26,6 +26,14 @@ export default function SearchFilter() {
   const [tag3, setTag3] = useState(false);
   const [tag4, setTag4] = useState(false);
   const [tag5, setTag5] = useState(false);
+
+  useEffect(() => {
+    const resultFilter = `${tag0 ? "restaurant " : ""}${tag1 ? "cafe " : ""}${
+      tag2 ? "culture " : ""
+    }${tag3 ? "shopping " : ""}${tag4 ? "tour " : ""}${tag5 ? "leisure " : ""}`;
+
+    setFilter(resultFilter.slice(0, -1));
+  }, [tag0, tag1, tag2, tag3, tag4, tag5]);
 
   return (
     <div className="flex mt-[10px] justify-center">
