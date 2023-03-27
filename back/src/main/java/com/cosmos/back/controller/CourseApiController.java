@@ -2,7 +2,6 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.service.JwtService;
-import com.cosmos.back.dto.MyCoursePlaceDto;
 import com.cosmos.back.dto.request.CourseRequestDto;
 import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
 import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
@@ -29,13 +28,21 @@ public class CourseApiController {
 
     @Operation(summary = "코스 생성", description = "코스 생성")
     @PostMapping("/courses")
-    public ResponseEntity<Long> createCourse(@RequestBody CourseRequestDto dto) {
-        Long courseId = courseService.createCourse(dto);
+    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) {
+        CourseResponseDto courseResponseDto = courseService.createCourse(dto);
 
-        return new ResponseEntity<>(courseId, HttpStatus.OK);
+        return new ResponseEntity<>(courseResponseDto, HttpStatus.OK);
     }
 
-    @Operation(summary = "코스 삭제", description = "코스 삭제")
+    @Operation(summary = "코스 찜", description = "코스 찜")
+    @PutMapping("/courses/{courseId}")
+    public ResponseEntity<Long> likeCourse(@PathVariable Long courseId) {
+        Long id = courseService.likeCourse(courseId);
+
+        return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @Operation(summary = "코스 찜 삭제", description = "코스 찜 삭제")
     @DeleteMapping("/courses/{courseId}")
     public ResponseEntity<Long> deleteCourse(@PathVariable Long courseId) {
         Long id = courseService.deleteCourse(courseId);
@@ -43,8 +50,8 @@ public class CourseApiController {
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
-    @Operation(summary = "내 모든 코스 보기", description = "내 모든 코스 보기")
-    @GetMapping("/courses/{userSeq}")
+    @Operation(summary = "내 찜한 코스 보기", description = "내 찜한 코스 보기")
+    @GetMapping("/courses/users/{userSeq}")
     public ResponseEntity<?> getMyAllCourses(@PathVariable("userSeq") Long userSeq,
                                                 @RequestHeader(value = "Authorization") String token) {
         //userSeq 일치, access토큰 유효 여부 체크
@@ -56,14 +63,14 @@ public class CourseApiController {
             return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
         }
 
-        List<CourseResponseDto> courses = courseService.getMyAllCourses(userSeq);
+        List<CourseResponseDto> courses = courseService.listLikeCourse(userSeq);
 
 
-        return new ResponseEntity<>( courses, HttpStatus.OK);
+        return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
     @Operation(summary = "내 코스 상세 보기", description = "내 코스 상세 보기")
-    @GetMapping("/courses/{userSeq}/{courseId}")
+    @GetMapping("/courses/{courseId}/users/{userSeq}")
     public ResponseEntity<?> getMyCourseDetail(@PathVariable("userSeq") Long userSeq,
                                              @PathVariable("courseId") Long courseId,
                                              @RequestHeader(value="Authorization") String token) {
@@ -76,9 +83,9 @@ public class CourseApiController {
             return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
         }
 
-        List<MyCoursePlaceDto> course = courseService.getMyCourseDetail(userSeq, courseId);
+        CourseResponseDto courseResponseDto = courseService.getMyCourseDetail(courseId);
 
-        return new ResponseEntity<>( course , HttpStatus.OK);
+        return new ResponseEntity<>(courseResponseDto , HttpStatus.OK);
     }
 
     @Operation(summary = "코스 내용 수정", description = "코스 내용 중 name과 subCategory만 수정")

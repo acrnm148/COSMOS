@@ -1,6 +1,8 @@
 package com.cosmos.back.repository.place;
 
+import com.cosmos.back.dto.SimplePlaceDto;
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.place.Place;
 
 import java.util.List;
 
@@ -36,6 +38,21 @@ public interface PlaceRepositoryCustom {
     // QueryDsl로 장소 리스트 가져오기(시도구군) with Pagination
     public List<PlaceListResponseDto> findPlaceListBySidoGugunQueryDsl(String sido, String gugun, Integer limit, Integer offset);
 
+    // QueryDsl로 장소 리스트 가져오기(시/도, 구/군, 검색어, 검색필터) with Pagination
+    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset);
+
     // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
-    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String name);
+    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String searchWord);
+
+    // QueryDsl로 장소별 별점 평점 가져오기
+    public Double findScoreByPlaceIdQueryDsl(Long placeId);
+
+    // QueryDsl로 시도, 구군, 타입별 장소 리스트 가져오기
+    public List<Place> findAllByTypeAndSidoAndGugun(String type, String sido, String gugun);
+
+    // QueryDsl로 찜한 거 가져오기
+    public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl(Long placeId, Long userSeq);
+
+    // QueryDsl로 SimplePlaceDto 내용 가져오기
+    public SimplePlaceDto findSimplePlaceDtoByPlaceIdQueryDsl(Long placeId, Long courseId);
 }

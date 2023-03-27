@@ -2,12 +2,17 @@ server:
   port: 8081
 
 spring:
+  output:
+    ansi:
+      enabled: always
   main:
     allow-bean-definition-overriding: true
   redis:
     host: j8e104.p.ssafy.io
     port: 6379
     password: cosmos104
+  sse:
+    time: 3600000
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://j8e104.p.ssafy.io:3306/cosmos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
@@ -47,6 +52,7 @@ spring:
         order_inserts: true
         order_updates: true
         format_sql: true
+
 cloud:
   aws:
     s3:
