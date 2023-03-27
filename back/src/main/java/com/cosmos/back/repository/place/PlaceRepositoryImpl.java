@@ -5,13 +5,10 @@ import com.cosmos.back.dto.response.place.*;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -442,12 +439,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QUserPlace qUserPlace = QUserPlace.userPlace;
-        System.out.println("///////////////!@!#@//////////////asdfasdfasdfsdf");
-        System.out.println("userSeq = " + userSeq);
-        System.out.println("sido = " + sido);
-        System.out.println("gugun = " + gugun);
-        System.out.println("text = " + text);
-        System.out.println("filter = " + filter);
 
         BooleanBuilder builder = new BooleanBuilder();
 

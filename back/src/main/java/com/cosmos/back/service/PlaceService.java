@@ -38,6 +38,14 @@ public class PlaceService {
     private final GugunRepository gugunRepository;
     private final PlanRepository planRepository;
 
+    // 찜한 장소 조회하기
+    public List<PlaceListResponseDto> findLikePlaces (Long userSeq, Integer limit, Integer offset) {
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        List<PlaceListResponseDto> dto = userPlaceRepository.findLikePlaces(userSeq, limit, offset);
+
+        return dto;
+    }
+
 
     // 장소 찜하기
     @Transactional

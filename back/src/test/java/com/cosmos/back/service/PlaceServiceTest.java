@@ -122,8 +122,10 @@ class PlaceServiceTest {
         User user = User.builder().userPlaces(new ArrayList<>()).userName("user").build();
         userRepository.save(user);
 
-        when(placeRepository.findById(anyLong())).thenReturn(Optional.of(place));
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(placeRepository.findById(anyLong()))
+                .thenReturn(Optional.of(place));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.of(user));
 
         //when
         Map<String, Long> map = placeService.likePlace(1L, 1L);
@@ -131,6 +133,8 @@ class PlaceServiceTest {
         //then
         assertEquals(map.get("user"), user.getUserSeq());
         assertEquals(map.get("place"), place.getId());
+//        assertThrows(IllegalArgumentException.class , () -> placeRepository.findById(2L));
+
     }
 
     @Test
@@ -157,21 +161,44 @@ class PlaceServiceTest {
         //given
         List<PlaceSearchListResponseDto> list = new ArrayList<>();
         for (int i = 0; i < 5; i ++) {
-//            list.add(PlaceSearchListResponseDto.builder().placeId(new Long(i)).latitude().build());
+            list.add(PlaceSearchListResponseDto.builder().placeId(new Long(i)).latitude("1").longitude("1").build());
+        }
+        List<PlaceSearchListResponseDto> listLatLongEmpty = new ArrayList<>();
+        for (int i = 0; i < 5; i ++) {
+            listLatLongEmpty.add(PlaceSearchListResponseDto.builder().placeId(new Long(i)).build());
         }
 
         when(placeRepository
-                .findPlaceListBySidoGugunTextFilterQueryDsl(anyLong(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
-                .thenReturn(list);
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", "text", "filter", 10, 0))
+                .thenReturn(list)
+                .thenReturn(listLatLongEmpty);
+        when(placeRepository
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "text", "filter", 10, 0))
+                .thenReturn(list)
+                .thenReturn(listLatLongEmpty);
+        when(placeRepository
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", null, null, 10, 0))
+                .thenReturn(list)
+                .thenReturn(listLatLongEmpty);
         when(placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(anyLong(), anyLong()))
                 .thenReturn(true)
                 .thenReturn(false);
 
         //when
-        placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto1 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto2 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto3 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto4 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null, 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto5 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null, 10, 0);
 
         //then
-
+        assertEquals(placeFilterResponseDto.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto1.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto2.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto3.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto4.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto5.getPlaces().size(), 5);
     }
 
     @Test
