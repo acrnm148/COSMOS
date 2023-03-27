@@ -24,7 +24,7 @@ export default function Servey4() {
   }
 
   return (
-    <div className="">
+    <div className="w-full">
       <h1 className="font-bold font-baloo text-2xl">데이트 취향설문</h1>
       <div className="mt-7 mb-7 w-full text-center">
         <span className="font-baloo text-base text-darkMain">7 / 9</span>

@@ -22,7 +22,7 @@ export default function Servey1() {
     setServeyPage(serveyPg + 1);
   }
   return (
-    <div className="">
+    <div className="w-full">
       <h1 className="font-bold font-baloo text-2xl">데이트 취향설문</h1>
       <div className="mt-7 mb-7 w-full text-center">
         <span className="font-baloo text-base text-darkMain">1 / 9</span>

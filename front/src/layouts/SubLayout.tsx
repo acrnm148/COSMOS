@@ -5,10 +5,8 @@ import Footer from "../components/common/Footer";
 
 export default function SubLayout() {
   return (
-    <div className="flex flex-col justify-center items-center">
-      <Header />
+    <div className="flex flex-col justify-center items-center max-w-[500px] m-auto">
       <Outlet />
-      <Footer />
     </div>
   );
 }
