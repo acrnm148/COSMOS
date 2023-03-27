@@ -37,9 +37,7 @@ public class UserPlaceRepositoryImpl implements UserPlaceRepositoryCustom{
         QPlace qPlace = QPlace.place;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReview qReview = QReview.review;
-        System.out.println("userSeq = " + userSeq);
-        System.out.println("limit = " + limit);
-        System.out.println("offset = " + offset);
+
         return queryFactory.select(Projections.constructor(PlaceListResponseDto.class,
                 qPlace.id,
                 qPlace.name,
@@ -48,19 +46,18 @@ public class UserPlaceRepositoryImpl implements UserPlaceRepositoryCustom{
                 qPlace.thumbNailUrl,
                 qPlace.detail
                 ))
-                .from(qUserPlace)
-                .leftJoin(qPlace)
+                .from(qPlace)
+                .rightJoin(qUserPlace)
                 .on(qPlace.id.eq(qUserPlace.place.id))
-                .fetchJoin()
                 .leftJoin(qReviewPlace)
                 .on(qReviewPlace.place.id.eq(qPlace.id))
                 .leftJoin(qReview)
                 .on(qReview.id.eq(qReviewPlace.review.id))
                 .fetchJoin()
                 .where(qUserPlace.user.userSeq.eq(userSeq))
+                .groupBy(qPlace.id)
                 .limit(limit)
                 .offset(offset)
-                .fetch()
-                ;
+                .fetch();
     }
 }

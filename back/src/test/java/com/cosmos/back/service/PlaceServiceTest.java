@@ -3,6 +3,7 @@ package com.cosmos.back.service;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.GugunDto;
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.Plan;
 import com.cosmos.back.model.User;
 import com.cosmos.back.model.UserPlace;
 import com.cosmos.back.model.place.Gugun;
@@ -12,6 +13,7 @@ import com.cosmos.back.repository.place.GugunRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.place.SidoRepository;
 import com.cosmos.back.repository.place.UserPlaceRepository;
+import com.cosmos.back.repository.plan.PlanRepository;
 import com.cosmos.back.repository.user.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -24,11 +26,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +37,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @EnableMockMvc
 @SpringBootTest
+@Transactional
 class PlaceServiceTest {
 
     @MockBean
@@ -56,6 +57,8 @@ class PlaceServiceTest {
 
     @Autowired
     private PlaceService placeService;
+    @Autowired
+    private PlanRepository planRepository;
 
     @Test
     @DisplayName("시/도 리스트 받아오기")
@@ -89,8 +92,6 @@ class PlaceServiceTest {
         //when
         List<GugunDto> gugunDtoList = placeService.listGugun(1);
 
-        System.out.println("list = " + list);
-        System.out.println("gugunDtoList = " + gugunDtoList);
         //then
         assertThat(gugunDtoList.size()).isEqualTo(5);
     }
@@ -122,8 +123,9 @@ class PlaceServiceTest {
         User user = User.builder().userPlaces(new ArrayList<>()).userName("user").build();
         userRepository.save(user);
 
-        when(placeRepository.findById(anyLong()))
+        when(placeRepository.findById(1L))
                 .thenReturn(Optional.of(place));
+
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
 
@@ -133,8 +135,13 @@ class PlaceServiceTest {
         //then
         assertEquals(map.get("user"), user.getUserSeq());
         assertEquals(map.get("place"), place.getId());
-//        assertThrows(IllegalArgumentException.class , () -> placeRepository.findById(2L));
-
+//        try {
+//            placeRepository.findById(null);
+//        } catch (Exception e) {
+//            System.out.println("e = " + e);
+//            String message = e.getMessage();
+//            System.out.println("message = " + message);
+//        }
     }
 
     @Test
