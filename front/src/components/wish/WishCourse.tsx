@@ -1,7 +1,12 @@
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 import { getWishCourseList, deleteWishCourse } from "../../apis/api/wish";
-import { useMutation, useQuery } from "react-query";
+import {
+    QueryClient,
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from "react-query";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import { useEffect, useState } from "react";
@@ -32,7 +37,7 @@ export default function WishCourse() {
     const userSeq = useRecoilState(userState);
     const [list, setList] = useState<Course[]>();
     const { data } = useQuery({
-        queryKey: ["getWishCourseList", "userSeq"],
+        queryKey: ["getWishCourseList"],
         queryFn: () => getWishCourseList(userSeq[0].seq, userSeq[0].acToken),
     });
 
@@ -62,10 +67,29 @@ export default function WishCourse() {
 
 function Item(props: { item: Course }) {
     const navigate = useNavigate();
+    const Toast = Swal.mixin({
+        toast: true, // 토스트 형식
+        position: "bottom-end", // 알림 위치
+        showConfirmButton: false, // 확인버튼 생성 유무
+        timer: 1000, // 지속 시간
+        timerProgressBar: true, // 지속시간바 생성 여부
+    });
+
+    const queryClient = useQueryClient();
     const mutation = useMutation(deleteWishCourse, {
-        onSuccess: (data, variables, context) => {
-            // I will fire first
-            console.log("success");
+        onSuccess: (data) => {
+            Toast.fire({
+                icon: "success",
+                title: "삭제되었습니다. ",
+            });
+
+            // queryClient.invalidateQueries(data);
+        },
+        onError: () => {
+            Toast.fire({
+                icon: "error",
+                title: "삭제 실패했습니다. ",
+            });
         },
     });
 
@@ -145,25 +169,6 @@ function Item(props: { item: Course }) {
                                 // 해당 장소 찜 목록에서 삭제
 
                                 mutation.mutate(Number(props.item.courseId));
-
-                                const Toast = Swal.mixin({
-                                    toast: true, // 토스트 형식
-                                    position: "bottom-end", // 알림 위치
-                                    showConfirmButton: false, // 확인버튼 생성 유무
-                                    timer: 1500, // 지속 시간
-                                    timerProgressBar: true, // 지속시간바 생성 여부
-                                });
-
-                                if (mutation.isSuccess)
-                                    Toast.fire({
-                                        icon: "success",
-                                        title: "삭제되었습니다. ",
-                                    });
-                                else
-                                    Toast.fire({
-                                        icon: "error",
-                                        title: "삭제 실패했습니다. ",
-                                    });
                             }
                         });
                     }}
