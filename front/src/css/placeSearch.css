@@ -1,0 +1,7 @@
+.options {
+  background-color: rgb(255, 143, 158, 0.5);
+}
+.options:hover,
+.options:focus {
+  background-color: #ff8e9e;
+}

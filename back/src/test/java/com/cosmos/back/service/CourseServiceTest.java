@@ -140,5 +140,8 @@ public class CourseServiceTest {
 
             assertEquals(coursePlace.getId(), id);
         }
+
+        // 평점이 3.14이어야 한다.
+        assertEquals(courseResponseDto.getPlaces().get(0).getScore(), 3.14);
     }
 }

@@ -36,7 +36,7 @@ public class UserApiController {
     @Operation(summary = "서버 테스트", description = "서버 테스트")
     @GetMapping("/home")
     public String home() {
-        return "home";
+        return "jenkins Test";
     }
 
     /**

@@ -147,6 +147,10 @@ dependencies {
     //implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.430'
 
+    // mockito
+    testImplementation 'org.mockito:mockito-core:3.11.2'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.11.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
     // mockito
     testImplementation 'org.mockito:mockito-core:3.11.2'
