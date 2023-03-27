@@ -24,7 +24,7 @@ export default function SouthKorea({ list, setSelectSido }: any) {
                 onClick={() => {
                   setSido({ sidoCode: item.sidoCode, name: item.name });
                   setSelSido(item.name);
-                  setSelectSido(item.name);
+                  setSelectSido({ code: item.sidoCode, name: item.name });
                 }}
                 key={item.sidoCode}
                 className={selSido === item.name ? "land click" : "land"}

@@ -1,88 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import KoreaMap from "../common/Map/KoreaMap";
 import Swal from "sweetalert2";
+import GugunList from "../search/GugunList";
 
 export default function SelectRegion({ setSelects }: any) {
   const sido = [
     {
-      sidoCode: 0,
-      name: "서울",
+      sidoCode: 11,
+      name: "서울특별시",
     },
     {
-      sidoCode: 1,
-      name: "부산",
+      sidoCode: 26,
+      name: "부산광역시",
     },
     {
-      sidoCode: 2,
-      name: "대구",
+      sidoCode: 27,
+      name: "대구광역시",
     },
     {
-      sidoCode: 3,
-      name: "인천",
+      sidoCode: 28,
+      name: "인천광역시",
     },
     {
-      sidoCode: 4,
-      name: "광주",
+      sidoCode: 29,
+      name: "광주광역시",
     },
     {
-      sidoCode: 5,
-      name: "대전",
+      sidoCode: 30,
+      name: "대전광역시",
     },
     {
-      sidoCode: 6,
-      name: "울산",
+      sidoCode: 31,
+      name: "울산광역시",
     },
     {
-      sidoCode: 7,
-      name: "경기",
+      sidoCode: 41,
+      name: "경기도",
     },
     {
-      sidoCode: 8,
-      name: "강원",
+      sidoCode: 42,
+      name: "강원도",
     },
     {
-      sidoCode: 9,
+      sidoCode: 43,
       name: "충청북도",
     },
     {
-      sidoCode: 10,
+      sidoCode: 44,
       name: "충청남도",
     },
     {
-      sidoCode: 11,
+      sidoCode: 45,
       name: "전라북도",
     },
     {
-      sidoCode: 12,
+      sidoCode: 46,
       name: "전라남도",
     },
     {
-      sidoCode: 13,
+      sidoCode: 47,
       name: "경상북도",
     },
     {
-      sidoCode: 14,
+      sidoCode: 48,
       name: "경상남도",
     },
     {
-      sidoCode: 15,
-      name: "제주도",
+      sidoCode: 50,
+      name: "제주특별자치도",
     },
     {
-      sidoCode: 16,
-      name: "세종",
+      sidoCode: 36,
+      name: "세종특별자치시",
     },
   ];
 
-  const [selectSido, setSelectSido] = useState("");
-  const [selGugun, setSelGugun] = useState("");
+  const [selectSido, setSelectSido] = useState();
+  const [selGugun, setSelGugun] = useState();
 
   const handleGugun = (e: any) => {
     setSelGugun(e.target.value);
   };
 
   const handleSelectGugun = () => {
-    if (selGugun === "") {
+    if (selGugun === undefined) {
       const Toast = Swal.mixin({
         toast: true,
         position: "bottom-end",
@@ -105,7 +106,7 @@ export default function SelectRegion({ setSelects }: any) {
       });
 
       Swal.fire({
-        title: `${selectSido} ${selGugun} 선택 완료!`,
+        title: `선택 완료!`,
         text: "카테고리 선택으로 이동됩니다.",
         icon: "success",
         confirmButtonColor: "#FF8E9E", // confrim 버튼 색깔 지정
@@ -117,19 +118,12 @@ export default function SelectRegion({ setSelects }: any) {
       });
     }
   };
+
   return (
     <div>
-      {selectSido === "" ? null : (
+      {selectSido === undefined ? null : (
         <div className="flex flex-row justify-end gap-5">
-          <select
-            className="h-[40px] border-4 border-lightMain opacity-50 rounded-lg focus:outline-none"
-            onChange={handleGugun}
-          >
-            <option className="options" value="">
-              구/군 선택
-            </option>
-            <option value="test">테스트구군</option>
-          </select>
+          <GugunList selectedSidoCode={selectSido} setGugun={setSelGugun} />
           <button
             className="bg-lightMain text-white rounded-lg p-2"
             onClick={() => handleSelectGugun()}
