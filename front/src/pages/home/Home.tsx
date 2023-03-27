@@ -3,11 +3,11 @@ import MainMenuBtn from "../../components/home/MainMenuBtn";
 import MemoryComponent from "../../components/home/MemoryComponent";
 
 export default function Home() {
-  return (
-    <div className="pb-24 mt-8 mx-4 w-full h-full">
-      <RecommSlider />
-      <MainMenuBtn />
-      <MemoryComponent />
-    </div>
-  );
+    return (
+        <div className="pb-24 px-4 mt-8 w-full h-full">
+            <RecommSlider />
+            <MainMenuBtn />
+            <MemoryComponent />
+        </div>
+    );
 }
