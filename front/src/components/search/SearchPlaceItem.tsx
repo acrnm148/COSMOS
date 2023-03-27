@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ListCard from "../common/ListCard";
-
 import DefaultImg from "../../assets/login/pinkCosmos.png";
-import Swal from "sweetalert2";
 import PlaceLike from "./PlaceLike";
 
-export default function SearchPlaceItem({ data, setState }: any) {
+export default function SearchPlaceItem({ data, setState, setMarkers }: any) {
   const [modalOpen, setModalOpen] = useState(false);
   const [placeId, setPlaceId] = useState();
   const [type, setType] = useState();
@@ -19,28 +17,29 @@ export default function SearchPlaceItem({ data, setState }: any) {
     setModalOpen(false);
   };
 
-  const handleLikeButton = (e: React.MouseEvent) => {
-    // 모달창 생성 이벤트 방지
-    e.stopPropagation();
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "bottom-end",
-      showConfirmButton: false,
-      timer: 1500,
-      timerProgressBar: false,
+  useEffect(() => {
+    setState({
+      center: {
+        lat: data.midLatitude,
+        lng: data.midLongitude,
+      },
     });
+  }, [data.midLatitude, data.midLongitude]);
 
-    data.places.like
-      ? Toast.fire({
-          title: "해제되었습니다.",
-          icon: "success",
-        })
-      : Toast.fire({
-          title: "등록되었습니다.",
-          icon: "success",
-        });
-  };
-
+  useEffect(() => {
+    const markers = [{}];
+    data.places.map((item: any) => {
+      markers.push({
+        center: {
+          placeId: item.placeId,
+          lat: item.latitude,
+          lng: item.longitude,
+        },
+      });
+    });
+    markers.splice(0, 1);
+    setMarkers(markers);
+  }, [data]);
   return (
     <>
       <ListCard>
