@@ -101,18 +101,38 @@ public class PlaceService {
     // 장소 검색(시/도, 구/군, 검색어, 검색필터)
     public PlaceFilterResponseDto searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
         PlaceFilterResponseDto result = new PlaceFilterResponseDto();
-
-        // filter 공백 split으로 여러개 받아오기
-        String[] filters = filter.split(" ");
         List<PlaceSearchListResponseDto> places = new ArrayList<>();
         Double LatitudeCenter = 0.0;
         Double LongitudeCenter = 0.0;
         Double size = 0.0;
+
         // filter 별로 장소 조사 진행
         List<PlaceSearchListResponseDto> PlacesList = new ArrayList<>();
 
-        for (String f : filters) {
-            List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, f, limit, offset);
+        // filter 공백 split으로 여러개 받아오기
+
+        if (filter != null) {
+            String[] filters = filter.split(" ");
+            for (String f : filters) {
+                List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, f, limit, offset);
+                for (PlaceSearchListResponseDto dto : list) {
+                    boolean execute = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(dto.getPlaceId(), userSeq);
+                    dto.setLike(execute);
+                    if (dto.getLatitude() != null) {
+                        LatitudeCenter += Double.parseDouble(dto.getLatitude());
+                    }
+                    if (dto.getLongitude() != null) {
+                        LongitudeCenter += Double.parseDouble(dto.getLongitude());
+                    }
+                    PlacesList.add(dto);
+                    if (dto.getLongitude() != null && dto.getLatitude() != null) {
+                        size += 1.0;
+                    }
+                }
+
+            }
+        } else {
+            List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, filter, limit, offset);
             for (PlaceSearchListResponseDto dto : list) {
                 boolean execute = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(dto.getPlaceId(), userSeq);
                 dto.setLike(execute);
@@ -127,7 +147,6 @@ public class PlaceService {
                     size += 1.0;
                 }
             }
-
         }
 
         LatitudeCenter /= size;
