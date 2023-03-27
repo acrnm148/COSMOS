@@ -1,23 +1,25 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
 import { LUser, userState } from "../../recoil/states/UserState"
 import { getUserInfo  } from "../../apis/api/user"
 import { useQuery } from "react-query"
 import { UserDispatch } from "../../layouts/MainLayout"
 
-interface userInfo {
-  userId: number;
-  userName: string;
-  phoneNumber: string;
-  profileImageUrl: string;
-  coupleYn: string;
-  age: number;
-  type1: string;
-  type2: string;
-  birthYear: number;
-  coupleUserId: number;
+interface USERINFORMATION {
+  userId: number
+  userName: string
+  phoneNumber: string | null
+  profileImgUrl: string
+  coupleYn: string
+  age: number
+  type1: string
+  type2: string
+  birthYear: number
+  coupleId : number | null
+  coupleUserId: number
+  reviews: any
 }
 
 declare const window: typeof globalThis & {
@@ -26,34 +28,50 @@ declare const window: typeof globalThis & {
   
   export default function MyPage(){
       const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
-      const [userInfo, setUserInfo] = useState<userInfo|null>(null)
-      const [coupleInfo, setCoupleInfo] = useState<userInfo>()
+      const [userInfo, setUserInfo] = useState<USERINFORMATION|null>(null)
+      const [coupleInfo, setCoupleInfo] = useState<USERINFORMATION>()
       const navigate = useNavigate();
       let dispatch = useContext(UserDispatch);
       
-      if ((LoginUser.seq > -1)&& (LoginUser.acToken)){
-          console.log('로그인된유저', LoginUser.seq)
-        }
+      // if ((LoginUser.seq > -1)&& (LoginUser.acToken)){
+      //     console.log('로그인된유저', LoginUser.seq)
+      //   }
         const {data} =  useQuery({
             queryKey: ["getUserInfo"],
-            queryFn: () => getUserInfo(LoginUser.seq,dispatch)
+            // queryFn: () => getUserInfo(LoginUser.seq,dispatch)
+            // ==================카카오로그인 안되어서 임시방편========================
+            queryFn: () => getUserInfo(1, 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2Nzk5MDExNDUsInVzZXJTZXEiOjF9._aO28K6G-fgTliKcNFGvjlImol-Xq0sgIEOWm6GL8S5Fh7-Ja4sG3NPYx0KWUWHTOaAJ7-xK_DR5HE-c85o9hA')
           })
-        console.log('data',data)
+        
         // 유저정보 받아와서 마이페이지에서 표출할 정보로 가공
-        if(data){
-          setUserInfo({
-            userId : data.userId,
-            userName : data.userName,
-            phoneNumber : data.phoneNumber,
-            profileImageUrl : data.profileImageUrl,
-            coupleYn : data.coupleYn,
-            age: data.age,
-            type1 : data.type1,
-            type2 : data.type2,
-            birthYear : data.birthYear,
-            coupleUserId : data.coupleUserId
-          })
-        }
+        // 생성된 유저 coupleId recoil에 저장
+        const [user, setUser] = useRecoilState(userState)
+        console.log('recoil의 유저정보', user)
+        useEffect(()=>{
+          if(data){
+            console.log('유저정보', data)
+            setUserInfo({
+              userId : data.userId,
+              userName : data.userName,
+              phoneNumber : data.phoneNumber,
+              profileImgUrl : data.profileImgUrl,
+              coupleYn : data.coupleYn,
+              age: data.age,
+              type1 : data.type1,
+              type2 : data.type2,
+              birthYear : data.birthYear,
+              coupleId : data.coupleId,
+              coupleUserId : data.coupleUserId,
+              reviews : data.reviews
+            })
+            // ==================카카오로그인 안되어서 임시방편========================
+            setUser({...user, 
+                    acToken:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2Nzk5MDExNDUsInVzZXJTZXEiOjF9._aO28K6G-fgTliKcNFGvjlImol-Xq0sgIEOWm6GL8S5Fh7-Ja4sG3NPYx0KWUWHTOaAJ7-xK_DR5HE-c85o9hA',
+                    seq : 1,
+                    coupleId : data.coupleUserId,
+                    })
+          }
+        },[data])
 
     
 
@@ -65,12 +83,16 @@ declare const window: typeof globalThis & {
       navigate("/")
     // });
   }
+
+
   return (
     <div className="h-screen">
       <div className="flex w-screen items-center content-center ">
         <div className="w-full flex m-auto flex-col justify-center md:w-5/6 lg:w-3/6">
           <div className="profile justify-center items-end flex mt-10 mb-4">
-            <div className={"rounded-full w-16 h-16 max-w-[950px]" + (`bg-[url(${userInfo?.profileImageUrl})]`)}></div>
+          <div className={"rounded-full w-16 h-16 max-w-[950px]"}>
+            <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+          </div>
             <div className="flex text-lightMain items-end m-3">
               <div className="w-10 h-px bg-lightMain"></div>
               {userInfo?.coupleYn &&
@@ -82,8 +104,8 @@ declare const window: typeof globalThis & {
               }
             </div>
           </div>
-          <div className="dateCategory w-full flex flex-col">
-            <div className="dateCategory w-full h-60 bg-lightMain3">
+          <div className="dateCategory w-full flex flex-col ">
+            <div className="dateCategory w-full h-60 bg-lightMain3 p-2">
               {" "}
               1순위 : {userInfo?.type1}
             </div>
@@ -91,7 +113,7 @@ declare const window: typeof globalThis & {
               2순위 : {userInfo?.type2}형 코스모스
             </div>
             <div className="h-20 w-full border-solid border-2 border-lightMain4  flex justify-center items-center">
-              취향설문 다시하기
+              <NavLink to="/servey" >취향설문 다시하기</NavLink>
             </div>
           </div>
           <div

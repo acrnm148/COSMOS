@@ -7,7 +7,7 @@ import axios from 'axios';
 import { userState } from '../../recoil/states/UserState';
 import { useQuery } from 'react-query';
 import { UserDispatch } from '../../layouts/MainLayout';
-import { makeCouple } from '../../apis/api/user';
+import { getCoupleId, makeCouple } from '../../apis/api/user';
 import { inviteCoupleId, invitedCoupleId } from '../../recoil/states/ServeyPageState';
 // import { coupleIdState } from '../../recoil/states/UserState';
 
@@ -83,33 +83,48 @@ export default function ServeyPage(){
 
     // 생성된 유저 coupleId recoil에 저장
     const [user, setUser] = useRecoilState(userState)
- 
-    let coupleId:any
+    const [coupleId, setCoupleId] = useState<any>()
     // 커플초대로 온 경우 recoil에 담아둔 커플Id 유저정보에 저장
     const [invited, x] = useRecoilState(invitedCoupleId)
     const [invite, xx] = useRecoilState(inviteCoupleId)
     let dispatch = useContext(UserDispatch);
+    
+    // 커플 요청을 받아서 온 유저인지에 따라서 다른 api 요청
+    const [isInvited, setIsInvited] = useState<number>(2) // 1:true, 2:false, 3:already have number
+
+    // 커플매칭 요청
     if (invited){
-        coupleId = invited
-        // 커플매칭 요청
-        const { data } = useQuery({
-            queryKey: ["makeCouple"],
-            queryFn: () => makeCouple(coupleId, user.seq, Number(invite))
-        });
-    } else{
-        // 커플Id 생성 요청
-        const { data } = useQuery({
-            queryKey: ["getCoupleId"],
-            queryFn: () => getCoupleId()
-        });
-        coupleId = data
-    }
-   setUser({...user, coupleId : coupleId})
+        console.log('커플 매칭 요청을 받아 설문을 완료한 사람')
+        setCoupleId(invite)
+        setIsInvited(1)
+    } 
+    useQuery({
+        queryKey: ["makeCouple"],
+        queryFn: () => makeCouple(coupleId, user.seq, Number(invite), isInvited)
+    });
+    // A. 커플Id 생성 요청
+    const { data } = useQuery({
+        queryKey: ["getCoupleId"],
+        queryFn: () => getCoupleId(isInvited)
+    });
 
     useEffect(() => {
+        // A. 커플Id를 받은 coupleId초기화
+        if (data){
+            setCoupleId(data)
+        }
+        if(coupleId){
+            setUser({...user, coupleId : coupleId})
+        }
         // 카카오 sdk 찾도록 초기화
         if (!window.Kakao.isInitialized()){
-            window.Kakao.init(process.env.REACT_APP_KAKAO)
+            window.Kakao.init(process.env.REACT_APP_KAKAO_SHARE_JS_MYE)
+        }
+    },[])
+
+    useEffect (() =>{
+        if (coupleId){
+            setIsInvited(3)
         }
     })
     const shareKakao = () => {
@@ -139,7 +154,7 @@ export default function ServeyPage(){
 
     return(
         <>
-            <div className="h-screen bg-darkBackground place-content-center text-darkMain">
+            <div className="h-screen bg-darkBackground place-content-center text-darkMain w-full">
                 <div className="flex content-center w-full items-start h-full">
                     <div className="flex w-full h-full justify-start items-center flex-col">
                         <h1 className="font-bold font-baloo text-2xl mb-3 p-5">데이트 취향설문 결과 </h1>
@@ -204,8 +219,5 @@ export default function ServeyPage(){
             </div>
         </>
     )
-}
-function getCoupleId(): any {
-    throw new Error('Function not implemented.');
 }
 

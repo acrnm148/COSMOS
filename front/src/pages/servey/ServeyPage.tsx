@@ -28,6 +28,8 @@ export default function ServeyPage() {
   const [x, setInviteId] = useRecoilState(inviteCoupleId)
   const param = useParams()
   let coupleId: string
+  // 생성된 유저 coupleId recoil에 저장
+  const [user, setUser] = useRecoilState(userState)
   if((param.coupleId) && (param.inviteId)){
     // 커플매칭을 위해 들어온사람
     // 1. recoil에 커플매칭 대기상태 표시, 커플Id저장

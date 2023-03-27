@@ -83,10 +83,8 @@ export function DaySchedulePage({week ='', day = ''}:Props){
 
     return (
         <div className="bg-lightMain2 h-screen">
-            <motion.button onClick={()=>SetIsVisible(!isVisible)}>
-                <ScheduleMonth />
-            </motion.button>
-            <motion.div className="bg-white rounded-lg w-full h-full" animate={isVisible ? show : hide}>
+            <ScheduleMonth />
+            <div className="bg-white rounded-lg w-full h-full" >
                 <div className="ml-2 mr-2 flex flex-col items-center content-center">
                     <div className="flex flex-col w-full justify-center md:w-5/6 lg:w-4/6">
                         <WeekCalendar />
@@ -104,9 +102,9 @@ export function DaySchedulePage({week ='', day = ''}:Props){
                                             draggable
                                             key={key}
                                         >
-                                            {/* <NavLink to="/schedule/detail" state={{placeId: key, place:place, scheduleTitle:scheduleTitle}}> */}
+                                            <NavLink to="/schedule/detail" state={{placeId: key, place:place, scheduleTitle:scheduleTitle}}>
                                                 <PlaceItem place={place} key={key}/>
-                                            {/* </NavLink> */}
+                                            </NavLink>
                                         </div>
                                     ) 
                                 })
@@ -114,7 +112,7 @@ export function DaySchedulePage({week ='', day = ''}:Props){
                         </div>
                     </div>
                 </div>
-            </motion.div>
+            </div>
         </div>
     )
 }

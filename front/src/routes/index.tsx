@@ -35,22 +35,20 @@ const router = createBrowserRouter([
     children: [
       // 홈
       { path: "", element: <Home /> },
-      // 마이페이지
-      { path: "mypage", element: <MyPage /> },
       // 로그인
       { path: "login", element:<Login />},
       { path: "login/oauth", element: <KakaoLogin />}
     ],
   },
-  // {
-  //   path: "/login",
-  //   element : <Login />,
-  //   errorElement: <NotFound />,
-  //   children: [
-  //     { path: "", element: <Login /> },
-  //     { path: "oauth", element: <KakaoLogin /> },
-  //   ]
-  // },
+  // mypage
+  {
+    path: "/mypage",
+    element : <MainLayout />,
+    errorElement: <NotFound />,
+    children: [
+      { path: "", element:<MyPage />  },
+    ]
+  },
   // 찜 목록
   {
     path: "/wish",

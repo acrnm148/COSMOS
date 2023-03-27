@@ -31,6 +31,10 @@ export default function KakaoLogin(){
     // console.log('heyhyehey 카카오로그인 들어옴', code)
     cosmosLogin(code)
   })
+  function deleteCookie(name:string){
+    console.log('쿠키삭제',)
+    window.document.cookie = 'name='+name+';domain=.kakao.com; expires=Thu,01 Jan 1970 00:00:01 GMT;'
+  }
     async function cosmosLogin(code:string){
         axios({
           url : "https://j8e104.p.ssafy.io/api/accounts/auth/login/kakao",
@@ -48,7 +52,6 @@ export default function KakaoLogin(){
                 coupleId: res.data.coupleId}
             }))
 
-
             console.log('코스모스 로그인 성공', res.data)
             if (invited){
               return <Navigate to={"/servey"} />
@@ -58,7 +61,13 @@ export default function KakaoLogin(){
           })
           .catch((err:any) => {
             console.log('코스모스 로그인 실패', err)
-          })
+            // 카카오 로그인 쿠키 지우기
+            console.log('현재쿠키', window.document.cookies)
+            if (window.document.cookies){
+                const rturn = ['_karmtea', '_klawit', '_kawItea','_karmt','_kahai'].map(kakao => deleteCookie(kakao))
+              }
+            }
+          )
     }
   // })
   return(
