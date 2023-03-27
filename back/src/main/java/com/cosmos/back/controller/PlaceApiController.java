@@ -148,10 +148,10 @@ public class PlaceApiController {
             "/places/search/users/{userSeq}/sido/gugun/text/filter/{filter}"
     })
     public ResponseEntity<PlaceFilterResponseDto> searchPlace(@PathVariable Long userSeq, @PathVariable(required = false) String sido, @PathVariable(required = false) String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
-        if (sido == null) {sido = "";}
-        if (gugun == null) {gugun = "";}
-        if (text == null) {text = "";}
-        if (filter == null) {filter = "";}
+//        if (sido == null) {sido = null;}
+//        if (gugun == null) {gugun = null;}
+//        if (text == null) {text = null;}
+//        if (filter == null) {filter = null;}
 
         PlaceFilterResponseDto dto = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
 

@@ -326,10 +326,9 @@ class PlaceApiControllerTest {
     // HTTP Status 200, map을 형식에 맞게 잘 받아오는지 테스트
     public void searchPlaceControllerTest() throws Exception{
         //given
-        Object mock = mock(Object.class);
-        Map<String, Object> map = new HashMap<>();
-        map.put("test", mock);
-        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt())).thenReturn(map);
+        PlaceFilterResponseDto dto = PlaceFilterResponseDto.builder().places(new ArrayList<>()).midLatitude(1.0).midLongitude(1.0).build();
+
+        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt())).thenReturn(dto);
 
         //when
         MvcResult mvcResult1 = mockMvc.perform(MockMvcRequestBuilders
@@ -347,14 +346,14 @@ class PlaceApiControllerTest {
                 .andReturn();
 
         //then
-        Map resultData1 = new Gson().fromJson(mvcResult1.getResponse().getContentAsString(), Map.class);
-        assertThat(resultData1.containsKey("test"));
+        PlaceFilterResponseDto resultData1 = new Gson().fromJson(mvcResult1.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
+        assertThat(resultData1.getMidLatitude()).isEqualTo(1.0);
 
-        Map resultData2 = new Gson().fromJson(mvcResult2.getResponse().getContentAsString(), Map.class);
-        assertThat(resultData2.containsKey("test"));
+        PlaceFilterResponseDto resultData2 = new Gson().fromJson(mvcResult2.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
+        assertThat(resultData2.getMidLatitude()).isEqualTo(1.0);
 
-        Map resultData3 = new Gson().fromJson(mvcResult3.getResponse().getContentAsString(), Map.class);
-        assertThat(resultData3.containsKey("test"));
+        PlaceFilterResponseDto resultData3 = new Gson().fromJson(mvcResult3.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
+        assertThat(resultData3.getMidLatitude()).isEqualTo(1.0);
     }
 
 
