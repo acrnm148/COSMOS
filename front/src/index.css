@@ -9,8 +9,19 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
-
+::-webkit-scrollbar {
+  width: 10px; /* 스크롤바 너비 */
+}
+::-webkit-scrollbar-thumb {
+  height: 30%; /* 스크롤바 길이 */
+  background: #ff8e9e; /* 스크롤바 색상 */
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #ff8e9d22; /*스크롤바 뒷 배경 색상*/
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

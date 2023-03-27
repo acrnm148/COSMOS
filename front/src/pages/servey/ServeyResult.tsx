@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 
 import "../../css/serveyResult.css"
 import axios from 'axios';
-import { coupleIdState } from '../../recoil/states/UserState';
+// import { coupleIdState } from '../../recoil/states/UserState';
 
 // 설문조사 결과 이미지
 const backgroundImage = {
@@ -77,7 +77,7 @@ export default function ServeyPage(){
     const thirdKeyword = cate != null ? codeName[cate.slice(2,3) as keyof typeof codeName] : ''
 
     // 커플ID
-    const [coupleId, setCoupleId] = useRecoilState(coupleIdState)
+    // const [coupleId, setCoupleId] = useRecoilState(coupleIdState)
 
     useEffect(() => {
         // 카카오 sdk 찾도록 초기화

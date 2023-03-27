@@ -24,80 +24,80 @@ import { GalleryPage } from "../pages/schedule/GalleryPage";
 import ScheduleLayout from "../layouts/ScheduleLayout";
 import WishList from "../pages/wish/WishList";
 import PlaceResult from "../pages/place/PlaceResult";
+import SearchLayout from "../layouts/SearchLayout";
 // import Test from "../pages/place/Test"; // 드래그앤드롭
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <MainLayout />,
-        errorElement: <NotFound />,
-        children: [
-            {
-                index: true,
-                path: "/",
-                element: <Home />,
-            },
-            //로그인
-            { path: "/login", element: <Login /> },
-            { path: "/login/oauth", element: <KakaoLogin /> },
-            // 마이페이지
-            { path: "/mypage", element: <MyPage /> },
-        ],
-    },
-    // 찜 목록
-    {
-        path: "/wish",
-        element: <MainLayout />,
-        errorElement: <NotFound />,
-        children: [
-            { path: "", element: <WishList /> },
-            { path: "/wish/course/:courseId", element: <WishList /> },
-            { path: "/wish/course/:editId/edit", element: <WishList /> },
-        ],
-    },
-    // 랜딩페이지
-    {
-        path: "/landing",
-        element: <SubLayout />,
-        errorElement: <NotFound />,
-        children: [{ path: "/landing", element: <Landing /> }],
-    },
-    // 장소 검색 & 빅데이터 추천
-    {
-        path: "/place",
-        element: <MainLayout />,
-        errorElement: <NotFound />,
-        children: [
-            { path: "search", element: <PlaceSearch /> },
-            { path: "recommend", element: <PlaceRecommend /> },
-            { path: "result", element: <PlaceResult /> },
-            // { path: "drag", element: <Test /> },
-        ],
-    },
-    // 설문조사
-    {
-        path: "/servey",
-        element: <NoHeaderLayout />,
-        errorElement: <NotFound />,
-        children: [
-            { path: "", element: <Servey /> },
-            { path: "result/:cate/:cateNum", element: <ServeyResult /> },
-        ],
-    },
-    // 일정관리
-    {
-        path: "/schedule",
-        element: <ScheduleLayout />,
-        errorElement: <NotFound />,
-        children: [
-            { path: "month", element: <MonthSchedulePage /> },
-            { path: "day", element: <DaySchedulePage /> },
-            { path: "create", element: <CreateSchedulePage /> },
-            { path: "detail", element: <ScheduleDetail /> },
-            { path: "review", element: <ScheduleReview /> },
-            { path: "gallery", element: <GalleryPage /> },
-        ],
-    },
+  {
+    path: "/",
+    element: <Home />,
+    errorElement: <NotFound />,
+    children: [
+      //로그인
+      { path: "/login", element: <Login /> },
+      { path: "/login/oauth", element: <KakaoLogin /> },
+      // 마이페이지
+      { path: "/mypage", element: <MyPage /> },
+    ],
+  },
+  // 찜 목록
+  {
+    path: "/wish",
+    element: <MainLayout />,
+    errorElement: <NotFound />,
+    children: [
+      { path: "", element: <WishList /> },
+      { path: "/wish/course/:wishId", element: <WishList /> },
+    ],
+  },
+  // 랜딩페이지
+  {
+    path: "/landing",
+    element: <SubLayout />,
+    errorElement: <NotFound />,
+    children: [{ path: "/landing", element: <Landing /> }],
+  },
+  // 장소 검색 & 빅데이터 추천
+  {
+    path: "/place",
+    element: <MainLayout />,
+    errorElement: <NotFound />,
+    children: [
+      { path: "recommend", element: <PlaceRecommend /> },
+      { path: "result", element: <PlaceResult /> },
+      // { path: "drag", element: <Test /> },
+    ],
+  },
+  {
+    path: "/place",
+    element: <SearchLayout />,
+    errorElement: <NotFound />,
+    children: [{ path: "search", element: <PlaceSearch /> }],
+  },
+  // 설문조사
+  {
+    path: "/servey",
+    element: <NoHeaderLayout />,
+    errorElement: <NotFound />,
+    children: [
+      { path: "", element: <Servey /> },
+      { path: "result/:cate/:cateNum", element: <ServeyResult /> },
+    ],
+  },
+  // 일정관리
+  {
+    path: "/schedule",
+    element: <ScheduleLayout />,
+    errorElement: <NotFound />,
+    children: [
+      { path: "month", element: <MonthSchedulePage /> },
+      { path: "day", element: <DaySchedulePage /> },
+      { path: "create", element: <CreateSchedulePage /> },
+      { path: "detail", element: <ScheduleDetail /> },
+      { path: "review", element: <ScheduleReview /> },
+      { path: "gallery", element: <GalleryPage /> },
+    ],
+  },
 ]);
 
 export default router;
