@@ -7,6 +7,7 @@ import SearchPlaceItem from "./SearchPlaceItem";
 export default function ListItems({
   items,
   setState,
+  setMarkers,
   sido,
   gugun,
   text,
@@ -14,7 +15,7 @@ export default function ListItems({
 }: any) {
   const { data, isLoading } = useQuery({
     queryKey: ["getPlaceList", sido, gugun, text, filter],
-    queryFn: () => getPlaceList(1, sido, gugun, "", filter, 8, 0),
+    queryFn: () => getPlaceList(1, sido, gugun, text, filter, 8, 0),
   });
 
   if (isLoading) return null;
@@ -22,7 +23,11 @@ export default function ListItems({
   return (
     <>
       {data === undefined || data === null ? null : (
-        <SearchPlaceItem data={data} setState={setState} />
+        <SearchPlaceItem
+          data={data}
+          setState={setState}
+          setMarkers={setMarkers}
+        />
       )}
     </>
   );
