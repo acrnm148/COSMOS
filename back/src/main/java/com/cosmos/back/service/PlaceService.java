@@ -73,14 +73,14 @@ public class PlaceService {
     }
 
     // 장소 검색 자동 완성
-    @RedisCached(key = "autoCompleteSearchPlacesByName", expire = 7200)
+    //@RedisCached(key = "autoCompleteSearchPlacesByName", expire = 7200)
     public List<AutoCompleteResponseDto> autoCompleteSearchPlacesByName (@RedisCachedKeyParam(key = "searchWord") String searchWord) {
         List<AutoCompleteResponseDto> dto = placeRepository.findPlaceListByNameAutoCompleteQueryDsl(searchWord);
         return dto;
     }
 
     // 시도 리스트 받아오기
-    @RedisCached(key = "listSido", expire = 7200)
+    //@RedisCached(key = "listSido", expire = 7200)
     public List<Sido> listSido () {
         return sidoRepository.findAll();
     }

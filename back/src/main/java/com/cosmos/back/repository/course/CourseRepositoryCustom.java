@@ -1,6 +1,5 @@
 package com.cosmos.back.repository.course;
 
-import com.cosmos.back.dto.MyCoursePlaceDto;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.model.CoursePlace;
 
