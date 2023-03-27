@@ -61,9 +61,6 @@ public class PlaceService {
     public Long deleteLikePlace (Long placeId, Long userSeq) {
         Long execute = userPlaceRepository.deleteUserPlaceQueryDsl(placeId, userSeq);
 
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        System.out.println(place.getUserPlaces().size());
-
         // 존재하지 않는 UserPlace 일 때 error 처리
         if (execute == 0) {
             throw new IllegalStateException("존재하지 않는 찜 입니다.");
@@ -119,14 +116,17 @@ public class PlaceService {
             for (PlaceSearchListResponseDto dto : list) {
                 boolean execute = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(dto.getPlaceId(), userSeq);
                 dto.setLike(execute);
-                LatitudeCenter += Double.parseDouble(dto.getLatitude());
-                LongitudeCenter += Double.parseDouble(dto.getLongitude());
+                if (dto.getLatitude() != null) {
+                    LatitudeCenter += Double.parseDouble(dto.getLatitude());
+                }
+                if (dto.getLongitude() != null) {
+                    LongitudeCenter += Double.parseDouble(dto.getLongitude());
+                }
                 PlacesList.add(dto);
             }
             size += list.size();
 
         }
-
 
         LatitudeCenter /= size;
         LongitudeCenter /= size;
