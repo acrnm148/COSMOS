@@ -43,8 +43,143 @@ export const getPlaceDetail = async (
   placeId: number,
   type: string
 ) => {
+  if (placeId === undefined || type === undefined) return null;
   const { data } = await defaultInstance.get(
     `places/detail/users/${userSeq}/placeId/${placeId}/type/${type}`
+  );
+  return data;
+};
+
+/**
+ * @param {number} userSeq : 사용자 번호
+ * @param {string} sido : 시도명
+ * @param {string} gugun : 구군명
+ * @param {string} text : 장소명
+ * @param {string} filter : 유형
+ * GET : 검색 조건에 따라 리스트 정보를 가져온다.
+ * @returns {places: [{placeId, name, address, score, thumbNailUrl, detail, latitude, longitude, type, like}], midLatitude, midLongitude}
+ */
+export const getPlaceList = async (
+  userSeq: number,
+  sido: any,
+  gugun: any,
+  text: string,
+  filter: string,
+  limit: number,
+  offset: number
+) => {
+  // 시/도, 구/군, 검색어, 필터
+  if (
+    sido !== undefined &&
+    gugun !== undefined &&
+    text !== "" &&
+    filter !== ""
+  ) {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/${sido.name}/gugun/${gugun.name}/text/${text}/filter/${filter}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 시/도, 구/군, 필터
+  if (
+    sido !== undefined &&
+    gugun !== undefined &&
+    text === "" &&
+    filter !== ""
+  ) {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 시/도, 구/군, 검색어
+  if (
+    sido !== undefined &&
+    gugun !== undefined &&
+    text !== "" &&
+    filter === ""
+  ) {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/${sido.name}/gugun/${gugun.name}/text/${text}/filter/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 시/도, 구/군
+  if (
+    sido !== undefined &&
+    gugun !== undefined &&
+    text === "" &&
+    filter === ""
+  ) {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/${sido.name}/gugun/${gugun.name}/text/filter/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 검색어, 필터
+  if (
+    sido === undefined &&
+    gugun === undefined &&
+    text !== "" &&
+    filter !== ""
+  ) {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/${filter}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+
+  // 검색어
+  if (
+    sido === undefined &&
+    gugun === undefined &&
+    text !== "" &&
+    filter === ""
+  ) {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+
+  // 필터
+  if (
+    sido === undefined &&
+    gugun === undefined &&
+    text === "" &&
+    filter !== ""
+  ) {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/gugun/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+};
+
+/**
+ * @param {number} userSeq : 사용자 번호
+ * @param {number} placeId : 장소 ID
+ * GET : 사용자의 찜 리스트에 추가
+ * @returns {}
+ */
+export const likePlace = async (userSeq: number, placeId: number) => {
+  const { data } = await defaultInstance.get(
+    `places/${placeId}/users/${userSeq}`
+  );
+  return data;
+};
+
+// DELETE APIs
+
+/**
+ * @param {number} userSeq : 사용자 번호
+ * @param {number} placeId : 장소 ID
+ * DELETE : 사용자의 찜 리스트에 해제
+ * @returns {}
+ */
+export const dislikePlace = async (userSeq: number, placeId: number) => {
+  const { data } = await defaultInstance.delete(
+    `places/${placeId}/users/${userSeq}`
   );
   return data;
 };
