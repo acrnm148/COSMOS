@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { getWishPlaceList } from "../../apis/api/wish";
 import { useQuery } from "react-query";
 import { useRecoilState } from "recoil";
-import { userSeqState } from "../../recoil/states/UserState";
+import { userState } from "../../recoil/states/UserState";
 
 /* eslint-disable jsx-a11y/alt-text */
 type propsType = {
@@ -17,11 +17,11 @@ type propsType = {
 };
 
 export default function WishPlace() {
-    const userSeq = useRecoilState(userSeqState);
-    const { data, isLoading } = useQuery({
-        queryKey: ["getWishPlaceList", "userSeq"],
-        queryFn: () => getWishPlaceList(userSeq[0]),
-    });
+    const userSeq = useRecoilState(userState);
+    // const { data, isLoading } = useQuery({
+    //     queryKey: ["getWishPlaceList", "userSeq"],
+    //     queryFn: () => getWishPlaceList(userSeq[0].seq),
+    // });
 
     let list: propsType[] = [
         {
