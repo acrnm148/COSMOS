@@ -123,8 +123,10 @@ public class PlaceService {
                     LongitudeCenter += Double.parseDouble(dto.getLongitude());
                 }
                 PlacesList.add(dto);
+                if (dto.getLongitude() != null && dto.getLatitude() != null) {
+                    size += 1.0;
+                }
             }
-            size += list.size();
 
         }
 
