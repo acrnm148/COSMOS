@@ -277,8 +277,14 @@ class PlaceApiControllerTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     // HTTP Status 200, Service에서 ResponseDto를 형식에 맞게 잘 받아오는지 테스트
     public void 장소_찜() throws Exception {
+
+        Map<String, Long> mockMap = new HashMap<>();
+
+        mockMap.put("user", 1995L);
+        mockMap.put("place", 1995L);
+
         // mocking
-        when(placeService.likePlace(anyLong(), anyLong())).thenReturn(1995L);
+        when(placeService.likePlace(anyLong(), anyLong())).thenReturn(mockMap);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/api/places/1/users/1")
@@ -290,7 +296,7 @@ class PlaceApiControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        Assertions.assertThat(response).isEqualTo("1995");
+        Assertions.assertThat(response).isEqualTo("");
     }
 
     @Test

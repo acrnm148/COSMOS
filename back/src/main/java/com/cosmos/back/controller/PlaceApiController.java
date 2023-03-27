@@ -29,9 +29,9 @@ public class PlaceApiController {
     @Operation(summary = "장소 찜하기", description = "장소를 찜 함")
     @GetMapping("/places/{placeId}/users/{userSeq}")
     public ResponseEntity<Long> likePlace(@PathVariable Long placeId, @PathVariable Long userSeq) {
-        Long id = placeService.likePlace(placeId, userSeq);
+        placeService.likePlace(placeId, userSeq);
 
-        return new ResponseEntity<>(id, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "장소 찜 삭제", description = "장소를 찜 해제함")
@@ -147,14 +147,14 @@ public class PlaceApiController {
             "/places/search/users/{userSeq}/sido/gugun/text/{text}/filter/",
             "/places/search/users/{userSeq}/sido/gugun/text/filter/{filter}"
     })
-    public ResponseEntity<Map> searchPlace(@PathVariable Long userSeq, @PathVariable(required = false) String sido, @PathVariable(required = false) String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
+    public ResponseEntity<PlaceFilterResponseDto> searchPlace(@PathVariable Long userSeq, @PathVariable(required = false) String sido, @PathVariable(required = false) String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
         if (sido == null) {sido = "";}
         if (gugun == null) {gugun = "";}
         if (text == null) {text = "";}
         if (filter == null) {filter = "";}
 
-        Map<String, Object> map = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
+        PlaceFilterResponseDto dto = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
 
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

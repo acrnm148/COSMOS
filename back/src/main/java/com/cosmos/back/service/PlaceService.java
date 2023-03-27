@@ -41,15 +41,19 @@ public class PlaceService {
 
     // 장소 찜하기
     @Transactional
-    public Long likePlace (Long placeId, Long userSeq) {
+    public Map<String, Long> likePlace (Long placeId, Long userSeq) {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         UserPlace userPlace = UserPlace.createUserPlace(user, place);
 
-        UserPlace savedUserPlace = userPlaceRepository.save(userPlace);
+        userPlaceRepository.save(userPlace);
 
-        return savedUserPlace.getId();
+        Map<String, Long> map = new HashMap<>();
+        map.put("user", user.getUserSeq());
+        map.put("place", place.getId());
+
+        return map;
     }
 
     // 장소 찜 삭제
@@ -67,9 +71,6 @@ public class PlaceService {
 
         return execute;
     }
-
-
-    ///////////////////////////////완성 로직///////////////////////////////////////
 
     // 장소 검색 자동 완성
     @RedisCached(key = "autoCompleteSearchPlacesByName", expire = 7200)
@@ -101,15 +102,18 @@ public class PlaceService {
     }
 
     // 장소 검색(시/도, 구/군, 검색어, 검색필터)
-    public Map<String, Object> searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
-        Map<String, Object> map = new HashMap<>();
+    public PlaceFilterResponseDto searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+        PlaceFilterResponseDto result = new PlaceFilterResponseDto();
+
         // filter 공백 split으로 여러개 받아오기
         String[] filters = filter.split(" ");
-        List<PlaceFilterResponseDto> places = new ArrayList<>();
+        List<PlaceSearchListResponseDto> places = new ArrayList<>();
         Double LatitudeCenter = 0.0;
         Double LongitudeCenter = 0.0;
         Double size = 0.0;
         // filter 별로 장소 조사 진행
+        List<PlaceSearchListResponseDto> PlacesList = new ArrayList<>();
+
         for (String f : filters) {
             List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, f, limit, offset);
             for (PlaceSearchListResponseDto dto : list) {
@@ -117,22 +121,21 @@ public class PlaceService {
                 dto.setLike(execute);
                 LatitudeCenter += Double.parseDouble(dto.getLatitude());
                 LongitudeCenter += Double.parseDouble(dto.getLongitude());
+                PlacesList.add(dto);
             }
             size += list.size();
 
-            // {필터 : 리스트} 형식으로 저장
-            PlaceFilterResponseDto result = new PlaceFilterResponseDto();
-            result.setFilter(f);
-            result.setPlaces(list);
-            places.add(result);
         }
+
+
         LatitudeCenter /= size;
         LongitudeCenter /= size;
-        
-        map.put("places", places);
-        map.put("midLatitude", LatitudeCenter);
-        map.put("midLongitude", LongitudeCenter);
-        return map;
+
+        result.setPlaces(PlacesList);
+        result.setMidLatitude(LatitudeCenter);
+        result.setMidLongitude(LongitudeCenter);
+
+        return result;
     }
 
     // QueryDsl로 관광 상세 정보 받아오기
@@ -231,6 +234,5 @@ public class PlaceService {
         }
     }
 
-    ///////////////////////////////완성 로직///////////////////////////////////////
 }
 

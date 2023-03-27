@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PlaceFilterResponseDto {
-    private String filter;
     private List<PlaceSearchListResponseDto> places;
+    private Double midLatitude;
+    private Double midLongitude;
 }
