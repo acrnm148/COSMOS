@@ -11,22 +11,15 @@ const axiosApi = (baseURL: any) => {
   return instance;
 };
 export function AxiosAuthApi(baseURL: any, ac:string|null){
-  // console.log(getUserAcToken())
-  // ac = user.acToken
-  console.log("여기있니?")
   const instance = axios.create({
     baseURL,
     withCredentials: true,
   });
   instance.interceptors.request.use(
     (config) => {
-      // const access_token = localStorage.getItem("accessToken");
-      // console.log('ac',ac)
       if (ac) {
-        console.log('ac토큰있음', ac)
         config.headers.Authorization = "Bearer " + ac;
       }
-      console.log('config=============', config)
       return config;
     },
     (error) => {
