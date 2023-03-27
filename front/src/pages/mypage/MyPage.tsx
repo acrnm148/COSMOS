@@ -1,23 +1,25 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
 import { LUser, userState } from "../../recoil/states/UserState"
 import { getUserInfo  } from "../../apis/api/user"
 import { useQuery } from "react-query"
 import { UserDispatch } from "../../layouts/MainLayout"
 
-interface userInfo {
-  userId: number;
-  userName: string;
-  phoneNumber: string;
-  profileImageUrl: string;
-  coupleYn: string;
-  age: number;
-  type1: string;
-  type2: string;
-  birthYear: number;
-  coupleUserId: number;
+interface USERINFORMATION {
+  userId: number
+  userName: string
+  phoneNumber: string | null
+  profileImgUrl: string
+  coupleYn: string
+  age: number
+  type1: string
+  type2: string
+  birthYear: number
+  coupleId : number | null
+  coupleUserId: number
+  reviews: any
 }
 
 declare const window: typeof globalThis & {
@@ -26,77 +28,84 @@ declare const window: typeof globalThis & {
   
   export default function MyPage(){
       const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
-      const [userInfo, setUserInfo] = useState<userInfo>()
-      const [coupleInfo, setCoupleInfo] = useState<userInfo>()
+      const [userInfo, setUserInfo] = useState<USERINFORMATION|null>(null)
+      const [coupleInfo, setCoupleInfo] = useState<USERINFORMATION>()
       const navigate = useNavigate();
       let dispatch = useContext(UserDispatch);
-      const {data} =  useQuery({
-          queryKey: ["getUserInfo"],
-          queryFn: () => getUserInfo(LoginUser.seq,dispatch)
-        })
-  
+      
+      // if ((LoginUser.seq > -1)&& (LoginUser.acToken)){
+      //     console.log('로그인된유저', LoginUser.seq)
+      //   }
+        const {data} =  useQuery({
+            queryKey: ["getUserInfo"],
+            // queryFn: () => getUserInfo(LoginUser.seq,dispatch)
+            // ==================카카오로그인 안되어서 임시방편========================
+            queryFn: () => getUserInfo(1, 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2Nzk5MDExNDUsInVzZXJTZXEiOjF9._aO28K6G-fgTliKcNFGvjlImol-Xq0sgIEOWm6GL8S5Fh7-Ja4sG3NPYx0KWUWHTOaAJ7-xK_DR5HE-c85o9hA')
+          })
+        
+        // 유저정보 받아와서 마이페이지에서 표출할 정보로 가공
+        // 생성된 유저 coupleId recoil에 저장
+        const [user, setUser] = useRecoilState(userState)
+        console.log('recoil의 유저정보', user)
         useEffect(()=>{
-            if (LoginUser.seq > -1){
-                console.log('로그인된유저', LoginUser.seq)
-                console.log('data',data)
-                
-                // const bringUser = (seq:number, me:string) =>{
-                //     axios.get((`https://j8e104.p.ssafy.io/api/accounts/userInfo/${seq}`), 
-                //     )
-                //         .then((res) =>{
-                //             if(me === 'me'){setUserInfo( res.data )}
-                //             else {setCoupleInfo(res.data)}
-    
-                //             if((!coupleInfo) && (userInfo?.coupleUserId)){
-                //                 bringUser(userInfo.coupleUserId, 'you')
-                //             }
-                //         })
-                //         .catch((err)=>{
-                //             console.log('err', err)
-                //         })
-                // }
-                // bringUser(Number(LoginUser.seq), 'me')
-            } 
-        })
+          if(data){
+            console.log('유저정보', data)
+            setUserInfo({
+              userId : data.userId,
+              userName : data.userName,
+              phoneNumber : data.phoneNumber,
+              profileImgUrl : data.profileImgUrl,
+              coupleYn : data.coupleYn,
+              age: data.age,
+              type1 : data.type1,
+              type2 : data.type2,
+              birthYear : data.birthYear,
+              coupleId : data.coupleId,
+              coupleUserId : data.coupleUserId,
+              reviews : data.reviews
+            })
+            // ==================카카오로그인 안되어서 임시방편========================
+            setUser({...user, 
+                    acToken:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2Nzk5MDExNDUsInVzZXJTZXEiOjF9._aO28K6G-fgTliKcNFGvjlImol-Xq0sgIEOWm6GL8S5Fh7-Ja4sG3NPYx0KWUWHTOaAJ7-xK_DR5HE-c85o9hA',
+                    seq : 1,
+                    coupleId : data.coupleUserId,
+                    })
+          }
+        },[data])
+
     
 
-    function kakaoLogout(){
-        // if (!window.Kakao.isInitialized()){
-        //     window.Kakao.init(process.env.REACT_APP_KAKAO)
-        // }
-        if(window.Kakao.Auth.getAccessToken()){
-            console.log('카카오 엑세스 토큰', window.Kakao.Auth.getAccessToken())
-        }
-        window.Kakao.Auth.logout(()=>{
-            navigate("/")
-        })
-            
-    }
-  {/* function kakaoLogout() {
-    // if (!window.Kakao.isInitialized()){
-    //     window.Kakao.init(process.env.REACT_APP_KAKAO)
-    // } */}
-    if (window.Kakao.Auth.getAccessToken()) {
-      console.log("카카오 엑세스 토큰", window.Kakao.Auth.getAccessToken());
-    }
-    window.Kakao.Auth.logout(() => {
+  function kakaoLogout() {
+    // ac 지우기
+    setLoginUser({...LoginUser, isLoggedIn:false, acToken:''})
+    console.log('로그아웃 되었습니다')
+    // window.Kakao.Auth.logout(() => {
       navigate("/")
-    });
+    // });
+  }
+
+
   return (
     <div className="h-screen">
       <div className="flex w-screen items-center content-center ">
         <div className="w-full flex m-auto flex-col justify-center md:w-5/6 lg:w-3/6">
           <div className="profile justify-center items-end flex mt-10 mb-4">
-            <div className="rounded-full bg-lightMain w-16 h-16 max-w-[950px]"></div>
+          <div className={"rounded-full w-16 h-16 max-w-[950px]"}>
+            <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+          </div>
             <div className="flex text-lightMain items-end m-3">
               <div className="w-10 h-px bg-lightMain"></div>
-              <p className="text-sm">n일째 코스모스중</p>
-              <div className="w-10 h-px bg-lightMain"></div>
+              {userInfo?.coupleYn &&
+                <>
+                  <p className="text-sm">n일째 코스모스중</p>
+                  <div className="w-10 h-px bg-lightMain"></div>
+                  <div className="rounded-full bg-lightMain w-12 h-12"></div>
+                </>
+              }
             </div>
-            <div className="rounded-full bg-lightMain w-12 h-12"></div>
           </div>
-          <div className="dateCategory w-full flex flex-col">
-            <div className="dateCategory w-full h-60 bg-lightMain3">
+          <div className="dateCategory w-full flex flex-col ">
+            <div className="dateCategory w-full h-60 bg-lightMain3 p-2">
               {" "}
               1순위 : {userInfo?.type1}
             </div>
@@ -104,7 +113,7 @@ declare const window: typeof globalThis & {
               2순위 : {userInfo?.type2}형 코스모스
             </div>
             <div className="h-20 w-full border-solid border-2 border-lightMain4  flex justify-center items-center">
-              취향설문 다시하기
+              <NavLink to="/servey" >취향설문 다시하기</NavLink>
             </div>
           </div>
           <div
@@ -129,9 +138,6 @@ declare const window: typeof globalThis & {
                 );
               })}
             </div>
-          </div>
-          <div onClick={() => kakaoLogout()} className="cursor-pointer">
-            로그아웃
           </div>
         </div>
         </div>

@@ -1,26 +1,6 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Cosmos from "../../assets/login/pinkCosmos.png"
 
-declare const window: typeof globalThis & {
-    Kakao: any;
-  };
-
 export default function Login(){
-    // const navigate = useNavigate();
-    // useEffect(() => {
-    //     // if (!window.Kakao.isInitialized()){
-    //     //     window.Kakao.init(process.env.REACT_APP_KAKAO_LOGIN_JS_SUN)
-    //     // }
-    // })
-    // let KakaoLogin = () => {
-    //     window.Kakao.Auth.authorize({
-    //         // redirectUri : process.env.KAKAO_LOGIN_REDIRECT_URL,
-    //         redirectUri : "http://localhost:3000/login/oauth"
-    //     })
-    //     // const kakao = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_LOGIN_LOCAL}&response_type=code&scope=age_range,birthday`
-    //     // navigate(kakao)
-    // }
     return(
         <>
             <div className="w-full flex flex-col content-center justify-center p-10 items-center">

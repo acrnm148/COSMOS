@@ -37,3 +37,14 @@ export const serveyPage = atom({
     key:'serveyPage',
     default:0 //설문시작하기부터 시작
 })
+
+// 커플매칭을 위해 들어온사람의 coupleId 임시저장
+export const invitedCoupleId = atom({
+    key: 'invitedCoupleId',
+    default : ''
+})
+
+export const inviteCoupleId = atom({
+    key: 'inviteCoupleId',
+    default : '',
+})

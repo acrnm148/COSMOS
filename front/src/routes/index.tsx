@@ -41,6 +41,13 @@ const router = createBrowserRouter([
       { path: "/mypage", element: <MyPage /> },
     ],
   },
+  // mypage
+  {
+    path: "/mypage",
+    element: <MainLayout />,
+    errorElement: <NotFound />,
+    children: [{ path: "", element: <MyPage /> }],
+  },
   // 찜 목록
   {
     path: "/wish",
@@ -82,6 +89,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { path: "", element: <Servey /> },
+      { path: ":coupleId/:inviteId", element: <Servey /> },
       { path: "result/:cate/:cateNum", element: <ServeyResult /> },
     ],
   },
