@@ -88,7 +88,7 @@ export const getPlaceList = async (
     filter !== ""
   ) {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido.name}/gugun/${gugun.name}/text/filter/${filter}/?limit=${limit}&offset=${offset}`
     );
     return data;
   }
