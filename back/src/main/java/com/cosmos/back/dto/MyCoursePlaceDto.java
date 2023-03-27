@@ -13,7 +13,6 @@ public class MyCoursePlaceDto {
     private Long courseId;
     private String name;
     private String date;
-    private String subCategory;
     private Integer orders;
     private Long placeId;
     private String placeName;

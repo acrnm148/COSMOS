@@ -27,5 +27,11 @@ public class CourseResponseDto {
         this.courseId = courseId;
         this.orders = orders;
     }
+
+    public CourseResponseDto (String name, String date, Long courseId) {
+        this.name = name;
+        this.date = date;
+        this.courseId = courseId;
+    }
 }
 
