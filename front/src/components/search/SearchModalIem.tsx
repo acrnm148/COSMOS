@@ -10,17 +10,17 @@ import StarIcon from "@mui/icons-material/Star";
 import Swal from "sweetalert2";
 
 import { useQuery } from "react-query";
-import { getPlaceDetail, likePlace, dislikePlace } from "../../apis/api/place";
+import { getPlaceDetail } from "../../apis/api/place";
 
 export default function SearchModalItem({
   modalOpen,
   closeModal,
-  setIsLike,
   placeId,
   type,
   setState,
 }: any) {
   const [review, setReview] = useState(false);
+
   const settings = {
     dots: true,
     infinite: true,

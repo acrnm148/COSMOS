@@ -55,7 +55,6 @@ export default function PlaceLike({
         modalOpen={modalOpen}
         closeModal={closeModal}
         setModalOpen={setModalOpen}
-        setIsLike={setLikeBtn}
         placeId={placeId}
         type={type}
         setState={setState}
