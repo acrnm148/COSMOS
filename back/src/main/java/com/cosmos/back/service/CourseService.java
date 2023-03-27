@@ -5,7 +5,6 @@ import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
 import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
 import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
 import com.cosmos.back.dto.response.CourseResponseDto;
-import com.cosmos.back.dto.MyCoursePlaceDto;
 import com.cosmos.back.dto.request.CourseRequestDto;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
@@ -14,12 +13,9 @@ import com.cosmos.back.repository.course.CourseRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -171,12 +167,31 @@ public class CourseService {
     }
 
     /**
-     * 내 모든 코스 보기
+     * 내 코스 상세보기
      */
-    public List<MyCoursePlaceDto> getMyCourseDetail(Long userSeq, Long courseId) {
-        List<MyCoursePlaceDto> course = courseRepository.findAllByUserSeqAndCourseIdQueryDSL(userSeq, courseId);
-        System.out.println("내 코스 상세:"+course);
-        return course;
+    public CourseResponseDto getMyCourseDetail(Long courseId) {
+        CourseResponseDto courseResponseDto = courseRepository.findByCourseIdQueryDSL(courseId);
+
+        List<SimplePlaceDto> places = new ArrayList<>();
+
+        // 해당 코스들의 placeId와 courseId를 가져온다.
+        List<CoursePlace> coursePlaces = coursePlaceRepository.findAllByCourseId(courseResponseDto.getCourseId());
+
+        for (CoursePlace coursePlace : coursePlaces) {
+            // 해당 placeId로 평점을 제외한 나머지 것들을 가져온다.
+            SimplePlaceDto place = placeRepository.findSimplePlaceDtoByPlaceIdQueryDsl(coursePlace.getPlace().getId(), coursePlace.getCourse().getId());
+
+            // 해당 SimplePlaceDto에 평점을 가져온다.
+            Double score = placeRepository.findScoreByPlaceIdQueryDsl(coursePlace.getPlace().getId());
+
+            place.setScore(score);
+
+            places.add(place);
+        }
+
+        courseResponseDto.setPlaces(places);
+
+        return courseResponseDto;
     }
 
     // 코스 내용 수정
