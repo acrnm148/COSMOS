@@ -1,8 +1,11 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { userSeqState } from "../../recoil/states/UserState";
+import axios from "axios"
+import { useContext, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useRecoilState } from "recoil"
+import { LUser, userState } from "../../recoil/states/UserState"
+import { getUserInfo  } from "../../apis/api/user"
+import { useQuery } from "react-query"
+import { UserDispatch } from "../../layouts/MainLayout"
 
 interface userInfo {
   userId: number;
@@ -18,50 +21,67 @@ interface userInfo {
 }
 
 declare const window: typeof globalThis & {
-  Kakao: any;
-};
+    Kakao: any;
+  };
+  
+  export default function MyPage(){
+      const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
+      const [userInfo, setUserInfo] = useState<userInfo>()
+      const [coupleInfo, setCoupleInfo] = useState<userInfo>()
+      const navigate = useNavigate();
+      let dispatch = useContext(UserDispatch);
+      const {data} =  useQuery({
+          queryKey: ["getUserInfo"],
+          queryFn: () => getUserInfo(LoginUser.seq,dispatch)
+        })
+  
+        useEffect(()=>{
+            if (LoginUser.seq > -1){
+                console.log('로그인된유저', LoginUser.seq)
+                console.log('data',data)
+                
+                // const bringUser = (seq:number, me:string) =>{
+                //     axios.get((`https://j8e104.p.ssafy.io/api/accounts/userInfo/${seq}`), 
+                //     )
+                //         .then((res) =>{
+                //             if(me === 'me'){setUserInfo( res.data )}
+                //             else {setCoupleInfo(res.data)}
+    
+                //             if((!coupleInfo) && (userInfo?.coupleUserId)){
+                //                 bringUser(userInfo.coupleUserId, 'you')
+                //             }
+                //         })
+                //         .catch((err)=>{
+                //             console.log('err', err)
+                //         })
+                // }
+                // bringUser(Number(LoginUser.seq), 'me')
+            } 
+        })
+    
 
-export default function MyPage() {
-  const userSeq = useRecoilState(userSeqState);
-  const [userInfo, setUserInfo] = useState<userInfo>();
-  const [coupleInfo, setCoupleInfo] = useState<userInfo>();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (userSeq) {
-      // console.log('로그인된유저', userSeq)
-      // const bringUser = (seq:number, me:string) =>{
-      //     axios.get((`/api/accounts/userInfo/${seq}`))
-      //         .then((res) =>{
-      //             if(me==='me'){setUserInfo( res.data )}
-      //             else {setCoupleInfo(res.data)}
-      //             if((!coupleInfo) && (userInfo?.coupleUserId)){
-      //                 bringUser(userInfo.coupleUserId, 'you')
-      //             }
-      //         })
-      //         .catch((err)=>{
-      //             console.log('err', err)
-      //         })
-      // }
-      // bringUser(Number(userSeq), 'me')
+    function kakaoLogout(){
+        // if (!window.Kakao.isInitialized()){
+        //     window.Kakao.init(process.env.REACT_APP_KAKAO)
+        // }
+        if(window.Kakao.Auth.getAccessToken()){
+            console.log('카카오 엑세스 토큰', window.Kakao.Auth.getAccessToken())
+        }
+        window.Kakao.Auth.logout(()=>{
+            navigate("/")
+        })
+            
     }
-  });
-
-  // l64l1viXs2NeolymgS89Ptyh0kCfP_ZfLNdhhb5uCj1y6gAAAYcHIpJS
-  function deleteCookie() {
-    document.cookie =
-      "authorize-access-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-  }
-  function kakaoLogout() {
+  {/* function kakaoLogout() {
     // if (!window.Kakao.isInitialized()){
     //     window.Kakao.init(process.env.REACT_APP_KAKAO)
-    // }
+    // } */}
     if (window.Kakao.Auth.getAccessToken()) {
       console.log("카카오 엑세스 토큰", window.Kakao.Auth.getAccessToken());
     }
     window.Kakao.Auth.logout(() => {
-      navigate("/");
+      navigate("/")
     });
-  }
   return (
     <div className="h-screen">
       <div className="flex w-screen items-center content-center ">
@@ -114,7 +134,7 @@ export default function MyPage() {
             로그아웃
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
+        </div>
+        </div>
+    )
+  }
