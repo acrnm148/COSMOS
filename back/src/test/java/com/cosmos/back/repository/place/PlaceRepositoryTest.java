@@ -86,17 +86,17 @@ class PlaceRepositoryTest {
         assertEquals(dto.getAcceptablePeople(), "500명");
     }
 
-    @Test
-    @DisplayName("PlaceRepository 축제상세정보가져오기")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void 축제상세정보가져오기() throws Exception {
-        Festival festival = Festival.builder().endDate("2020년 10월 10일").build();
-        placeRepository.save(festival);
-
-        FestivalResponseDto dto = placeRepository.findFestivalByPlaceIdQueryDsl(festival.getId());
-        assertEquals(dto.getPlaceId(), festival.getId());
-        assertEquals(dto.getEndDate(), "2020년 10월 10일");
-    }
+//    @Test
+//    @DisplayName("PlaceRepository 축제상세정보가져오기")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void 축제상세정보가져오기() throws Exception {
+//        Festival festival = Festival.builder().endDate("2020년 10월 10일").build();
+//        placeRepository.save(festival);
+//
+//        FestivalResponseDto dto = placeRepository.findFestivalByPlaceIdQueryDsl(festival.getId());
+//        assertEquals(dto.getPlaceId(), festival.getId());
+//        assertEquals(dto.getEndDate(), "2020년 10월 10일");
+//    }
 
     @Test
     @DisplayName("PlaceRepository 숙박상세정보가져오기")

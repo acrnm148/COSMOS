@@ -18,9 +18,9 @@ spring:
     url: jdbc:mysql://j8e104.p.ssafy.io:3306/cosmos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
     username: root
     password: cosmos1234
-    # url: jdbc:mysql://localhost:3306/cosmos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-    # username: root
-    # password: 1234
+#    url: jdbc:mysql://localhost:3306/cosmos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+#    username: root
+#    password: 1234
     hikari:
       pool-name: jpa-hikari-pool
       maximum-pool-size: 5

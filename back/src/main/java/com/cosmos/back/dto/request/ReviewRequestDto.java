@@ -1,5 +1,6 @@
 package com.cosmos.back.dto.request;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,9 @@ public class ReviewRequestDto {
     private Long userSeq;
     private Long placeId;
     private List<String> categories;
+    private List<String> indiCategories;
     private Integer score;
     private String contents;
+    private Boolean contentsOpen;
+    private Boolean imageOpen;
 }
