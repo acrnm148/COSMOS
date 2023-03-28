@@ -25,4 +25,5 @@ public interface ReviewRepositoryCustom {
     // QueryDsl로 장소별로 커플 및 유저 review 불러오기
     public List<Review> findReviewInPlaceUserCoupleQueryDsl (Long userSeq, Long placeId);
 
+    public Long deleteIndiReviewCategoryQueryDsl(Long reviewId);
 }

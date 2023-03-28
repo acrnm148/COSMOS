@@ -46,6 +46,19 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         return executeReviewCategory;
     }
 
+    //IndiReviewCategory 삭제
+    @Override
+    public Long deleteIndiReviewCategoryQueryDsl(Long reviewId) {
+        QIndiReviewCategory qIndiReviewCategory = QIndiReviewCategory.indiReviewCategory;
+
+        Long executeReviewCategory = queryFactory
+                .delete(qIndiReviewCategory)
+                .where(qIndiReviewCategory.review.id.eq(reviewId))
+                .execute();
+
+        return executeReviewCategory;
+    }
+
     //reviewPlace 삭제
     @Override
     public Long deleteReviewPlaceQueryDsl(Long reviewId) {
@@ -80,6 +93,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReview qReview = QReview.review;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
+        QIndiReviewCategory qIndiReviewCategory = QIndiReviewCategory.indiReviewCategory;
 
         return queryFactory.selectFrom(qReview)
                 .distinct()
@@ -88,6 +102,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .where(qReviewPlace.place.id.eq(placeId))
                 .join(qReviewCategory)
                 .on(qReview.id.eq(qReviewCategory.review.id))
+                .join(qIndiReviewCategory)
+                .on(qReview.id.eq(qIndiReviewCategory.review.id))
                 .fetch();
     }
 
@@ -97,6 +113,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
+        QIndiReviewCategory qIndiReviewCategory = QIndiReviewCategory.indiReviewCategory;
 
         return queryFactory.selectFrom(qReview)
                 .distinct()
@@ -105,6 +122,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .on(qReview.id.eq(qReviewPlace.review.id))
                 .join(qReviewCategory)
                 .on(qReview.id.eq(qReviewCategory.review.id))
+                .join(qIndiReviewCategory)
+                .on(qReview.id.eq(qIndiReviewCategory.review.id))
                 .fetch();
     }
 }

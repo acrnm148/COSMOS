@@ -9,10 +9,7 @@ import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.Place;
 import com.cosmos.back.repository.place.PlaceRepository;
-import com.cosmos.back.repository.review.ReviewAdjectiveRepository;
-import com.cosmos.back.repository.review.ReviewCategoryRepository;
-import com.cosmos.back.repository.review.ReviewNounRepository;
-import com.cosmos.back.repository.review.ReviewRepository;
+import com.cosmos.back.repository.review.*;
 import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +29,7 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewCategoryRepository reviewCategoryRepository;
+    private final IndiReviewCategoryRepository indiReviewCategoryRepository;
     private final PlaceRepository placeRepository;
     private final ReviewPlaceRepository reviewPlaceRepository;
     private final ReviewAdjectiveRepository reviewAdjectiveRepository;
@@ -54,7 +52,7 @@ public class ReviewService {
 
         List<String> urls = s3Service.uploadFiles(multipartFile); // 사진 S3로부터 이미지 받아오기
 
-        Review review = Review.createReview(user, dto.getContents(), dto.getScore(), formatedNow, urls, nickName);
+        Review review = Review.createReview(user, dto.getContents(), dto.getScore(), formatedNow, urls, nickName, dto.getContentsOpen(), dto.getImageOpen());
         Review new_review = reviewRepository.save(review);
 
         ReviewPlace reviewPlace = ReviewPlace.createReviewPlace(review, place);
@@ -67,6 +65,13 @@ public class ReviewService {
             }
         }
 
+        if (dto.getIndiCategories() != null) {
+            for (String category : dto.getIndiCategories()) {
+                IndiReviewCategory indiReviewCategory = IndiReviewCategory.createIndiReviewCategory(category, review);
+                indiReviewCategoryRepository.save(indiReviewCategory);
+            }
+        }
+
         return new_review.getId();
     }
 
@@ -74,15 +79,17 @@ public class ReviewService {
     @Transactional
     @RedisEvict(key = "review")
     public Long deleteReview (Long reviewId, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
-        // 카테고리 삭제(1)
+        // 카테고리 삭제(공통)(1)
         Long executeReviewCategory = reviewRepository.deleteReviewCategoryQueryDsl(reviewId);
-        // 리뷰와 장소 연결 삭제(2)
+        // 카테고리 삭제(개별)(2)
+        Long executeIndiReviewCategory = reviewRepository.deleteIndiReviewCategoryQueryDsl(reviewId);
+        // 리뷰와 장소 연결 삭제(3)
         Long executeReviewPlace = reviewRepository.deleteReviewPlaceQueryDsl(reviewId);
-        // 리뷰 내용 삭제(3)
+        // 리뷰 내용 삭제(4)
         Long executeReview = reviewRepository.deleteReviewQueryDsl(reviewId);
 
         // 모두 삭제한 후 제대로 삭제됬는지 확인
-        Long execute = executeReviewCategory * executeReviewPlace * executeReview;
+        Long execute = executeReviewCategory * executeIndiReviewCategory * executeReviewPlace * executeReview;
 
         // 존재하지 않는 review 일 때 error 처리
         if (execute == 0) {
@@ -108,6 +115,7 @@ public class ReviewService {
                         ReviewResponseDto dto = ReviewResponseDto.builder()
                                 .reviewId(r.getId())
                                 .categories(r.getReviewCategories())
+                                .indiReviewCategories(r.getIndiReviewCategories())
                                 .score(r.getScore())
                                 .contents(r.getContents())
                                 .userId(u.getUserSeq())
@@ -126,6 +134,7 @@ public class ReviewService {
                 ReviewResponseDto dto = ReviewResponseDto.builder()
                         .reviewId(r.getId())
                         .categories(r.getReviewCategories())
+                        .indiReviewCategories(r.getIndiReviewCategories())
                         .score(r.getScore())
                         .contents(r.getContents())
                         .userId(userSeq)
@@ -152,6 +161,7 @@ public class ReviewService {
             ReviewResponseDto dto = ReviewResponseDto.builder()
                     .reviewId(r.getId())
                     .categories(r.getReviewCategories())
+                    .indiReviewCategories(r.getIndiReviewCategories())
                     .score(r.getScore())
                     .contents(r.getContents())
                     .userId(r.getUser().getUserSeq())
@@ -178,6 +188,7 @@ public class ReviewService {
             ReviewUserResponseDto dto = ReviewUserResponseDto.builder()
                     .reviewId(r.getId())
                     .categories(r.getReviewCategories())
+                    .indiReviewCategories(r.getIndiReviewCategories())
                     .score(r.getScore())
                     .contents(r.getContents())
                     .placeId(r.getReviewPlaces().get(0).getPlace().getId())
@@ -198,6 +209,7 @@ public class ReviewService {
         review.setScore(dto.getScore());
 
         List<ReviewCategory> list = reviewCategoryRepository.findAllByReviewId(reviewId);
+        List<IndiReviewCategory> list_indi = indiReviewCategoryRepository.findAllByReviewId(reviewId);
 
         for (ReviewCategory rc : list) {
             reviewCategoryRepository.deleteById(rc.getId());
@@ -206,6 +218,15 @@ public class ReviewService {
         for (String category : dto.getCategories()) {
             ReviewCategory reviewCategory = ReviewCategory.createReviewCategory(category, review);
             reviewCategoryRepository.save(reviewCategory);
+        }
+
+        for (IndiReviewCategory irc : list_indi) {
+            indiReviewCategoryRepository.deleteById(irc.getId());
+        }
+
+        for (String category : dto.getIndiCategories()) {
+            IndiReviewCategory indiReviewCategory = IndiReviewCategory.createIndiReviewCategory(category, review);
+            indiReviewCategoryRepository.save(indiReviewCategory);
         }
 
         return review.getId();
