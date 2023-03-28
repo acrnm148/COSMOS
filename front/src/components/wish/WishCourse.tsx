@@ -1,12 +1,7 @@
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 import { getWishCourseList, deleteWishCourse } from "../../apis/api/wish";
-import {
-    QueryClient,
-    useMutation,
-    useQuery,
-    useQueryClient,
-} from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import { useEffect, useState } from "react";
@@ -83,7 +78,7 @@ function Item(props: { item: Course }) {
                 title: "삭제되었습니다. ",
             });
 
-            // queryClient.invalidateQueries(data);
+            queryClient.invalidateQueries();
         },
         onError: () => {
             Toast.fire({
@@ -185,84 +180,3 @@ function Item(props: { item: Course }) {
         </div>
     );
 }
-
-// let list: any = [
-//     {
-//         id: 0,
-//         courseName: "200일 기념 데이트",
-//         date: "2022-03-21",
-//         subCategory: "flex",
-//         place: [
-//             {
-//                 placeId: 0,
-//                 name: "해운대 우시야",
-//                 thumbNailUrl:
-//                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
-//             },
-//             {
-//                 placeId: 2,
-//                 name: "읍천리",
-//                 thumbNailUrl:
-//                     "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
-//             },
-//             {
-//                 placeId: 5,
-//                 name: "서면 CGV",
-//                 thumbNailUrl:
-//                     "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
-//             },
-//         ],
-//     },
-//     {
-//         id: 1,
-//         courseName: "크리스마스~",
-//         date: "2022-12-25",
-//         subCategory: "flex",
-//         place: [
-//             {
-//                 placeId: 0,
-//                 name: "해운대 우시야",
-//                 thumbNailUrl:
-//                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
-//             },
-//             {
-//                 placeId: 2,
-//                 name: "읍천리",
-//                 thumbNailUrl:
-//                     "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
-//             },
-//             {
-//                 placeId: 5,
-//                 name: "서면 CGV",
-//                 thumbNailUrl:
-//                     "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
-//             },
-//         ],
-//     },
-//     {
-//         id: 3,
-//         courseName: "여수 여행",
-//         date: "2022-12-25",
-//         subCategory: "flex",
-//         place: [
-//             {
-//                 placeId: 0,
-//                 name: "해운대 우시야",
-//                 thumbNailUrl:
-//                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
-//             },
-//             {
-//                 placeId: 2,
-//                 name: "읍천리",
-//                 thumbNailUrl:
-//                     "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
-//             },
-//             {
-//                 placeId: 5,
-//                 name: "서면 CGV",
-//                 thumbNailUrl:
-//                     "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
-//             },
-//         ],
-//     },
-// ];
