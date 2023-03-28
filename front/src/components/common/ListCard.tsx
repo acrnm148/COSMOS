@@ -1,6 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../css/listCard.css";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
-export default function ListCard({ children }: any) {
-  return <div className="card">{children}</div>;
+export default function ListCard({ children, height }: any | boolean) {
+    const [up, setUp] = useState(false);
+    const handleDropBtn = () => {
+        setUp((cur) => !cur);
+        const list = document.querySelector("#listBox") as HTMLElement;
+        if (up) {
+            list.style.marginTop = "0px";
+            height && (list.style.height = "70vh");
+        } else {
+            list.style.marginTop = "-50vh";
+            height && (list.style.height = "120vh");
+        }
+    };
+
+    return (
+        <div className="card">
+            <div
+                className={
+                    "mb-[50px] z-[100000] bg-white relative" +
+                    (height ? " h-[70vh]" : "")
+                }
+                id="listBox"
+            >
+                {up ? (
+                    <ArrowDropDownIcon
+                        fontSize="large"
+                        color="disabled"
+                        onClick={handleDropBtn}
+                        className="cursor-pointer"
+                    />
+                ) : (
+                    <ArrowDropUpIcon
+                        fontSize="large"
+                        color="disabled"
+                        onClick={handleDropBtn}
+                        className="cursor-pointer"
+                    />
+                )}
+                {children}
+            </div>
+        </div>
+    );
 }

@@ -1,47 +1,76 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useRecoilState, useSetRecoilState } from "recoil";
+// import { isLoggedInState,userSeqState, acTokenState, coupleIdState } from "../../recoil/states/UserState";
+import { Navigate, useNavigate } from 'react-router';
+import { useMutation, useQuery } from "react-query";
+import { LUser, userState } from "../../recoil/states/UserState";
+import { invitedCoupleId } from "../../recoil/states/ServeyPageState";
 
 declare const window: typeof globalThis & {
     Kakao: any;
+    document:any;
   };
 export default function KakaoLogin(){
-    useEffect(() => {
-        let params = new URL(document.location.toString()).searchParams;
-        let code = params.get("code");
-        let grant_type = "authorization_code";
-        let client_id = process.env.REACT_APP_KAKAO_CLIENT_ID;
-        axios
-          .post(
-            `https://kauth.kakao.com/oauth/token?grant_type=${grant_type}&client_id=${client_id}&redirect_uri=${process.env.REACT_APP_BASE_URL}&code=${code}`,
-            {
-              headers: {
-                "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-              },
+  const JWT_EXPIRRY_TIME = 24 * 3600 * 1000
+  const navigate = useNavigate();
+  
+  // userState recoil
+  const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
+  
+  // couple매칭으로 들어온 사람은 로그인 후 설문페이지로 이동시킴
+  const [invited, setInvited] = useState(false)
+  const [invitedId, x] = useRecoilState(invitedCoupleId)
+  if(invitedId){
+    setInvited(true)
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  let code: any = params.get('code')
+  useEffect(() => {
+    // console.log('heyhyehey 카카오로그인 들어옴', code)
+    cosmosLogin(code)
+  })
+  function deleteCookie(name:string){
+    console.log('쿠키삭제',)
+    window.document.cookie = 'name='+name+';domain=.kakao.com; expires=Thu,01 Jan 1970 00:00:01 GMT;'
+  }
+    async function cosmosLogin(code:string){
+        axios({
+          url : "https://j8e104.p.ssafy.io/api/accounts/auth/login/kakao",
+          method: 'GET',
+          params: {code},
+          })
+          .then((res:any)=>{
+            // 응답받은 userSeq 저장
+            console.log('야 야 야 야 야 ')
+            const us = res.data.userSeq
+            setLoginUser((user)=>({
+              ...{seq : us, 
+                isLoggedIn : true, 
+                acToken: res.data.accessToken, 
+                coupleId: res.data.coupleId}
+            }))
+
+            console.log('코스모스 로그인 성공', res.data)
+            if (invited){
+              return <Navigate to={"/servey"} />
+            } else{
+              return <Navigate to="/" />
+            }
+          })
+          .catch((err:any) => {
+            console.log('코스모스 로그인 실패', err)
+            // 카카오 로그인 쿠키 지우기
+            console.log('현재쿠키', window.document.cookies)
+            if (window.document.cookies){
+                const rturn = ['_karmtea', '_klawit', '_kawItea','_karmt','_kahai'].map(kakao => deleteCookie(kakao))
+              }
             }
           )
-          .then((res: { data: { access_token: any; }; }) => {
-            console.log(res);
-            window.Kakao.Auth.setAccessToken(res.data.access_token)
-            window.Kakao.API.request({
-              url: "/v2/user/me",
-              success: function (response: any) {
-                console.log(response)
-              },
-              fail: function (error: any) {
-                console.log(error)
-              },
-            })
-            ///////// 우리 서버에 로그인 요청 보내는 부분
-            // api
-            //   .post("/api/user/account/login/kakao", {
-            //     accessToken: res.data.access_token,
-            //   })
-            //   .then((res: any) => {
-            //     console.log(res);
-            //     })
-            })
-          })
-          return(
-              <div>카카오 로그인 완료</div>
-          )
+    }
+  // })
+  return(
+      <div>카카오로그인 코드: {code} </div>
+  )
 }
