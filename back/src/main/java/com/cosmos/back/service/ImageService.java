@@ -45,10 +45,10 @@ public class ImageService {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new NoSuchElementException("no such data"));
         String imageUrl = image.getImageUrl();
         String[] urls = imageUrl.split("/");
-        String fileName = "cosmoss3/" + urls[urls.length - 1];
+        String fileName = urls[urls.length - 1];
         System.out.println("fileName = " + fileName);
         s3Service.deleteFile(fileName);
-        imageRepository.deleteById(imageId);
+//        imageRepository.deleteById(imageId);
     }
 
     // 사진 전체 조회

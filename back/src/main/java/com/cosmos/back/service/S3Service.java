@@ -67,8 +67,10 @@ public class S3Service {
     public void deleteFile(String fileName) {
         DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
         System.out.println("request = " + request);
+        boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, fileName);
+        System.out.println("isObjectExist = " + isObjectExist);
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(region).build();
-        s3.deleteObject(bucket, fileName);
+        s3.deleteObject(request);
     }
 
 }
