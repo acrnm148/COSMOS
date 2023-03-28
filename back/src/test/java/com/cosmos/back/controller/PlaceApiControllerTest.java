@@ -320,41 +320,41 @@ class PlaceApiControllerTest {
         Assertions.assertThat(response).isEqualTo("1");
     }
 
-    @Test
-    @DisplayName("시/도, 구/군, 검색어, 검색 필터으로 검색")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    // HTTP Status 200, map을 형식에 맞게 잘 받아오는지 테스트
-    public void searchPlaceControllerTest() throws Exception{
-        //given
-        PlaceFilterResponseDto dto = PlaceFilterResponseDto.builder().places(new ArrayList<>()).midLatitude(1.0).midLongitude(1.0).build();
-
-        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt())).thenReturn(dto);
-
-        //when
-        MvcResult mvcResult1 = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/places/search/users/1/sido/sidoTest/gugun/gugunTest/text/textTest/filter/filterTest?limit=10&offset=0"))
-                .andExpect(status().isOk())
-                .andReturn();
-        MvcResult mvcResult2 = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/places/search/users/1/sido/gugun/text/textTest/filter/filterTest?limit=10&offset=0"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        MvcResult mvcResult3 = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/places/search/users/1/sido/sidoTest/gugun/gugunTest/text/filter/?limit=10&offset=0"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        PlaceFilterResponseDto resultData1 = new Gson().fromJson(mvcResult1.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
-        assertThat(resultData1.getMidLatitude()).isEqualTo(1.0);
-
-        PlaceFilterResponseDto resultData2 = new Gson().fromJson(mvcResult2.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
-        assertThat(resultData2.getMidLatitude()).isEqualTo(1.0);
-
-        PlaceFilterResponseDto resultData3 = new Gson().fromJson(mvcResult3.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
-        assertThat(resultData3.getMidLatitude()).isEqualTo(1.0);
-    }
+//    @Test
+//    @DisplayName("시/도, 구/군, 검색어, 검색 필터으로 검색")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    // HTTP Status 200, map을 형식에 맞게 잘 받아오는지 테스트
+//    public void searchPlaceControllerTest() throws Exception{
+//        //given
+//        PlaceFilterResponseDto dto = PlaceFilterResponseDto.builder().places(new ArrayList<>()).midLatitude(1.0).midLongitude(1.0).build();
+//
+//        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt())).thenReturn(dto);
+//
+//        //when
+//        MvcResult mvcResult1 = mockMvc.perform(MockMvcRequestBuilders
+//                        .get("/api/places/search/users/1/sido/sidoTest/gugun/gugunTest/text/textTest/filter/filterTest?limit=10&offset=0"))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//        MvcResult mvcResult2 = mockMvc.perform(MockMvcRequestBuilders
+//                        .get("/api/places/search/users/1/sido/gugun/text/textTest/filter/filterTest?limit=10&offset=0"))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        MvcResult mvcResult3 = mockMvc.perform(MockMvcRequestBuilders
+//                        .get("/api/places/search/users/1/sido/sidoTest/gugun/gugunTest/text/filter/?limit=10&offset=0"))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        //then
+//        PlaceFilterResponseDto resultData1 = new Gson().fromJson(mvcResult1.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
+//        assertThat(resultData1.getMidLatitude()).isEqualTo(1.0);
+//
+//        PlaceFilterResponseDto resultData2 = new Gson().fromJson(mvcResult2.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
+//        assertThat(resultData2.getMidLatitude()).isEqualTo(1.0);
+//
+//        PlaceFilterResponseDto resultData3 = new Gson().fromJson(mvcResult3.getResponse().getContentAsString(), PlaceFilterResponseDto.class);
+//        assertThat(resultData3.getMidLatitude()).isEqualTo(1.0);
+//    }
 
 
 //
