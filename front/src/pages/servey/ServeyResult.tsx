@@ -102,6 +102,7 @@ export default function ServeyPage(){
         queryKey: ["makeCouple"],
         queryFn: () => makeCouple(coupleId, user.seq, Number(invite), isInvited)
     });
+
     // A. 커플Id 생성 요청
     const { data } = useQuery({
         queryKey: ["getCoupleId"],
@@ -109,7 +110,7 @@ export default function ServeyPage(){
     });
 
     useEffect(() => {
-        // A. 커플Id를 받은 coupleId초기화
+        // A. 커플Id를 받은 coupleId초기화s
         if (data){
             setCoupleId(data)
         }
@@ -120,7 +121,7 @@ export default function ServeyPage(){
         if (!window.Kakao.isInitialized()){
             window.Kakao.init(process.env.REACT_APP_KAKAO_SHARE_JS_MYE)
         }
-    },[])
+    },[data])
 
     useEffect (() =>{
         if (coupleId){
@@ -204,7 +205,7 @@ export default function ServeyPage(){
                             <button
                                 className="w-full h-10 flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain5 text-darkBackground2"
                             >
-                                {coupleId}
+                                {coupleId ? coupleId : data}
                             </button>
                             <p className="mt-5 mb-2 text-xs">애인에게 코드를 공유하고 코스모스의 커플 서비스를 사용하세요</p>
                             <button

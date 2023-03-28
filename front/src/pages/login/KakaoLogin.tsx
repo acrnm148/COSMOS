@@ -40,13 +40,7 @@ export default function KakaoLogin(){
           .then((res:{data:any})=>{
             // 응답받은 userSeq 저장
             const us = res.data.userSeq
-            setLoginUser((user)=>({
-              ...{seq : us, 
-                isLoggedIn : true, 
-                acToken: res.data.accessToken, 
-                coupleId: res.data.coupleId}
-            }))
-
+            setLoginUser({seq:us, isLoggedIn:true, acToken:res.data.accessToken, coupleId:res.data.coupleId})
             console.log('코스모스 로그인 성공', res)
             if (invited){
               navigate('/servey')

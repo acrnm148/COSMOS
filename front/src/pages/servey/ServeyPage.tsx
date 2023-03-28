@@ -30,21 +30,22 @@ export default function ServeyPage() {
   let coupleId: string
   // 생성된 유저 coupleId recoil에 저장
   const [user, setUser] = useRecoilState(userState)
-  if((param.coupleId) && (param.inviteId)){
-    // 커플매칭을 위해 들어온사람
-    // 1. recoil에 커플매칭 대기상태 표시, 커플Id저장
-    coupleId = param.coupleId
-    setInvitedId(coupleId)
-    setInviteId(param.inviteId)
-    // 2. 로그인 후 설문페이지로 돌아오도록 
-  }
   
   // 설문조사 결과
   useEffect(() => {
-    // 로그인한 상태인지 확인
-    if (loginUser.acToken){
-      setLoggedIn(true)
+    if((param.coupleId) && (param.inviteId)){
+      // 커플매칭을 위해 들어온사람
+      // 1. recoil에 커플매칭 대기상태 표시, 커플Id저장
+      coupleId = param.coupleId
+      setInvitedId(coupleId)
+      setInviteId(param.inviteId)
+      // 2. 로그인 후 설문페이지로 돌아오도록 
     }
+    // 로그인한 상태인지 확인
+    // if (loginUser.acToken){
+    //   setLoggedIn(true)
+    //   console.log(loginUser.acToken)
+    // }
     if (serveyPg === 10) {
       console.log("여기는 10페이지");
       console.log("serveyChoices", serveyChoices); // {1: 'J', 2: 'O', 3: 'Y', 4: 'T', 5: 'E', 6: 'O', 7: 'O', 8: 'Y', 9: 'E'}

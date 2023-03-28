@@ -38,10 +38,8 @@ declare const window: typeof globalThis & {
       //   }
         const {data} =  useQuery({
             queryKey: ["getUserInfo"],
-            // queryFn: () => getUserInfo(LoginUser.seq,dispatch)
-            // ==================카카오로그인 안되어서 임시방편========================
-            queryFn: () => getUserInfo(1, 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2Nzk5MDExNDUsInVzZXJTZXEiOjF9._aO28K6G-fgTliKcNFGvjlImol-Xq0sgIEOWm6GL8S5Fh7-Ja4sG3NPYx0KWUWHTOaAJ7-xK_DR5HE-c85o9hA')
-          })
+            queryFn: () => getUserInfo(LoginUser.seq,dispatch)
+        })
         
         // 유저정보 받아와서 마이페이지에서 표출할 정보로 가공
         // 생성된 유저 coupleId recoil에 저장
@@ -65,11 +63,6 @@ declare const window: typeof globalThis & {
               reviews : data.reviews
             })
             // ==================카카오로그인 안되어서 임시방편========================
-            setUser({...user, 
-                    acToken:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2Nzk5MDExNDUsInVzZXJTZXEiOjF9._aO28K6G-fgTliKcNFGvjlImol-Xq0sgIEOWm6GL8S5Fh7-Ja4sG3NPYx0KWUWHTOaAJ7-xK_DR5HE-c85o9hA',
-                    seq : 1,
-                    coupleId : data.coupleUserId,
-                    })
           }
         },[data])
 
