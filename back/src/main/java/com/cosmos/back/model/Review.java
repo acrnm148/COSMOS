@@ -46,6 +46,14 @@ public class Review {
 
     private String img3; // 이미지 1
 
+    // 리뷰 내용 공개 여부
+    @Column(name = "contents_open")
+    private Boolean contentsOpen;
+
+    // 리뷰 이미지 공개 여부
+    @Column(name = "image_open")
+    private Boolean imageOpen;
+
     // 리뷰 - 유저
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_seq")
@@ -56,9 +64,13 @@ public class Review {
     @OneToMany(mappedBy = "review")
     private List<ReviewPlace> reviewPlaces = new ArrayList<>();
 
-    // 리뷰 - 리뷰 상태
+    // 리뷰 - 리뷰 상태(공통)
     @OneToMany(mappedBy = "review")
     private List<ReviewCategory> reviewCategories = new ArrayList<>();
+
+    // 리뷰 - 리뷰 상태(개별)
+    @OneToMany(mappedBy = "review")
+    private List<IndiReviewCategory> indiReviewCategories = new ArrayList<>();
 
     // 연관관계 메서드
     public void setCreateUser(User user) {
@@ -67,7 +79,7 @@ public class Review {
     }
 
     // 생성 메서드
-    public static Review createReview (User user, String contents, Integer score, String formatedNow, List<String> urls, String nickName) {
+    public static Review createReview (User user, String contents, Integer score, String formatedNow, List<String> urls, String nickName, Boolean contentsOpen, Boolean imageOpen) {
         Review review = new Review();
 
         review.setCreateUser(user);
@@ -75,6 +87,9 @@ public class Review {
         review.setScore(score);
         review.setCreatedTime(formatedNow);
         review.setNickname(nickName);
+        review.setContentsOpen(contentsOpen);
+        review.setImageOpen(imageOpen);
+
         int urlSize = urls.size();
         for (int i = 0 ; i < urlSize; i++) {
             if (i == 0) {
