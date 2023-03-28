@@ -7,8 +7,9 @@ import axios from 'axios';
 import { userState } from '../../recoil/states/UserState';
 import { useQuery } from 'react-query';
 import { UserDispatch } from '../../layouts/MainLayout';
-import { getCoupleId, makeCouple } from '../../apis/api/user';
-import { inviteCoupleId, invitedCoupleId } from '../../recoil/states/ServeyPageState';
+import { getCoupleId, makeCouple, postUserType } from '../../apis/api/user';
+import { invitedUserId, invitedCoupleId } from '../../recoil/states/ServeyPageState';
+import { NavLink } from 'react-router-dom';
 // import { coupleIdState } from '../../recoil/states/UserState';
 
 // 설문조사 결과 이미지
@@ -76,7 +77,7 @@ declare const window: typeof globalThis & {
 export default function ServeyPage(){
     const param = useParams()
     const cateNum = param.cateNum
-    const cate = param.cate
+    const cate = param.cate ? param.cate : 'EAT'
     const firstKeyword = cate != null ? codeName[cate.slice(0,1) as keyof typeof codeName] : ''
     const secondKeyword = cate != null ? codeName[cate.slice(1,2) as keyof typeof codeName] : ''
     const thirdKeyword = cate != null ? codeName[cate.slice(2,3) as keyof typeof codeName] : ''
@@ -85,31 +86,36 @@ export default function ServeyPage(){
     const [user, setUser] = useRecoilState(userState)
     const [coupleId, setCoupleId] = useState<any>()
     // 커플초대로 온 경우 recoil에 담아둔 커플Id 유저정보에 저장
-    const [invited, x] = useRecoilState(invitedCoupleId)
-    const [invite, xx] = useRecoilState(inviteCoupleId)
-    let dispatch = useContext(UserDispatch);
+    const [ivtCoupleId, setIvtCoupleId] = useRecoilState(invitedCoupleId)
+    const [CoupleUserId, setCoupleUserId] = useRecoilState(invitedUserId)
     
     // 커플 요청을 받아서 온 유저인지에 따라서 다른 api 요청
-    const [isInvited, setIsInvited] = useState<number>(2) // 1:true, 2:false, 3:already have number
+    const [isInvited, setIsInvited] = useState<boolean>(ivtCoupleId?true:false) // 커플초대로 온 경우 true: false
 
-    // 커플매칭 요청
-    if (invited){
-        console.log('커플 매칭 요청을 받아 설문을 완료한 사람')
-        setCoupleId(invite)
-        setIsInvited(1)
-    } 
-    useQuery({
-        queryKey: ["makeCouple"],
-        queryFn: () => makeCouple(coupleId, user.seq, Number(invite), isInvited)
-    });
+     // 커플Id 생성 요청
+    const {data} = useQuery(
+        ["getCoupleId"],
+        getCoupleId,
+        {
+            enabled: !coupleId,
+        }
+    )
 
-    // A. 커플Id 생성 요청
-    const { data } = useQuery({
-        queryKey: ["getCoupleId"],
-        queryFn: () => getCoupleId(isInvited)
-    });
+    const type2 = cate?.slice(0,2) + (cate?.slice(-1) === 'Y'? 'T' :'Y')
+    // 유저 설문 유형 전송
+    const types = useQuery({
+        queryKey: ["postUserType"],
+        queryFn: () => postUserType(user.acToken, cate, type2)
+    })
 
-    useEffect(() => {
+    useEffect (() =>{
+        // 커플매칭 요청
+        if (ivtCoupleId){
+            console.log('커플 매칭 요청을 받아 설문을 완료한 사람')
+            setCoupleId(ivtCoupleId)
+            setIsInvited(true)
+        } 
+
         // A. 커플Id를 받은 coupleId초기화s
         if (data){
             setCoupleId(data)
@@ -121,13 +127,48 @@ export default function ServeyPage(){
         if (!window.Kakao.isInitialized()){
             window.Kakao.init(process.env.REACT_APP_KAKAO_SHARE_JS_MYE)
         }
-    },[data])
 
-    useEffect (() =>{
-        if (coupleId){
-            setIsInvited(3)
+    },[data])
+    // const coupleMatched = useQuery(
+    //     ["makeCouple",],
+    //     makeCouple(coupleId, user.seq, Number(invite)),
+    //     {
+    //         enabled: !!isInvited,
+    //     }
+    // )
+    const coupleMatched = useQuery({
+        queryKey: ["makeCouple"],
+        queryFn: () => {
+            isInvited && Number(ivtCoupleId) && makeCouple( Number(CoupleUserId), user.seq, Number(ivtCoupleId))
         }
     })
+    useEffect(()=>{
+        console.log(ivtCoupleId, 'ivtCoupleId')
+        setIvtCoupleId('34912791')
+        setCoupleUserId('1')
+        setIsInvited(true)
+        console.log(CoupleUserId, 'CoupleUserId')
+        // if (isInvited){
+        //     axios.post(`https://j8e104.p.ssafy.io/api/couples/accept/${coupleId}`,{
+        //         headers:{
+        //             Authorization: 'Baerer '+ user.acToken,
+        //             ContentType : 'application/json'
+        //         },
+        //         data: {
+        //             userSeq : user.seq,
+        //             coupleUserSeq : Number(invite)
+        //         }
+        //     }).then((res)=>{
+        //         console.log('커플 매칭 성공', res.data)
+        //     }).catch((err)=>{
+        //         console.log('커플 매칭 실패', err)
+        //     })
+        // }
+
+    },[])
+
+
+
     const shareKakao = () => {
         window.Kakao.Link.sendDefault({
             objectType : 'feed',
@@ -196,25 +237,31 @@ export default function ServeyPage(){
                             </div>
                         </div>
                         {
+                            isInvited?
                             // 커플 초대로 설문을 마친사람
-
+                                <div className="w-full p-2 flex flex-col items-center ">
+                                        <p className="w-full h-10 flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain6 text-darkBackground2 ">
+                                            <NavLink to="/mypage" >커플매칭에 성공했습니다!</NavLink>
+                                        </p>
+                                </div>
                             // 커플Id가 없는사람
-
+                            :
+                            <div className="w-full p-2 flex flex-col items-center text-sm ">
+                                <button
+                                    className="w-full h-10 flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain5 text-darkBackground2"
+                                >
+                                    {coupleId ? coupleId : data}
+                                </button>
+                                <p className="mt-5 mb-2 text-xs">애인에게 코드를 공유하고 코스모스의 커플 서비스를 사용하세요</p>
+                                <button
+                                    onClick={shareKakao}
+                                    className="cursor-pointer w-full flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain6 text-darkBackground2"
+                                >
+                                    카카오톡 공유하기
+                                </button>
+                            </div>
                         }
-                        <div className="w-full p-2 flex flex-col items-center text-sm ">
-                            <button
-                                className="w-full h-10 flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain5 text-darkBackground2"
-                            >
-                                {coupleId ? coupleId : data}
-                            </button>
-                            <p className="mt-5 mb-2 text-xs">애인에게 코드를 공유하고 코스모스의 커플 서비스를 사용하세요</p>
-                            <button
-                                onClick={shareKakao}
-                                className="cursor-pointer w-full flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain6 text-darkBackground2"
-                            >
-                                카카오톡 공유하기
-                            </button>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

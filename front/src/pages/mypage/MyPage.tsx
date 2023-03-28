@@ -44,10 +44,9 @@ declare const window: typeof globalThis & {
         // 유저정보 받아와서 마이페이지에서 표출할 정보로 가공
         // 생성된 유저 coupleId recoil에 저장
         const [user, setUser] = useRecoilState(userState)
-        console.log('recoil의 유저정보', user)
         useEffect(()=>{
           if(data){
-            console.log('유저정보', data)
+            console.log('유저', data)
             setUserInfo({
               userId : data.userId,
               userName : data.userName,
@@ -62,20 +61,11 @@ declare const window: typeof globalThis & {
               coupleUserId : data.coupleUserId,
               reviews : data.reviews
             })
-            // ==================카카오로그인 안되어서 임시방편========================
           }
         },[data])
 
     
 
-  function kakaoLogout() {
-    // ac 지우기
-    setLoginUser({...LoginUser, isLoggedIn:false, acToken:''})
-    console.log('로그아웃 되었습니다')
-    // window.Kakao.Auth.logout(() => {
-      navigate("/")
-    // });
-  }
 
 
   return (
@@ -87,9 +77,9 @@ declare const window: typeof globalThis & {
             <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
           </div>
             <div className="flex text-lightMain items-end m-3">
-              <div className="w-10 h-px bg-lightMain"></div>
-              {userInfo?.coupleYn &&
+              {userInfo?.coupleYn === 'Y' &&
                 <>
+                <div className="w-10 h-px bg-lightMain"></div>
                   <p className="text-sm">n일째 코스모스중</p>
                   <div className="w-10 h-px bg-lightMain"></div>
                   <div className="rounded-full bg-lightMain w-12 h-12"></div>
@@ -97,24 +87,31 @@ declare const window: typeof globalThis & {
               }
             </div>
           </div>
-          <div className="dateCategory w-full flex flex-col ">
-            <div className="dateCategory w-full h-60 bg-lightMain3 p-2">
-              {" "}
-              1순위 : {userInfo?.type1}
+          {userInfo?.coupleYn === 'Y' ?
+            <div className="dateCategory w-full flex flex-col ">
+              <div className="dateCategory w-full h-60 bg-lightMain3 p-2">
+                {" "}
+                1순위 : {userInfo?.type1}
+              </div>
+              <div className="h-20 bg-lightMain4 flex justify-center items-center">
+                2순위 : {userInfo?.type2}형 코스모스
+              </div>
+              <div className="h-20 w-full border-solid border-2 border-lightMain4  flex justify-center items-center">
+                <NavLink to="/servey" >취향설문 다시하기</NavLink>
+              </div>
             </div>
-            <div className="h-20 bg-lightMain4 flex justify-center items-center">
-              2순위 : {userInfo?.type2}형 코스모스
+            :
+            <div className="dateCategory w-full h-60 flex flex-col justify-center items-center">
+                <NavLink to="/servey" >
+                  <div className=" text-xl text-white bg-lightMain2 px-8 py-4 rounded-lg">데이트 취향 알아보기</div>
+                </NavLink>
             </div>
-            <div className="h-20 w-full border-solid border-2 border-lightMain4  flex justify-center items-center">
-              <NavLink to="/servey" >취향설문 다시하기</NavLink>
-            </div>
-          </div>
-          <div
-            onClick={kakaoLogout}
+          }
+          {/* <div
             className="cursor-pointer bg-lightMain p-10 text-white"
           >
             로그아웃
-          </div>
+          </div> */}
           <div className="recent w-full m-2">
             <div className="ml-4 mr-4 text-lightMain2 font-bold">
               최근 본 내역

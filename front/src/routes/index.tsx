@@ -2,7 +2,6 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 
-import Reco from "../pages/servey/Recoreconi";
 import Home from "../pages/home/Home";
 import NotFound from "../components/common/NotFound";
 import Servey from "../pages/servey/ServeyPage";
