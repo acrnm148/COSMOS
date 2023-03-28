@@ -61,6 +61,25 @@ class PlaceServiceTest {
     private PlanRepository planRepository;
 
     @Test
+    @DisplayName("찜한 장소 조회하기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void findLikePlacesTest() throws Exception {
+        //given
+        List<PlaceListResponseDto> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            list.add(PlaceListResponseDto.builder().build());
+        }
+        when(userPlaceRepository.findLikePlaces(anyLong(), anyInt(), anyInt())).thenReturn(list);
+
+        //when
+        List<PlaceListResponseDto> likePlaces = placeService.findLikePlaces(1L, 10, 0);
+
+        //then
+        assertThat(likePlaces.size()).isEqualTo(5);
+
+    }
+
+    @Test
     @DisplayName("시/도 리스트 받아오기")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void listSidoServiceTest() throws Exception {

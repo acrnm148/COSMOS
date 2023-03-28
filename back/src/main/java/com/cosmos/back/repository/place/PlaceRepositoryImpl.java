@@ -355,61 +355,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetchOne();
     }
 
-    // QueryDsl로 장소 리스트 가져오기 with Pagination
-    @Override
-    public List<PlaceListResponseDto> findPlaceListByNameQueryDsl(String name, Integer limit, Integer offset) {
-        QPlace qPlace = QPlace.place;
-        QReview qReview = QReview.review;
-        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
-
-        return queryFactory.select(Projections.constructor(PlaceListResponseDto.class,
-                    qPlace.id,
-                    qPlace.name,
-                    qPlace.address,
-                    qReview.score.avg(),
-                    qPlace.thumbNailUrl,
-                    qPlace.detail
-                ))
-                .from(qPlace)
-                .leftJoin(qReviewPlace)
-                .on(qPlace.id.eq(qReviewPlace.place.id))
-                .leftJoin(qReview)
-                .fetchJoin()
-                .on(qReviewPlace.review.id.eq(qReview.id))
-                .where(qPlace.name.contains(name))
-                .groupBy(qPlace.id)
-                .limit(limit)
-                .offset(offset)
-                .fetch();
-    }
-
-    // QueryDsl로 장소 리스트 가져오기(시도구군) with Pagination
-    @Override
-    public List<PlaceListResponseDto> findPlaceListBySidoGugunQueryDsl(String sido, String gugun, Integer limit, Integer offset) {
-        QPlace qPlace = QPlace.place;
-        QReview qReview = QReview.review;
-        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
-
-        return queryFactory.select(Projections.constructor(PlaceListResponseDto.class,
-                        qPlace.id,
-                        qPlace.name,
-                        qPlace.address,
-                        qReview.score.avg(),
-                        qPlace.thumbNailUrl,
-                        qPlace.detail
-                ))
-                .from(qPlace)
-                .leftJoin(qReviewPlace)
-                .on(qPlace.id.eq(qReviewPlace.place.id))
-                .leftJoin(qReview)
-                .fetchJoin()
-                .on(qReviewPlace.review.id.eq(qReview.id))
-                .where(qPlace.address.contains(sido).and(qPlace.address.contains(gugun)))
-                .groupBy(qPlace.id)
-                .limit(limit)
-                .offset(offset)
-                .fetch();
-    }
 
     // 장소 찜 확인하기
     @Override
@@ -438,7 +383,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         QPlace qPlace = QPlace.place;
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
-        QUserPlace qUserPlace = QUserPlace.userPlace;
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -472,9 +416,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .on(qReviewPlace.review.id.eq(qPlace.id))
                 .leftJoin(qReview)
                 .on(qReview.id.eq(qReviewPlace.review.id))
-                .fetchJoin()
-                .leftJoin(qUserPlace)
-                .on(qPlace.id.eq(qUserPlace.place.id))
                 .fetchJoin()
                 .where(builder)
                 .groupBy(qPlace.id)

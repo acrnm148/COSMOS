@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,21 +22,21 @@ public class ImageApiController {
 
     private final ImageService imageService;
 
-    @Operation(summary = "사진 등록", description = "사진을 등록함")
+    @Operation(summary = "사진 등록", description = "S3서버에 사진을 등록하고 Url 반환, 다중 파일 등록 가능, MultipartForm으로 보낼 것")
     @PostMapping("/pictures/{coupleId}")
-    public ResponseEntity<?> createImage(@RequestBody ImageRequestDto dto, @PathVariable Long coupleId) {
-        imageService.createImage(dto, coupleId);
+    public ResponseEntity<?> createImage(@RequestPart("file")List<MultipartFile> multipartFile, @PathVariable Long coupleId) {
+        imageService.createImage(multipartFile, coupleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "사진 삭제", description = "사진을 삭제함")
+    @Operation(summary = "사진 삭제", description = "ImageId와 CoupleId를 Url 상으로 입력 필요")
     @DeleteMapping("/pictures/{imageId}/{coupleId}")
     public ResponseEntity<?> deleteImage(@PathVariable("imageId") Long imageId, @PathVariable("coupleId") Long coupleId) {
         imageService.deleteImage(imageId, coupleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "사진 전체 조회", description = "사진 전체를 조회함")
+    @Operation(summary = "사진 전체 조회", description = "coupleId Url 입력 시 해당 커플 사진 전체 조회가능")
     @GetMapping("/pictures/{coupleId}")
     public ResponseEntity<List> findTotalImage(@PathVariable Long coupleId) {
         List<ImageResponseDto> totalImage = imageService.findTotalImage(coupleId);

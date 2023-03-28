@@ -3,7 +3,14 @@ package com.cosmos.back.repository.place;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.config.TestConfig;
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.Review;
+import com.cosmos.back.model.ReviewPlace;
+import com.cosmos.back.model.User;
+import com.cosmos.back.model.UserPlace;
 import com.cosmos.back.model.place.*;
+import com.cosmos.back.repository.review.ReviewRepository;
+import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +32,18 @@ class PlaceRepositoryTest {
 
     @Autowired
     private PlaceRepository placeRepository;
+
+    @Autowired
+    private UserPlaceRepository userPlaceRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ReviewPlaceRepository reviewPlaceRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Test
     @DisplayName("PlaceRepository 쇼핑상세정보가져오기")
@@ -90,12 +111,12 @@ class PlaceRepositoryTest {
     @DisplayName("PlaceRepository 축제상세정보가져오기")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 축제상세정보가져오기() throws Exception {
-        Festival festival = Festival.builder().endDate("2020년 10월 10일").build();
+        Festival festival = Festival.builder().startDate("20230328").endDate("20201010").build();
         placeRepository.save(festival);
 
         FestivalResponseDto dto = placeRepository.findFestivalByPlaceIdQueryDsl(festival.getId());
         assertEquals(dto.getPlaceId(), festival.getId());
-        assertEquals(dto.getEndDate(), "2020년 10월 10일");
+        assertEquals(dto.getEndDate(), "20201010");
     }
 
     @Test
@@ -121,4 +142,44 @@ class PlaceRepositoryTest {
         assertEquals(dto.getPlaceId(), tour.getId());
         assertEquals(dto.getInsideYn(), "실외");
     }
+
+//    @Test
+//    @DisplayName("PlaceRepository 장소 찜 확인하기")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void findPlaceLikeByPlaceIdUserSeqQueryDslTest() throws Exception {
+//        //given
+//        User user = User.builder().userSeq(1L).userName("testUser").build();
+//        userRepository.save(user);
+//        Place place = Place.builder().id(1L).name("testPlace").build();
+//        placeRepository.save(place);
+//        UserPlace userPlace = UserPlace.builder().place(place).user(user).build();
+//        userPlaceRepository.save(userPlace);
+//
+//        //when
+//        boolean like = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(1L, 1L);
+//        boolean unLike = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(2L, 2L);
+//
+//        //then
+//        assertEquals(like, true);
+//        assertEquals(unLike, false);
+//    }
+//
+//    @Test
+//    @DisplayName("PlaceRepository 시/도, 구/군, 검색어, 검색필터를 통한 장소 검색")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void findPlaceListBySidoGugunTextFilterQueryDslTest() throws Exception {
+//        //given
+//        Place place = Place.builder().id(1L).address("부산광역시 강서구").name("갈비").type("restaurant").build();
+//
+//        Review review = Review.builder().id(1L).score(5).build();
+//        ReviewPlace.builder().place(place).review(review).build();
+//
+//        //when
+//        List<PlaceSearchListResponseDto> test1 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", "갈비", "restaurant", 10, 0);
+//
+//        //then
+//        System.out.println("test1 = " + test1);
+////        assertEquals(test1.get(0).getPlaceId(), 1L);
+//
+//    }
 }
