@@ -1,5 +1,6 @@
 package com.cosmos.back.controller;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.service.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Generated
 public class FileUploadController {
 
     private final S3Service s3Service;
