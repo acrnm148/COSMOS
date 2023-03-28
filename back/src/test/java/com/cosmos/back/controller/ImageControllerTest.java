@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -40,9 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableMockMvc
 public class ImageControllerTest {
 
-    @Value ("${file.path}")
-    private String rootUrl;
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -51,30 +50,27 @@ public class ImageControllerTest {
 
     @MockBean
     private ImageService imageService;
-//
-//    @Test
-//    @DisplayName("사진 등록하기")
-//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-//    public void createImageTest() throws Exception {
-//        System.out.println(rootUrl+"test.PNG");
-//
-//
-////        ClassPathResource resource = new ClassPathResource("/static/test.PNG");
-////        FileInputStream fileI = new FileInputStream("static/test.PNG");
-////        System.out.println("fileI = " + fileI);
-//
-//
-//        //give
-//        doNothing().when(imageService).createImage(anyList(), anyLong());
-//        MockMultipartFile file = new MockMultipartFile("file",
-//                "test.PNG",
-//                "image/png",
-//                new FileInputStream(rootUrl+"test.PNG"));
-//
-//        //when
-//        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.multipart("/api/pictures/1").file(file));
-//
-//        //then
-//        resultActions.andExpect(status().isOk());
-//    }
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    @Test
+    @DisplayName("사진 등록하기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void createImageTest() throws Exception {
+        Resource resource = resourceLoader.getResource("classpath:/static/test.PNG");
+
+        //give
+        doNothing().when(imageService).createImage(anyList(), anyLong());
+        MockMultipartFile file = new MockMultipartFile("file",
+                "test.PNG",
+                "image/png",
+                new FileInputStream(resource.getURI().getPath()));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.multipart("/api/pictures/1").file(file));
+
+        //then
+        resultActions.andExpect(status().isOk());
+    }
 }
