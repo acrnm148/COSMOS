@@ -11,9 +11,11 @@ import com.cosmos.back.repository.image.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,22 +23,31 @@ import java.util.List;
 public class ImageService {
 
     private final ImageRepository imageRepository;
+    private final S3Service s3Service;
 
     // 사진 생성
     @Transactional
     @RedisEvict(key = "image")
-    public void createImage(ImageRequestDto dto, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
-        String imageUrl = dto.getImageUrl();
+    public void createImage(List<MultipartFile> multipartFile, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
+        List<String> imageUrls = s3Service.uploadFiles(multipartFile);
 
-        Image image = Image.createImage(imageUrl, coupleId);
-        System.out.println(image);
-        imageRepository.save(image);
+        for (String imageUrl:imageUrls) {
+            Image image = Image.createImage(imageUrl, coupleId);
+            imageRepository.save(image);
+        }
+        System.out.println("imageUrls = " + imageUrls);
     }
 
     // 사진 삭제
     @Transactional
     @RedisEvict(key = "image")
     public void deleteImage(Long imageId, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
+        Image image = imageRepository.findById(imageId).orElseThrow(() -> new NoSuchElementException("no such data"));
+        String imageUrl = image.getImageUrl();
+        String[] urls = imageUrl.split("/");
+        String fileName = "cosmoss3/" + urls[urls.length - 1];
+        System.out.println("fileName = " + fileName);
+        s3Service.deleteFile(fileName);
         imageRepository.deleteById(imageId);
     }
 

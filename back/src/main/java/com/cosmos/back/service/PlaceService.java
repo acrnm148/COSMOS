@@ -21,10 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +33,19 @@ public class PlaceService {
     private final UserPlaceRepository userPlaceRepository;
     private final SidoRepository sidoRepository;
     private final GugunRepository gugunRepository;
-    private final PlanRepository planRepository;
+
+    // 찜한 장소 조회하기
+    public List<PlaceListResponseDto> findLikePlaces (Long userSeq, Integer limit, Integer offset) {
+        List<PlaceListResponseDto> dto = userPlaceRepository.findLikePlaces(userSeq, limit, offset);
+        return dto;
+    }
 
 
     // 장소 찜하기
     @Transactional
     public Map<String, Long> likePlace (Long placeId, Long userSeq) {
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new NoSuchElementException("no such data"));
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new NoSuchElementException("no such data"));
 
         UserPlace userPlace = UserPlace.createUserPlace(user, place);
 

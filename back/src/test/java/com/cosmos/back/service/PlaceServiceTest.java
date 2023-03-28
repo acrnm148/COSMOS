@@ -3,6 +3,7 @@ package com.cosmos.back.service;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.GugunDto;
 import com.cosmos.back.dto.response.place.*;
+import com.cosmos.back.model.Plan;
 import com.cosmos.back.model.User;
 import com.cosmos.back.model.UserPlace;
 import com.cosmos.back.model.place.Gugun;
@@ -12,6 +13,7 @@ import com.cosmos.back.repository.place.GugunRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.place.SidoRepository;
 import com.cosmos.back.repository.place.UserPlaceRepository;
+import com.cosmos.back.repository.plan.PlanRepository;
 import com.cosmos.back.repository.user.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -24,11 +26,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +37,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @EnableMockMvc
 @SpringBootTest
+@Transactional
 class PlaceServiceTest {
 
     @MockBean
@@ -56,6 +57,27 @@ class PlaceServiceTest {
 
     @Autowired
     private PlaceService placeService;
+    @Autowired
+    private PlanRepository planRepository;
+
+    @Test
+    @DisplayName("찜한 장소 조회하기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void findLikePlacesTest() throws Exception {
+        //given
+        List<PlaceListResponseDto> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            list.add(PlaceListResponseDto.builder().build());
+        }
+        when(userPlaceRepository.findLikePlaces(anyLong(), anyInt(), anyInt())).thenReturn(list);
+
+        //when
+        List<PlaceListResponseDto> likePlaces = placeService.findLikePlaces(1L, 10, 0);
+
+        //then
+        assertThat(likePlaces.size()).isEqualTo(5);
+
+    }
 
     @Test
     @DisplayName("시/도 리스트 받아오기")
@@ -89,8 +111,6 @@ class PlaceServiceTest {
         //when
         List<GugunDto> gugunDtoList = placeService.listGugun(1);
 
-        System.out.println("list = " + list);
-        System.out.println("gugunDtoList = " + gugunDtoList);
         //then
         assertThat(gugunDtoList.size()).isEqualTo(5);
     }
@@ -122,8 +142,11 @@ class PlaceServiceTest {
         User user = User.builder().userPlaces(new ArrayList<>()).userName("user").build();
         userRepository.save(user);
 
-        when(placeRepository.findById(anyLong())).thenReturn(Optional.of(place));
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(placeRepository.findById(1L))
+                .thenReturn(Optional.of(place));
+
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.of(user));
 
         //when
         Map<String, Long> map = placeService.likePlace(1L, 1L);
@@ -131,6 +154,13 @@ class PlaceServiceTest {
         //then
         assertEquals(map.get("user"), user.getUserSeq());
         assertEquals(map.get("place"), place.getId());
+//        try {
+//            placeRepository.findById(null);
+//        } catch (Exception e) {
+//            System.out.println("e = " + e);
+//            String message = e.getMessage();
+//            System.out.println("message = " + message);
+//        }
     }
 
     @Test
@@ -154,23 +184,47 @@ class PlaceServiceTest {
     @DisplayName("장소 검색(시/도, 구/군, 검색어, 검색필터)")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void searchPlacesBySidoGugunTextFilterTest() throws Exception {
-//        //given
-//        List<PlaceSearchListResponseDto> list = new ArrayList<>();
-//        for (int i = 0; i < 5; i ++) {
-////            list.add(PlaceSearchListResponseDto.builder().placeId(new Long(i)).latitude().build());
-//        }
-//
-//        when(placeRepository
-//                .findPlaceListBySidoGugunTextFilterQueryDsl(anyLong(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
-//                .thenReturn(list);
-//        when(placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(anyLong(), anyLong()))
-//                .thenReturn(true)
-//                .thenReturn(false);
-//
-//        //when
-//        placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
-//
-//        //then
+        //given
+        List<PlaceSearchListResponseDto> list = new ArrayList<>();
+        for (int i = 0; i < 5; i ++) {
+            list.add(PlaceSearchListResponseDto.builder().placeId(new Long(i)).latitude("1").longitude("1").build());
+        }
+        List<PlaceSearchListResponseDto> listLatLongEmpty = new ArrayList<>();
+        for (int i = 0; i < 5; i ++) {
+            listLatLongEmpty.add(PlaceSearchListResponseDto.builder().placeId(new Long(i)).build());
+        }
+
+        when(placeRepository
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", "text", "filter", 10, 0))
+                .thenReturn(list)
+                .thenReturn(listLatLongEmpty);
+        when(placeRepository
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "text", "filter", 10, 0))
+                .thenReturn(list)
+                .thenReturn(listLatLongEmpty);
+        when(placeRepository
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", null, null, 10, 0))
+                .thenReturn(list)
+                .thenReturn(listLatLongEmpty);
+        when(placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(anyLong(), anyLong()))
+                .thenReturn(true)
+                .thenReturn(false);
+
+        //when
+        PlaceFilterResponseDto placeFilterResponseDto = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto1 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto2 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto3 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter", 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto4 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null, 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto5 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null, 10, 0);
+
+        //then
+        assertEquals(placeFilterResponseDto.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto1.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto2.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto3.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto4.getPlaces().size(), 5);
+        assertEquals(placeFilterResponseDto5.getPlaces().size(), 5);
 
     }
 

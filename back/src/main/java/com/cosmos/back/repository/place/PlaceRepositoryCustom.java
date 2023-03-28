@@ -32,12 +32,6 @@ public interface PlaceRepositoryCustom {
     // QueryDsl로 문화시설 상세 정보 받아오기
     public CultureResponseDto findCultureByPlaceIdQueryDsl(Long placeId);
 
-    // QueryDsl로 장소 리스트 가져오기 with Pagination
-    public List<PlaceListResponseDto> findPlaceListByNameQueryDsl(String name, Integer limit, Integer offset);
-
-    // QueryDsl로 장소 리스트 가져오기(시도구군) with Pagination
-    public List<PlaceListResponseDto> findPlaceListBySidoGugunQueryDsl(String sido, String gugun, Integer limit, Integer offset);
-
     // QueryDsl로 장소 리스트 가져오기(시/도, 구/군, 검색어, 검색필터) with Pagination
     public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset);
 

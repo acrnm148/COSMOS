@@ -1,6 +1,7 @@
 package com.cosmos.back.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +57,12 @@ public class S3Service {
         String changedFileName = uuid.toString() +"."+ext;
 
         return changedFileName;
+    }
+
+    public void deleteFile(String fileName) {
+        DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
+        System.out.println("request = " + request);
+        amazonS3Client.deleteObject(request);
     }
 
 }

@@ -26,6 +26,13 @@ public class PlaceApiController {
 
     private final PlaceService placeService;
 
+    @Operation(summary = "찜한 장소 보기", description = "찜한 장소 조회")
+    @GetMapping("/places/users/{userSeq}")
+    public ResponseEntity<List> findLikePlaces(@PathVariable Long userSeq, @RequestParam Integer limit, @RequestParam Integer offset) {
+        List<PlaceListResponseDto> likePlaces = placeService.findLikePlaces(userSeq, limit, offset);
+        return new ResponseEntity<>(likePlaces, HttpStatus.OK);
+    }
+
     @Operation(summary = "장소 찜하기", description = "장소를 찜 함")
     @GetMapping("/places/{placeId}/users/{userSeq}")
     public ResponseEntity<Long> likePlace(@PathVariable Long placeId, @PathVariable Long userSeq) {
