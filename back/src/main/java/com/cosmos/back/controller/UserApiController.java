@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 @Tag(name = "user", description = "유저 API")
@@ -123,13 +124,17 @@ public class UserApiController {
     public Map<String,String> KakaoLogin(@RequestParam("code") String code,
                                          HttpServletRequest request) {
 
-        //String redirect_uri = String.valueOf(request.getRequestURL());
-        //System.out.println("redirect_url:"+redirect_uri);
-
         //access 토큰 받기
         KakaoToken oauthToken = kakaoService.getAccessToken(code);
         //사용자 정보받기 및 회원가입
         User saveUser = kakaoService.saveUser(oauthToken.getAccess_token());
+        if (saveUser == null) {
+                Map<String, String> map = new HashMap<>();
+                map.put("code", "400");
+                map.put("message", "카카오 프로필 정보가 없습니다.");
+                return map;
+        }
+
         //jwt토큰 Redis에 저장
         JwtToken jwtTokenDTO = jwtService.getJwtToken(saveUser.getUserSeq());
 
