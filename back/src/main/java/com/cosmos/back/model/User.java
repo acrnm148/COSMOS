@@ -1,14 +1,19 @@
 package com.cosmos.back.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import com.cosmos.back.dto.request.NotificationRequestDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Setter;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "user")

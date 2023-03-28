@@ -15,12 +15,12 @@ import Login from "../pages/login/Login";
 import Landing from "../pages/landing/LandingPage";
 import PlaceRecommend from "../pages/place/PlaceRecommend";
 import MyPage from "../pages/mypage/MyPage";
-import { MonthSchedulePage } from "../pages/schedule/MonthSchedulePage";
-import { DaySchedulePage } from "../pages/schedule/DaySchedulePage";
-import { CreateSchedulePage } from "../pages/schedule/CreateSchedulePage";
-import { ScheduleDetail } from "../pages/schedule/ScheduleDetail";
-import { ScheduleReview } from "../pages/schedule/ScheduleReview";
-import { GalleryPage } from "../pages/schedule/GalleryPage";
+import { MonthSchedulePage } from "../pages/schedule/MonthSchedulePage"
+import { DaySchedulePage } from "../pages/schedule/DaySchedulePage"
+import { CreateSchedulePage } from "../pages/schedule/CreateSchedulePage"
+import { ScheduleDetail } from "../pages/schedule/ScheduleDetail"
+import { ScheduleReview } from "../pages/schedule/ScheduleReview"
+import { GalleryPage } from "../pages/schedule/GalleryPage"
 import ScheduleLayout from "../layouts/ScheduleLayout";
 import WishList from "../pages/wish/WishList";
 import PlaceResult from "../pages/place/PlaceResult";

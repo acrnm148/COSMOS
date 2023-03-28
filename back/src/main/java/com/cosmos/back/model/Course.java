@@ -1,7 +1,12 @@
 package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 
@@ -30,11 +35,11 @@ public class Course {
     @Column(name = "date")
     private String date; // 코스 날짜
 
-    @Column(name = "sub_category")
-    private String subCategory; // 소분류
-
     @Column(name = "orders")
     private Integer orders; // 순서
+
+    @Column(name = "wish")
+    private Boolean wish; // 찜
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_seq")
@@ -42,9 +47,9 @@ public class Course {
     private User user; // 유저
 
     // 데이트 코스 - 일정
-    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "plan_id") //외래키, 주인은 course
+    @JsonIgnore
     private Plan plan;
 
     // 데이트 코스 - (데이트 코스 - 장소)
@@ -60,16 +65,16 @@ public class Course {
 
 
     // 생성 메서드
-    public static Course createCourse (User user, String name, String date, String subCategory) {
+    public static Course createCourse (User user) {
         Course course = new Course();
 
         course.setUser(user);
 
         course.setPlan(null);
-        course.setName(name);
-        course.setDate(date);
-        course.setSubCategory(subCategory);
+        course.setName(null);
+        course.setDate(null);
         course.setOrders(0);
+        course.setWish(false);
 
         return course;
     }

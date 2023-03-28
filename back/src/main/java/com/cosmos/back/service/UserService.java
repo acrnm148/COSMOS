@@ -3,9 +3,11 @@ package com.cosmos.back.service;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.user.UserProfileDto;
 import com.cosmos.back.dto.user.UserUpdateDto;
+import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +25,11 @@ import java.util.Random;
 @Transactional(readOnly = true)
 public class UserService {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final StringRedisTemplate redisTemplate;
+    private final NotificationService notificationService;
 
     /**
      * 유저 정보 조회
@@ -50,6 +54,7 @@ public class UserService {
                     .role("USER")
                     .type1(user.getType1())
                     .type2(user.getType2())
+                    .coupleId(user.getCoupleId())
                     .coupleUserId(user.getCoupleId())
                     .createTime(LocalDateTime.now())
                     .build();
@@ -118,7 +123,6 @@ public class UserService {
             System.out.println("이미 커플인 유저입니다.");
             return null;
         }
-        //Long coupleId = makeCoupleId(); //난수 생성
 
         user.setCoupleId(code);
         coupleUser.setCoupleId(code);
@@ -130,6 +134,9 @@ public class UserService {
         System.out.println("user: "+user);
         System.out.println("coupleUser: "+coupleUser);
         System.out.println("커플 연결 수락, 커플아이디:"+code);
+
+        // 알림 전송
+        notificationService.send(userSeq, NotificationType.MESSAGE, "커플 요청이 수락되었습니다.", "");
 
         return code;
     }

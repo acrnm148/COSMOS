@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notification Test Page</title>
+</head>
+<body>
+<button type="button" onclick="login()">1번 유저로 로그인(sse 연결)</button>
+<p id="num"></p>
+</body>
+</html>
+<script type="text/javaScript">
+    function login() {
+        let subscribeUrl = "http://localhost:8081";
+        const eventSource = new EventSource(subscribeUrl+`/api/noti/subscribe/1`);
+        eventSource.addEventListener("sse", function (event) {
+
+            let message = event.data;
+            alert(message);
+            console.log(message);
+        })
+    }
+</script>

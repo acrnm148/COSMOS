@@ -1,15 +1,17 @@
 package com.cosmos.back.repository.place;
 
+import com.cosmos.back.dto.SimplePlaceDto;
 import com.cosmos.back.dto.response.place.*;
-import com.cosmos.back.model.QReview;
-import com.cosmos.back.model.QReviewPlace;
+import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public TourResponseDto findTourByPlaceIdQueryDsl(Long placeId) {
         QTour qTour = QTour.tour;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
 
         return queryFactory.select(Projections.constructor(TourResponseDto.class,
                     qTour.id,
@@ -44,9 +48,15 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qTour.introduce,
                     qTour.insideYn,
                     qTour.dayOff,
-                    qTour.program
+                    qTour.program,
+                    qReview.score.avg()
                 ))
                 .from(qTour)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.place.id.eq(qTour.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
                 .where(qTour.id.eq(placeId))
                 .fetchOne();
     }
@@ -55,6 +65,8 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public FestivalResponseDto findFestivalByPlaceIdQueryDsl(Long placeId) {
         QFestival qFestival = QFestival.festival;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
 
         return queryFactory.select(Projections.constructor(FestivalResponseDto.class,
                         qFestival.id,
@@ -76,10 +88,16 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         qFestival.startDate,
                         qFestival.endDate,
                         qFestival.price,
-                        qFestival.takenTime
+                        qFestival.takenTime,
+                        qReview.score.avg()
                 ))
                 .from(qFestival)
-                .where(qFestival.id.eq(placeId))
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.place.id.eq(qFestival.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
+                .where(qFestival.id.eq(placeId).and(qFestival.startDate.gt("20230322")))
                 .fetchOne();
     }
 
@@ -87,6 +105,9 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public AccommodationResponseDto findAccommodationByPlaceIdQueryDsl(Long placeId) {
         QAccommodation qAccommodation = QAccommodation.accommodation;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
+
         return queryFactory.select(Projections.constructor(AccommodationResponseDto.class,
                 qAccommodation.id,
                 qAccommodation.type,
@@ -114,9 +135,15 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 qAccommodation.karaokeYn,
                 qAccommodation.bbqYn,
                 qAccommodation.gymYn,
-                qAccommodation.refund
+                qAccommodation.refund,
+                qReview.score.avg()
                 ))
                 .from(qAccommodation)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.place.id.eq(qAccommodation.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
                 .where(qAccommodation.id.eq(placeId))
                 .fetchOne();
     }
@@ -125,6 +152,9 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public RestaurantResponseDto findRestaurantByPlaceIdQueryDsl(Long placeId) {
         QRestaurant qRestaurant = QRestaurant.restaurant;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
+
         return queryFactory.select(Projections.constructor(RestaurantResponseDto.class,
                         qRestaurant.id,
                         qRestaurant.type,
@@ -149,9 +179,15 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         qRestaurant.cardYn,
                         qRestaurant.takeoutYn,
                         qRestaurant.reserveInfo,
-                        qRestaurant.openTime
+                        qRestaurant.openTime,
+                        qReview.score.avg()
                 ))
                 .from(qRestaurant)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.place.id.eq(qRestaurant.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
                 .where(qRestaurant.id.eq(placeId))
                 .fetchOne();
     }
@@ -160,6 +196,9 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public CafeResponseDto findCafeByPlaceIdQueryDsl(Long placeId) {
         QCafe qCafe = QCafe.cafe;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
+
         return queryFactory.select(Projections.constructor(CafeResponseDto.class,
                 qCafe.id,
                 qCafe.type,
@@ -184,9 +223,15 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 qCafe.cardYn,
                 qCafe.takeoutYn,
                 qCafe.reserveInfo,
-                qCafe.openTime
+                qCafe.openTime,
+                qReview.score.avg()
                 ))
                 .from(qCafe)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.place.id.eq(qCafe.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
                 .where(qCafe.id.eq(placeId))
                 .fetchOne();
     }
@@ -195,6 +240,9 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public ShoppingResponseDto findShoppingByPlaceIdQueryDsl(Long placeId) {
         QShopping qShopping = QShopping.shopping;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
+
         return queryFactory.select(Projections.constructor(ShoppingResponseDto.class,
                 qShopping.id,
                 qShopping.name,
@@ -217,9 +265,15 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 qShopping.petYn,
                 qShopping.cardYn,
                 qShopping.openTime,
-                qShopping.openDay
+                qShopping.openDay,
+                qReview.score.avg()
                 ))
                 .from(qShopping)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.place.id.eq(qShopping.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
                 .where(qShopping.id.eq(placeId))
                 .fetchOne();
     }
@@ -228,6 +282,9 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public LeisureResponseDto findLeisureByPlaceIdQueryDsl(Long placeId) {
         QLeisure qLeisure = QLeisure.leisure;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
+
         return queryFactory.select(Projections.constructor(LeisureResponseDto.class,
                 qLeisure.id,
                 qLeisure.name,
@@ -251,9 +308,15 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 qLeisure.openPeriod,
                 qLeisure.price,
                 qLeisure.ageRange,
-                qLeisure.petYn
+                qLeisure.petYn,
+                qReview.score.avg()
                 ))
                 .from(qLeisure)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.place.id.eq(qLeisure.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
                 .where(qLeisure.id.eq(placeId))
                 .fetchOne();
     }
@@ -262,6 +325,9 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public CultureResponseDto findCultureByPlaceIdQueryDsl(Long placeId) {
         QCulture qCulture = QCulture.culture;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QReview qReview = QReview.review;
+
         return queryFactory.select(Projections.constructor(CultureResponseDto.class,
                 qCulture.id,
                 qCulture.name,
@@ -279,9 +345,15 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 qCulture.img5,
                 qCulture.type,
                 qCulture.dayOff,
-                qCulture.petYn
+                qCulture.petYn,
+                qReview.score.avg()
                 ))
                 .from(qCulture)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.place.id.eq(qCulture.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
                 .where(qCulture.id.eq(placeId))
                 .fetchOne();
     }
@@ -307,7 +379,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .leftJoin(qReview)
                 .fetchJoin()
                 .on(qReviewPlace.review.id.eq(qReview.id))
-                .where(qPlace.name.eq(name))
+                .where(qPlace.name.contains(name))
                 .groupBy(qPlace.id)
                 .limit(limit)
                 .offset(offset)
@@ -342,19 +414,153 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetch();
     }
 
+    // 장소 찜 확인하기
+    @Override
+    public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl (Long placeId, Long userSeq) {
+        QUserPlace qUserPlace = QUserPlace.userPlace;
+        QPlace qPlace = QPlace.place;
+        Boolean result;
+
+        Integer like = queryFactory
+                .selectOne()
+                .from(qUserPlace)
+                .where(qUserPlace.user.userSeq.eq(userSeq).and(qUserPlace.place.id.eq(placeId)))
+                .fetchFirst();
+
+        if (like == null) {
+            result = false;
+        } else {
+            result = true;
+        }
+        return result;
+    }
+
+    // 시/도, 구/군, 검색어, 검색필터를 통한 장소 검색
+    @Override
+    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+        QPlace qPlace = QPlace.place;
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QUserPlace qUserPlace = QUserPlace.userPlace;
+        System.out.println("///////////////!@!#@//////////////asdfasdfasdfsdf");
+        System.out.println("userSeq = " + userSeq);
+        System.out.println("sido = " + sido);
+        System.out.println("gugun = " + gugun);
+        System.out.println("text = " + text);
+        System.out.println("filter = " + filter);
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (sido != null) {
+            builder.and(qPlace.address.contains(sido));
+        }
+        if (gugun != null) {
+            builder.and(qPlace.address.contains(gugun));
+        }
+        if (text != null) {
+            builder.and(qPlace.name.contains(text));
+        }
+        if (filter != null) {
+            builder.and(qPlace.type.contains(filter));
+        }
+
+
+        return queryFactory.select(Projections.constructor(PlaceSearchListResponseDto.class,
+                    qPlace.id,
+                    qPlace.name,
+                    qPlace.address,
+                    qReview.score.avg(),
+                    qPlace.thumbNailUrl,
+                    qPlace.detail,
+                    qPlace.latitude,
+                    qPlace.longitude,
+                    qPlace.type
+                ))
+                .from(qPlace)
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.review.id.eq(qPlace.id))
+                .leftJoin(qReview)
+                .on(qReview.id.eq(qReviewPlace.review.id))
+                .fetchJoin()
+                .leftJoin(qUserPlace)
+                .on(qPlace.id.eq(qUserPlace.place.id))
+                .fetchJoin()
+                .where(builder)
+                .groupBy(qPlace.id)
+                .limit(limit)
+                .offset(offset)
+                .fetch();
+    }
+
     // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
     @Override
-    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String name) {
+    public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String searchWord) {
         QPlace qPlace = QPlace.place;
 
         return queryFactory.select(Projections.constructor(AutoCompleteResponseDto.class,
-                    qPlace.id,
-                    qPlace.name,
-                    qPlace.thumbNailUrl
+                        qPlace.id,
+                        qPlace.name,
+                        qPlace.address,
+                        qPlace.thumbNailUrl,
+                        qPlace.type
                 ))
                 .from(qPlace)
-                .where(qPlace.name.contains(name))
+                .where(qPlace.name.contains(searchWord))
                 .limit(10)
                 .fetch();
+    }
+
+    // QueryDsl로 장소별 별점 평점 가져오기
+    @Override
+    public Double findScoreByPlaceIdQueryDsl(Long placeId) {
+        QPlace qPlace = QPlace.place;
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+
+        return queryFactory.select(qReview.score.avg())
+                .from(qPlace)
+                .leftJoin(qReviewPlace)
+                .fetchJoin()
+                .on(qPlace.id.eq(qReviewPlace.place.id))
+                .leftJoin(qReview)
+                .fetchJoin()
+                .on(qReviewPlace.review.id.eq(qReview.id))
+                .where(qPlace.id.eq(placeId))
+                .groupBy(qPlace.id)
+                .fetchOne();
+    }
+
+    // QueryDsl로 시도, 구군, 타입별 장소 리스트 가져오기
+    @Override
+    public List<Place> findAllByTypeAndSidoAndGugun(String type, String sido, String gugun) {
+        QPlace qPlace = QPlace.place;
+        return queryFactory.selectFrom(qPlace)
+                .where(qPlace.type.eq(type).and(qPlace.address.contains(sido).and(qPlace.address.contains(gugun))))
+                .fetch();
+    }
+
+    // QueryDsl로 SimplePlaceDto 내용 가져오기
+    @Override
+    public SimplePlaceDto findSimplePlaceDtoByPlaceIdQueryDsl(Long placeId, Long courseId) {
+        QPlace qPlace = QPlace.place;
+        QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
+
+        return queryFactory.select(Projections.constructor(SimplePlaceDto.class,
+                    qPlace.id,
+                    qPlace.name,
+                    qPlace.latitude,
+                    qPlace.longitude,
+                    qPlace.thumbNailUrl,
+                    qPlace.address,
+                    qPlace.detail,
+                    qCoursePlace.orders,
+                    qPlace.phoneNumber
+                ))
+                .from(qPlace)
+                .leftJoin(qCoursePlace)
+                .fetchJoin()
+                .on(qPlace.id.eq(qCoursePlace.place.id).and(qCoursePlace.course.id.eq(courseId)))
+                .where(qPlace.id.eq(placeId))
+                .fetchOne();
     }
 }

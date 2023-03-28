@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 @Data
 public class ImageRequestDto {
     private String imageUrl;
-    private Long coupleId;
 }

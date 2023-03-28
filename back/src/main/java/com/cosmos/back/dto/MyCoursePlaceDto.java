@@ -1,17 +1,18 @@
 package com.cosmos.back.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class MyCoursePlaceDto {
     private Long courseId;
     private String name;
     private String date;
-    private String subCategory;
     private Integer orders;
     private Long placeId;
     private String placeName;

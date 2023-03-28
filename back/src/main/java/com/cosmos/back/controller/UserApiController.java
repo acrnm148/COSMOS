@@ -4,6 +4,7 @@ import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.dto.user.UserProfileDto;
 import com.cosmos.back.dto.user.UserUpdateDto;
+import com.cosmos.back.service.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -30,6 +32,7 @@ public class UserApiController {
     private final JwtService jwtService;
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final NotificationService notificationService;
 
     @Operation(summary = "서버 테스트", description = "서버 테스트")
     @GetMapping("/home")
@@ -117,7 +120,12 @@ public class UserApiController {
     /**front-end로 부터 받은 인가 코드 받기 및 사용자 정보 받기,회원가입 */
     @Operation(summary = "kakao 로그인", description = "kakao 로그인")
     @GetMapping("/accounts/auth/login/kakao")
-    public Map<String,String> KakaoLogin(@RequestParam("code") String code) {
+    public Map<String,String> KakaoLogin(@RequestParam("code") String code,
+                                         HttpServletRequest request) {
+
+        //String redirect_uri = String.valueOf(request.getRequestURL());
+        //System.out.println("redirect_url:"+redirect_uri);
+
         //access 토큰 받기
         KakaoToken oauthToken = kakaoService.getAccessToken(code);
         //사용자 정보받기 및 회원가입
@@ -125,7 +133,10 @@ public class UserApiController {
         //jwt토큰 Redis에 저장
         JwtToken jwtTokenDTO = jwtService.getJwtToken(saveUser.getUserSeq());
 
-        return jwtService.successLoginResponse(jwtTokenDTO, saveUser.getUserSeq());
+        //로그인 시 SSE 연결
+        notificationService.subscribe(saveUser.getUserSeq(), null);
+
+        return jwtService.successLoginResponse(jwtTokenDTO, saveUser.getUserSeq(), saveUser.getCoupleId());
     }
     //직접 인가 코드 받기
     @GetMapping("/login/oauth2/code/kakao")
