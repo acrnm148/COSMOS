@@ -225,6 +225,7 @@ class PlaceServiceTest {
         assertEquals(placeFilterResponseDto3.getPlaces().size(), 5);
         assertEquals(placeFilterResponseDto4.getPlaces().size(), 5);
         assertEquals(placeFilterResponseDto5.getPlaces().size(), 5);
+
     }
 
     @Test

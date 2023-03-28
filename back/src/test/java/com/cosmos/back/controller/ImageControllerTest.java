@@ -51,12 +51,13 @@ public class ImageControllerTest {
 
     @MockBean
     private ImageService imageService;
-
+//
 //    @Test
 //    @DisplayName("사진 등록하기")
 //    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
 //    public void createImageTest() throws Exception {
 //        System.out.println(rootUrl+"test.PNG");
+//
 //
 ////        ClassPathResource resource = new ClassPathResource("/static/test.PNG");
 ////        FileInputStream fileI = new FileInputStream("static/test.PNG");

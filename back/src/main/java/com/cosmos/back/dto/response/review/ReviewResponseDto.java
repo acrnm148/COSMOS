@@ -1,5 +1,6 @@
 package com.cosmos.back.dto.response.review;
 
+import com.cosmos.back.model.IndiReviewCategory;
 import com.cosmos.back.model.ReviewCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ReviewResponseDto {
     private Long reviewId;
     private List<ReviewCategory> categories;
+    private List<IndiReviewCategory> indiReviewCategories;
     private Integer score;
     private String contents;
     private Long userId;
