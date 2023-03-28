@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -119,7 +120,12 @@ public class UserApiController {
     /**front-end로 부터 받은 인가 코드 받기 및 사용자 정보 받기,회원가입 */
     @Operation(summary = "kakao 로그인", description = "kakao 로그인")
     @GetMapping("/accounts/auth/login/kakao")
-    public Map<String,String> KakaoLogin(@RequestParam("code") String code) {
+    public Map<String,String> KakaoLogin(@RequestParam("code") String code,
+                                         HttpServletRequest request) {
+
+        //String redirect_uri = String.valueOf(request.getRequestURL());
+        //System.out.println("redirect_url:"+redirect_uri);
+
         //access 토큰 받기
         KakaoToken oauthToken = kakaoService.getAccessToken(code);
         //사용자 정보받기 및 회원가입

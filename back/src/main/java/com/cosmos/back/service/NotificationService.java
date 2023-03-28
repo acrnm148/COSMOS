@@ -51,13 +51,14 @@ public class NotificationService {
         }
         //sendNotification(emitter, eventId, emitterId, "sse [userSeq=" + userSeq + "]");
 
+        /*
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
-        if (!lastEventId.isEmpty()) {
+        if (lastEventId!=null | !lastEventId.isEmpty()) {
             Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByUserSeq(String.valueOf(userSeq));
             eventCaches.entrySet().stream()
                     .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                     .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
-        }
+        }*/
 
         System.out.println("SSE connected:" + emitter);
         return emitter;
