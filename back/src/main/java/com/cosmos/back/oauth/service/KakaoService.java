@@ -16,6 +16,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -134,6 +136,8 @@ public class KakaoService {
                 case "80~89": newAgeRange += "80"; break;
                 case "90~": newAgeRange += "90"; break;
             }
+
+            if (profile == null) return null;
 
             user = User.builder()
                     .userId(profile.getId())
