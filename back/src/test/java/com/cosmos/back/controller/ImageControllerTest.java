@@ -32,6 +32,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -71,7 +73,8 @@ public class ImageControllerTest {
         MockMultipartFile file = new MockMultipartFile("file",
                 "test.PNG",
                 "image/png",
-                new FileInputStream(resource.getURI().getPath()));
+                Files.newInputStream(Paths.get(resource.getURI().getPath())));
+                //new FileInputStream(resource.getURI().getPath()));
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.multipart("/api/pictures/1").file(file));
