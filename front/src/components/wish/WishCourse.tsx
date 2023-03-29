@@ -30,14 +30,14 @@ interface Place {
 
 export default function WishCourse() {
     const userSeq = useRecoilState(userState);
-    const [list, setList] = useState<Course[]>();
+    const [course, setCourse] = useState<Course[]>();
     const { data } = useQuery({
         queryKey: ["getWishCourseList"],
         queryFn: () => getWishCourseList(userSeq[0].seq, userSeq[0].acToken),
     });
 
     useEffect(() => {
-        setList(data);
+        setCourse(data);
     }, [data]);
 
     return (
@@ -47,11 +47,11 @@ export default function WishCourse() {
                     찜한 코스
                 </div>
                 <div className="cnt ml-2 font-bold text-red-600 text-xl inline-block">
-                    {list?.length}
+                    {course?.length}
                 </div>
 
                 <div className="mt-4 h-[540px] overflow-y-auto">
-                    {list?.map((c: Course) => (
+                    {course?.map((c: Course) => (
                         <Item key={c.courseId} item={c}></Item>
                     ))}
                 </div>
@@ -145,8 +145,6 @@ function Item(props: { item: Course }) {
                 <div
                     className="float-left w-1/3 m-auto"
                     onClick={() => {
-                        // mutate(Number(props.item.courseId));
-
                         Swal.fire({
                             // title: `${props.item.title}을 찜 해제하시겠습니까?`,
                             text: `${props.item.name} 코스를 삭제하시겠습니까?`,

@@ -21,16 +21,36 @@ export const getWishCourseList = async (userSeq: number, ac: string | null) => {
  * @returns [] : 찜한 장소 id, name, score, address, detail, thumbNailUrl
  */
 export const getWishPlaceList = async (userSeq: number) => {
-    const { data } = await defaultInstance.get(`places/users/${userSeq}`);
+    const { data } = await defaultInstance.get(
+        `places/users/${userSeq}?limit=10&offset=0`
+    );
     return data;
 };
 
 // DELETE APIs
+
+// 코스
 /**
  * @param {number} courseId : 코스 id
  * DELETE : 찜한 코스를 찜 목록에서 삭제한다.
  */
 export const deleteWishCourse = async (courseId: number) => {
     const { data } = await defaultInstance.delete(`courses/${courseId}`);
+    return data;
+};
+
+// 장소
+/**
+ * @param {number} placeId : 장소 id
+ * @param {number} userSeq : 유저 seq
+ * DELETE : 찜한 장소를 찜 목록에서 삭제한다.
+ */
+export const deleteWishPlace: any = async (
+    placeId: number,
+    userSeq: number
+) => {
+    const { data } = await defaultInstance.delete(
+        `places/${placeId}/users/${userSeq}`
+    );
     return data;
 };
