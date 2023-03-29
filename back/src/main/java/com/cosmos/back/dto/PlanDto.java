@@ -16,7 +16,7 @@ public class PlanDto {
     private String planName;
     private String startDate;
     private String endDate;
-    private LocalDateTime createTime;
+    private LocalDateTime    createTime;
     private LocalDateTime updateTime;
     private List<Course> courses;
     private List<Long> courseIds;
