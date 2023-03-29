@@ -1,18 +1,21 @@
 import React, { useRef, useState } from "react";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import SelectCategoryItem from "./SelectCategoryItem";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { selectCategory } from "../../../recoil/states/RecommendPageState";
+import SelectCategoryItem from "./items/SelectCategoryItem";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Logo from "../../../assets/login/pinkCosmos.png";
+import Loading from "../../../assets/loading/modal-loading.gif";
 import Swal from "sweetalert2";
-import Logo from "../../assets/login/pinkCosmos.png";
-import Loading from "../../assets/loading/modal-loading.gif";
+import "../../../css/placeSearch.css";
 
-export default function SelectCategory() {
+export default function SelecctCategory() {
   const navigate = useNavigate();
+  const [category, setCategory] = useRecoilState(selectCategory);
   const categoryRef = useRef<HTMLDivElement>(null);
-  const [number, setNumber] = useState(1);
-  const [list, setList] = useState([{ index: 0, state: true }]);
   const tags = [false, false, false, false, false, false];
-  const [selectedList, setSelectedList] = useState([]);
+  const [list, setList] = useState([{ index: 0, state: true }]);
+  const [number, setNumber] = useState(1);
 
   const handleClickBtn = () => {
     setNumber((cur) => cur + 1);
@@ -21,32 +24,31 @@ export default function SelectCategory() {
 
   const handleComplete = () => {
     const clicked = document.querySelectorAll(".content-clicked");
-    const selected = [];
+    let selected: any[] | ((currVal: {}[]) => {}[]) = [];
     for (let i = 0; i < clicked.length; i++) {
       switch (clicked[i].className[16]) {
         case "0":
-          selected.push("f");
+          selected = selected.concat(["restaurant"]);
           break;
         case "1":
-          selected.push("c");
+          selected = selected.concat(["cafe"]);
           break;
         case "2":
-          selected.push("m");
+          selected = selected.concat(["culture"]);
           break;
         case "3":
-          selected.push("s");
+          selected = selected.concat(["shopping"]);
           break;
         case "4":
-          selected.push("t");
+          selected = selected.concat(["tour"]);
           break;
         case "5":
-          selected.push("g");
+          selected = selected.concat(["leisure"]);
           break;
         default:
       }
+      setCategory(selected);
     }
-
-    // setSelectedList(selected);
 
     Swal.fire({
       title: "카테고리 선택 완료!",

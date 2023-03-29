@@ -28,46 +28,35 @@ export default function KakaoLogin(){
   const params = new URLSearchParams(window.location.search);
   let code: any = params.get('code')
   useEffect(() => {
-    // console.log('heyhyehey 카카오로그인 들어옴', code)
     cosmosLogin(code)
   })
-  function deleteCookie(name:string){
-    console.log('쿠키삭제',)
-    window.document.cookie = 'name='+name+';domain=.kakao.com; expires=Thu,01 Jan 1970 00:00:01 GMT;'
-  }
-    async function cosmosLogin(code:string){
+
+  function cosmosLogin(code:string){
         axios({
           url : "https://j8e104.p.ssafy.io/api/accounts/auth/login/kakao",
           method: 'GET',
           params: {code},
           })
-          .then((res:any)=>{
+          .then((res:{data:any})=>{
             // 응답받은 userSeq 저장
-            console.log('야 야 야 야 야 ')
             const us = res.data.userSeq
-            setLoginUser((user)=>({
-              ...{seq : us, 
-                isLoggedIn : true, 
-                acToken: res.data.accessToken, 
-                coupleId: res.data.coupleId}
-            }))
-
-            console.log('코스모스 로그인 성공', res.data)
+            setLoginUser({seq:us, isLoggedIn:true, acToken:res.data.accessToken, coupleId:res.data.coupleId})
+            console.log('코스모스 로그인 성공', res)
+            onLoginSuccess(us) // 24시간 이후 자동으로 로그인 요청 반복
             if (invited){
-              return <Navigate to={"/servey"} />
+              navigate('/servey')
             } else{
-              return <Navigate to="/" />
+              navigate('/')
             }
           })
           .catch((err:any) => {
             console.log('코스모스 로그인 실패', err)
-            // 카카오 로그인 쿠키 지우기
-            console.log('현재쿠키', window.document.cookies)
-            if (window.document.cookies){
-                const rturn = ['_karmtea', '_klawit', '_kawItea','_karmt','_kahai'].map(kakao => deleteCookie(kakao))
-              }
+            // 카카오 로그아웃요청
             }
           )
+    }
+    const onLoginSuccess = (seq : number) =>{
+      setTimeout(cosmosLogin, JWT_EXPIRRY_TIME - 60000)
     }
   // })
   return(
