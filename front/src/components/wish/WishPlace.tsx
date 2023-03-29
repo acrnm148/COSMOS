@@ -117,11 +117,11 @@ function Item(props: { item: Place; userSeq: number }) {
                                 // 만약 모달창에서 confirm 버튼을 눌렀다면
                                 // 해당 장소 찜 목록에서 삭제
 
-                                mutation.mutate(
-                                    props.item.placeId,
-                                    props.userSeq
-                                );
-                                <div className=""></div>;
+                                console.log(props.item.placeId);
+                                mutation.mutate({
+                                    placeId: props.item.placeId,
+                                    userSeq: props.userSeq,
+                                });
 
                                 const Toast = Swal.mixin({
                                     toast: true, // 토스트 형식

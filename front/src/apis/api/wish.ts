@@ -45,10 +45,12 @@ export const deleteWishCourse = async (courseId: number) => {
  * @param {number} userSeq : 유저 seq
  * DELETE : 찜한 장소를 찜 목록에서 삭제한다.
  */
-export const deleteWishPlace: any = async (
-    placeId: number,
-    userSeq: number
-) => {
+interface params {
+    placeId: number;
+    userSeq: number;
+}
+
+export const deleteWishPlace = async ({ placeId, userSeq }: params) => {
     const { data } = await defaultInstance.delete(
         `places/${placeId}/users/${userSeq}`
     );
