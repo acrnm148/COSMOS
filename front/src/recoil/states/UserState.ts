@@ -12,10 +12,9 @@ export interface LUser {
 export const userState = atom<LUser>({
     key: "userState",
     default: {
-        seq: 1,
+        seq: -1,
         isLoggedIn: false,
-        acToken:
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyNTQzNTA5NTU0IiwiZXhwIjoxNjgwMDc2NjY2LCJ1c2VySWQiOiIyNTQzNTA5NTU0IiwidXNlclNlcSI6MX0.avVEbKcFaDmSWySDm11xGtqOdaMWvPrQIxb9OOXvD6FOLrm4IVPkD-QDhZCMQzIV_sIIPhmAhRXZI3I5FET4ig",
+        acToken: "",
         coupleId: "",
     },
     effects_UNSTABLE: [persistAtom],
