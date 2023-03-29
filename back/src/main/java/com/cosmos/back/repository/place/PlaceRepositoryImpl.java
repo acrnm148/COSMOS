@@ -382,6 +382,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
         QPlace qPlace = QPlace.place;
         QReview qReview = QReview.review;
+        QFestival qFestival = QFestival.festival;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
 
         BooleanBuilder builder = new BooleanBuilder();
@@ -396,7 +397,36 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
             builder.and(qPlace.name.contains(text));
         }
         if (filter != null) {
-            builder.and(qPlace.type.contains(filter));
+            if (filter.equals("festival")) {
+                builder.and(qPlace.type.contains(filter));
+                builder.and(qFestival.startDate.gt("20230322"));
+                return queryFactory.select(Projections.constructor(PlaceSearchListResponseDto.class,
+                                qPlace.id,
+                                qPlace.name,
+                                qPlace.address,
+                                qReview.score.avg(),
+                                qPlace.thumbNailUrl,
+                                qPlace.detail,
+                                qPlace.latitude,
+                                qPlace.longitude,
+                                qPlace.type
+                        ))
+                        .from(qPlace)
+                        .leftJoin(qReviewPlace)
+                        .on(qReviewPlace.review.id.eq(qPlace.id))
+                        .leftJoin(qReview)
+                        .on(qReview.id.eq(qReviewPlace.review.id))
+                        .fetchJoin()
+                        .leftJoin(qFestival)
+                        .on(qPlace.id.eq(qFestival.id))
+                        .where(builder)
+                        .groupBy(qPlace.id)
+                        .limit(limit)
+                        .offset(offset)
+                        .fetch();
+            } else {
+                builder.and(qPlace.type.contains(filter));
+            }
         }
 
 
