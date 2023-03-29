@@ -11,13 +11,13 @@
   gap: 1rem;
   justify-content: center;
 }
-.modal-content img {
+.modal-content div img {
   width: 8vw;
   cursor: pointer;
   padding-bottom: 5px;
   opacity: 0.3;
 }
-.modal-content img:hover {
+.modal-content div img:hover {
   opacity: 1;
 }
 .modal-content div {
