@@ -47,7 +47,7 @@ export default function Footer() {
                         </NavLink>
                     </div>
                     <div className="float-left w-1/5 flex justify-center">
-                        <NavLink to="/">
+                        <NavLink to="/place/recommend">
                             <Icon
                                 icon="material-symbols:temp-preferences-custom"
                                 color="#ff8e9e"
