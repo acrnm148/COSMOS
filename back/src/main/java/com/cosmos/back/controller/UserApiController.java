@@ -65,7 +65,6 @@ public class UserApiController {
         }
     }
 
-
     /**
      * 회원 정보 수정
      */
@@ -130,7 +129,7 @@ public class UserApiController {
         User saveUser = kakaoService.saveUser(oauthToken.getAccess_token());
         if (saveUser == null) {
                 Map<String, String> map = new HashMap<>();
-                map.put("code", "400");
+                map.put("code", "444");
                 map.put("message", "카카오 프로필 정보가 없습니다.");
                 return map;
         }
@@ -204,7 +203,7 @@ public class UserApiController {
     /**
      * 사용자 유형 등록
      */
-    @Operation(summary = "사용자 유형 등록", description = "사용자 유형 등록")
+    @Operation(summary = "사용자 유형 등록", description = "사용자 유형 등록, 파라미터로 Long userSeq / String type1 / String type2 총 3개를 받습니다.")
     @PostMapping("/couples/type")
     public ResponseEntity<Long> saveTypes(@RequestBody Map<String, Object> map) {
         Long userSeq = Long.valueOf((Integer) map.get("userSeq"));

@@ -1,12 +1,12 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.user.UserProfileDto;
 import com.cosmos.back.dto.user.UserUpdateDto;
 import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.model.User;
-import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;

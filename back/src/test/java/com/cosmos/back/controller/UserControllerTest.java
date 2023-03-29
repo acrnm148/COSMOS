@@ -54,7 +54,7 @@ public class UserControllerTest {
 
         //given
         when(userService.getUser(anyLong())).thenReturn(mockDto);
-        doNothing().when(jwtService.checkUserSeqWithAccess(1, ));
+        //doNothing().when(jwtService.checkUserSeqWithAccess(1, ));
         //when
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/api/accounts/userInfo/1")

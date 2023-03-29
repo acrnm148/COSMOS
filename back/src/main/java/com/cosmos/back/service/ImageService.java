@@ -35,7 +35,6 @@ public class ImageService {
             Image image = Image.createImage(imageUrl, coupleId);
             imageRepository.save(image);
         }
-        System.out.println("imageUrls = " + imageUrls);
     }
 
     // 사진 삭제
@@ -46,9 +45,8 @@ public class ImageService {
         String imageUrl = image.getImageUrl();
         String[] urls = imageUrl.split("/");
         String fileName = urls[urls.length - 1];
-        System.out.println("fileName = " + fileName);
         s3Service.deleteFile(fileName);
-//        imageRepository.deleteById(imageId);
+        imageRepository.deleteById(imageId);
     }
 
     // 사진 전체 조회
