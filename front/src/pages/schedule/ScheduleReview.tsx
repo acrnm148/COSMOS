@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useEffect, useRef, useState, useCallback } from "react"
+import { useEffect, useRef, useState, useCallback, MouseEvent } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 //alert
 import Swal from "sweetalert2";
@@ -11,8 +11,7 @@ import { styled  as muiStyle } from '@mui/material/styles'
 // 별점 이미지
 import { FaStar } from 'react-icons/fa'
 // styled component
-import styled from 'styled-components'
-
+import {Stars} from '../../components/review/StarStyledComponent'
 
 export function ScheduleReview(){
     return (
@@ -37,7 +36,6 @@ const CATEGORY_QA:CATE_QA = {
 }
 {/* 공통 선택지 */}
 const COMMON_QA = ['접근성이 좋아요', '분위기가 좋아요', '반려동물 동반이 가능해요', '주차 지원이 가능해요', '사진찍기 좋아요']
-
 
 export function ReviewForm(props:{isReview:boolean, category:string, setShowReview:Function}){
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -73,26 +71,6 @@ export function ReviewForm(props:{isReview:boolean, category:string, setShowRevi
         }
         setClicked(clickStates)
       }
-      const Stars = styled.div`
-      display: flex;
-      padding-top: 5px;
-      
-      & svg {
-        color: gray;
-        cursor: pointer;
-      }
-      
-      :hover svg {
-        color: #fcc419;
-      }
-      
-      & svg:hover ~ svg {
-        color: gray;
-      }
-      
-      .yellowStar {
-        color: #fcc419;
-      }`
     // 별점 관련 끝//////////////////////////////////  
     
     // Toast
@@ -152,10 +130,36 @@ export function ReviewForm(props:{isReview:boolean, category:string, setShowRevi
         console.log('commonQ', commonQ)
         console.log('content', content)
         console.log('score', score)
-        // console.log('contentOpen', contentOpen)
+        console.log('contentOpen', contentOpen)
+        console.log('photoOpen',photoOpen)
+        console.log('image', uploadedImg)
 
         // 리뷰등록/수정 닫고 장소 상세페이지로 이동
-        props.setShowReview(false)
+        // props.setShowReview(false)
+    }
+
+    // 사진 삭제
+    const deleteToast = Swal.mixin({
+        toast : true,
+        position : "bottom-end",
+        showConfirmButton: true,
+
+        showCancelButton: true,
+        confirmButtonColor: "#FF8E9E", // confrim 버튼 색깔 지정
+        cancelButtonColor: "#B9B9B9", // cancel 버튼 색깔 지정
+        confirmButtonText: "삭제", // confirm 버튼 텍스트 지정
+        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+
+    })
+    function deleteHandler(idx:number){
+        deleteToast.fire({
+            icon : "warning",
+            title: "삭제하시겠습니까?"
+        }).then((res) =>{
+            if(res.isConfirmed){
+                setUplodedImg(uploadedImg.filter((img,id) => id !== idx));
+            }
+        })
     }
     return(
         <div className="w-full">
@@ -206,11 +210,11 @@ export function ReviewForm(props:{isReview:boolean, category:string, setShowRevi
                     {/* 텍스트 */}
 
                     <div className="flex w-full justify-between">
-                        <div className="text-white"> 공간공간공간</div>
-                        <p className="text-serveyCircle">리뷰</p>
+                        <div className="min-w-[80px] text-white"></div>
+                        <p className="text-serveyCircle p-2">리뷰</p>
                         <div className="flex text-lightMain2 items-center">
                             <div onClick={()=>setContentOpen(!contentOpen)}><IOSSwitch sx={{ m: 1 }} defaultChecked /></div>
-                            <p>공개</p>
+                            <p className="min-w-[40px]">{contentOpen?'공개':'비공개'}</p>
                         </div>
                     </div>
                     <div className="mx-2 h-20 w-full min-h-[50px]">
@@ -220,20 +224,26 @@ export function ReviewForm(props:{isReview:boolean, category:string, setShowRevi
                 <div className="w-full bg-white rounded-lg mb-2 text-xs p-2 flex flex-col items-center">
                     {/* 사진 */}
                     <div className="flex w-full justify-between">
-                        <div className="text-white"> 공간공간공간</div>
-                        <p>사진</p>
+                        <div className="min-w-[80px] text-white"></div>
+                        <p className="text-serveyCircle p-2">사진</p>
                         <div className="flex text-lightMain2 items-center">
-                            <div onClick={()=>setContentOpen(!contentOpen)}><IOSSwitch sx={{ m: 1 }} defaultChecked /></div>
-                            <p>공개</p>
+                            <div onClick={()=>setPhotoOpen(!photoOpen)}><IOSSwitch sx={{ m: 1 }} defaultChecked /></div>
+                            <p className="min-w-[40px]">{photoOpen?'공개':'비공개'}</p>
                         </div>
                     </div>
-                    <div className="w-full h-40 bg-lightMain cursor-pointer rounded-md flex justify-between items-center p-2" onClick={uploadImgBtn}>
+                    <div className="w-full h-40 bg-lightMain cursor-pointer rounded-md flex justify-left items-center p-2" onClick={uploadImgBtn}>
                         {uploadedImg &&
-                            uploadedImg.map((image:string)=>{
+                            uploadedImg.map((image:string, idx:number)=>{
                                 return(
-                                    <div className="h-36 max-w-[33%] ">
-                                        {/* <div className="h-full w-full rounded-md hover:bg-calendarDark"></div> */}
-                                        <img className="h-full w-full rounded-md " src={image} alt={image}></img>
+                                    <div className="h-36 max-w-[33%] relative mx-[1px]">
+                                        <img className="h-full w-full rounded-md z-0 " src={image} alt={image}></img>
+                                        <div
+                                            onClick={(e)=>{
+                                                e.stopPropagation()
+                                                deleteHandler(idx)
+                                            }}
+                                             className="text-xl absolute z-2 top-[0.5%] right-[1%] text-white hover:text-lightMain p-2 rounded-md">x</div>
+                                        
                                     </div>
                                     )
                             })

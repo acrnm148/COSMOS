@@ -42,6 +42,7 @@ export default function KakaoLogin(){
             const us = res.data.userSeq
             setLoginUser({seq:us, isLoggedIn:true, acToken:res.data.accessToken, coupleId:res.data.coupleId})
             console.log('코스모스 로그인 성공', res)
+            onLoginSuccess(us) // 24시간 이후 자동으로 로그인 요청 반복
             if (invited){
               navigate('/servey')
             } else{
@@ -53,6 +54,9 @@ export default function KakaoLogin(){
             // 카카오 로그아웃요청
             }
           )
+    }
+    const onLoginSuccess = (seq : number) =>{
+      setTimeout(cosmosLogin, JWT_EXPIRRY_TIME - 60000)
     }
   // })
   return(

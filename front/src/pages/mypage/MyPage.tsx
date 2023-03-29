@@ -46,12 +46,11 @@ declare const window: typeof globalThis & {
         })
         
         // 유저정보 받아와서 마이페이지에서 표출할 정보로 가공
-        // 생성된 유저 coupleId recoil에 저장
         const [user, setUser] = useRecoilState(userState)
         useEffect(()=>{
-          console.log(LoginUser)
+          // console.log(LoginUser)
           if(data){
-            console.log('유저', data)
+            // console.log('유저', data)
             setUserInfo({
               userId : data.userId,
               userName : data.userName,
@@ -66,30 +65,65 @@ declare const window: typeof globalThis & {
               coupleUserId : data.coupleUserId,
               reviews : data.reviews
             })
+
           }
         },[data])
 
-
+  // 로그아웃
+  function logout(){
+    axios.get((`https://j8e104.p.ssafy.io/api/accounts/logout/${user.seq}`),
+      {
+        headers:{
+          Authorization : 'baerer ' + user.acToken
+        }
+      }
+          ).then((res)=>{
+            console.log(res)
+            setLoginUser({...user,acToken:'',seq:0, isLoggedIn:false, coupleId:"" })
+          }
+          ).catch((err)=>{
+            console.log(err)
+          })
+        // 카카오 sdk 찾도록 초기화
+        if (!window.Kakao.isInitialized()){
+            window.Kakao.init(process.env.REACT_APP_KAKAO_LOGIN_JS_SUN)
+        }
+        navigate('/')
+        window.Kakao.Auth.logout()
+          // .then(function() {
+          //   alert('logout ok\naccess token -> ' + window.Kakao.Auth.getAccessToken());
+          //   console.log('loggedout')
+          //   navigate('/')
+          // })
+          // .catch(function() {
+          //   console.log('Not logged in')
+          // });
+        // console.log('로구아웃?', user)
+  }
 
   return (
     <div className="h-screen">
       <div className="flex w-screen items-center content-center ">
         <div className="w-full flex m-auto flex-col justify-center md:w-5/6 lg:w-3/6">
           <div className="profile justify-center items-end flex mt-10 mb-4">
-          <div className={"rounded-full w-16 h-16 max-w-[950px]"}>
-            <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
-          </div>
-            <div className="flex text-lightMain items-end m-3">
-              {userInfo?.coupleYn === 'Y' &&
-                <>
+              {userInfo?.coupleYn === 'Y' ?
+              <>
+              <div className={"rounded-full w-16 h-16 max-w-[950px]"}>
+                <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+              </div>
+              <div className="flex text-lightMain items-end m-3">
                 <div className="w-10 h-px bg-lightMain"></div>
                   <p className="text-sm">n일째 코스모스중</p>
                   <div className="w-10 h-px bg-lightMain"></div>
                   <div className="rounded-full bg-lightMain w-12 h-12"></div>
-                </>
+              </div>
+              </>
+              :
+              <div className={"rounded-full w-28 h-28 max-w-[950px]"}>
+                <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+              </div>
               }
-            </div>
-          </div>
+              </div>
           {userInfo?.type1 ?
             <div className="dateCategory w-full flex flex-col ">
               <div className={`flex dateCategory flex-col justify-end items-center w-full h-[40vh] bg-lightMain3 bg-center bg-cover bg-no-repeat ${backgroundImage[userInfo?.type1  as keyof typeof backgroundImage]}`}>
@@ -137,6 +171,12 @@ declare const window: typeof globalThis & {
                 );
               })}
             </div>
+
+          </div>
+          <div>
+          <div
+            onClick={logout} 
+            className="cursor-pointer text-xl text-white bg-lightMain2 px-8 py-4 rounded-lg">로그아웃</div>
           </div>
         </div>
         </div>
