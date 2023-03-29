@@ -6,6 +6,7 @@ import com.cosmos.back.dto.user.UserUpdateDto;
 import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.model.User;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -171,6 +172,7 @@ public class UserService {
     /**
      * 커플아이디 난수 생성
      */
+    @Generated
     public Long makeCoupleId() {
         Random random = new Random(); // 랜덤 객체 생성
         Long coupleId = Long.valueOf(random.nextInt(1000000000));//10자리 미만의 난수 반환
