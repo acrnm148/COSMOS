@@ -1,13 +1,21 @@
 #listBox {
   transition: all 0.5s;
 }
-.slick-dots {
-  text-align: center;
+/* .slick-slider button {
+  background-color: #ffb5c0;
+  border-radius: 50%;
 }
+.slick-slider button:hover {
+  background-color: #ff8e9e;
+  border-radius: 50%;
+} */
 .slider-img {
+  width: 400px;
+  height: 250px;
   text-align: center;
 }
 .slider-img img {
-  width: 40%;
+  width: 400px;
+  height: 250px;
   margin: auto;
 }

@@ -48,7 +48,7 @@ export default function PlaceList({ data }: any) {
                   <div className="font-thin text-slate-400 text-sm">
                     {items.address}
                   </div>
-                  <div>{items.detail}</div>
+                  <p className="content-detail">{items.detail}</p>
                 </div>
                 <PlaceLike like={items.like} placeId={items.placeId} />
               </div>

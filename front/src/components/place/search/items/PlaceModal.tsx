@@ -17,6 +17,7 @@ import { useRecoilState } from "recoil";
 import { placeDetail } from "../../../../recoil/states/SearchPageState";
 import { useQuery } from "react-query";
 import { getPlaceDetail } from "../../../../apis/api/place";
+import "../../../../css/listItem.css";
 
 export default function PlaceModal({ modalOpen, closeModal }: any) {
   const detail = useRecoilState(placeDetail);
@@ -24,7 +25,8 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
   const [review, setReview] = useState(false);
 
   const settings = {
-    dots: true,
+    dots: false,
+    arrows: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -41,9 +43,10 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
   });
 
   if (isLoading) return null;
+
   return (
     <Modal open={modalOpen} close={closeModal} header="장소 상세" size="large">
-      <div className="text-left overflow-auto">
+      <div className="text-left">
         <div className="flex flex-row gap-2">
           <h1 className="text-2xl font-bold">{data.name}</h1>
           <div>
@@ -63,30 +66,30 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
           </div>
         </div>
         <hr className="divide-slate-300 m-2" />
-        <div className="h-[300px] overflow-auto">
-          <div className="m-auto w-[90%]">
+        <div className="h-full overflow-auto">
+          <div className="m-auto w-[80%]">
             <Slider {...settings}>
-              {data.img1 === null ? null : (
+              {data.img1 === "" ? null : (
                 <div className="slider-img mb-5">
                   <img src={data.img1} alt="" />
                 </div>
               )}
-              {data.img2 === null ? null : (
+              {data.img2 === "" ? null : (
                 <div className="slider-img mb-5">
                   <img src={data.img2} alt="" />
                 </div>
               )}
-              {data.img3 === null ? null : (
+              {data.img3 === "" ? null : (
                 <div className="slider-img mb-5">
                   <img src={data.img3} alt="" />
                 </div>
               )}
-              {data.img4 === null ? null : (
+              {data.img4 === "" ? null : (
                 <div className="slider-img mb-5">
                   <img src={data.img4} alt="" />
                 </div>
               )}
-              {data.img5 === null ? null : (
+              {data.img5 === "" ? null : (
                 <div className="slider-img mb-5">
                   <img src={data.img5} alt="" />
                 </div>
