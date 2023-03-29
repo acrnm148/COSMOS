@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { getRegionList } from "./parsingRegionData";
 import SouthKoreaItem from "./KoreaItem";
-import { useSetRecoilState } from "recoil";
-import { selectSidoState } from "../../../recoil/states/RecommendPageState";
+import Region from "../../../components/common/Map/Region";
+import { useRecoilState } from "recoil";
+import { selectSido } from "../../../recoil/states/RecommendPageState";
 import "../../../css/map.css";
-export default function SouthKorea({ list, setSelectSido }: any) {
-  const [selSido, setSelSido] = useState("");
-  const setSido = useSetRecoilState(selectSidoState);
+
+export default function SouthKorea() {
+  const [sido, setSido] = useRecoilState(selectSido);
 
   return (
     <div className="map-wrapper">
@@ -18,16 +19,14 @@ export default function SouthKorea({ list, setSelectSido }: any) {
         xmlns="http://www.w3.org/2000/svg"
       >
         <g>
-          {getRegionList(list).map((item: any) => {
+          {getRegionList(Region).map((item: any) => {
             return (
               <SouthKoreaItem
                 onClick={() => {
-                  setSido({ sidoCode: item.sidoCode, name: item.name });
-                  setSelSido(item.name);
-                  setSelectSido(item.name);
+                  setSido({ sidoCode: item.sidoCode, sidoName: item.name });
                 }}
                 key={item.sidoCode}
-                className={selSido === item.name ? "land click" : "land"}
+                className={sido === item.name ? "land click" : "land"}
                 title={item.name}
                 d={item.d}
               />

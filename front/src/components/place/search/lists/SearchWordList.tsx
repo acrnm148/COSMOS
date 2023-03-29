@@ -1,24 +1,25 @@
 import React from "react";
-import { useQuery } from "react-query";
-import { getListWithSearchWord } from "../../apis/api/place";
-import DefaultImg from "../../assets/login/pinkCosmos.png";
 import { useRecoilState } from "recoil";
-import { clickBackground } from "../../recoil/states/SearchPageState";
-import { ClickAwayListener } from "@mui/base";
-
-export default function SearchWordList({
+import {
+  clickBackground,
   searchWord,
-  setSearchWord,
-  setItems,
-}: any) {
+  completeWord,
+} from "../../../../recoil/states/SearchPageState";
+import { useQuery } from "react-query";
+import { getAutoSearchList } from "../../../../apis/api/place";
+import defaultImg from "../../../../assets/place/default-img.png";
+
+export default function SearchWordList() {
   const [clickBg, setClickBg] = useRecoilState(clickBackground);
+  const [word, setWord] = useRecoilState(searchWord);
+  const [comWord, setComWord] = useRecoilState(completeWord);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getListWithSearchWord", searchWord],
-    queryFn: () => getListWithSearchWord(searchWord),
+    queryKey: ["getAutoSearchList", word],
+    queryFn: () => getAutoSearchList(word),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === null) return null;
 
   return (
     <div className="text-left rounded-lg max-h-[300px] overflow-auto float absolute z-[99999] w-full">
@@ -30,19 +31,14 @@ export default function SearchWordList({
               key={item.placeId}
               onClick={() => {
                 setClickBg(true);
-                setItems({
-                  placeId: item.placeId,
-                  name: item.name,
-                  address: item.address,
-                  type: item.type,
-                });
-                setSearchWord(item.name);
+                setWord(item.name);
+                setComWord(item.name);
               }}
             >
               <img
                 className="w-20 h-20 mr-5"
                 src={
-                  item.thumbNailUrl === null ? DefaultImg : item.thumbNailUrl
+                  item.thumbNailUrl === null ? defaultImg : item.thumbNailUrl
                 }
                 alt=""
               />
