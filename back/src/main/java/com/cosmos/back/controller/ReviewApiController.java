@@ -27,10 +27,11 @@ public class ReviewApiController {
 
     // 리뷰 생성하기(완료)
     @Operation(summary = "리뷰 등록", description = "리뷰를 등록함, 헤더에 토큰 필요")
-    @PostMapping("/reviews")
-    public ResponseEntity<Long> createReview(@RequestPart ReviewRequestDto dto,
+    @PostMapping("/reviews/users/{userSeq}")
+    public ResponseEntity<Long> createReview(@PathVariable Long userSeq,
+                                             @RequestPart("dto") ReviewRequestDto dto,
                                              @RequestPart("file") List<MultipartFile> multipartFile) {
-        Long reviewId = reviewService.createReview(dto, dto.getUserSeq(), multipartFile);
+        Long reviewId = reviewService.createReview(dto, userSeq, multipartFile);
 
         return new ResponseEntity<>(reviewId, HttpStatus.OK);
     }
@@ -38,10 +39,10 @@ public class ReviewApiController {
     // 리뷰 삭제하기(완료)
     @Operation(summary = "리뷰 삭제", description = "리뷰를 삭제함, 헤더에 토큰 필요")
     @DeleteMapping("/reviews/{reviewId}/users/{userSeq}")
-    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, @PathVariable Long userSeq) {
-        reviewService.deleteReview(reviewId, userSeq);
+    public ResponseEntity<Long> deleteReview(@PathVariable Long reviewId, @PathVariable Long userSeq) {
+        Long id = reviewService.deleteReview(reviewId, userSeq);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     // 장소별로 유저, 커플 유저의 리뷰 모두 불러오기
@@ -78,9 +79,9 @@ public class ReviewApiController {
 
     // 리뷰 수정
     @Operation(summary = "내 리뷰 수정하기", description = "내가 쓴 리뷰를 수정한다")
-    @PutMapping("/reviews/{reviewId}")
-    public ResponseEntity<Long> changeReview(@PathVariable Long reviewId, @RequestBody ReviewRequestDto dto) {
-        Long id = reviewService.changeReview(reviewId, dto, dto.getUserSeq());
+    @PutMapping("/reviews/{reviewId}/users/{userSeq}")
+    public ResponseEntity<Long> changeReview(@PathVariable Long reviewId, @PathVariable Long userSeq, @RequestBody ReviewRequestDto dto) {
+        Long id = reviewService.changeReview(reviewId, dto, userSeq);
 
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
