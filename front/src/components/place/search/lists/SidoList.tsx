@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { getSidoList } from "../../../apis/api/place";
+import { getSidoList } from "../../../../apis/api/place";
 import { useRecoilState } from "recoil";
-import { selectSido } from "../../../recoil/states/SearchPageState";
+import { selectSido } from "../../../../recoil/states/SearchPageState";
 export default function SidoList() {
   // 시/도 Recoil 수정
   const [sido, setSido] = useRecoilState(selectSido);

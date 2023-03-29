@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import Modal from "../common/Modal";
-import Cinema from "../../assets/place/cinema.png";
-import Cutlery from "../../assets/place/cutlery.png";
-import Coffee from "../../assets/place/coffee-cup.png";
-import Shopping from "../../assets/place/shopping-cart.png";
-import Gym from "../../assets/place/gym.png";
-import Suitcase from "../../assets/place/suitcase.png";
-import "../../css/placeSearch.css";
+import Modal from "../../common/Modal";
+import Cinema from "../../../assets/place/cinema.png";
+import Cutlery from "../../../assets/place/cutlery.png";
+import Coffee from "../../../assets/place/coffee-cup.png";
+import Shopping from "../../../assets/place/shopping-cart.png";
+import Gym from "../../../assets/place/gym.png";
+import Suitcase from "../../../assets/place/suitcase.png";
 import { useRecoilState } from "recoil";
-import { selectCategory } from "../../recoil/states/SearchPageState";
+import { selectCategory } from "../../../recoil/states/SearchPageState";
 
 export default function SearchFilter() {
   const [category, setCategory] = useRecoilState(selectCategory);

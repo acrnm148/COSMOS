@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import LikeImg from "../../../assets/like.png";
-import NoLikeImg from "../../../assets/no-like.png";
+import LikeImg from "../../../../assets/like.png";
+import NoLikeImg from "../../../../assets/no-like.png";
 import Swal from "sweetalert2";
-import { likePlace, dislikePlace } from "../../../apis/api/place";
+import { likePlace, dislikePlace } from "../../../../apis/api/place";
 
 export default function PlaceLike({ like, placeId }: any) {
   const [isLike, setIsLike] = useState(like);

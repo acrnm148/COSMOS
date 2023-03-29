@@ -1,11 +1,11 @@
 import React from "react";
 import { useQuery } from "react-query";
-import { getGugunList } from "../../../apis/api/place";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { getGugunList } from "../../../../apis/api/place";
+import { useRecoilState } from "recoil";
 import {
   selectSido,
   selectGugun,
-} from "../../../recoil/states/SearchPageState";
+} from "../../../../recoil/states/SearchPageState";
 
 export default function GugunList() {
   // 구/군 state값

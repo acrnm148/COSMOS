@@ -4,10 +4,10 @@ import {
   clickBackground,
   searchWord,
   completeWord,
-} from "../../../recoil/states/SearchPageState";
+} from "../../../../recoil/states/SearchPageState";
 import { useQuery } from "react-query";
-import { getAutoSearchList } from "../../../apis/api/place";
-import defaultImg from "../../../assets/place/default-img.png";
+import { getAutoSearchList } from "../../../../apis/api/place";
+import defaultImg from "../../../../assets/place/default-img.png";
 
 export default function SearchWordList() {
   const [clickBg, setClickBg] = useRecoilState(clickBackground);

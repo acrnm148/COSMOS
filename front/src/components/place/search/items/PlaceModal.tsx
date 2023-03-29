@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Modal from "../../common/Modal";
+import Modal from "../../../common/Modal";
 import Slider from "react-slick";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
@@ -11,12 +11,12 @@ import TourIcon from "@mui/icons-material/Tour";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import PaidIcon from "@mui/icons-material/Paid";
-import LikeImg from "../../../assets/like.png";
-import NoLikeImg from "../../../assets/no-like.png";
+import LikeImg from "../../../../assets/like.png";
+import NoLikeImg from "../../../../assets/no-like.png";
 import { useRecoilState } from "recoil";
-import { placeDetail } from "../../../recoil/states/SearchPageState";
+import { placeDetail } from "../../../../recoil/states/SearchPageState";
 import { useQuery } from "react-query";
-import { getPlaceDetail } from "../../../apis/api/place";
+import { getPlaceDetail } from "../../../../apis/api/place";
 
 export default function PlaceModal({ modalOpen, closeModal }: any) {
   const detail = useRecoilState(placeDetail);

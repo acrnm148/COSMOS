@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import SearchWait from "../../assets/place/search-wait.png";
-import SearchWord from "../../components/place/SearchWord";
-import GugunList from "../../components/place/lists/GugunList";
-import SidoList from "../../components/place/lists/SidoList";
+import SearchWord from "../../components/place/search/SearchWord";
+import GugunList from "../../components/place/search/lists/GugunList";
+import SidoList from "../../components/place/search/lists/SidoList";
 import TMap from "../../components/common/TMap";
-import PlaceList from "../../components/place/lists/PlaceList";
+import PlaceList from "../../components/place/search/lists/PlaceList";
 import { useRecoilState } from "recoil";
 import {
   selectSido,
@@ -16,7 +16,7 @@ import {
 } from "../../recoil/states/SearchPageState";
 import { useQuery } from "react-query";
 import { getPlacesWithConditions } from "../../apis/api/place";
-import SearchFilter from "../../components/place/SearchFilter";
+import SearchFilter from "../../components/place/search/SearchFilter";
 
 export default function PlaceSearch() {
   const sidoState = useRecoilState(selectSido);
@@ -55,7 +55,12 @@ export default function PlaceSearch() {
       setMapCenterState({ lat: data.midLatitude, lng: data.midLongitude });
       const markers = [{}];
       data.places.map((item: any) => {
-        markers.push({ lat: item.latitude, lng: item.longitude });
+        markers.push({
+          lat: item.latitude,
+          lng: item.longitude,
+          placeId: item.placeId,
+          type: item.type,
+        });
       });
       markers.splice(0, 1);
       setMapMarkersState(markers);

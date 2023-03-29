@@ -3,7 +3,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   clickBackground,
   searchWord,
-} from "../../recoil/states/SearchPageState";
+} from "../../../recoil/states/SearchPageState";
 import SearchWordList from "./lists/SearchWordList";
 
 export default function SearchWordItem() {

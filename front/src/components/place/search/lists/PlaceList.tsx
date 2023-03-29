@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import DefaultImg from "../../../assets/login/pinkCosmos.png";
-import ListCard from "../../common/ListCard";
+import DefaultImg from "../../../../assets/login/pinkCosmos.png";
+import ListCard from "../../../common/ListCard";
 import PlaceLike from "../items/PlaceLike";
 import PlaceModal from "../items/PlaceModal";
 import { useRecoilState } from "recoil";
-import { placeDetail } from "../../../recoil/states/SearchPageState";
+import { placeDetail } from "../../../../recoil/states/SearchPageState";
 
 export default function PlaceList({ data }: any) {
   const [detail, setDetail] = useRecoilState(placeDetail);
