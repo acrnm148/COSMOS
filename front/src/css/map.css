@@ -5,6 +5,7 @@
   fill: #ffb5c0;
   stroke: white;
   stroke-width: 1px;
+  cursor: pointer;
 }
 .land.click {
   fill: #ff8e9e;

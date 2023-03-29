@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import LightMarker from "../../assets/place/light-marker.png";
-export default function TMap({ state }: any) {
-  const [position, setPosition] = useState(state);
+import { useRecoilState } from "recoil";
+import { mapCenter, mapMarkers } from "../../recoil/states/SearchPageState";
+export default function TMap() {
+  const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
+  const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
+
+  // const [position, setPosition] = useState(mapCenterState);
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
   // 지도 div
   const mapRef = useRef<HTMLDivElement>(null);
@@ -9,13 +14,13 @@ export default function TMap({ state }: any) {
   useEffect(() => {
     // 좌표가 바뀔때마다 마커 재설정
     mapInstance?.setCenter(
-      new window.Tmapv2.LatLng(position.center.lat, position.center.lng)
+      new window.Tmapv2.LatLng(mapCenterState.lat, mapCenterState.lng)
     );
-  }, [position]);
+  }, [mapCenterState]);
 
   useEffect(() => {
-    const lat = state.center.lat;
-    const lng = state.center.lng;
+    const lat = mapCenterState.lat;
+    const lng = mapCenterState.lng;
     // 현재 좌표 위치로 지도 설정
     if (window.Tmapv2) {
       if (mapRef.current !== null) {
@@ -27,19 +32,23 @@ export default function TMap({ state }: any) {
             zoom: 15,
           });
 
-          const marker = new window.Tmapv2.Marker({
-            position: new window.Tmapv2.LatLng(lat, lng),
-            icon: LightMarker,
-            map: map,
-          });
+          mapMarkersState.map((item: any) => {
+            if (item.lat !== null || item.lng !== null) {
+              const marker = new window.Tmapv2.Marker({
+                position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                icon: LightMarker,
+                map: map,
+              });
+            }
 
-          // 웹
-          marker.addListener("click", function () {
-            console.log("CLICK");
-          });
-          // 앱
-          marker.addListener("touchstart", function () {
-            console.log("터치!");
+            //   // 웹
+            //   marker.addListener("click", function () {
+            //     console.log("CLICK");
+            //   });
+            //   // 앱
+            //   marker.addListener("touchstart", function () {
+            //     console.log("터치!");
+            //   });
           });
 
           setMapInstance(map);
@@ -48,7 +57,7 @@ export default function TMap({ state }: any) {
     } else {
       console.error("TmapV2 API is not loaded");
     }
-  }, [state]);
+  }, [mapCenterState]);
 
   return <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>;
 }

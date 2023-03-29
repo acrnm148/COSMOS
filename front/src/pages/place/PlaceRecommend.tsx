@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import LightBigData from "../../assets/place/light-bigdata.gif";
-import SelectRegion from "../../components/recommend/SelectRegion";
-import SelectCategory from "../../components/recommend/SelectCategory";
-
+import SelectRegion from "./SelectRegion";
 export default function PlaceRecommend() {
   const [selects, setSelects] = useState([false, false]);
 
@@ -46,11 +44,7 @@ export default function PlaceRecommend() {
           <img src={LightBigData} className="w-[100%] max-w-[600px]" />
         ) : null}
       </div>
-      {selects[0] ? (
-        <SelectRegion setSelects={setSelects} />
-      ) : selects[1] ? (
-        <SelectCategory />
-      ) : null}
+      {selects[0] ? <SelectRegion setSelects={setSelects} /> : null}
     </div>
   );
 }
