@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import Modal from "../common/Modal";
-import Cinema from "../../assets/place/cinema.png";
-import Cutlery from "../../assets/place/cutlery.png";
-import Coffee from "../../assets/place/coffee-cup.png";
-import Shopping from "../../assets/place/shopping-cart.png";
-import Gym from "../../assets/place/gym.png";
-import Suitcase from "../../assets/place/suitcase.png";
+import Modal from "../../common/Modal";
+import Cinema from "../../../assets/place/cinema.png";
+import Cutlery from "../../../assets/place/cutlery.png";
+import Coffee from "../../../assets/place/coffee-cup.png";
+import Shopping from "../../../assets/place/shopping-cart.png";
+import Gym from "../../../assets/place/gym.png";
+import Suitcase from "../../../assets/place/suitcase.png";
+import { useRecoilState } from "recoil";
+import { selectCategory } from "../../../recoil/states/SearchPageState";
 
-export default function SearchFilter({ filter, setFilter }: any) {
-  // 모달창
+export default function SearchFilter() {
+  const [category, setCategory] = useRecoilState(selectCategory);
   const [modalOpen, setModalOpen] = useState(false);
-
-  const openModal = () => {
-    setModalOpen(true);
-  };
-  const closeModal = () => {
-    setModalOpen(false);
-  };
 
   // 검색 태그
   const [tag0, setTag0] = useState(false);
@@ -32,8 +27,17 @@ export default function SearchFilter({ filter, setFilter }: any) {
       tag2 ? "culture " : ""
     }${tag3 ? "shopping " : ""}${tag4 ? "tour " : ""}${tag5 ? "leisure " : ""}`;
 
-    setFilter(resultFilter.slice(0, -1));
+    setCategory(resultFilter.slice(0, -1));
   }, [tag0, tag1, tag2, tag3, tag4, tag5]);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setModalOpen(false);
+  };
 
   return (
     <div className="flex mt-[10px] justify-center">

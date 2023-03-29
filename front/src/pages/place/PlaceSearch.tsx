@@ -1,106 +1,103 @@
 import React, { useState, useEffect } from "react";
-import SearchIcon from "../../assets/place/SearchIcon.png";
-import "../../css/placeSearch.css";
 import SearchWait from "../../assets/place/search-wait.png";
+import SearchWord from "../../components/place/search/SearchWord";
+import GugunList from "../../components/place/search/lists/GugunList";
+import SidoList from "../../components/place/search/lists/SidoList";
 import TMap from "../../components/common/TMap";
-import ListItems from "../../components/search/ListItems";
-import SearchFilter from "../../components/search/SearchFilter";
-import SidoList from "../../components/search/SidoList";
-import GugunList from "../../components/search/GugunList";
-import SearchWordList from "../../components/search/SearchWordList";
-
+import PlaceList from "../../components/place/search/lists/PlaceList";
 import { useRecoilState } from "recoil";
-import { clickBackground } from "../../recoil/states/SearchPageState";
+import {
+  selectSido,
+  selectGugun,
+  completeWord,
+  selectCategory,
+  mapCenter,
+  mapMarkers,
+} from "../../recoil/states/SearchPageState";
+import { useQuery } from "react-query";
+import { getPlacesWithConditions } from "../../apis/api/place";
+import SearchFilter from "../../components/place/search/SearchFilter";
 
 export default function PlaceSearch() {
-  // 시/도
-  const [sido, setSido] = useState();
-  // 구/군
-  const [gugun, setGugun] = useState();
-  // 검색어
-  const [searchWord, setSearchWord] = useState("");
-  // 필터
-  const [filter, setFilter] = useState("");
-  // 아이템리스트
-  const [items, setItems] = useState();
-  // 검색어 자동완성 박스
-  const [clickBg, setClickBg] = useRecoilState(clickBackground);
+  const sidoState = useRecoilState(selectSido);
+  const gugunState = useRecoilState(selectGugun);
+  const wordState = useRecoilState(completeWord);
+  const categoryState = useRecoilState(selectCategory);
+  const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
+  const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
+  const LIMIT = 10;
+  const [offset, setOffset] = useState(0);
 
-  const handleSearch = (e: any) => {
-    setSearchWord(e.target.value);
-  };
-
-  // 검색창 클릭하면 나오게, 그 외 다른거 클릭하면 안나오게
-  const handleSearchInput = (e: any) => {
-    e.stopPropagation();
-    setClickBg(false);
-  };
-
-  // TMap
-  const [state, setState] = useState({
-    center: {
-      lat: 0,
-      lng: 0,
-    },
+  const { data, isLoading } = useQuery({
+    queryKey: [
+      "getPlacesWithConditions",
+      sidoState[0].sidoName,
+      gugunState[0].gugunName,
+      wordState[0],
+      categoryState[0],
+      LIMIT,
+      offset,
+    ],
+    queryFn: () =>
+      getPlacesWithConditions(
+        1,
+        sidoState[0].sidoName,
+        gugunState[0].gugunName,
+        wordState[0],
+        categoryState[0],
+        LIMIT,
+        offset
+      ),
   });
 
-  // 자동완성 API
   useEffect(() => {
-    setClickBg(false);
-  }, [searchWord]);
+    if (data !== null && data !== undefined) {
+      setMapCenterState({ lat: data.midLatitude, lng: data.midLongitude });
+      const markers = [{}];
+      data.places.map((item: any) => {
+        markers.push({
+          lat: item.latitude,
+          lng: item.longitude,
+          placeId: item.placeId,
+          type: item.type,
+        });
+      });
+      markers.splice(0, 1);
+      setMapMarkersState(markers);
+    }
+  }, [data]);
+
+  if (isLoading) return null;
 
   return (
-    <div className="text-center w-[90%] mt-[50px] h-screen mb-10">
-      <div className="flex flex-row gap-2 justify-center mb-5">
-        <SidoList setSido={setSido} />
-        {sido === undefined ? (
-          <select className="h-12 w-[30%] border-4 border-lightMain opacity-50 rounded-lg focus:outline-none">
-            <option value="">구/군 선택</option>
-          </select>
+    <div className="w-[90%] text-center">
+      <div className="flex flex-row justify-center mt-10">
+        <div className="basis-1/3 h-14">
+          <SidoList />
+        </div>
+        <div className="basis-1/3 h-14">
+          <GugunList />
+        </div>
+      </div>
+      <div className="mt-5">
+        <SearchWord />
+      </div>
+      {sidoState[0].sidoName !== "" && gugunState[0].gugunName !== "" ? (
+        <SearchFilter />
+      ) : null}
+      <hr className="my-5 bg-slate-700" />
+      <div className="mt-5">
+        {data === null || data === undefined ? (
+          <div className="w-full h-[50vh]">
+            <img className="h-full m-auto rounded-lg" src={SearchWait} />
+          </div>
         ) : (
-          <GugunList selectedSidoCode={sido} setGugun={setGugun} />
+          <TMap />
         )}
       </div>
-      <div className="flex flex-col justify-center">
-        <input
-          className="w-[80%] m-auto h-12 border-4 border-lightMain opacity-50 rounded-lg focus:outline-none"
-          type="text"
-          placeholder="장소명으로 검색"
-          value={searchWord}
-          onChange={handleSearch}
-          onClick={handleSearchInput}
-        />
-        <div className="w-[80%] m-auto relative">
-          {searchWord === "" ? null : (
-            <SearchWordList
-              searchWord={searchWord}
-              setSearchWord={setSearchWord}
-              setItems={setItems}
-            />
-          )}
-        </div>
-      </div>
-
-      {sido !== undefined && gugun !== undefined ? (
-        <SearchFilter filter={filter} setFilter={setFilter} />
-      ) : null}
-      <hr className="my-[3vh]" />
-      {state.center.lat !== 0 && state.center.lng !== 0 ? (
-        <TMap state={state} />
-      ) : (
-        <div className="w-full h-[50vh]">
-          <img className="h-full m-auto rounded-lg" src={SearchWait} />
-        </div>
+      {data === null || data === undefined ? null : (
+        <PlaceList data={data.places} />
       )}
-      <hr className="mt-[3vh]" />
-      <ListItems
-        items={items}
-        setState={setState}
-        sido={sido}
-        gugun={gugun}
-        text={searchWord}
-        filter={filter}
-      />
     </div>
   );
 }
