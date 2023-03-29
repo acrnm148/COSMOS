@@ -3,9 +3,15 @@ package com.cosmos.back.service;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.PlanDto;
 import com.cosmos.back.model.Course;
+import com.cosmos.back.model.CoursePlace;
 import com.cosmos.back.model.Plan;
+import com.cosmos.back.model.User;
+import com.cosmos.back.model.place.Place;
+import com.cosmos.back.repository.course.CoursePlaceRepository;
 import com.cosmos.back.repository.course.CourseRepository;
+import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.plan.PlanRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -39,11 +46,20 @@ public class PlanServiceTest {
     @MockBean
     private PlanRepository planRepository;
 
-    @MockBean
+    @SpyBean
     private CourseRepository courseRepository;
 
     @Autowired
     private PlanService planService;
+
+    @SpyBean
+    private CoursePlaceRepository coursePlaceRepository;
+
+    @SpyBean
+    private PlaceRepository placeRepository;
+
+    @SpyBean
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("커플 일정 생성")
@@ -98,13 +114,50 @@ public class PlanServiceTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void updatePlanTest() throws Exception{
         //given
+        // 기존에 저장된 Plan
+        List<Course> courseList = new ArrayList<>();
+        List<Long> courseIdsList = new ArrayList<>();
+        Place place = Place.builder().name("testPlace").build();
+        placeRepository.save(place);
 
+        User user = User.builder().courses(new ArrayList<>()).userName("testName").build();
+        userRepository.save(user);
+
+        Course course = Course.createCourse(user);
+        System.out.println("course!!! = " + course);
+        courseRepository.save(course);
+
+        System.out.println("user = " + user.getUserSeq());
+        System.out.println("place = " + place.getId());
+        System.out.println("course!!! = " + course);
+
+        courseList.add(course);
+        courseIdsList.add(course.getId());
+
+        Plan plan = Plan.builder().planName("planTest").endDate("20230331").startDate("20230329").coupleId(1L).courses(courseList).build();
+        planRepository.save(plan);
+
+        // 수정을 위해 입력되는 PlanDto 생성 과정
+        List<Course> inputCourseList = new ArrayList<>();
+        List<Long> inputCourseIdsList = new ArrayList<>();
+        Course inputCourse = Course.builder().name("inputCourseTest").build();
+
+        inputCourseList.add(inputCourse);
+        inputCourseIdsList.add(inputCourse.getId());
+
+        Plan inputPlan = Plan.builder().planName("inputPlanTest").endDate("20230431").startDate("20230429").coupleId(1L).courses(inputCourseList).build();
+
+        PlanDto planDto = PlanDto.builder().plan(inputPlan).build();
+        planDto.setCourseIds(courseIdsList);
+
+        when(planRepository.findByIdAndCoupleId(anyLong(), anyLong())).thenReturn(plan);
+        when(courseRepository.findById(anyLong())).thenReturn(Optional.of(inputCourse));
 
         //when
-
+        Plan result = planService.updatePlan(planDto);
 
         //then
-
+        assertEquals(result.getPlanName(), inputPlan.getPlanName());
 
 
     }
