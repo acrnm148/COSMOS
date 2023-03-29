@@ -162,9 +162,14 @@ public class PlanService {
         List<PlanCourseDto> plansByDay = planRepository.findByCoupleIdAndDayQueryDsl(coupleId, YearMonthDay);
         List<Course> courses = new ArrayList<> ();
         PlanDto result = new PlanDto();
+        List<PlanDto> resultList = new ArrayList<> ();
         Long lastPlanId = 0L;
-        for (PlanCourseDto planCourse : plansByDay) {
+
+        int len = plansByDay.size();
+        for (int i=0; i<len; i++) {
+            PlanCourseDto planCourse = plansByDay.get(i);
             if (!(lastPlanId.equals(planCourse.getPlanId()))) {
+                result = new PlanDto();
                 lastPlanId = planCourse.getPlanId();
                 result.setPlanId(planCourse.getPlanId());
                 result.setCoupleId(planCourse.getCoupleId());
@@ -174,7 +179,7 @@ public class PlanService {
                 result.setCreateTime(planCourse.getCreateTime());
                 result.setUpdateTime(planCourse.getUpdateTime());
             }
-            if (planCourse.getId() != null) {
+            else {
                 courses.add(Course.builder()
                         .id(planCourse.getId())
                         .name(planCourse.getName())
@@ -182,8 +187,18 @@ public class PlanService {
                         .orders(planCourse.getOrders())
                         .build());
             }
+            if (lastPlanId == 0L && planCourse.getId() != null) {
+                courses.add(Course.builder()
+                        .id(planCourse.getId())
+                        .name(planCourse.getName())
+                        .date(planCourse.getDate())
+                        .orders(planCourse.getOrders())
+                        .build());
+            }
+            if (i<len-1 && !(planCourse.getPlanId().equals(plansByDay.get(i+1).getPlanId()))) {
+                result.setCourses(courses);
+            }
         }
-        result.setCourses(courses);
         if (result.getPlanId() == null) {
             return null;
         }
