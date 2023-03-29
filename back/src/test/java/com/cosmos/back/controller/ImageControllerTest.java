@@ -73,8 +73,8 @@ public class ImageControllerTest {
         MockMultipartFile file = new MockMultipartFile("file",
                 "test.PNG",
                 "image/png",
-                Files.newInputStream(Paths.get(resource.getURI().getPath())));
-                //new FileInputStream(resource.getURI().getPath()));
+//                Files.newInputStream(Paths.get(resource.getURI().getPath())));
+                new FileInputStream(resource.getURI().getPath()));
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.multipart("/api/pictures/1").file(file));

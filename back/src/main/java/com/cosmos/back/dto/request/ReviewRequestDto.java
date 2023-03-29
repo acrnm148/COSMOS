@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ReviewRequestDto {
-    private Long userSeq;
     private Long placeId;
     private List<String> categories;
     private List<String> indiCategories;
