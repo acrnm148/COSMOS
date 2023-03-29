@@ -35,9 +35,9 @@ export const getCoupleId = async() => {
 /**
  * POST : 유저 타입 저장
  */
-export const postUserType = async (ac:string, type1:string, type2:string) =>{
+export const postUserType = async (ac:string, userSeq:number,type1:string, type2:string) =>{
   console.log('유저 타입 저장 요청')
   const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac)
-  const {data} = await instance.post(`couples/type`,{'type1':type1, 'type2':type2})
+  const {data} = await instance.post(`couples/type`,{'userSeq':Number(userSeq), 'type1':type1, 'type2':type2})
   return data
 }

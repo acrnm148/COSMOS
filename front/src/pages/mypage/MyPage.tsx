@@ -6,6 +6,7 @@ import { LUser, userState } from "../../recoil/states/UserState"
 import { getUserInfo  } from "../../apis/api/user"
 import { useQuery } from "react-query"
 import { UserDispatch } from "../../layouts/MainLayout"
+import { backgroundImageGif, bgPngUrl, bgPngUrlTailwind, dateCateNames } from "../../recoil/states/ServeyPageState"
 
 interface USERINFORMATION {
   userId: number
@@ -27,6 +28,9 @@ declare const window: typeof globalThis & {
   };
   
   export default function MyPage(){
+      const [bgPng, setBgPng] = useRecoilState(bgPngUrlTailwind)
+      const [backgroundImage, setBackgroundImage] = useRecoilState(backgroundImageGif)
+      const [dateCate, setDateCateNames] =useRecoilState(dateCateNames)
       const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
       const [userInfo, setUserInfo] = useState<USERINFORMATION|null>(null)
       const [coupleInfo, setCoupleInfo] = useState<USERINFORMATION>()
@@ -45,6 +49,7 @@ declare const window: typeof globalThis & {
         // 생성된 유저 coupleId recoil에 저장
         const [user, setUser] = useRecoilState(userState)
         useEffect(()=>{
+          console.log(LoginUser)
           if(data){
             console.log('유저', data)
             setUserInfo({
@@ -63,8 +68,6 @@ declare const window: typeof globalThis & {
             })
           }
         },[data])
-
-    
 
 
 
@@ -87,14 +90,20 @@ declare const window: typeof globalThis & {
               }
             </div>
           </div>
-          {userInfo?.coupleYn === 'Y' ?
+          {userInfo?.type1 ?
             <div className="dateCategory w-full flex flex-col ">
-              <div className="dateCategory w-full h-60 bg-lightMain3 p-2">
-                {" "}
-                1순위 : {userInfo?.type1}
+              <div className={`flex dateCategory flex-col justify-end items-center w-full h-[40vh] bg-lightMain3 bg-center bg-cover bg-no-repeat ${backgroundImage[userInfo?.type1  as keyof typeof backgroundImage]}`}>
+                <div className="h-full bg-zinc-500/30 w-full flex flex-col justify-center text-white items-center">
+                  <p>1순위</p>
+                  <p>{dateCate[userInfo?.type1  as keyof typeof dateCate][1]}</p>
+                  <p><span>{dateCate[userInfo?.type1  as keyof typeof dateCate][0]}</span>형 코스모스</p>
+                </div>
               </div>
-              <div className="h-20 bg-lightMain4 flex justify-center items-center">
-                2순위 : {userInfo?.type2}형 코스모스
+              <div className={`h-24 bg-lightMain4 flex justify-center items-center bg-center bg-cover bg-no-repeat ${bgPng[userInfo?.type2  as keyof typeof bgPng]}`}>
+                <div className="h-full bg-zinc-500/50 w-full flex flex-col justify-center text-white items-center">
+                2순위 
+                <p><span>{dateCate[userInfo?.type2  as keyof typeof dateCate][0]}</span>형 코스모스</p>
+                </div>
               </div>
               <div className="h-20 w-full border-solid border-2 border-lightMain4  flex justify-center items-center">
                 <NavLink to="/servey" >취향설문 다시하기</NavLink>

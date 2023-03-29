@@ -34,7 +34,7 @@ export default function Footer() {
             </NavLink>
           </div>
           <div className="float-left w-1/5 flex justify-center">
-            <NavLink to="/">
+            <NavLink to="/schedule/day">
               <img src={CoupleIcon} alt="logo" className="h-10 w-10" />
             </NavLink>
           </div>
