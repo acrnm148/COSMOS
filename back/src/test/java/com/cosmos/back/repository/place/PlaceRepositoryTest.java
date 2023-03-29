@@ -143,43 +143,49 @@ class PlaceRepositoryTest {
         assertEquals(dto.getInsideYn(), "실외");
     }
 
-//    @Test
-//    @DisplayName("PlaceRepository 장소 찜 확인하기")
-//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-//    public void findPlaceLikeByPlaceIdUserSeqQueryDslTest() throws Exception {
-//        //given
-//        User user = User.builder().userSeq(1L).userName("testUser").build();
-//        userRepository.save(user);
-//        Place place = Place.builder().id(1L).name("testPlace").build();
-//        placeRepository.save(place);
-//        UserPlace userPlace = UserPlace.builder().place(place).user(user).build();
-//        userPlaceRepository.save(userPlace);
-//
-//        //when
-//        boolean like = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(1L, 1L);
-//        boolean unLike = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(2L, 2L);
-//
-//        //then
-//        assertEquals(like, true);
-//        assertEquals(unLike, false);
-//    }
-//
-//    @Test
-//    @DisplayName("PlaceRepository 시/도, 구/군, 검색어, 검색필터를 통한 장소 검색")
-//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-//    public void findPlaceListBySidoGugunTextFilterQueryDslTest() throws Exception {
-//        //given
-//        Place place = Place.builder().id(1L).address("부산광역시 강서구").name("갈비").type("restaurant").build();
-//
-//        Review review = Review.builder().id(1L).score(5).build();
-//        ReviewPlace.builder().place(place).review(review).build();
-//
-//        //when
-//        List<PlaceSearchListResponseDto> test1 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", "갈비", "restaurant", 10, 0);
-//
-//        //then
-//        System.out.println("test1 = " + test1);
-////        assertEquals(test1.get(0).getPlaceId(), 1L);
-//
-//    }
+    @Test
+    @DisplayName("PlaceRepository 장소 찜 확인하기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void findPlaceLikeByPlaceIdUserSeqQueryDslTest() throws Exception {
+        //given
+        User userLike = User.builder().userName("testLikeUser").build();
+        userRepository.save(userLike);
+        User userUnLike = User.builder().userName("testUnLikeUser").build();
+        userRepository.save(userUnLike);
+        Place place = Place.builder().name("testPlace").build();
+        placeRepository.save(place);
+        UserPlace userPlace = UserPlace.builder().place(place).user(userLike).build();
+        userPlaceRepository.save(userPlace);
+
+        //when
+        boolean like = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(place.getId(), userLike.getUserSeq());
+        boolean unLike = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(place.getId(), userUnLike.getUserSeq());
+
+        //then
+        assertEquals(like, true);
+        assertEquals(unLike, false);
+    }
+
+    @Test
+    @DisplayName("PlaceRepository 시/도, 구/군, 검색어, 검색필터를 통한 장소 검색")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void findPlaceListBySidoGugunTextFilterQueryDslTest() throws Exception {
+        //given
+        Place place = Place.builder().address("부산광역시 강서구").name("갈비").type("restaurant").build();
+        placeRepository.save(place);
+
+        Review review = Review.builder().score(5).build();
+        reviewRepository.save(review);
+
+        ReviewPlace reviewPlace = ReviewPlace.builder().place(place).review(review).build();
+        reviewPlaceRepository.save(reviewPlace);
+
+        //when
+        List<PlaceSearchListResponseDto> test1 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", "갈비", "restaurant", 10, 0);
+
+        //then
+        System.out.println("test1 = " + test1);
+        assertEquals(test1.get(0).getPlaceId(), place.getId());
+
+    }
 }

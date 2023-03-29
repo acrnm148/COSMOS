@@ -27,7 +27,6 @@ public class PlanService {
      * 커플 일정 생성
      */
     public Plan createPlan(PlanDto dto) {
-
         Plan plan = Plan.builder()
                 .coupleId(dto.getCoupleId())
                 .planName(dto.getPlanName())
@@ -36,7 +35,6 @@ public class PlanService {
                 //.courses(newCourses)
                 .createTime(now())
                 .build();
-
         List<Course> newCourses = new ArrayList<> ();
         List<Long> ids = dto.getCourseIds();
         int order = 1;
@@ -92,7 +90,7 @@ public class PlanService {
     public void deletePlan(Long coupleId, Long planId) {
         Plan plan = planRepository.findByIdAndCoupleId(planId, coupleId);
         System.out.println("커플 일정 삭제 완료, id:"+planId);
-        planRepository.save(plan);
+        planRepository.delete(plan);
     }
 
     /**
