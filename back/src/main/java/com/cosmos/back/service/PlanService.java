@@ -119,10 +119,15 @@ public class PlanService {
 
         List<PlanCourseDto> plansByMonth= planRepository.findByCoupleIdAndMonthQueryDsl(coupleId, YearMonthNext,YearMonthNow);
         List<Course> courses = new ArrayList<> ();
+        int len = plansByMonth.size();
         PlanDto result = new PlanDto();
+        List<PlanDto> resultList = new ArrayList<> ();
         Long lastPlanId = 0L;
-        for (PlanCourseDto planCourse : plansByMonth) {
+
+        for (int i=0; i<len; i++) {
+            PlanCourseDto planCourse = plansByMonth.get(i);
             if (!(lastPlanId.equals(planCourse.getPlanId()))) {
+                result = new PlanDto();
                 lastPlanId = planCourse.getPlanId();
                 result.setPlanId(planCourse.getPlanId());
                 result.setCoupleId(planCourse.getCoupleId());
@@ -132,7 +137,7 @@ public class PlanService {
                 result.setCreateTime(planCourse.getCreateTime());
                 result.setUpdateTime(planCourse.getUpdateTime());
             }
-            if (planCourse.getId() != null) {
+            else {
                 courses.add(Course.builder()
                         .id(planCourse.getId())
                         .name(planCourse.getName())
@@ -140,8 +145,18 @@ public class PlanService {
                         .orders(planCourse.getOrders())
                         .build());
             }
+            if (lastPlanId == 0L && planCourse.getId() != null) {
+                courses.add(Course.builder()
+                        .id(planCourse.getId())
+                        .name(planCourse.getName())
+                        .date(planCourse.getDate())
+                        .orders(planCourse.getOrders())
+                        .build());
+            }
+            if (i<len-1 && !(planCourse.getPlanId().equals(plansByMonth.get(i+1).getPlanId()))) {
+                result.setCourses(courses);
+            }
         }
-        result.setCourses(courses);
 
         if (result.getPlanId() == null) {
             return null;
