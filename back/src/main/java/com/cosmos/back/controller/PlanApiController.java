@@ -56,22 +56,20 @@ public class PlanApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "커플 일정 월별 조회(ex: 2023.01)", description = "커플 일정 월별 조회")
-    @PostMapping("/plans/month") //2023.01
-    public ResponseEntity<?> getPlanListByMonth(@RequestBody Map<String, Object> map) {
-        Long coupleId = Long.valueOf((Integer) map.get("coupleId"));
-        String date = (String) map.get("date");
-        PlanDto plans = planService.getPlanListByMonth(coupleId, date);
+    @Operation(summary = "커플 일정 월별 조회(ex: 202301)", description = "커플 일정 월별 조회, coupleId와 month(202303)을 넘겨야한다.")
+    @GetMapping("/plans/{coupleId}/month/{month}") //202301
+    public ResponseEntity<?> getPlanListByMonth(@PathVariable Long coupleId, @PathVariable String month) {
+
+        List<PlanDto> plans = planService.getPlanListByMonth(coupleId, month);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);
     }
 
-    @Operation(summary = "커플 일정 일별 조회(ex: 2023.01.30)", description = "커플 일정 일별 조회")
-    @PostMapping("/plans/day") //2023.01.30
-    public ResponseEntity<?> getPlanListByDay(@RequestBody Map<String, Object> map) {
-        Long coupleId = Long.valueOf((Integer) map.get("coupleId"));
-        String date = (String) map.get("date");
-        PlanDto plans = planService.getPlanListByDay(coupleId, date);
+    @Operation(summary = "커플 일정 일별 조회(ex: 20230130)", description = "커플 일정 일별 조회, coupleId와 day(20230329)를 주소창에 입력이 필요")
+    @GetMapping("/plans/{coupleId}/day/{day}") //20230130
+    public ResponseEntity<?> getPlanListByDay(@PathVariable Long coupleId, @PathVariable String day) {
+
+        PlanDto plans = planService.getPlanListByDay(coupleId, day);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);
     }

@@ -98,9 +98,9 @@ public class PlanService {
     /**
      * 커플 일정 월별 조회 month
      */
-    public PlanDto getPlanListByMonth(Long coupleId, String date) {
+    public List<PlanDto> getPlanListByMonth(Long coupleId, String date) {
         String year = date.substring(0,4);
-        String month = date.substring(5,7);
+        String month = date.substring(4,6);
 
         String YearMonthNow = year+"-"+month;
 
@@ -146,7 +146,7 @@ public class PlanService {
         if (result.getPlanId() == null) {
             return null;
         }
-        return result;
+        return null;
     }
 
     /**
@@ -154,8 +154,8 @@ public class PlanService {
      */
     public PlanDto getPlanListByDay(Long coupleId, String date) {
         String year = date.substring(0,4);
-        String month = date.substring(5,7);
-        String day = date.substring(8,10);
+        String month = date.substring(4,6);
+        String day = date.substring(6,8);
 
         String YearMonthDay = year+"-"+month+"-"+day;
 
