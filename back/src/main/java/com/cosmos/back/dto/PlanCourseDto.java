@@ -19,6 +19,6 @@ public class PlanCourseDto {
     private Long id;
     private String name;
     private String date;
-    private String subCategory;
+    //private String subCategory;
     private Integer orders;
 }
