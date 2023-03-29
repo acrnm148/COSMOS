@@ -26,7 +26,7 @@ export default function SouthKorea() {
                   setSido({ sidoCode: item.sidoCode, sidoName: item.name });
                 }}
                 key={item.sidoCode}
-                className={sido === item.name ? "land click" : "land"}
+                className={sido.sidoName === item.name ? "land click" : "land"}
                 title={item.name}
                 d={item.d}
               />
