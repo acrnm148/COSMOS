@@ -73,7 +73,6 @@ const router = createBrowserRouter([
     children: [
       { path: "recommend", element: <PlaceRecommend /> },
       { path: "result", element: <PlaceResult /> },
-      // { path: "drag", element: <Test /> },
     ],
   },
   {
