@@ -52,7 +52,7 @@ jacocoTestCoverageVerification {
             excludes = [
 //                    '*.KakaoProfile*',
 //                    '*.Jwt*',
-//                    '*/model*'
+//                    '*.model*'
             ] + Qdomains // 제외할 Qdomains 패턴 추가
         }
     }
