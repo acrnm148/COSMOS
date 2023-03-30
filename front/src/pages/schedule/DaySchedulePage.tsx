@@ -174,13 +174,16 @@ export function DaySchedulePage(){
         }
         console.log('allDays', allDays)
         let temp:any = {}
-        // allDays.map((day)=>{
-        //     return temp[day]:[]
-        // })
-        setScheduleDaysList(allDays.map((day)=>{
-            const temp = day
-            return temp
-        }))
+
+        allDays.forEach((day) => {
+          temp[day] = [];
+        });
+        setScheduleDaysList(temp);
+        // setScheduleDaysList(allDays.map((day)=>({
+        //     day : day,
+        //     contents : []
+        // })))
+        console.log('temp',temp)
         
     },[startDate, endDate])
     const checkStartDate = (newValue: any) =>{
@@ -273,18 +276,20 @@ export function DaySchedulePage(){
                                             <div className='rounded-lg p-2 border-2 border-solid border-lightMain2 m-2 h-full min-h-[30vh]'>
                                                 {(startDate && endDate)&&
                                                     <div>
-                                                        날짜선택
-
-                                                        {/* {scheduleDaysList&&
-                                                            scheduleDaysList.map((dayList) =>{
-                                                                return <div>{Object.keys(dayList)}</div>
-                                                            })
-                                                        } */}
-                                                        {allDays &&
-                                                            allDays.map((day) =>{
-                                                                return <div>{day}</div>
+                                                        {scheduleDaysList&&
+                                                            // scheduleDaysList.map((dayList) =>{
+                                                            //     return <div>{Object.keys(dayList)}</div>
+                                                            // })
+                                                            Object.keys(scheduleDaysList).map((day)=>{
+                                                                return(
+                                                                    <div className="h-16 mb-2 border-2 rounded-lg border-solid border-lightMain3 flex items-center justify-between">
+                                                                        <div className="flex justify-center items-center px-8 h-full rounded-l-lg bg-lightMain3">{day.slice(4,6)}월 {day.slice(6)}일</div>
+                                                                        <div className="px-8">코스선택</div>
+                                                                    </div>
+                                                                ) 
                                                             })
                                                         }
+                                                        
                                                     </div>
                                                 }
                                             </div>
