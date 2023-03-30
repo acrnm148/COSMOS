@@ -360,7 +360,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     @Override
     public boolean findPlaceLikeByPlaceIdUserSeqQueryDsl (Long placeId, Long userSeq) {
         QUserPlace qUserPlace = QUserPlace.userPlace;
-        QPlace qPlace = QPlace.place;
         Boolean result;
 
         Integer like = queryFactory
@@ -428,8 +427,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 builder.and(qPlace.type.contains(filter));
             }
         }
-
-
         return queryFactory.select(Projections.constructor(PlaceSearchListResponseDto.class,
                     qPlace.id,
                     qPlace.name,
