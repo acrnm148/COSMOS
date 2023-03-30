@@ -10,6 +10,9 @@ export default function WishList() {
     const { courseId, editId } = useParams();
     const navigate = useNavigate();
 
+    console.log(courseId);
+    // console.log(editId);
+
     return (
         <div>
             <div className="menu w-full h-16 bg-white flex items-center">
@@ -47,8 +50,9 @@ export default function WishList() {
             {courseId === undefined && editId === undefined
                 ? !toggle && <WishCourse />
                 : null}
-
-            {courseId != undefined && <CourseDetail id={courseId} />}
+            {courseId != undefined && editId === undefined ? (
+                <CourseDetail id={courseId} />
+            ) : null}
             {courseId === undefined && editId != undefined ? (
                 <CourseEdit id={editId} />
             ) : null}
