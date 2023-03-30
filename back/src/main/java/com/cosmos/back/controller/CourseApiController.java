@@ -42,8 +42,8 @@ public class CourseApiController {
 
     @Operation(summary = "코스 찜", description = "코스 찜")
     @PutMapping("/courses/{courseId}")
-    public ResponseEntity<Long> likeCourse(@PathVariable Long courseId) {
-        Map<String, String> map = courseService.likeCourse(courseId);
+    public ResponseEntity<Long> likeCourse(@PathVariable Long courseId, @RequestBody CourseNameRequestDto dto) {
+        Map<String, String> map = courseService.likeCourse(courseId, dto.getName());
 
         return new ResponseEntity<>(Long.parseLong(map.get("courseId")), HttpStatus.OK);
     }

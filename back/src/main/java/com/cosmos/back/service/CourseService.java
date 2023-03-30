@@ -55,6 +55,7 @@ public class CourseService {
     public Long createCourseByUser(Long userSeq, CouserUesrRequestDto dto) {
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
         Course course = Course.createCourse(user);
+        course.setWish(true);
 
         courseRepository.save(course);
 
@@ -154,14 +155,16 @@ public class CourseService {
 
     // 코스 찜
     @Transactional
-    public Map<String, String> likeCourse(Long courseId) {
+    public Map<String, String> likeCourse(Long courseId, String name) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         course.setWish(true);
+        course.setName(name);
 
         Map<String, String> map = new HashMap<>();
         map.put("courseId", Long.toString(course.getId()));
         map.put("wish", Boolean.toString(course.getWish()));
+        map.put("name", name);
 
         return map;
     }
