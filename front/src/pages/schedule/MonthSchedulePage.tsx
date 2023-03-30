@@ -114,7 +114,7 @@ export function MonthSchedulePage(){
                                     <div
                                         className={`min-h-[8rem] flex flex-col items-center border-b border-r p-2`}
                                         key={day}>
-                                        <NavLink to={"/schedule/day"} state={{week:{week}, day:{day}}}>
+                                        <NavLink to={"/schedule/day"} state={{year:{year}, month:{month}, week:{week}, day:{day}}}>
                                         <div className={`number flex text-xs font-bold h-6 w-6 justify-center items-center cursor-pointer`}> 
                                             {format(day, 'dd')}
                                         </div>

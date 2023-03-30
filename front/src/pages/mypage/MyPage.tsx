@@ -38,7 +38,7 @@ declare const window: typeof globalThis & {
       let dispatch = useContext(UserDispatch);
       
       // if ((LoginUser.seq > -1)&& (LoginUser.acToken)){
-      //     console.log('로그인된유저', LoginUser.seq)
+          console.log('로그인된유저', LoginUser.acToken)
       //   }
         const {data} =  useQuery({
             queryKey: ["getUserInfo"],
@@ -50,7 +50,7 @@ declare const window: typeof globalThis & {
         useEffect(()=>{
           // console.log(LoginUser)
           if(data){
-            // console.log('유저', data)
+            console.log('유저', data)
             setUserInfo({
               userId : data.userId,
               userName : data.userName,
@@ -104,7 +104,7 @@ declare const window: typeof globalThis & {
   return (
     <div className="h-screen">
       <div className="flex w-screen items-center content-center ">
-        <div className="w-full flex m-auto flex-col justify-center md:w-5/6 lg:w-3/6">
+        <div className="w-full flex m-auto flex-col justify-center items-center md:w-5/6 lg:w-3/6">
           <div className="profile justify-center items-end flex mt-10 mb-4">
               {userInfo?.coupleYn === 'Y' ?
               <>
@@ -119,11 +119,12 @@ declare const window: typeof globalThis & {
               </div>
               </>
               :
-              <div className={"rounded-full w-28 h-28 max-w-[950px]"}>
-                <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+              <div className={"rounded-lg w-28 h-28 max-w-[950px]"}>
+                <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-lg" alt="" />
               </div>
               }
               </div>
+              <div className="mb-2">{userInfo?.userName}</div>
           {userInfo?.type1 ?
             <div className="dateCategory w-full flex flex-col ">
               <div className={`flex dateCategory flex-col justify-end items-center w-full h-[40vh] bg-lightMain3 bg-center bg-cover bg-no-repeat ${backgroundImage[userInfo?.type1  as keyof typeof backgroundImage]}`}>
@@ -133,8 +134,8 @@ declare const window: typeof globalThis & {
                   <p><span>{dateCate[userInfo?.type1  as keyof typeof dateCate][0]}</span>형 코스모스</p>
                 </div>
               </div>
-              <div className={`h-24 bg-lightMain4 flex justify-center items-center bg-center bg-cover bg-no-repeat ${bgPng[userInfo?.type2  as keyof typeof bgPng]}`}>
-                <div className="h-full bg-zinc-500/50 w-full flex flex-col justify-center text-white items-center">
+              <div className={`h-24 bg-lightMain2 flex justify-center items-center`}>
+                <div className="h-full w-full flex flex-col justify-center text-white items-center">
                 2순위 
                 <p><span>{dateCate[userInfo?.type2  as keyof typeof dateCate][0]}</span>형 코스모스</p>
                 </div>
