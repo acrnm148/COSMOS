@@ -29,6 +29,7 @@ import org.springframework.test.annotation.Rollback;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -144,4 +145,42 @@ public class CourseServiceTest {
         // 평점이 3.14이어야 한다.
         assertEquals(courseResponseDto.getPlaces().get(0).getScore(), 3.14);
     }
+
+    @Test
+    @DisplayName("CourseService 코스 생성")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void 코스_생성() throws Exception {
+        User mockUser = User.builder().userName("mock user").build();
+        userRepository.save(mockUser);
+
+        Place place1 = Place.builder().name("mock place 1").type("cafe").build();
+        Place place2 = Place.builder().name("mock place 2").type("restaurant").build();
+
+        placeRepository.save(place1);
+        placeRepository.save(place2);
+
+        List<String> mockCategories = new ArrayList<>();
+        mockCategories.add("cafe");
+        mockCategories.add("restaurant");
+
+        CourseRequestDto mockCourseRequestDto = CourseRequestDto.builder().sido("서울특별시").gugun("강남구").categories(mockCategories).userSeq(1L).build();
+
+        CourseResponseDto courseResponseDto = courseService.createCourse(mockCourseRequestDto);
+
+        assertEquals(courseResponseDto.getPlaces().size(), 2);
+    }
+
+//    @Test
+//    @DisplayName("CourseService 코스 찜")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void 코스_찜() throws Exception {
+//        Course mockCourse = Course.builder().name("mock course").build();
+//        courseRepository.save(mockCourse);
+//
+//        when(courseRepository.findById(anyLong())).thenReturn(Optional.of(mockCourse));
+//
+//        Map<String, String> mockMap = courseService.likeCourse(1L);
+//
+//        assertEquals(mockMap.get("wish"), "true");
+//    }
 }

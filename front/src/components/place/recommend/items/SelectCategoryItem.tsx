@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import Cinema from "../../assets/place/cinema.png";
-import Cutlery from "../../assets/place/cutlery.png";
-import Coffee from "../../assets/place/coffee-cup.png";
-import Shopping from "../../assets/place/shopping-cart.png";
-import Gym from "../../assets/place/gym.png";
-import Suitcase from "../../assets/place/suitcase.png";
-import LoveIcon from "../../assets/place/love-icon.png";
+import Cinema from "../../../../assets/place/cinema.png";
+import Cutlery from "../../../../assets/place/cutlery.png";
+import Coffee from "../../../../assets/place/coffee-cup.png";
+import Shopping from "../../../../assets/place/shopping-cart.png";
+import Gym from "../../../../assets/place/gym.png";
+import Suitcase from "../../../../assets/place/suitcase.png";
+import LoveIcon from "../../../../assets/place/love-icon.png";
 
-export default function SelectCategoryItem({ tags }: any) {
+export default function SelectCategoryItem({ tags, index }: any) {
   const [tag, setTag] = useState(tags);
 
   return (
-    <div className="flex flex-row justify-center gap-[20px]">
+    <div className="flex flex-row justify-center gap-[20px]" key={index}>
       <span className="icon-span">
         <img className="love-icon" src={LoveIcon} alt="" />
       </span>

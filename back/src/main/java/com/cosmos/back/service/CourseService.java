@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -113,12 +114,16 @@ public class CourseService {
 
     // 코스 찜
     @Transactional
-    public Long likeCourse(Long courseId) {
+    public Map<String, String> likeCourse(Long courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         course.setWish(true);
 
-        return course.getId();
+        Map<String, String> map = new HashMap<>();
+        map.put("courseId", Long.toString(course.getId()));
+        map.put("wish", Boolean.toString(course.getWish()));
+
+        return map;
     }
 
     // 코스 삭제
@@ -205,17 +210,19 @@ public class CourseService {
 
     // 코스 수정(추가)
     @Transactional
-    public void updateCourseAdd (Long courseId, CourseUpdateAddDelRequestDto dto) {
+    public Long updateCourseAdd (Long courseId, CourseUpdateAddDelRequestDto dto) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
         Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
         int size = course.getCoursePlaces().size();
         CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, ++size);
         coursePlaceRepository.save(coursePlace);
+
+        return place.getId();
     }
 
     // 코스 수정(삭제)
     @Transactional
-    public void updateCourseDelete (Long courseId, CourseUpdateAddDelRequestDto dto) {
+    public Long updateCourseDelete (Long courseId, CourseUpdateAddDelRequestDto dto) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
         List<CoursePlace> coursePlaces = course.getCoursePlaces();
 
@@ -225,14 +232,15 @@ public class CourseService {
                 courseRepository.deleteCoursePlaceQueryDSL(courseId, cp);
             } else {
                 cp.setOrders(order++);
-                coursePlaceRepository.save(cp);
             }
         }
+
+        return dto.getPlaceId();
     }
 
     // 코스 수정(순서)
     @Transactional
-    public void updateCourseOrders (Long courseId, CourseUpdateOrdersRequestDto dto) {
+    public Long updateCourseOrders (Long courseId, CourseUpdateOrdersRequestDto dto) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
         List<CoursePlace> coursePlaces = course.getCoursePlaces();
 
@@ -248,5 +256,7 @@ public class CourseService {
             coursePlace.setOrders(orders++);
             coursePlaceRepository.save(coursePlace);
         }
+
+        return course.getId();
     }
 }

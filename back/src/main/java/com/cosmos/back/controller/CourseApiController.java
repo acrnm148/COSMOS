@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "course", description = "코스 API")
 @RestController
@@ -37,9 +38,9 @@ public class CourseApiController {
     @Operation(summary = "코스 찜", description = "코스 찜")
     @PutMapping("/courses/{courseId}")
     public ResponseEntity<Long> likeCourse(@PathVariable Long courseId) {
-        Long id = courseService.likeCourse(courseId);
+        Map<String, String> map = courseService.likeCourse(courseId);
 
-        return new ResponseEntity<>(id, HttpStatus.OK);
+        return new ResponseEntity<>(Long.parseLong(map.get("courseId")), HttpStatus.OK);
     }
 
     @Operation(summary = "코스 찜 삭제", description = "코스 찜 삭제")
@@ -88,7 +89,7 @@ public class CourseApiController {
         return new ResponseEntity<>(courseResponseDto , HttpStatus.OK);
     }
 
-    @Operation(summary = "코스 내용 수정", description = "코스 내용 중 name과 subCategory만 수정")
+    @Operation(summary = "코스 내용 수정", description = "코스 내용 중 name만 수정")
     @PutMapping("/courses/{courseId}/contents")
     public ResponseEntity<Long> updateCourseContents(@PathVariable Long courseId, @RequestBody CourseUpdateContentsRequestDto dto) {
         Long resultCourseId = courseService.updateCourseContents(courseId, dto);
@@ -98,22 +99,22 @@ public class CourseApiController {
 
     @Operation(summary = "코스 수정(추가)", description = "코스 장소 추가(코스에 포함된 장소들 중에서 마지막에 추가된다)")
     @PutMapping("/courses/{courseId}/add")
-    public ResponseEntity<?> updateCourseAdd(@PathVariable Long courseId, @RequestBody CourseUpdateAddDelRequestDto dto) {
-        courseService.updateCourseAdd(courseId, dto);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Long> updateCourseAdd(@PathVariable Long courseId, @RequestBody CourseUpdateAddDelRequestDto dto) {
+        Long placeId = courseService.updateCourseAdd(courseId, dto);
+        return new ResponseEntity<>(placeId, HttpStatus.OK);
     }
 
     @Operation(summary = "코스 수정(삭제)", description = "코스 장소 삭제")
     @PutMapping("/courses/{courseId}/delete")
-    public ResponseEntity<?> updateCourseDelete(@PathVariable Long courseId, @RequestBody CourseUpdateAddDelRequestDto dto) {
-        courseService.updateCourseDelete(courseId, dto);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Long> updateCourseDelete(@PathVariable Long courseId, @RequestBody CourseUpdateAddDelRequestDto dto) {
+        Long placeId = courseService.updateCourseDelete(courseId, dto);
+        return new ResponseEntity<>(placeId, HttpStatus.OK);
     }
 
     @Operation(summary = "코스 수정(순서)", description = "코스 장소 순서 변경")
     @PutMapping("/courses/{courseId}/orders")
-    public ResponseEntity<?> updateCourseOrders(@PathVariable Long courseId, @RequestBody CourseUpdateOrdersRequestDto dto) {
-        courseService.updateCourseOrders(courseId, dto);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Long> updateCourseOrders(@PathVariable Long courseId, @RequestBody CourseUpdateOrdersRequestDto dto) {
+        Long id = courseService.updateCourseOrders(courseId, dto);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }

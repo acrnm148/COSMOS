@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CourseUpdateContentsRequestDto {
     private String name;
-    private String subCategory;
 }

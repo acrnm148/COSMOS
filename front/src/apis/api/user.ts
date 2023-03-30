@@ -18,20 +18,26 @@ import { AxiosAuthApi, defaultInstance } from "../utils"
  * @returns coupleId : numbers(len() === 10)
  * 
  */
-export const getCoupleId = async(isNewCouple:number) => {
-  if(isNewCouple === 2){
+export const getCoupleId = async() => {
     const {data} = await defaultInstance.get('makeCoupleId')
     return data
-  }
 }
 
 /**
- * POST : 마이페이지 접근시 유저 데이터 요청
+ * POST : 커플 생성요청
  */
- export const makeCouple = async (coupleId:any, userSeq:number, coupleUserSeq:number, invited:number) => {
-  if(invited===1){
-    const {data} = await defaultInstance.post(`couples/accept/${Number(coupleId)}`, {'userSeq':userSeq, 'coupleUserSeq':coupleUserSeq})
+ export const makeCouple = async (coupleId:any, userSeq:number, coupleUserSeq:number) => {
+   console.log('커플 생성요청', coupleId, userSeq, coupleUserSeq)
+    const {data} = await defaultInstance.post(`couples/accept/${coupleId}`, {'userSeq':userSeq, 'coupleUserSeq':coupleUserSeq})
     return data
-  }
 };
 
+/**
+ * POST : 유저 타입 저장
+ */
+export const postUserType = async (ac:string, userSeq:number,type1:string, type2:string) =>{
+  console.log('유저 타입 저장 요청')
+  const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac)
+  const {data} = await instance.post(`couples/type`,{'userSeq':Number(userSeq), 'type1':type1, 'type2':type2})
+  return data
+}

@@ -1,7 +1,5 @@
 .card {
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
 }
 .card-content {
@@ -12,4 +10,13 @@
 }
 .card-content:hover {
   background-color: #f0f0f0;
+}
+.content-detail {
+  width: 90%;
+  height: 10vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
 }

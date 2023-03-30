@@ -22,6 +22,7 @@ public class SimplePlaceDto {
     private Integer orders; // 순서
     private String phoneNumber; // 전화번호
 
+
     // 별점을 제외한 생성자
     public SimplePlaceDto (Long placeId, String placeName, String latitude, String longitude, String thumbNailUrl, String address, String overview, Integer orders, String phoneNumber) {
         this.placeId = placeId;
