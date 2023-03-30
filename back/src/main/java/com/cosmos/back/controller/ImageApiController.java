@@ -29,14 +29,14 @@ public class ImageApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "사진 삭제", description = "ImageId와 CoupleId를 Url 상으로 입력 필요")
+    @Operation(summary = "사진 삭제", description = "ImageId와 CoupleId 입력 필요")
     @DeleteMapping("/pictures/{imageId}/{coupleId}")
     public ResponseEntity<?> deleteImage(@PathVariable("imageId") Long imageId, @PathVariable("coupleId") Long coupleId) {
         imageService.deleteImage(imageId, coupleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "사진 전체 조회", description = "coupleId Url 입력 시 해당 커플 사진 전체 조회가능")
+    @Operation(summary = "사진 전체 조회", description = "coupleId, limit, offset 입력 시 해당 커플 사진 전체 조회가능")
     @GetMapping("/pictures/{coupleId}")
     public ResponseEntity<List> findTotalImage(@PathVariable Long coupleId, @RequestParam Integer limit, @RequestParam Integer offset) {
         List<ImageResponseDto> totalImage = imageService.findTotalImage(coupleId, limit, offset);
