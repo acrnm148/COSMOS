@@ -44,7 +44,10 @@ public class CourseService {
         CourseResponseDto courseResponseDto = new CourseResponseDto();
         courseResponseDto.setCourseId(course.getId());
 
-        // 4. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+        // 4. CourseResponseDto에 midLatitude와 midLongitude 넣기
+        saveMidLatitudeAndMidLongitude(courseResponseDto, places);
+
+        // 5. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
         List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
 
         return courseResponseDto;
@@ -70,6 +73,23 @@ public class CourseService {
         }
 
         return places;
+    }
+
+    public void saveMidLatitudeAndMidLongitude(CourseResponseDto courseResponseDto, List<Place> places) {
+        Double sumLatitude = 0.0;
+        Double sumLongitude = 0.0;
+        int count = 0;
+
+        for (Place place : places) {
+            if (place.getLatitude() != null && place.getLongitude() != null) {
+                sumLatitude += Double.parseDouble(place.getLatitude());
+                sumLongitude += Double.parseDouble(place.getLongitude());
+                count++;
+            }
+        }
+
+        courseResponseDto.setMidLatitude(sumLatitude / count);
+        courseResponseDto.setMidLongitude(sumLongitude / count);
     }
 
     // CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
