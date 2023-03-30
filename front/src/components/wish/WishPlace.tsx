@@ -59,8 +59,8 @@ export default function WishPlace() {
 
 function Item(props: { item: Place; userSeq: number }) {
     let address =
-        props.item.address.length > 18
-            ? props.item.address.slice(0, 18).concat("...")
+        props.item.address.length > 16
+            ? props.item.address.slice(0, 16).concat("...")
             : props.item.address;
     let detail =
         props.item.detail.length > 30

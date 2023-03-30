@@ -91,15 +91,20 @@ function Item(props: { item: Course }) {
     return (
         <div className="mb-5">
             <div
-                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg"
+                className="col-md-4 p-3 h-46 bg-calendarGray rounded-t-lg"
                 onClick={() => {
-                    navigate(`/wish/course/${props.item.courseId}`);
+                    navigate(`/wish/course/${props.item.courseId}/detail`);
                 }}
             >
                 <div className="font-bold mb-3">{props.item.name}</div>
 
                 <div className="w-full h-36 flex overflow-x-scroll scrollbar-hide">
                     {props.item.places.map((p: any) => {
+                        let name =
+                            p.placeName.length > 7
+                                ? p.placeName.slice(0, 7).concat("...")
+                                : p.placeName;
+
                         return (
                             <div
                                 key={p.placeId}
@@ -110,9 +115,7 @@ function Item(props: { item: Course }) {
                                     src={p.thumbNailUrl}
                                     alt="img"
                                 />
-                                <div className="w-32 h-8 mt-2">
-                                    {p.placeName}
-                                </div>
+                                <div className="w-32 h-8 mt-2">{name}</div>
                             </div>
                         );
                     })}
