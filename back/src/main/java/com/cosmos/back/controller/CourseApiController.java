@@ -2,10 +2,7 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.service.JwtService;
-import com.cosmos.back.dto.request.CourseRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
+import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +24,7 @@ public class CourseApiController {
     private final CourseService courseService;
     private final JwtService jwtService;
 
-    @Operation(summary = "코스 생성", description = "코스 생성")
+    @Operation(summary = "코스 생성(추천 알고리즘)", description = "코스 생성")
     @PostMapping("/courses")
     public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) {
         CourseResponseDto courseResponseDto = courseService.createCourse(dto);
@@ -35,10 +32,18 @@ public class CourseApiController {
         return new ResponseEntity<>(courseResponseDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "코스 생성(사용자 생성)", description = "코스 생성")
+    @PostMapping("/courses/users/{userSeq}")
+    public ResponseEntity<Long> createCourseByUser(@PathVariable Long userSeq, @RequestBody CouserUesrRequestDto dto) {
+        Long courseId = courseService.createCourseByUser(userSeq, dto);
+
+        return new ResponseEntity<>(courseId, HttpStatus.OK);
+    }
+
     @Operation(summary = "코스 찜", description = "코스 찜")
     @PutMapping("/courses/{courseId}")
-    public ResponseEntity<Long> likeCourse(@PathVariable Long courseId) {
-        Map<String, String> map = courseService.likeCourse(courseId);
+    public ResponseEntity<Long> likeCourse(@PathVariable Long courseId, @RequestBody CourseNameRequestDto dto) {
+        Map<String, String> map = courseService.likeCourse(courseId, dto.getName());
 
         return new ResponseEntity<>(Long.parseLong(map.get("courseId")), HttpStatus.OK);
     }

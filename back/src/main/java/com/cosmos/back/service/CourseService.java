@@ -1,11 +1,8 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.dto.SimplePlaceDto;
-import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
+import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
-import com.cosmos.back.dto.request.CourseRequestDto;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
 import com.cosmos.back.repository.course.CoursePlaceRepository;
@@ -31,7 +28,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CoursePlaceRepository coursePlaceRepository;
 
-    // 코스 생성
+    // 코스 생성(추천 알고리즘)
     @Transactional
     public CourseResponseDto createCourse(CourseRequestDto dto) {
         // 1. 데이트 코스 생성 후 저장
@@ -44,10 +41,32 @@ public class CourseService {
         CourseResponseDto courseResponseDto = new CourseResponseDto();
         courseResponseDto.setCourseId(course.getId());
 
-        // 4. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+        // 4. CourseResponseDto에 midLatitude와 midLongitude 넣기
+        saveMidLatitudeAndMidLongitude(courseResponseDto, places);
+
+        // 5. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
         List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
 
         return courseResponseDto;
+    }
+
+    // 코스 생성(사용자 생성)
+    @Transactional
+    public Long createCourseByUser(Long userSeq, CouserUesrRequestDto dto) {
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        Course course = Course.createCourse(user);
+        course.setWish(true);
+
+        courseRepository.save(course);
+
+        int orders = 1;
+        for (Long placeId : dto.getPlaceIds()) {
+            Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+            CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, orders++);
+            coursePlaceRepository.save(coursePlace);
+        }
+
+        return course.getId();
     }
 
     // 데이트 코스 생성 후 저장
@@ -70,6 +89,23 @@ public class CourseService {
         }
 
         return places;
+    }
+
+    public void saveMidLatitudeAndMidLongitude(CourseResponseDto courseResponseDto, List<Place> places) {
+        Double sumLatitude = 0.0;
+        Double sumLongitude = 0.0;
+        int count = 0;
+
+        for (Place place : places) {
+            if (place.getLatitude() != null && place.getLongitude() != null) {
+                sumLatitude += Double.parseDouble(place.getLatitude());
+                sumLongitude += Double.parseDouble(place.getLongitude());
+                count++;
+            }
+        }
+
+        courseResponseDto.setMidLatitude(sumLatitude / count);
+        courseResponseDto.setMidLongitude(sumLongitude / count);
     }
 
     // CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
@@ -119,14 +155,16 @@ public class CourseService {
 
     // 코스 찜
     @Transactional
-    public Map<String, String> likeCourse(Long courseId) {
+    public Map<String, String> likeCourse(Long courseId, String name) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         course.setWish(true);
+        course.setName(name);
 
         Map<String, String> map = new HashMap<>();
         map.put("courseId", Long.toString(course.getId()));
         map.put("wish", Boolean.toString(course.getWish()));
+        map.put("name", name);
 
         return map;
     }
