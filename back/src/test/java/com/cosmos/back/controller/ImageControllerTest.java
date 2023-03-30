@@ -107,10 +107,10 @@ public class ImageControllerTest {
             list.add(ImageResponseDto.builder().imageId(new Long(i)).build());
         }
 
-        when(imageService.findTotalImage(anyLong())).thenReturn(list);
+        when(imageService.findTotalImage(anyLong(), anyInt(), anyInt())).thenReturn(list);
 
         //when
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/1"));
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/1?limit=10&offset=0"));
 
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();

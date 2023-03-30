@@ -114,14 +114,14 @@ public class ImageServiceTest {
             list.add(image);
         }
 
-        when(imageRepository.findAllByCoupleId(1L)).thenReturn(list);
+        when(imageRepository.findAllByCoupleId(1L, 10, 0)).thenReturn(list);
 
         //when
-        List<ImageResponseDto> totalImages = imageService.findTotalImage(1L);
+        List<ImageResponseDto> totalImages = imageService.findTotalImage(1L, 10, 0);
 
         //then
         assertEquals(totalImages.size(), 5);
-        verify(imageRepository, times(1)).findAllByCoupleId(1L);
+        verify(imageRepository, times(1)).findAllByCoupleId(1L, 10, 0);
     }
 
     @Test
