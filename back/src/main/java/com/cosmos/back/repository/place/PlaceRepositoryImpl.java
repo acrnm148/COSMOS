@@ -513,7 +513,8 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                     qPlace.address,
                     qPlace.detail,
                     qCoursePlace.orders,
-                    qPlace.phoneNumber
+                    qPlace.phoneNumber,
+                    qPlace.type
                 ))
                 .from(qPlace)
                 .leftJoin(qCoursePlace)
