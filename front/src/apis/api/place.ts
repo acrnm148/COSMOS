@@ -1,159 +1,129 @@
 import { defaultInstance } from "../utils";
 
 // GET APIs
-
 /**
- * GET : 시/도 리스트 데이터를 가져온다.
- * @returns  [] : 시/도 id, 시/도 name을 가진 Item 배열
+ * GET : 시/도 리스트를 가져온다.
+ * @returns  {sidoCode: string, sidoName: string}
  */
 export const getSidoList = async () => {
-  const { data } = await defaultInstance.get("sido");
+  const { data } = await defaultInstance.get(`sido`);
   return data;
 };
 
 /**
- * @param {string} sido : 시/도 코드
- * GET : 구/군 리스트 데이터를 가져온다.
- * @returns  [] : 구/군 id, 구/군 name을 가진 Item 배열
+ * @param {string} sidoCode
+ * GET : 구/군 리스트를 가져온다.
+ * @returns  {sidoCode: string, sidoName: string}
  */
-export const getGugunList = async (sido: string) => {
-  const { data } = await defaultInstance.get(`gugun/${sido}`);
+export const getGugunList = async (sidoCode: string) => {
+  if (sidoCode === "") return null; // 시/도 미선택시
+  const { data } = await defaultInstance.get(`gugun/${sidoCode}`);
   return data;
 };
 
 /**
- * @param {string} word : 검색어
- * GET : 검색어의 낱말을 포함한 가게 정보를 나열한다.
- * @returns {PlaceholderInSubject, name, thumbNailUrl}
+ * @param {string} searchWord
+ * GET : 검색어 자동완성
+ * @returns  {placeId, name, address, thumbNailUrl, type}
  */
-export const getListWithSearchWord = async (searchWord: string) => {
+export const getAutoSearchList = async (searchWord: string) => {
+  if (searchWord === "") return null;
   const { data } = await defaultInstance.get(`places/auto/${searchWord}`);
   return data;
 };
 
 /**
- * @param {number} userSeq : 사용자번호
+ * @param {number} userSeq
+ * @param {string} sido
+ * @param {string} gugun
+ * @param {string} text
+ * @param {string} filter
+ * @param {number} limit
+ * @param {number} offset
+ * GET : 조건별 검색
+ * @returns  {places: [{placeId, name, address, score, thumbNailUrl, detail, latitude, longitude, type, like}], midLatitude, midLongitude}
+ */
+export const getPlacesWithConditions = async (
+  userSeq: number,
+  sido: string,
+  gugun: string,
+  text: string,
+  filter: string,
+  limit: number,
+  offset: number
+) => {
+  // 검색어
+  if (sido === "" && gugun === "" && text !== "" && filter === "") {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 검색필터
+  else if (sido === "" && gugun === "" && text === "" && filter !== "") {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/gugun/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 검색어, 검색필터
+  else if (sido === "" && gugun === "" && text !== "" && filter !== "") {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/${filter}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 시/도, 구/군
+  else if (sido !== "" && gugun !== "" && text === "" && filter === "") {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 시/도, 구/군, 검색어
+  else if (sido !== "" && gugun !== "" && text !== "" && filter === "") {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 시/도, 구/군, 검색필터
+  else if (sido !== "" && gugun !== "" && text === "" && filter !== "") {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 시/도, 구/군, 검색어, 검색필터
+  else if (sido !== "" && gugun !== "" && text !== "" && filter !== "") {
+    const { data } = await defaultInstance.get(
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter${filter}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+  // 그 외 경우
+  else {
+    return null;
+  }
+};
+
+/**
+ * @param {number} userSeq : 사용자 번호
  * @param {number} placeId : 장소 ID
- * @param {string} type: 장소 유형
- * GET : 장소의 상세 정보를 가져온다.
- * @returns {장소 type마다 다름}
+ * @param {number} type : 장소 유형
+ * GET : 장소 상세정보 가져오기
+ * @returns {}
  */
 export const getPlaceDetail = async (
   userSeq: number,
   placeId: number,
   type: string
 ) => {
-  if (placeId === undefined || type === undefined) return null;
   const { data } = await defaultInstance.get(
     `places/detail/users/${userSeq}/placeId/${placeId}/type/${type}`
   );
+  if (placeId === 0 && type === "") return null;
   return data;
-};
-
-/**
- * @param {number} userSeq : 사용자 번호
- * @param {string} sido : 시도명
- * @param {string} gugun : 구군명
- * @param {string} text : 장소명
- * @param {string} filter : 유형
- * GET : 검색 조건에 따라 리스트 정보를 가져온다.
- * @returns {places: [{placeId, name, address, score, thumbNailUrl, detail, latitude, longitude, type, like}], midLatitude, midLongitude}
- */
-export const getPlaceList = async (
-  userSeq: number,
-  sido: any,
-  gugun: any,
-  text: string,
-  filter: string,
-  limit: number,
-  offset: number
-) => {
-  // 시/도, 구/군, 검색어, 필터
-  if (
-    sido !== undefined &&
-    gugun !== undefined &&
-    text !== "" &&
-    filter !== ""
-  ) {
-    const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido.name}/gugun/${gugun.name}/text/${text}/filter/${filter}/?limit=${limit}&offset=${offset}`
-    );
-    return data;
-  }
-  // 시/도, 구/군, 필터
-  if (
-    sido !== undefined &&
-    gugun !== undefined &&
-    text === "" &&
-    filter !== ""
-  ) {
-    const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/${filter}/?limit=${limit}&offset=${offset}`
-    );
-    return data;
-  }
-  // 시/도, 구/군, 검색어
-  if (
-    sido !== undefined &&
-    gugun !== undefined &&
-    text !== "" &&
-    filter === ""
-  ) {
-    const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido.name}/gugun/${gugun.name}/text/${text}/filter/?limit=${limit}&offset=${offset}`
-    );
-    return data;
-  }
-  // 시/도, 구/군
-  if (
-    sido !== undefined &&
-    gugun !== undefined &&
-    text === "" &&
-    filter === ""
-  ) {
-    const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido.name}/gugun/${gugun.name}/text/filter/?limit=${limit}&offset=${offset}`
-    );
-    return data;
-  }
-  // 검색어, 필터
-  if (
-    sido === undefined &&
-    gugun === undefined &&
-    text !== "" &&
-    filter !== ""
-  ) {
-    const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/${filter}/?limit=${limit}&offset=${offset}`
-    );
-    return data;
-  }
-
-  // 검색어
-  if (
-    sido === undefined &&
-    gugun === undefined &&
-    text !== "" &&
-    filter === ""
-  ) {
-    const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/?limit=${limit}&offset=${offset}`
-    );
-    return data;
-  }
-
-  // 필터
-  if (
-    sido === undefined &&
-    gugun === undefined &&
-    text === "" &&
-    filter !== ""
-  ) {
-    const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/filter/${filter}/?limit=${limit}&offset=${offset}`
-    );
-    return data;
-  }
 };
 
 /**
@@ -167,6 +137,19 @@ export const likePlace = async (userSeq: number, placeId: number) => {
     `places/${placeId}/users/${userSeq}`
   );
   return data;
+};
+
+// POST APIs
+/**
+ * @RequestBody {sido, gugun, categories, userSeq}
+ * POST : 생성된 코스 가져오기
+ * @returns {}
+ */
+export const getDateCourse = async (formData: any) => {
+  const res = await defaultInstance.post("/courses", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res;
 };
 
 // DELETE APIs

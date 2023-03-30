@@ -60,6 +60,7 @@ public class Place {
 
     private String type; // 타입
 
+    private String tendency; // 장소 선호도
 
     // 장소 - (유저 - 장소)
     @OneToMany(mappedBy = "place")

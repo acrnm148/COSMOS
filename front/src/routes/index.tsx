@@ -2,7 +2,6 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 
-import Reco from "../pages/servey/Recoreconi";
 import Home from "../pages/home/Home";
 import NotFound from "../components/common/NotFound";
 import Servey from "../pages/servey/ServeyPage";
@@ -25,6 +24,7 @@ import ScheduleLayout from "../layouts/ScheduleLayout";
 import WishList from "../pages/wish/WishList";
 import PlaceResult from "../pages/place/PlaceResult";
 import SearchLayout from "../layouts/SearchLayout";
+import { Logout } from "@mui/icons-material";
 // import Test from "../pages/place/Test"; // 드래그앤드롭
 
 const router = createBrowserRouter([
@@ -35,10 +35,12 @@ const router = createBrowserRouter([
     children: [
       { index: true, path: "/", element: <Home /> },
       //로그인
-      { path: "/login", element: <Login /> },
-      { path: "/login/oauth", element: <KakaoLogin /> },
+      { path: "login", element: <Login /> },
+      { path: "login/oauth", element: <KakaoLogin /> },
+      // 로그아웃
+      { path: "logout", element: <Logout />},
       // 마이페이지
-      { path: "/mypage", element: <MyPage /> },
+      { path: "mypage", element: <MyPage /> },
     ],
   },
   // mypage
@@ -73,7 +75,6 @@ const router = createBrowserRouter([
     children: [
       { path: "recommend", element: <PlaceRecommend /> },
       { path: "result", element: <PlaceResult /> },
-      // { path: "drag", element: <Test /> },
     ],
   },
   {
