@@ -137,6 +137,7 @@ public class KakaoService {
                 case "90~": newAgeRange += "90"; break;
             }
 
+            System.out.println("profileID:"+profile.getId());
             if (profile == null) return null;
             if (profile.getKakao_account().profile == null) {
                 System.out.println("kakao_account의 profile이 없습니다.");
