@@ -44,7 +44,8 @@ public class UserPlaceRepositoryImpl implements UserPlaceRepositoryCustom{
                 qPlace.address,
                 qReview.score.avg(),
                 qPlace.thumbNailUrl,
-                qPlace.detail
+                qPlace.detail,
+                qPlace.type
                 ))
                 .from(qPlace)
                 .rightJoin(qUserPlace)

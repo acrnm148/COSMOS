@@ -85,13 +85,14 @@ public class CourseService {
             SimplePlaceDto placeDto = new SimplePlaceDto();
 
             placeDto.setPlaceId(place.getId());
-            placeDto.setPlaceName(place.getName());
+            placeDto.setName(place.getName());
             placeDto.setLatitude(place.getLatitude());
             placeDto.setLongitude(place.getLongitude());
             placeDto.setThumbNailUrl(place.getThumbNailUrl());
             placeDto.setAddress(place.getAddress());
-            placeDto.setOverview(place.getDetail());
+            placeDto.setDetail(place.getDetail());
             placeDto.setOrders(orders++);
+            placeDto.setType(place.getType());
 
             Double score = placeRepository.findScoreByPlaceIdQueryDsl(place.getId());
             placeDto.setScore(score);
@@ -108,8 +109,12 @@ public class CourseService {
     public Place chooseOne(String type, String sido, String gugun) {
         List<Place> places = placeRepository.findAllByTypeAndSidoAndGugun(type, sido, gugun);
 
+        Integer size = places.size();
+
+        Integer randomNum = (int) (Math.random() * size);
+
         // 빅데이터 알고리즘
-        return places.get(0);
+        return places.get(randomNum);
     }
 
     // 코스 찜
