@@ -1,5 +1,6 @@
 package com.cosmos.back.controller;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.dto.user.UserProfileDto;
@@ -37,6 +38,7 @@ public class UserApiController {
 
     @Operation(summary = "서버 테스트", description = "서버 테스트")
     @GetMapping("/home")
+    @Generated
     public String home() {
         return "jenkins Test";
     }
