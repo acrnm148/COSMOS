@@ -92,9 +92,12 @@ public class CourseApiControllerTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     // HTTP Status 200, courseResponseDto가 잘 나오는지 확인
     public void 코스_찜() throws Exception {
+        Map<String, String> mockMap = new HashMap<>();
+        mockMap.put("courseId", "1995");
+        mockMap.put("wish", "true");
 
         // mocking
-        when(courseService.likeCourse(anyLong())).thenReturn(19950203L);
+        when(courseService.likeCourse(anyLong())).thenReturn(mockMap);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .put("/api/courses/1")
@@ -106,7 +109,7 @@ public class CourseApiControllerTest {
                 getResponse().
                 getContentAsString();
 
-        Assertions.assertThat(response).isEqualTo("19950203");
+        Assertions.assertThat(response).isEqualTo("1995");
     }
 
     @Test

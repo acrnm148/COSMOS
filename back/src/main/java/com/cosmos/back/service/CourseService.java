@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -113,12 +114,16 @@ public class CourseService {
 
     // 코스 찜
     @Transactional
-    public Long likeCourse(Long courseId) {
+    public Map<String, String> likeCourse(Long courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         course.setWish(true);
 
-        return course.getId();
+        Map<String, String> map = new HashMap<>();
+        map.put("courseId", Long.toString(course.getId()));
+        map.put("wish", Boolean.toString(course.getWish()));
+
+        return map;
     }
 
     // 코스 삭제
