@@ -10,9 +10,6 @@ export default function WishList() {
     const { courseId, editId } = useParams();
     const navigate = useNavigate();
 
-    console.log(courseId);
-    // console.log(editId);
-
     return (
         <div>
             <div className="menu w-full h-16 bg-white flex items-center">
