@@ -1,13 +1,14 @@
 import WishPlace from "../wish/WishPlace";
 import WishCourse from "../wish/WishCourse";
 import CourseDetail from "../wish/CourseDetail";
+import WishMakeCourse from "./WishMakeCourse";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CourseEdit from "./CourseEdit";
 
 export default function WishList() {
     const [toggle, setToggle] = useState(true); // 장소: true / 코스: false
-    const { courseId, editId } = useParams();
+    const { courseId, editId, makeCourse } = useParams();
     const navigate = useNavigate();
 
     return (
@@ -41,16 +42,25 @@ export default function WishList() {
                 </div>
             </div>
 
-            {courseId === undefined && editId === undefined
+            {makeCourse === "makeCourse" && <WishMakeCourse />}
+            {courseId === undefined &&
+            editId === undefined &&
+            makeCourse === undefined
                 ? toggle && <WishPlace />
                 : null}
-            {courseId === undefined && editId === undefined
+            {courseId === undefined &&
+            editId === undefined &&
+            makeCourse === undefined
                 ? !toggle && <WishCourse />
                 : null}
-            {courseId != undefined && editId === undefined ? (
+            {courseId != undefined &&
+            editId === undefined &&
+            makeCourse === undefined ? (
                 <CourseDetail id={courseId} />
             ) : null}
-            {courseId === undefined && editId != undefined ? (
+            {courseId === undefined &&
+            editId != undefined &&
+            makeCourse === undefined ? (
                 <CourseEdit id={editId} />
             ) : null}
         </div>

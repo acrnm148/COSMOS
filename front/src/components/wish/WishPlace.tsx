@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /* eslint-disable jsx-a11y/alt-text */
 interface Place {
@@ -18,6 +19,7 @@ interface Place {
 }
 
 export default function WishPlace() {
+    const navigate = useNavigate();
     const userSeq = useRecoilState(userState);
     const [list, setList] = useState<Place[]>();
     const { data } = useQuery({
@@ -49,7 +51,12 @@ export default function WishPlace() {
                     ))}
                 </div>
 
-                <div className="w-full h-12 bg-lightMain2 text-white font-bold text-center text-xl pt-2.5 mt-3 rounded-full">
+                <div
+                    className="w-full h-12 bg-lightMain2 text-white font-bold text-center text-xl pt-2.5 mt-3 rounded-full"
+                    onClick={() => {
+                        navigate(`/wish/makeCourse`);
+                    }}
+                >
                     찜한 장소로 코스 만들기
                 </div>
             </div>

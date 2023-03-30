@@ -60,6 +60,7 @@ const router = createBrowserRouter([
             { path: "/wish/course/:wishId", element: <WishList /> },
             { path: "/wish/course/:courseId/detail", element: <WishList /> },
             { path: "/wish/course/:editId/edit", element: <WishList /> },
+            { path: "/wish/:makeCourse", element: <WishList /> },
         ],
     },
     // 랜딩페이지
