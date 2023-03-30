@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "course", description = "코스 API")
 @RestController
@@ -37,9 +38,9 @@ public class CourseApiController {
     @Operation(summary = "코스 찜", description = "코스 찜")
     @PutMapping("/courses/{courseId}")
     public ResponseEntity<Long> likeCourse(@PathVariable Long courseId) {
-        Long id = courseService.likeCourse(courseId);
+        Map<String, String> map = courseService.likeCourse(courseId);
 
-        return new ResponseEntity<>(id, HttpStatus.OK);
+        return new ResponseEntity<>(Long.parseLong(map.get("courseId")), HttpStatus.OK);
     }
 
     @Operation(summary = "코스 찜 삭제", description = "코스 찜 삭제")
