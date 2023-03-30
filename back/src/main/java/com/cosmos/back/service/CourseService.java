@@ -1,11 +1,8 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.dto.SimplePlaceDto;
-import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
+import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
-import com.cosmos.back.dto.request.CourseRequestDto;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
 import com.cosmos.back.repository.course.CoursePlaceRepository;
@@ -31,7 +28,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CoursePlaceRepository coursePlaceRepository;
 
-    // 코스 생성
+    // 코스 생성(추천 알고리즘)
     @Transactional
     public CourseResponseDto createCourse(CourseRequestDto dto) {
         // 1. 데이트 코스 생성 후 저장
@@ -51,6 +48,24 @@ public class CourseService {
         List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
 
         return courseResponseDto;
+    }
+
+    // 코스 생성(사용자 생성)
+    @Transactional
+    public Long createCourseByUser(Long userSeq, CouserUesrRequestDto dto) {
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        Course course = Course.createCourse(user);
+
+        courseRepository.save(course);
+
+        int orders = 1;
+        for (Long placeId : dto.getPlaceIds()) {
+            Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+            CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, orders++);
+            coursePlaceRepository.save(coursePlace);
+        }
+
+        return course.getId();
     }
 
     // 데이트 코스 생성 후 저장
