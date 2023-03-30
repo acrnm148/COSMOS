@@ -427,8 +427,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 builder.and(qPlace.type.contains(filter));
             }
         }
-
-
         return queryFactory.select(Projections.constructor(PlaceSearchListResponseDto.class,
                     qPlace.id,
                     qPlace.name,

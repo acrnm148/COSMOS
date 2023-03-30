@@ -66,7 +66,6 @@ public class PlanService {
      */
     public Plan updatePlan(PlanDto dto) {
         Plan plan = planRepository.findByIdAndCoupleId(dto.getPlanId(), dto.getCoupleId());
-        System.out.println("courses: "+dto.getCourses());
 
         List<Long> courseIds = dto.getCourseIds();
         List<Course> courses = new ArrayList<> ();

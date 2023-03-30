@@ -33,6 +33,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -46,7 +47,7 @@ public class PlanServiceTest {
     @MockBean
     private PlanRepository planRepository;
 
-    @SpyBean
+    @MockBean
     private CourseRepository courseRepository;
 
     @Autowired
@@ -116,49 +117,34 @@ public class PlanServiceTest {
         //given
         // 기존에 저장된 Plan
         List<Course> courseList = new ArrayList<>();
-        List<Long> courseIdsList = new ArrayList<>();
-        Place place = Place.builder().name("testPlace").build();
-        placeRepository.save(place);
 
-        User user = User.builder().courses(new ArrayList<>()).userName("testName").build();
-        userRepository.save(user);
-
-        Course course = Course.createCourse(user);
-        System.out.println("course!!! = " + course);
-        courseRepository.save(course);
-
-        System.out.println("user = " + user.getUserSeq());
-        System.out.println("place = " + place.getId());
-        System.out.println("course!!! = " + course);
-
+        Course course = Course.builder().build();
         courseList.add(course);
-        courseIdsList.add(course.getId());
 
-        Plan plan = Plan.builder().planName("planTest").endDate("20230331").startDate("20230329").coupleId(1L).courses(courseList).build();
-        planRepository.save(plan);
-
+        Plan plan = Plan.builder().id(1L).planName("planTest").endDate("20230331").startDate("20230329").coupleId(1L).courses(courseList).build();
         // 수정을 위해 입력되는 PlanDto 생성 과정
         List<Course> inputCourseList = new ArrayList<>();
         List<Long> inputCourseIdsList = new ArrayList<>();
-        Course inputCourse = Course.builder().name("inputCourseTest").build();
-
+        Course inputCourse = Course.builder().id(1L).name("inputCourseTest").build();
         inputCourseList.add(inputCourse);
         inputCourseIdsList.add(inputCourse.getId());
 
-        Plan inputPlan = Plan.builder().planName("inputPlanTest").endDate("20230431").startDate("20230429").coupleId(1L).courses(inputCourseList).build();
+        Plan inputPlan = Plan.builder().id(1L).planName("inputPlanTest").endDate("20230431").startDate("20230429").coupleId(1L).courses(inputCourseList).build();
 
         PlanDto planDto = PlanDto.builder().plan(inputPlan).build();
-        planDto.setCourseIds(courseIdsList);
+        planDto.setCourseIds(inputCourseIdsList);
+
+        // 오류 발생 course
 
         when(planRepository.findByIdAndCoupleId(anyLong(), anyLong())).thenReturn(plan);
-        when(courseRepository.findById(anyLong())).thenReturn(Optional.of(inputCourse));
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(inputCourse));
+        when(planRepository.save(any(Plan.class))).thenReturn(inputPlan);
 
         //when
         Plan result = planService.updatePlan(planDto);
 
         //then
         assertEquals(result.getPlanName(), inputPlan.getPlanName());
-
 
     }
 
