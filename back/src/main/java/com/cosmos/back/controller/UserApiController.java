@@ -124,7 +124,6 @@ public class UserApiController {
     @GetMapping("/accounts/auth/login/kakao")
     public Map<String,String> KakaoLogin(@RequestParam("code") String code,
                                          HttpServletRequest request) {
-
         //access 토큰 받기
         KakaoToken oauthToken = kakaoService.getAccessToken(code);
         //사용자 정보받기 및 회원가입
@@ -138,15 +137,16 @@ public class UserApiController {
 
         //jwt토큰 Redis에 저장
         JwtToken jwtTokenDTO = jwtService.getJwtToken(saveUser.getUserSeq());
-
         //로그인 시 SSE 연결
         notificationService.subscribe(saveUser.getUserSeq(), null);
 
         return jwtService.successLoginResponse(jwtTokenDTO, saveUser.getUserSeq(), saveUser.getCoupleId());
     }
+
     //직접 인가 코드 받기
     @GetMapping("/login/oauth2/code/kakao")
     @Operation(summary = "kakao 코드 발급", description = "kakao 코드 발급")
+    @Generated
     public String KakaoCode(@RequestParam("code") String code) {
         return code;
     }

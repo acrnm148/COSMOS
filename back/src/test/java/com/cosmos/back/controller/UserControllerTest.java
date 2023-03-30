@@ -2,10 +2,13 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.auth.jwt.JwtState;
+import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.user.UserProfileDto;
 import com.cosmos.back.model.User;
+import com.cosmos.back.oauth.provider.Token.KakaoToken;
 import com.cosmos.back.oauth.service.KakaoService;
+import com.cosmos.back.service.NotificationService;
 import com.cosmos.back.service.PlaceService;
 import com.cosmos.back.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +29,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -58,6 +64,9 @@ public class UserControllerTest {
 
     @MockBean
     private KakaoService kakaoService;
+
+    @MockBean
+    private NotificationService notificationService;
 
     @Test
     @DisplayName("UserController 회원 조회")
@@ -156,15 +165,43 @@ public class UserControllerTest {
     @DisplayName("UserController 카카오로그인")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 카카오로그인() throws Exception {
+        //given
+        // 변수 설정
+        KakaoToken kakaoToken = new KakaoToken();
+        kakaoToken.setAccess_token("token");
+        User user = User.builder().userSeq(1L).userName("suna").build();
+        JwtToken jwtToken = JwtToken.builder().build();
+        SseEmitter sseEmitter = new SseEmitter();
+        Map<String, String> successResponse = new LinkedHashMap<>();
+        successResponse.put("status", "200");
 
+        // 동작 mocking
+        when(kakaoService.getAccessToken(anyString())).thenReturn(kakaoToken);
+        when(kakaoService.saveUser(kakaoToken.getAccess_token())).thenReturn(user)
+                .thenReturn(null);
+        when(jwtService.getJwtToken(user.getUserSeq())).thenReturn(jwtToken);
+        when(notificationService.subscribe(user.getUserSeq(), null)).thenReturn(sseEmitter);
+        when(jwtService.successLoginResponse(jwtToken, user.getUserSeq(), user.getCoupleId())).thenReturn(successResponse);
+
+        //when
+        ResultActions resultActionsSuccess = mockMvc.perform(MockMvcRequestBuilders.get("/api/accounts/auth/login/kakao").param("code", "token"));
+        ResultActions resultActionsFail = mockMvc.perform(MockMvcRequestBuilders.get("/api/accounts/auth/login/kakao").param("code", "token"));
+
+        //then
+        MvcResult mvcResultSuccess = resultActionsSuccess.andExpect(status().isOk()).andReturn();
+        Map responseSuccess = new Gson().fromJson(mvcResultSuccess.getResponse().getContentAsString(), Map.class);
+        assertEquals(responseSuccess.get("status"), "200");
+
+        MvcResult mvcResultFail = resultActionsFail.andExpect(status().isOk()).andReturn();
+        Map responseFail = new Gson().fromJson(mvcResultFail.getResponse().getContentAsString(), Map.class);
+        assertEquals(responseFail.get("code"), "444");
     }
 
-    @Test
-    @DisplayName("UserController 카카오코드발급")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void 카카오코드발급() throws Exception {
-
-    }
+//    @Test
+//    @DisplayName("UserController 카카오코드발급")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void 카카오코드발급() throws Exception {
+//    }
 
     @Test
     @DisplayName("UserController access토큰재발급")

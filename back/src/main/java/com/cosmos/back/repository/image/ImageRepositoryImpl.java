@@ -1,6 +1,7 @@
 package com.cosmos.back.repository.image;
 
 import com.cosmos.back.dto.response.ImageResponseDto;
+import com.cosmos.back.model.Image;
 import com.cosmos.back.model.QImage;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -40,6 +41,16 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
                 ))
                 .from(qImage)
                 .where(qImage.createdTime.contains(day.toString()))
+                .fetch();
+    }
+
+    @Override
+    public List<Image> findAllByCoupleId(Long coupleId, Integer limit, Integer offset) {
+        QImage qImage = QImage.image;
+        return queryFactory.selectFrom(qImage)
+                .where(qImage.coupleId.eq(coupleId))
+                .limit(limit)
+                .offset(offset)
                 .fetch();
     }
 }

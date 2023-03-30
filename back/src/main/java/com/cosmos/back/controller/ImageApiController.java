@@ -38,8 +38,8 @@ public class ImageApiController {
 
     @Operation(summary = "사진 전체 조회", description = "coupleId Url 입력 시 해당 커플 사진 전체 조회가능")
     @GetMapping("/pictures/{coupleId}")
-    public ResponseEntity<List> findTotalImage(@PathVariable Long coupleId) {
-        List<ImageResponseDto> totalImage = imageService.findTotalImage(coupleId);
+    public ResponseEntity<List> findTotalImage(@PathVariable Long coupleId, @RequestParam Integer limit, @RequestParam Integer offset) {
+        List<ImageResponseDto> totalImage = imageService.findTotalImage(coupleId, limit, offset);
         return new ResponseEntity<>(totalImage, HttpStatus.OK);
     }
 
