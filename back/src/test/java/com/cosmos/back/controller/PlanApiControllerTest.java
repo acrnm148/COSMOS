@@ -52,17 +52,22 @@ public class PlanApiControllerTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void createPlanTest() throws Exception {
         //given
-//        Plan plan = Plan.builder().planName("planTest").build();
-//
-//        when(planService.createPlan(any(PlanDto.class))).thenReturn(plan);
-//
-//        //when
-//        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/plans"));
-//
-//        //then
-//        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
-//        Plan result = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), Plan.class);
-//        assertThat(result.getPlanName()).isEqualTo(plan.getPlanName());
+        Plan plan = Plan.builder().planName("planTest").build();
+        PlanDto planDto = PlanDto.builder().plan(plan).build();
+
+        when(planService.createPlan(any(PlanDto.class))).thenReturn(plan);
+
+        String content = objectMapper.writeValueAsString(planDto);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/plans")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        Plan result = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), Plan.class);
+        assertThat(result.getPlanName()).isEqualTo(plan.getPlanName());
     }
 
 //    @Test

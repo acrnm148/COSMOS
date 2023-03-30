@@ -51,8 +51,8 @@ public class ImageService {
 
     // 사진 전체 조회
     @RedisCached(key = "image", expire = 240)
-    public List<ImageResponseDto> findTotalImage(@RedisCachedKeyParam(key = "coupleId") Long coupleId) {
-        List<Image> allByCoupleId = imageRepository.findAllByCoupleId(coupleId);
+    public List<ImageResponseDto> findTotalImage(@RedisCachedKeyParam(key = "coupleId") Long coupleId, Integer limit, Integer offset) {
+        List<Image> allByCoupleId = imageRepository.findAllByCoupleId(coupleId, limit, offset);
 
         List<ImageResponseDto> list = new ArrayList<>();
         for (Image i : allByCoupleId) {
