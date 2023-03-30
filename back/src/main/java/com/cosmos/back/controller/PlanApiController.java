@@ -61,7 +61,7 @@ public class PlanApiController {
     public ResponseEntity<?> getPlanListByMonth(@RequestBody Map<String, Object> map) {
         Long coupleId = Long.valueOf((Integer) map.get("coupleId"));
         String date = (String) map.get("date");
-        PlanDto plans = planService.getPlanListByMonth(coupleId, date);
+        List<PlanDto> plans = planService.getPlanListByMonth(coupleId, date);
 
         return new ResponseEntity<>(plans, HttpStatus.OK);
     }

@@ -138,6 +138,10 @@ public class KakaoService {
             }
 
             if (profile == null) return null;
+            if (profile.getKakao_account().profile == null) {
+                System.out.println("kakao_account의 profile이 없습니다.");
+                return null;
+            }
 
             user = User.builder()
                     .userId(profile.getId())
@@ -149,6 +153,7 @@ public class KakaoService {
                     .birthday(profile.getKakao_account().getBirthday())
                     .email(profile.getKakao_account().getEmail())
                     .coupleYn("N")
+                    .coupleId(0L)
                     .role("USER") //일단 유저로 넣음.
                     .createTime(LocalDateTime.now())
                     .build();

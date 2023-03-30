@@ -98,9 +98,9 @@ public class PlanService {
     /**
      * 커플 일정 월별 조회 month
      */
-    public PlanDto getPlanListByMonth(Long coupleId, String date) {
+    public List<PlanDto> getPlanListByMonth(Long coupleId, String date) {
         String year = date.substring(0,4);
-        String month = date.substring(5,7);
+        String month = date.substring(4,6);
 
         String YearMonthNow = year+"-"+month;
 
@@ -113,22 +113,20 @@ public class PlanService {
             newYear += year;
             Integer tmp = Integer.parseInt(month)+1;
             if (tmp < 10)
-            newMonth += "0"+tmp;
+                newMonth += "0"+tmp;
         }
         String YearMonthNext = newYear+"-"+newMonth;
 
         List<PlanCourseDto> plansByMonth= planRepository.findByCoupleIdAndMonthQueryDsl(coupleId, YearMonthNext,YearMonthNow);
         List<Course> courses = new ArrayList<> ();
-        int len = plansByMonth.size();
         PlanDto result = new PlanDto();
-        List<PlanDto> resultList = new ArrayList<> ();
+        List<PlanDto> resultList = new ArrayList<>();
         Long lastPlanId = 0L;
-
-        for (int i=0; i<len; i++) {
-            PlanCourseDto planCourse = plansByMonth.get(i);
+        for (PlanCourseDto planCourse : plansByMonth) {
             if (!(lastPlanId.equals(planCourse.getPlanId()))) {
-                result = new PlanDto();
                 lastPlanId = planCourse.getPlanId();
+
+                result = new PlanDto();
                 result.setPlanId(planCourse.getPlanId());
                 result.setCoupleId(planCourse.getCoupleId());
                 result.setPlanName(planCourse.getPlanName());
@@ -136,8 +134,9 @@ public class PlanService {
                 result.setEndDate(planCourse.getEndDate());
                 result.setCreateTime(planCourse.getCreateTime());
                 result.setUpdateTime(planCourse.getUpdateTime());
+
             }
-            else {
+            if (planCourse.getId() != null) {
                 courses.add(Course.builder()
                         .id(planCourse.getId())
                         .name(planCourse.getName())
@@ -145,23 +144,19 @@ public class PlanService {
                         .orders(planCourse.getOrders())
                         .build());
             }
-            if (lastPlanId == 0L && planCourse.getId() != null) {
-                courses.add(Course.builder()
-                        .id(planCourse.getId())
-                        .name(planCourse.getName())
-                        .date(planCourse.getDate())
-                        .orders(planCourse.getOrders())
-                        .build());
-            }
-            if (i<len-1 && !(planCourse.getPlanId().equals(plansByMonth.get(i+1).getPlanId()))) {
+
+            if (!(lastPlanId.equals(planCourse.getPlanId()))) {
                 result.setCourses(courses);
+                resultList.add(result);
             }
         }
+        //result.setCourses(courses);
 
         if (result.getPlanId() == null) {
             return null;
         }
-        return result;
+
+        return resultList;
     }
 
     /**
@@ -169,22 +164,17 @@ public class PlanService {
      */
     public PlanDto getPlanListByDay(Long coupleId, String date) {
         String year = date.substring(0,4);
-        String month = date.substring(5,7);
-        String day = date.substring(8,10);
+        String month = date.substring(4,6);
+        String day = date.substring(6,8);
 
         String YearMonthDay = year+"-"+month+"-"+day;
 
         List<PlanCourseDto> plansByDay = planRepository.findByCoupleIdAndDayQueryDsl(coupleId, YearMonthDay);
         List<Course> courses = new ArrayList<> ();
         PlanDto result = new PlanDto();
-        List<PlanDto> resultList = new ArrayList<> ();
         Long lastPlanId = 0L;
-
-        int len = plansByDay.size();
-        for (int i=0; i<len; i++) {
-            PlanCourseDto planCourse = plansByDay.get(i);
+        for (PlanCourseDto planCourse : plansByDay) {
             if (!(lastPlanId.equals(planCourse.getPlanId()))) {
-                result = new PlanDto();
                 lastPlanId = planCourse.getPlanId();
                 result.setPlanId(planCourse.getPlanId());
                 result.setCoupleId(planCourse.getCoupleId());
@@ -194,26 +184,16 @@ public class PlanService {
                 result.setCreateTime(planCourse.getCreateTime());
                 result.setUpdateTime(planCourse.getUpdateTime());
             }
-            else {
+            if (planCourse.getId() != null) {
                 courses.add(Course.builder()
                         .id(planCourse.getId())
                         .name(planCourse.getName())
                         .date(planCourse.getDate())
                         .orders(planCourse.getOrders())
                         .build());
-            }
-            if (lastPlanId == 0L && planCourse.getId() != null) {
-                courses.add(Course.builder()
-                        .id(planCourse.getId())
-                        .name(planCourse.getName())
-                        .date(planCourse.getDate())
-                        .orders(planCourse.getOrders())
-                        .build());
-            }
-            if (i<len-1 && !(planCourse.getPlanId().equals(plansByDay.get(i+1).getPlanId()))) {
-                result.setCourses(courses);
             }
         }
+        result.setCourses(courses);
         if (result.getPlanId() == null) {
             return null;
         }
