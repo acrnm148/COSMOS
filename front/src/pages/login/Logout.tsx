@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect } from "react"
 import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
-import { userState } from "../../recoil/states/UserState";
+import { loggedIn, userState } from "../../recoil/states/UserState";
 
 declare const window: typeof globalThis & {
     Kakao: any;
@@ -11,6 +11,7 @@ export default function Logout(){
     const navigate = useNavigate();
     // userState recoil
     const [loginUser, setLoginUser] = useRecoilState(userState)
+    const [isLoggedIn, setIsLogin] = useRecoilState(loggedIn)
     // 페이지 들어왔을 때 로그아웃되게
     useEffect(()=>{
       console.log('로구아웃')
@@ -23,6 +24,7 @@ export default function Logout(){
           ).then((res)=>{
             console.log(res)
             setLoginUser({...loginUser,acToken:'',seq:0, isLoggedIn:false, coupleId:"" })
+            setIsLogin(false)
           }
           ).catch((err)=>{
             console.log(err)

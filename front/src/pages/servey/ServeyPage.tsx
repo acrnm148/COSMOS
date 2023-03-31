@@ -12,7 +12,7 @@ import Servey8 from "./Servey8";
 import Servey9 from "./Servey9";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { userState } from "../../recoil/states/UserState";
+import { loggedIn, userState } from "../../recoil/states/UserState";
 
 export default function ServeyPage() {
   const [serveyPg, setServeyPage] = useRecoilState(serveyPage);
@@ -22,7 +22,7 @@ export default function ServeyPage() {
   const navigate = useNavigate();
   const [cate, setCate] = useState("");
   const [cateNumCode, setCateNumCode] = useState("");
-  const [isLoggedIn, setLoggedIn] = useState(false)
+  const [isLoggedIn, setLoggedIn] = useRecoilState(loggedIn)
 
   const [invitedId, setInvitedCoupleId] = useRecoilState(invitedCoupleId)
   const [x, setInvitedUserId] = useRecoilState(invitedUserId)
@@ -42,9 +42,6 @@ export default function ServeyPage() {
       // 2. 로그인 후 설문페이지로 돌아오도록 
     }
     // 로그인한 상태인지 확인
-    if (loginUser.acToken){
-      setLoggedIn(true)
-    }
     if (serveyPg === 10) {
       console.log("여기는 10페이지");
       console.log("serveyChoices", serveyChoices); // {1: 'J', 2: 'O', 3: 'Y', 4: 'T', 5: 'E', 6: 'O', 7: 'O', 8: 'Y', 9: 'E'}

@@ -19,3 +19,8 @@ export const userState = atom<LUser>({
     },
     effects_UNSTABLE: [persistAtom],
 });
+
+export const loggedIn = atom({
+    key:'loggedIn',
+    default : false
+})

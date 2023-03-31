@@ -3,8 +3,7 @@ import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
 // import { isLoggedInState,userSeqState, acTokenState, coupleIdState } from "../../recoil/states/UserState";
 import { Navigate, useNavigate } from 'react-router';
-import { useMutation, useQuery } from "react-query";
-import { LUser, userState } from "../../recoil/states/UserState";
+import { loggedIn, LUser, userState } from "../../recoil/states/UserState";
 import { invitedCoupleId } from "../../recoil/states/ServeyPageState";
 
 declare const window: typeof globalThis & {
@@ -21,6 +20,8 @@ export default function KakaoLogin(){
   // couple매칭으로 들어온 사람은 로그인 후 설문페이지로 이동시킴
   const [invited, setInvited] = useState(false)
   const [invitedId, x] = useRecoilState(invitedCoupleId)
+  const [isLoggedIn, setIsLogin] = useRecoilState(loggedIn)
+
   if(invitedId){
     setInvited(true)
   }
@@ -42,6 +43,7 @@ export default function KakaoLogin(){
             const us = res.data.userSeq
             setLoginUser({seq:us, isLoggedIn:true, acToken:res.data.accessToken, coupleId:res.data.coupleId})
             console.log('코스모스 로그인 성공', res)
+            setIsLogin(true)
             onLoginSuccess(us) // 24시간 이후 자동으로 로그인 요청 반복
             if (invited){
               navigate('/servey')

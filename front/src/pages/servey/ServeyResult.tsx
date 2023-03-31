@@ -221,6 +221,9 @@ export default function ServeyPage(){
                                 >
                                     카카오톡 공유하기
                                 </button>
+                                <p className="mt-4 cursor-pointer w-full h-10 flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain5 text-darkBackground2 ">
+                                            <NavLink to="/mypage" >마이페이지로</NavLink>
+                                </p>
                             </div>
                         }
                         
