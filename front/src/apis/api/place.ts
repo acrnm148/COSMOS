@@ -146,7 +146,6 @@ export const likePlace = async (userSeq: number, placeId: number) => {
  * @returns {}
  */
 export const getDateCourse = async (data: any) => {
-  console.log(data);
   const res = await defaultInstance.post(`/courses`, data, {
     headers: { "Content-Type": "application/json" },
   });
