@@ -22,5 +22,9 @@ export const mapCenter = atom({
 
 export const mapMarkers = atom({
   key: "mapMarkersRec",
-  default: [{ lat: "", lng: "", placeId: 0, type: "" }],
+  default: [{}],
+});
+export const placeDetail = atom({
+  key: "placeDetailRec",
+  default: { placeId: 1, type: "tour" },
 });
