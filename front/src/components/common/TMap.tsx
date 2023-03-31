@@ -24,6 +24,7 @@ export default function TMap() {
 
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
   const [markers, setMarkers] = useState<Tmapv2.Marker[]>();
+
   // 지도 div
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +49,6 @@ export default function TMap() {
         offset
       ),
   });
-
   useEffect(() => {
     if (data !== null && data !== undefined) {
       setMapCenterState({ lat: data.midLatitude, lng: data.midLongitude });
@@ -82,11 +82,7 @@ export default function TMap() {
 
         const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] =
           [];
-        if (markers !== undefined) {
-          for (let i in markers) {
-            markers[i].setMap(null);
-          }
-        }
+
         mapMarkersState.map((item: any) => {
           if (item.lat !== null || item.lng !== null) {
             const marker = new window.Tmapv2.Marker({
@@ -107,7 +103,9 @@ export default function TMap() {
           //     console.log("터치!");
           //   });
         });
-        setMarkers(newMarkers);
+        setTimeout(() => {
+          setMarkers(newMarkers);
+        }, 0);
         setMapInstance(map);
       }
     } else {
@@ -116,12 +114,6 @@ export default function TMap() {
   }, [mapRef.current]);
 
   useEffect(() => {
-    if (markers !== undefined) {
-      for (let i in markers) {
-        markers[i].setMap(null);
-      }
-    }
-
     const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] = [];
     if (window.Tmapv2) {
       if (mapInstance !== undefined) {
@@ -148,7 +140,16 @@ export default function TMap() {
     );
   }, [mapMarkersState]);
 
-  useEffect(() => {}, [markers]);
+  // 삭제 담당
+  useEffect(() => {
+    return () => {
+      if (markers !== undefined) {
+        for (let i in markers) {
+          markers[i].setMap(null);
+        }
+      }
+    };
+  }, [markers]);
   if (isLoading) return null;
 
   return <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>;

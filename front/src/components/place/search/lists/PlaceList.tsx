@@ -21,8 +21,6 @@ export default function PlaceList() {
   const gugunState = useRecoilState(selectGugun);
   const wordState = useRecoilState(completeWord);
   const categoryState = useRecoilState(selectCategory);
-  const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
-  const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
   const LIMIT = 10;
   const [offset, setOffset] = useState(0);
 
