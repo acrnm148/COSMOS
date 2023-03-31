@@ -29,7 +29,7 @@ interface Place {
 }
 
 export default function WishCourse() {
-    const [userSeq, x] = useRecoilState(userState);
+    const [userSeq, setUserSeq] = useRecoilState(userState);
     const [course, setCourse] = useState<Course[]>();
     const { data } = useQuery({
         queryKey: ["getWishCourseList"],

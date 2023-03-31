@@ -1,10 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import TMapResult from "../common/TMapResult";
 import ListCard from "../common/ListCard";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
-import { useQuery } from "react-query";
-import { getWishPlaceList } from "../../apis/api/wish";
+import { useQuery, useMutation } from "react-query";
+import { getWishPlaceList, wishMakeCourse } from "../../apis/api/wish";
+import Swal from "sweetalert2";
 
 interface Place {
     placeId: number;
@@ -44,9 +45,34 @@ export default function WishMakeCourse() {
         },
     ];
 
-    const userSeq = useRecoilState(userState);
+    const [userSeq, setUserSeq] = useRecoilState(userState);
     const [list, setList] = useState<Place[]>();
 
+    // api
+    const { data } = useQuery({
+        queryKey: ["getWishPlaceList", "userSeq"],
+        queryFn: () => getWishPlaceList(userSeq.seq),
+    });
+    const mutation = useMutation(wishMakeCourse, {
+        onSuccess: (data) => {
+            Swal.fire({
+                // title: "제목",
+                text: "생성되었습니다. ",
+                icon: "success",
+                confirmButtonColor: "#FF8E9E",
+            });
+        },
+        onError: () => {
+            Swal.fire({
+                // title: "제목",
+                text: "생성 실패했습니다. ",
+                icon: "error",
+                confirmButtonColor: "#FF8E9E",
+            });
+        },
+    });
+
+    // 장소 순서 저장하는 로직
     const [orders, setOrders] = useState<number[]>([]);
     function handleOrders(placeId: number) {
         const copy = [...orders];
@@ -57,11 +83,6 @@ export default function WishMakeCourse() {
 
         setOrders(copy);
     }
-
-    const { data } = useQuery({
-        queryKey: ["getWishPlaceList", "userSeq"],
-        queryFn: () => getWishPlaceList(userSeq[0].seq),
-    });
 
     useEffect(() => {
         setList(data);
@@ -89,7 +110,33 @@ export default function WishMakeCourse() {
                 </ListCard>
             </div>
 
-            <div className="w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold">
+            <div
+                className="w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                onClick={() => {
+                    (async () => {
+                        const { value: getName } = await Swal.fire({
+                            text: "코스 이름을 입력해주세요. ",
+                            input: "text",
+                            inputPlaceholder: "코스 이름",
+                            confirmButtonText: "확인",
+                            confirmButtonColor: "#FF8E9E",
+                            showCancelButton: true,
+                            cancelButtonText: "취소",
+                            cancelButtonColor: "#B9B9B9",
+                        });
+
+                        if (getName) {
+                            // 이후 처리되는 내용.
+                            console.log(getName);
+                            mutation.mutate({
+                                userSeq: userSeq.seq,
+                                placeIds: orders,
+                                name: getName,
+                            });
+                        }
+                    })();
+                }}
+            >
                 코스 생성
             </div>
         </div>
