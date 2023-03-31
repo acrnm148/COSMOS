@@ -39,6 +39,7 @@ export default function TMapRecommend() {
                 position: new window.Tmapv2.LatLng(item.lat, item.lng),
                 icon: LightMarker,
                 map: map,
+                title: "이름",
               });
             }
             if (item.lat !== null || item.lng !== null) {
@@ -46,6 +47,7 @@ export default function TMapRecommend() {
                 position: new window.Tmapv2.LatLng(item.lat, item.lng),
                 icon: LightMarker,
                 map: map,
+                title: "이름",
               });
             }
 

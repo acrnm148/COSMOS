@@ -11,11 +11,7 @@ import {
   selectGugun,
   completeWord,
   selectCategory,
-  mapCenter,
-  mapMarkers,
 } from "../../recoil/states/SearchPageState";
-import { useQuery } from "react-query";
-import { getPlacesWithConditions } from "../../apis/api/place";
 import SearchFilter from "../../components/place/search/SearchFilter";
 
 export default function PlaceSearch() {
@@ -23,51 +19,6 @@ export default function PlaceSearch() {
   const gugunState = useRecoilState(selectGugun);
   const wordState = useRecoilState(completeWord);
   const categoryState = useRecoilState(selectCategory);
-  const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
-  const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
-  const LIMIT = 10;
-  const [offset, setOffset] = useState(0);
-
-  const { data, isLoading } = useQuery({
-    queryKey: [
-      "getPlacesWithConditions",
-      sidoState[0].sidoName,
-      gugunState[0].gugunName,
-      wordState[0],
-      categoryState[0],
-      LIMIT,
-      offset,
-    ],
-    queryFn: () =>
-      getPlacesWithConditions(
-        1,
-        sidoState[0].sidoName,
-        gugunState[0].gugunName,
-        wordState[0],
-        categoryState[0],
-        LIMIT,
-        offset
-      ),
-  });
-
-  useEffect(() => {
-    if (data !== null && data !== undefined) {
-      setMapCenterState({ lat: data.midLatitude, lng: data.midLongitude });
-      const markers = [{}];
-      data.places.map((item: any) => {
-        markers.push({
-          lat: item.latitude,
-          lng: item.longitude,
-          placeId: item.placeId,
-          type: item.type,
-        });
-      });
-      markers.splice(0, 1);
-      setMapMarkersState(markers);
-    }
-  }, [data]);
-
-  if (isLoading) return null;
 
   return (
     <div className="w-[90%] text-center">
@@ -87,17 +38,17 @@ export default function PlaceSearch() {
       ) : null}
       <hr className="my-5 bg-slate-700" />
       <div className="mt-5">
-        {data === null || data === undefined ? (
+        {(sidoState[0].sidoName !== "" && gugunState[0].gugunName !== "") ||
+        wordState[0] !== "" ||
+        categoryState[0] !== "" ? (
+          <TMap />
+        ) : (
           <div className="w-full h-[50vh]">
             <img className="h-full m-auto rounded-lg" src={SearchWait} />
           </div>
-        ) : (
-          <TMap />
         )}
       </div>
-      {data === null || data === undefined ? null : (
-        <PlaceList data={data.places} />
-      )}
+      {/* <PlaceList /> */}
     </div>
   );
 }
