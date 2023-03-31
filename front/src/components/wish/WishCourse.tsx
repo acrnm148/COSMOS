@@ -101,8 +101,8 @@ function Item(props: { item: Course }) {
                 <div className="w-full h-36 flex overflow-x-scroll scrollbar-hide">
                     {props.item.places.map((p: any) => {
                         let name =
-                            p.name.length > 18
-                                ? p.name.slice(0, 18).concat("...")
+                            p.name.length > 7
+                                ? p.name.slice(0, 7).concat("...")
                                 : p.name;
 
                         return (
