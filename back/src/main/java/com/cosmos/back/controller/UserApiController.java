@@ -170,7 +170,7 @@ public class UserApiController {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 
-        token = token.substring(7);
+        //token = token.substring(7);
         JwtToken jwtToken = jwtService.validRefreshToken(userSeq);
         Map<String, String> jsonResponse = jwtService.recreateTokenResponse(jwtToken);
 
