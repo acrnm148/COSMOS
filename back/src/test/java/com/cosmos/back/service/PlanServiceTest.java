@@ -1,6 +1,7 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.annotation.EnableMockMvc;
+import com.cosmos.back.dto.CourseIdAndDate;
 import com.cosmos.back.dto.PlanDto;
 import com.cosmos.back.model.Course;
 import com.cosmos.back.model.CoursePlace;
@@ -68,11 +69,14 @@ public class PlanServiceTest {
     public void createPlanTest() throws Exception {
         //given
         List<Course> listCourses = new ArrayList<>();
-        List<Long> listCourseIds = new ArrayList<>();
+        List<CourseIdAndDate> courseIdAndDates = new ArrayList<>();
 
-        Course course = Course.builder().id(1L).build();
+        Course course = Course.builder()
+                .id(1L)
+                .date("2023-01-01")
+                .build();
         listCourses.add(course);
-        listCourseIds.add(course.getId());
+        courseIdAndDates.add(new CourseIdAndDate(course.getId(), course.getDate()));
 
         Plan plan = Plan.builder()
                 .coupleId(1L)
@@ -82,7 +86,7 @@ public class PlanServiceTest {
                 .courses(listCourses)
                 .build();
         PlanDto planDto = PlanDto.builder().plan(plan).build();
-//        planDto.setCourseIds(listCourseIds);
+        planDto.setCourseIdAndDateList(courseIdAndDates);
 
         when(courseRepository.findById(anyLong())).thenReturn(Optional.of(course));
         when(planRepository.save(any(Plan.class))).thenReturn(plan);
@@ -124,15 +128,18 @@ public class PlanServiceTest {
         Plan plan = Plan.builder().id(1L).planName("planTest").endDate("20230331").startDate("20230329").coupleId(1L).courses(courseList).build();
         // 수정을 위해 입력되는 PlanDto 생성 과정
         List<Course> inputCourseList = new ArrayList<>();
-        List<Long> inputCourseIdsList = new ArrayList<>();
-        Course inputCourse = Course.builder().id(1L).name("inputCourseTest").build();
+        List<CourseIdAndDate> inputCourseIdAndDatesList = new ArrayList<>();
+        Course inputCourse = Course.builder()
+                .id(1L)
+                .date("2023-01-01")
+                .name("inputCourseTest").build();
         inputCourseList.add(inputCourse);
-        inputCourseIdsList.add(inputCourse.getId());
+        inputCourseIdAndDatesList.add(new CourseIdAndDate(inputCourse.getId(), inputCourse.getDate()));
 
         Plan inputPlan = Plan.builder().id(1L).planName("inputPlanTest").endDate("20230431").startDate("20230429").coupleId(1L).courses(inputCourseList).build();
 
         PlanDto planDto = PlanDto.builder().plan(inputPlan).build();
-//        planDto.setCourseIds(inputCourseIdsList);
+        planDto.setCourseIdAndDateList(inputCourseIdAndDatesList);
 
         // 오류 발생 course
 

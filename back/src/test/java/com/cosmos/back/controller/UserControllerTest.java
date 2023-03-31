@@ -5,6 +5,7 @@ import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.user.UserProfileDto;
+import com.cosmos.back.dto.user.UserUpdateDto;
 import com.cosmos.back.model.User;
 import com.cosmos.back.oauth.provider.Token.KakaoToken;
 import com.cosmos.back.oauth.service.KakaoService;
@@ -150,6 +151,105 @@ public class UserControllerTest {
     @DisplayName("UserController 회원 정보 수정")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 회원정보수정() throws Exception {
+        /** given */
+        //토큰
+        String token = "1231231231312313213123123123";
+        // mismatchMap 생성
+        Map<String ,String > mismatchMap = new LinkedHashMap<>();
+        mismatchMap.put("status", "401");
+        mismatchMap.put("message", "유저 불일치");
+        // accesstoken 만료 시
+        Map<String, String> expiredMap = new LinkedHashMap<>();
+        expiredMap.put("status", "401");
+        expiredMap.put("message", "accessToken 만료 또는 잘못된 값입니다.");
+        UserUpdateDto userUpdateDto = UserUpdateDto.builder()
+                .userSeq(1L)
+                .phoneNumber("010-1111-1111")
+                .coupleYn("Y")
+                .coupleId(1231231234L)
+                .build();
+        User user = User.builder()
+                .userSeq(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(userUpdateDto);
+
+        when(jwtService.checkUserSeqWithAccess(anyLong(), anyString()))
+                .thenReturn(JwtState.SUCCESS) //첫번째 호출
+                .thenReturn(JwtState.SUCCESS) //두번째 호출
+                .thenReturn(JwtState.MISMATCH_USER) //세번째 호출
+                .thenReturn(JwtState.EXPIRED_ACCESS) //네번째 호출
+                .thenReturn(JwtState.SUCCESS); //Exception
+
+        // mismatchUserResponse 함수 실행 시 stubbing
+        when(jwtService.mismatchUserResponse()).thenReturn(mismatchMap);
+
+        // expiredResponse 함수 실행 시 stubbing
+        when(jwtService.requiredRefreshTokenResponse()).thenReturn(expiredMap);
+
+        when(userService.updateUserInfo(userUpdateDto))
+                .thenReturn(user)
+                .thenReturn(null)
+                .thenThrow(new NullPointerException());
+
+        /** when */
+        //success - 수정success
+        ResultActions successModSuccessRequest = mockMvc.perform(MockMvcRequestBuilders
+                .put("/api/accounts/update")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+        //success - 수정fail
+        ResultActions successModFailRequest = mockMvc.perform(MockMvcRequestBuilders
+                .put("/api/accounts/update")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+
+        //mismatch인 경우
+        ResultActions mismatchUserRequest = mockMvc.perform(MockMvcRequestBuilders
+                .put("/api/accounts/update")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+
+        //expired인 경우
+        ResultActions expiredAccessRequest = mockMvc.perform(MockMvcRequestBuilders
+                .put("/api/accounts/update")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+
+        //exception인 경우
+        ResultActions exceptionRequest = mockMvc.perform(MockMvcRequestBuilders
+                .put("/api/accounts/update")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+
+        /** then */
+        //success - 수정 성공
+        MvcResult successModSuccessResult = successModSuccessRequest.andExpect(status().isOk()).andReturn();
+        UserProfileDto result = new Gson().fromJson(successModSuccessResult.getResponse().getContentAsString(), UserProfileDto.class);
+        assertThat(result.getUserSeq()).isEqualTo(userUpdateDto.getUserSeq());
+        //success - 수정 실패
+        MvcResult successModFailResult = successModFailRequest.andExpect(status().isOk()).andReturn();
+        UserProfileDto result2 = new Gson().fromJson(successModFailResult.getResponse().getContentAsString(), UserProfileDto.class);
+        assertThat(result2).isEqualTo(null);
+
+        //mismatch
+        MvcResult mismatchResult = mismatchUserRequest.andExpect(status().isOk()).andReturn();
+        Map mismatchResponse = new Gson().fromJson(mismatchResult.getResponse().getContentAsString(), Map.class);
+        assertThat(mismatchResponse.get("message")).isEqualTo("유저 불일치");
+
+        //expired
+        MvcResult expiredResult = expiredAccessRequest.andExpect(status().isOk()).andReturn();
+        Map expiredResponse = new Gson().fromJson(expiredResult.getResponse().getContentAsString(), Map.class);
+        assertThat(expiredResponse.get("message")).isEqualTo("accessToken 만료 또는 잘못된 값입니다.");
+
+        //exception
+        MvcResult exceptionResult = exceptionRequest.andExpect(status().isBadRequest()).andReturn();
+        assertThat(exceptionResult.getResponse().getContentAsString()).isEqualTo("수정에 실패했습니다.");
+
 
     }
 
@@ -267,20 +367,88 @@ public class UserControllerTest {
     @DisplayName("UserController access토큰재발급")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void access토큰재발급() throws Exception {
+        /** given */
+        String token = "Bearer 12312312345645641523";
+        JwtToken jwtToken = JwtToken.builder().accessToken("123123123").refreshToken("456456456").build();
+        //responseMap
+        Map<String, String> recreateTokenResponse = new HashMap<>();
+        recreateTokenResponse.put("status", "200");
+        recreateTokenResponse.put("message", "refreshToken, accessToken 재발급 완료");
+        recreateTokenResponse.put("accessToken", jwtToken.getAccessToken());
+        recreateTokenResponse.put("refreshToken", jwtToken.getRefreshToken());
 
+        when(jwtService.validRefreshToken(1L)).thenReturn(jwtToken);
+
+        when(jwtService.recreateTokenResponse(jwtToken)).thenReturn(recreateTokenResponse);
+
+        /** when */
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/access/1")
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+
+        /** then */
+        MvcResult mvdResult = resultActions.andExpect(status().isOk()).andReturn();
+        Map response = new Gson().fromJson(mvdResult.getResponse().getContentAsString(), Map.class);
+        assertThat(response.get("accessToken")).isEqualTo(recreateTokenResponse.get("accessToken"));
     }
 
     @Test
     @DisplayName("UserController 커플연결수락")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 커플연결수락() throws Exception {
+        //given
+        Long userSeq = 1L;
+        Long coupleUserSeq = 2L;
+        Long coupleId = 1231231231L;
+        Map<String, Long> responseMap = new HashMap<>();
+        responseMap.put("userSeq", 1L);
+        responseMap.put("coupleUserSeq", 2L);
 
+        String content = objectMapper.writeValueAsString(responseMap);
+
+        when(userService.acceptCouple(userSeq, coupleUserSeq, coupleId))
+                .thenReturn(null)
+                .thenReturn(coupleId);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/couples/accept/1231231231")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("coupleId", coupleId.toString()));
+
+        ResultActions resultActions2 = mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/couples/accept/1231231231")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("coupleId", coupleId.toString()));
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isBadRequest()).andReturn();
+        String response = mvcResult.getResponse().getContentAsString();
+        assertThat(response).isEqualTo("");
+
+        MvcResult mvcResult2 = resultActions2.andExpect(status().isOk()).andReturn();
+        Long response2 = Long.parseLong(mvcResult2.getResponse().getContentAsString());
+        assertThat(response2).isEqualTo(coupleId);
     }
 
     @Test
     @DisplayName("UserController 커플연결끊기")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 커플연결끊기() throws Exception {
+        //given
+        Long coupleId = 1231231231L;
+        doNothing().when(userService).disconnectCouple(coupleId);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+                .delete("/api/couples/1231231231"));
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        Long response = Long.parseLong(mvcResult.getResponse().getContentAsString());
+        assertThat(response).isEqualTo(coupleId);
 
     }
 
@@ -289,15 +457,20 @@ public class UserControllerTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 사용자유형등록() throws Exception {
         //given
+        Long userSeq = 1L;
+        String type1 = "type1";
+        String type2 = "type2";
         Map<String, Object> map = new HashMap<>();
-        map.put("userSeq", 1L);
-        map.put("type1", "static");
-        map.put("type2", "flex");
-        User user = User.builder().userSeq(1L).build();
+        map.put("userSeq", userSeq);
+        map.put("type1", type1);
+        map.put("type2", type2);
 
         String content = objectMapper.writeValueAsString(map);
 
-        when(userService.saveTypes(anyLong(), anyString(), anyString())).thenReturn(user);
+        User user = User.builder()
+                .userSeq(1L)
+                .build();
+        when(userService.saveTypes(userSeq, type1, type2)).thenReturn(user);
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
@@ -307,15 +480,23 @@ public class UserControllerTest {
 
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
-        long response = Long.parseLong(mvcResult.getResponse().getContentAsString());
-        assertThat(response).isEqualTo(1L);
-
+        Long response = Long.parseLong(mvcResult.getResponse().getContentAsString());
+        assertThat(response).isEqualTo(userSeq);
     }
 
     @Test
     @DisplayName("UserController 난수생성후리턴")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 난수생성후리턴() throws Exception {
+        //given 껍데기 (변수, 동작)
+        Long code = 1L;
+        when(userService.makeCoupleId()).thenReturn(code);
 
+        //when 뭘 실행했을 때 (api 호출)
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/makeCoupleId"));
+
+        //then 검증
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        assertThat(Long.parseLong(mvcResult.getResponse().getContentAsString())).isEqualTo(1L);
     }
 }
