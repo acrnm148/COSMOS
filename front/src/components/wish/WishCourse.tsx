@@ -17,7 +17,7 @@ interface Course {
 
 interface Place {
     placeId: number;
-    placeName: string;
+    name: string;
     thumbNailUrl: string;
     address: string;
     phoneNumber: string;
@@ -29,11 +29,11 @@ interface Place {
 }
 
 export default function WishCourse() {
-    const userSeq = useRecoilState(userState);
+    const [userSeq, x] = useRecoilState(userState);
     const [course, setCourse] = useState<Course[]>();
     const { data } = useQuery({
         queryKey: ["getWishCourseList"],
-        queryFn: () => getWishCourseList(userSeq[0].seq, userSeq[0].acToken),
+        queryFn: () => getWishCourseList(userSeq.seq, userSeq.acToken),
     });
 
     useEffect(() => {
@@ -101,9 +101,9 @@ function Item(props: { item: Course }) {
                 <div className="w-full h-36 flex overflow-x-scroll scrollbar-hide">
                     {props.item.places.map((p: any) => {
                         let name =
-                            p.placeName.length > 7
-                                ? p.placeName.slice(0, 7).concat("...")
-                                : p.placeName;
+                            p.name.length > 18
+                                ? p.name.slice(0, 18).concat("...")
+                                : p.name;
 
                         return (
                             <div
@@ -115,7 +115,9 @@ function Item(props: { item: Course }) {
                                     src={p.thumbNailUrl}
                                     alt="img"
                                 />
-                                <div className="w-32 h-8 mt-2">{name}</div>
+                                <div className="w-32 h-8 mt-2 text-sm">
+                                    {name}
+                                </div>
                             </div>
                         );
                     })}
