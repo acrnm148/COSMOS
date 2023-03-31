@@ -24,6 +24,7 @@ import org.springframework.test.annotation.Rollback;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -204,8 +205,12 @@ class PlaceRepositoryTest {
         //then
         assertEquals(test1.get(0).getPlaceId(), place.getId());
         assertEquals(test2.get(0).getPlaceId(), festival.getId());
-        assertEquals(test3.get(0).getPlaceId(), place.getId());
-        Assertions.assertThat(test4.get(0).getAddress().contains("부산"));
+        for (PlaceSearchListResponseDto dto: test3) {
+            assertEquals(dto.getType(), "restaurant");
+            assertThat(dto.getName()).contains("갈비");
+        }
+
+        assertThat(test4.get(0).getAddress().contains("부산"));
     }
 
     @Test
@@ -261,7 +266,7 @@ class PlaceRepositoryTest {
 
         //then
         assertEquals(result.get(0).getType(), "tour");
-        Assertions.assertThat(result.get(0).getAddress().contains("부산"));
+        assertThat(result.get(0).getAddress().contains("부산"));
     }
 
     @Test
