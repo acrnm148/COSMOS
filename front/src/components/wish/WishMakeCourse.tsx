@@ -1,66 +1,23 @@
 import { useEffect, useState, useCallback } from "react";
 import TMapResult from "../common/TMapResult";
 import ListCard from "../common/ListCard";
+import { useRecoilState } from "recoil";
+import { userState } from "../../recoil/states/UserState";
+import { useQuery } from "react-query";
+import { getWishPlaceList } from "../../apis/api/wish";
 
 interface Place {
     placeId: number;
-    placeName: string;
-    thumbNailUrl: string;
-    address: string;
-    date: string;
-    phoneNumber: string;
+    name: string;
     score: number;
+    address: string;
+    detail: string;
+    thumbNailUrl: string;
+    phoneNumber: string;
     orders: number; // 코스 순서
     latitude: string; // 위도
     longitude: string; // 경도
-    overview: string; // 개요
 }
-
-const wishPlace: Place[] = [
-    {
-        placeId: 1,
-        placeName: "해운대 우시야",
-        thumbNailUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
-        address: "부산 해운대구 우동1로38번길 2",
-        date: "2023년 2월 28일",
-        phoneNumber: "010-1234-5678",
-        score: 3.5,
-        orders: 0,
-        latitude: "37.566481622437934",
-        longitude: "126.98502302169841",
-        overview:
-            "서울 광화문에 위치한 사발은 새로운 스타일의 퓨전국수, 덮밥, 국밥을 정성스롭고 아름답게 대접합니다.",
-    },
-    {
-        placeId: 7,
-        placeName: "2222 읍천리",
-        thumbNailUrl:
-            "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
-        address: "서울 종로구 자하문로7길 11",
-        date: "2023년 2월 28일",
-        phoneNumber: "051-351-1234",
-        score: 4.5,
-        orders: 0,
-        latitude: "37.567481622437934",
-        longitude: "126.98602302169841",
-        overview: "숙성사시미 전문 캐쥬얼 스시야",
-    },
-    {
-        placeId: 8,
-        placeName: "2222 서면 CGV",
-        thumbNailUrl:
-            "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
-        address: "부산 해운대구 우동1로38번길 2",
-        date: "2023년 2월 28일",
-        phoneNumber: "010-5678-4321",
-        score: 5.0,
-        orders: 0,
-        latitude: "37.567381622437934",
-        longitude: "126.98502302169841",
-        overview: "부산 소고기 오마카 세 수요미식회에도 나온 맛있는 소고기",
-    },
-];
 
 export default function WishMakeCourse() {
     const state = {
@@ -87,20 +44,29 @@ export default function WishMakeCourse() {
         },
     ];
 
-    const [wishPlaces, setWishPlaces] = useState<Place[]>([]);
+    const userSeq = useRecoilState(userState);
+    const [list, setList] = useState<Place[]>();
 
-    let copy: Place[] = [];
-    const set = new Set();
+    const [orders, setOrders] = useState<number[]>([]);
+    function handleOrders(placeId: number) {
+        const copy = [...orders];
+
+        copy.includes(placeId)
+            ? copy.includes(placeId) && copy?.splice(copy.indexOf(placeId), 1)
+            : !copy.includes(placeId) && copy?.push(placeId);
+
+        setOrders(copy);
+    }
+
+    const { data } = useQuery({
+        queryKey: ["getWishPlaceList", "userSeq"],
+        queryFn: () => getWishPlaceList(userSeq[0].seq),
+    });
+
     useEffect(() => {
-        wishPlace.map((a: Place) => {
-            if (!set.has(a.placeId)) {
-                copy.push(a);
-                set.add(a.placeId);
-            }
-        });
-
-        setWishPlaces([...copy]);
-    }, []);
+        setList(data);
+        setOrders(orders);
+    }, [data, orders]);
 
     return (
         <div>
@@ -112,8 +78,13 @@ export default function WishMakeCourse() {
                         계획할 장소를 순서대로 눌러주세요!
                     </div>
 
-                    {wishPlaces.map((a: Place) => (
-                        <Item key={a.placeId} item={a}></Item>
+                    {list?.map((a: Place) => (
+                        <Item
+                            key={a.placeId}
+                            item={a}
+                            orders={orders}
+                            handleOrders={handleOrders}
+                        ></Item>
                     ))}
                 </ListCard>
             </div>
@@ -125,41 +96,48 @@ export default function WishMakeCourse() {
     );
 }
 
-function Item(props: { item: Place }) {
+function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
+    let name =
+        props.item.name.length > 8
+            ? props.item.name.slice(0, 8).concat("...")
+            : props.item.name;
     let address =
-        props.item.address.length > 10
-            ? props.item.address.slice(0, 10).concat("...")
+        props.item.address.length > 8
+            ? props.item.address.slice(0, 8).concat("...")
             : props.item.address;
 
     return (
         <div>
-            <div
-                className="col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-calendarGray rounded-lg flex"
-                onClick={() => {
-                    //
-                }}
-            >
+            <div className="col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-calendarGray rounded-lg flex">
                 <img
                     className="w-24 h-24 rounded-md mr-4 mt-1"
                     src={props.item.thumbNailUrl}
                     alt="img"
                 />
                 <div className="text-left mt-2">
-                    <div className="font-bold mb-2">{props.item.placeName}</div>
+                    <div className="font-bold mb-2 text-sm">{name}</div>
                     <div className="mb-2 text-sm text-gray-500">{address}</div>
                     <div className="text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
                         유사 장소 추천
                     </div>
                 </div>
 
-                {props.item.orders > 0 && (
-                    <div className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl">
-                        {props.item.orders}
+                {props.orders.includes(props.item.placeId) ? (
+                    <div
+                        className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        onClick={() => {
+                            props.handleOrders(props.item.placeId);
+                        }}
+                    >
+                        {props.orders.indexOf(props.item.placeId) + 1}
                     </div>
-                )}
-
-                {props.item.orders === 0 && (
-                    <div className="idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"></div>
+                ) : (
+                    <div
+                        className="idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        onClick={() => {
+                            props.handleOrders(props.item.placeId);
+                        }}
+                    ></div>
                 )}
             </div>
         </div>
