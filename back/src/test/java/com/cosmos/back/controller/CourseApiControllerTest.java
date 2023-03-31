@@ -97,7 +97,7 @@ public class CourseApiControllerTest {
         mockMap.put("wish", "true");
 
         // mocking
-        when(courseService.likeCourse(anyLong())).thenReturn(mockMap);
+        when(courseService.likeCourse(anyLong(), anyString())).thenReturn(mockMap);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .put("/api/courses/1")

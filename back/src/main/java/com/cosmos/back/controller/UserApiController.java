@@ -102,13 +102,15 @@ public class UserApiController {
     @Operation(summary = "로그아웃", description = "로그아웃")
     @GetMapping("/accounts/logout/{userSeq}")
     public ResponseEntity<?> logout(@PathVariable("userSeq")Long userSeq, @RequestHeader("Authorization") String token) {
-
         //userSeq 일치, access토큰 유효 여부 체크
         token = token.substring(7);
         JwtState state = jwtService.checkUserSeqWithAccess(userSeq, token);
+        System.out.println("state = " + state);
         if (state.equals(JwtState.MISMATCH_USER)) { //userSeq 불일치
+            System.out.println("state = " + state);
             return ResponseEntity.ok().body(jwtService.mismatchUserResponse());
         } else if (state.equals(JwtState.EXPIRED_ACCESS)) { //access 만료
+            System.out.println("state = " + state);
             return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
         }
 

@@ -158,6 +158,67 @@ public class UserControllerTest {
     @DisplayName("UserController 로그아웃")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 로그아웃() throws Exception {
+        //given
+        String token = "abcdefghijklmnop";
+        JwtState success = JwtState.SUCCESS;
+        JwtState mismatch = JwtState.MISMATCH_USER;
+        JwtState expiredAccess = JwtState.EXPIRED_ACCESS;
+
+        User user = User.builder().userSeq(1L).build();
+
+        // mismatchMap 생성
+        Map<String ,String > mismatchMap = new LinkedHashMap<>();
+        mismatchMap.put("status", "401");
+        mismatchMap.put("message", "유저 불일치");
+
+        // accesstoken 만료 시
+        Map<String, String> expiredMap = new LinkedHashMap<>();
+        expiredMap.put("status", "401");
+        expiredMap.put("message", "accessToken 만료 또는 잘못된 값입니다.");
+
+        //mocking
+        when(jwtService.checkUserSeqWithAccess(anyLong(), anyString()))
+                .thenReturn(success)
+                .thenReturn(mismatch)
+                .thenReturn(expiredAccess);
+        doNothing().when(userService).logout(user.getUserSeq());
+
+        when(jwtService.mismatchUserResponse()).thenReturn(mismatchMap);
+
+        when(jwtService.requiredRefreshTokenResponse()).thenReturn(expiredMap);
+
+
+        //when
+        //성공 request
+        ResultActions successRequest = mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/accounts/logout/1")
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+
+        //mistmatch request
+        ResultActions mismatchRequest = mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/accounts/logout/1")
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+
+        //expired request
+        ResultActions expiredRequest = mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/accounts/logout/1")
+                .header(HttpHeaders.AUTHORIZATION, token)).andDo(print());
+
+        //then
+        // 성공할 경우
+        MvcResult successResponse = successRequest.andExpect(status().isOk()).andReturn();
+        String successResult = successResponse.getResponse().getContentAsString();
+        assertEquals(successResult, "로그아웃 되었습니다.");
+
+        // Mismatch인 경우
+        MvcResult mismatchResponse = mismatchRequest.andExpect(status().isOk()).andReturn();
+        Map mismatchResult = new Gson().fromJson(mismatchResponse.getResponse().getContentAsString(), Map.class);
+        assertEquals(mismatchResult.get("message"), "유저 불일치");
+
+        // Expired인 경우
+        MvcResult expiredResponse = expiredRequest.andExpect(status().isOk()).andReturn();
+        Map expiredResult = new Gson().fromJson(expiredResponse.getResponse().getContentAsString(), Map.class);
+        assertEquals(expiredResult.get("message"),"accessToken 만료 또는 잘못된 값입니다.");
 
     }
 
