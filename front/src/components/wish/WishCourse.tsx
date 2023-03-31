@@ -17,7 +17,7 @@ interface Course {
 
 interface Place {
     placeId: number;
-    placeName: string;
+    name: string;
     thumbNailUrl: string;
     address: string;
     phoneNumber: string;
@@ -29,11 +29,11 @@ interface Place {
 }
 
 export default function WishCourse() {
-    const userSeq = useRecoilState(userState);
+    const [userSeq, setUserSeq] = useRecoilState(userState);
     const [course, setCourse] = useState<Course[]>();
     const { data } = useQuery({
         queryKey: ["getWishCourseList"],
-        queryFn: () => getWishCourseList(userSeq[0].seq, userSeq[0].acToken),
+        queryFn: () => getWishCourseList(userSeq.seq, userSeq.acToken),
     });
 
     useEffect(() => {
@@ -91,15 +91,20 @@ function Item(props: { item: Course }) {
     return (
         <div className="mb-5">
             <div
-                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg"
+                className="col-md-4 p-3 h-46 bg-calendarGray rounded-t-lg"
                 onClick={() => {
-                    navigate(`/wish/course/${props.item.courseId}`);
+                    navigate(`/wish/course/${props.item.courseId}/detail`);
                 }}
             >
                 <div className="font-bold mb-3">{props.item.name}</div>
 
                 <div className="w-full h-36 flex overflow-x-scroll scrollbar-hide">
                     {props.item.places.map((p: any) => {
+                        let name =
+                            p.name.length > 7
+                                ? p.name.slice(0, 7).concat("...")
+                                : p.name;
+
                         return (
                             <div
                                 key={p.placeId}
@@ -110,8 +115,8 @@ function Item(props: { item: Course }) {
                                     src={p.thumbNailUrl}
                                     alt="img"
                                 />
-                                <div className="w-32 h-8 mt-2">
-                                    {p.placeName}
+                                <div className="w-32 h-8 mt-2 text-sm">
+                                    {name}
                                 </div>
                             </div>
                         );

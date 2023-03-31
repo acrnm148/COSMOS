@@ -56,3 +56,26 @@ export const deleteWishPlace = async ({ placeId, userSeq }: params) => {
     );
     return data;
 };
+
+// POST APIs
+// 찜한 장소로 코스 생성
+/**
+ * @param {number} userSeq : 유저 seq
+ * POST : 찜한 장소들로 코스를 생성한다.
+ */
+interface makeParams {
+    userSeq: number;
+    placeIds: number[];
+    name: string;
+}
+export const wishMakeCourse = async ({
+    userSeq,
+    placeIds,
+    name,
+}: makeParams) => {
+    const { data } = await defaultInstance.post(`/courses/users/${userSeq}`, {
+        name: name,
+        placeIds: placeIds,
+    });
+    return data;
+};
