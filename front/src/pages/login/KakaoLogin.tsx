@@ -3,7 +3,6 @@ import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
 // import { isLoggedInState,userSeqState, acTokenState, coupleIdState } from "../../recoil/states/UserState";
 import { Navigate, useNavigate } from 'react-router';
-import { useMutation, useQuery } from "react-query";
 import { loggedIn, LUser, userState } from "../../recoil/states/UserState";
 import { invitedCoupleId } from "../../recoil/states/ServeyPageState";
 
