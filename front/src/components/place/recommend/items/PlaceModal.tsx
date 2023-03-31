@@ -15,7 +15,7 @@ import LikeImg from "../../../../assets/like.png";
 import NoLikeImg from "../../../../assets/no-like.png";
 import DefaultImg from "../../../../assets/login/pinkCosmos.png";
 import { useRecoilState } from "recoil";
-import { placeDetail } from "../../../../recoil/states/SearchPageState";
+import { placeDetail } from "../../../../recoil/states/RecommendPageState";
 import { useQuery } from "react-query";
 import { getPlaceDetail } from "../../../../apis/api/place";
 import "../../../../css/listItem.css";
@@ -125,7 +125,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <ArticleOutlinedIcon color="disabled" />
               </div>
               <div className="flex flex-col">
-                <div>{data.detail}</div>
+                <div dangerouslySetInnerHTML={{ __html: data.detail }}></div>
               </div>
             </div>
             <div className="flex flex-row mb-2 gap-5">

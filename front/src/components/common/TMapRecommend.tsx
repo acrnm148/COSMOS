@@ -4,56 +4,50 @@ import { useRecoilState } from "recoil";
 import {
   selectSido,
   selectGugun,
-  completeWord,
   selectCategory,
   mapCenter,
   mapMarkers,
-} from "../../recoil/states/SearchPageState";
+} from "../../recoil/states/RecommendPageState";
 import { useQuery } from "react-query";
-import { getPlacesWithConditions } from "../../apis/api/place";
+import { getDateCourse } from "../../apis/api/place";
 
-export default function TMap() {
-  const sidoState = useRecoilState(selectSido);
-  const gugunState = useRecoilState(selectGugun);
-  const wordState = useRecoilState(completeWord);
-  const categoryState = useRecoilState(selectCategory);
+export default function TMapRecommend() {
+  const sido = useRecoilState(selectSido);
+  const gugun = useRecoilState(selectGugun);
+  const category = useRecoilState(selectCategory);
   const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
   const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
-  const LIMIT = 10;
-  const [offset, setOffset] = useState(0);
 
+  const tmp = {
+    sido: sido[0].sidoName,
+    gugun: gugun[0].gugunName,
+    categories: category[0],
+    userSeq: 1,
+  };
+
+  const [item, setItem] = useState(JSON.stringify(tmp));
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
   const [markers, setMarkers] = useState<Tmapv2.Marker[]>();
-
   // 지도 div
   const mapRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: [
-      "getPlacesWithConditions",
-      sidoState[0].sidoName,
-      gugunState[0].gugunName,
-      wordState[0],
-      categoryState[0],
-      LIMIT,
-      offset,
-    ],
-    queryFn: () =>
-      getPlacesWithConditions(
-        1,
-        sidoState[0].sidoName,
-        gugunState[0].gugunName,
-        wordState[0],
-        categoryState[0],
-        LIMIT,
-        offset
-      ),
+    queryKey: ["getDateCourse", item],
+    queryFn: () => getDateCourse(item),
   });
+
+  useEffect(() => {
+    setItem(JSON.stringify(tmp));
+  }, [category[0]]);
+
   useEffect(() => {
     if (data !== null && data !== undefined) {
-      setMapCenterState({ lat: data.midLatitude, lng: data.midLongitude });
+      setMapCenterState({
+        lat: data.data.midLatitude,
+        lng: data.data.midLongitude,
+      });
       const markers = [{}];
-      data.places.map((item: any) => {
+      data.data.places.map((item: any) => {
         markers.push({
           lat: item.latitude,
           lng: item.longitude,
@@ -82,7 +76,11 @@ export default function TMap() {
 
         const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] =
           [];
-
+        if (markers !== undefined) {
+          for (let i in markers) {
+            markers[i].setMap(null);
+          }
+        }
         mapMarkersState.map((item: any) => {
           if (item.lat !== null || item.lng !== null) {
             const marker = new window.Tmapv2.Marker({
@@ -103,9 +101,7 @@ export default function TMap() {
           //     console.log("터치!");
           //   });
         });
-        setTimeout(() => {
-          setMarkers(newMarkers);
-        }, 0);
+        setMarkers(newMarkers);
         setMapInstance(map);
       }
     } else {
@@ -114,6 +110,12 @@ export default function TMap() {
   }, [mapRef.current]);
 
   useEffect(() => {
+    if (markers !== undefined) {
+      for (let i in markers) {
+        markers[i].setMap(null);
+      }
+    }
+
     const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] = [];
     if (window.Tmapv2) {
       if (mapInstance !== undefined) {
@@ -140,17 +142,6 @@ export default function TMap() {
     );
   }, [mapMarkersState]);
 
-  // 삭제 담당
-  useEffect(() => {
-    return () => {
-      if (markers !== undefined) {
-        for (let i in markers) {
-          markers[i].setMap(null);
-        }
-      }
-    };
-  }, [markers]);
-  if (isLoading) return null;
-
+  if (isLoading || data === undefined) return null;
   return <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>;
 }

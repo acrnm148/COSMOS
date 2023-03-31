@@ -15,6 +15,7 @@ declare global {
     class Marker {
       constructor(options: MarkerOptions);
       addListener(click: string, fn: Function): void;
+      setMap(marker: object | null): void;
       // on: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
     }
 
@@ -28,6 +29,7 @@ declare global {
       position: LatLng;
       icon: string;
       map: Map;
+      title: string;
     }
   }
 }

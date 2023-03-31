@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DefaultImg from "../../../../assets/login/pinkCosmos.png";
 import ListCard from "../../../common/ListCard";
 import PlaceLike from "../items/PlaceLike";
@@ -7,25 +7,31 @@ import { useRecoilState } from "recoil";
 import {
   selectSido,
   selectGugun,
-  completeWord,
   selectCategory,
-  mapCenter,
-  mapMarkers,
   placeDetail,
-} from "../../../../recoil/states/SearchPageState";
+} from "../../../../recoil/states/RecommendPageState";
 import { useQuery } from "react-query";
-import { getPlacesWithConditions } from "../../../../apis/api/place";
+import { getDateCourse } from "../../../../apis/api/place";
 
 export default function PlaceList() {
-  const sidoState = useRecoilState(selectSido);
-  const gugunState = useRecoilState(selectGugun);
-  const wordState = useRecoilState(completeWord);
-  const categoryState = useRecoilState(selectCategory);
-  const LIMIT = 10;
-  const [offset, setOffset] = useState(0);
+  const sido = useRecoilState(selectSido);
+  const gugun = useRecoilState(selectGugun);
+  const category = useRecoilState(selectCategory);
 
+  const tmp = {
+    sido: sido[0].sidoName,
+    gugun: gugun[0].gugunName,
+    categories: category[0],
+    userSeq: 1,
+  };
+
+  const [item, setItem] = useState(JSON.stringify(tmp));
   const [detail, setDetail] = useRecoilState(placeDetail);
   const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    setItem(JSON.stringify(tmp));
+  }, [category[0]]);
 
   const openModal = (placeId: number, type: string) => {
     setDetail({ placeId: placeId, type: type });
@@ -38,33 +44,16 @@ export default function PlaceList() {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: [
-      "getPlacesWithConditions",
-      sidoState[0].sidoName,
-      gugunState[0].gugunName,
-      wordState[0],
-      categoryState[0],
-      LIMIT,
-      offset,
-    ],
-    queryFn: () =>
-      getPlacesWithConditions(
-        1,
-        sidoState[0].sidoName,
-        gugunState[0].gugunName,
-        wordState[0],
-        categoryState[0],
-        LIMIT,
-        offset
-      ),
+    queryKey: ["getDateCourse", item],
+    queryFn: () => getDateCourse(item),
   });
 
-  if (isLoading || data === null) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <>
       <ListCard height={true}>
-        {data.places.map((items: any) => {
+        {data.data.places.map((items: any) => {
           return (
             <div key={items.placeId}>
               <div
@@ -89,7 +78,10 @@ export default function PlaceList() {
                   <div className="font-thin text-slate-400 text-sm">
                     {items.address}
                   </div>
-                  <p className="content-detail">{items.detail}</p>
+                  <p
+                    className="content-detail"
+                    dangerouslySetInnerHTML={{ __html: items.detail }}
+                  ></p>
                 </div>
                 <PlaceLike like={items.like} placeId={items.placeId} />
               </div>

@@ -141,13 +141,13 @@ export const likePlace = async (userSeq: number, placeId: number) => {
 
 // POST APIs
 /**
- * @RequestBody {sido, gugun, categories, userSeq}
- * POST : 생성된 코스 가져오기
+ * @RequestBody JSON
+ * POST : 데이트 코스 생성
  * @returns {}
  */
-export const getDateCourse = async (formData: any) => {
-  const res = await defaultInstance.post("/courses", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+export const getDateCourse = async (data: any) => {
+  const res = await defaultInstance.post(`/courses`, data, {
+    headers: { "Content-Type": "application/json" },
   });
   return res;
 };

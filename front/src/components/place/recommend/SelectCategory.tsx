@@ -21,7 +21,7 @@ export default function SelecctCategory() {
     setNumber((cur) => cur + 1);
     setList(list.concat({ index: number, state: true }));
   };
-
+  console.log(category);
   const handleComplete = () => {
     const clicked = document.querySelectorAll(".content-clicked");
     let selected: any[] | ((currVal: {}[]) => {}[]) = [];

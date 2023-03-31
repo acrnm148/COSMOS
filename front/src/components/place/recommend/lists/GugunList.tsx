@@ -19,7 +19,6 @@ export default function GugunList() {
     const selected = { gugunCode: code, gugunName: name };
     setGugun(selected);
   };
-
   // 구/군 리스트 얻어옴
   const { data, isLoading } = useQuery({
     queryKey: ["getGugunList", sido],
