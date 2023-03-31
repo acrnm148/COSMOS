@@ -82,7 +82,7 @@ public class PlanServiceTest {
                 .courses(listCourses)
                 .build();
         PlanDto planDto = PlanDto.builder().plan(plan).build();
-        planDto.setCourseIds(listCourseIds);
+//        planDto.setCourseIds(listCourseIds);
 
         when(courseRepository.findById(anyLong())).thenReturn(Optional.of(course));
         when(planRepository.save(any(Plan.class))).thenReturn(plan);
@@ -132,7 +132,7 @@ public class PlanServiceTest {
         Plan inputPlan = Plan.builder().id(1L).planName("inputPlanTest").endDate("20230431").startDate("20230429").coupleId(1L).courses(inputCourseList).build();
 
         PlanDto planDto = PlanDto.builder().plan(inputPlan).build();
-        planDto.setCourseIds(inputCourseIdsList);
+//        planDto.setCourseIds(inputCourseIdsList);
 
         // 오류 발생 course
 

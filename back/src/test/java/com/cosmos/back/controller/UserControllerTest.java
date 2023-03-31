@@ -17,6 +17,7 @@ import net.bytebuddy.asm.Advice;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,13 +34,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -289,6 +288,27 @@ public class UserControllerTest {
     @DisplayName("UserController 사용자유형등록")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void 사용자유형등록() throws Exception {
+        //given
+        Map<String, Object> map = new HashMap<>();
+        map.put("userSeq", 1L);
+        map.put("type1", "static");
+        map.put("type2", "flex");
+        User user = User.builder().userSeq(1L).build();
+
+        String content = objectMapper.writeValueAsString(map);
+
+        when(userService.saveTypes(anyLong(), anyString(), anyString())).thenReturn(user);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/couples/type")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        long response = Long.parseLong(mvcResult.getResponse().getContentAsString());
+        assertThat(response).isEqualTo(1L);
 
     }
 
