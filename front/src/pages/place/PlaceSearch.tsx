@@ -48,7 +48,7 @@ export default function PlaceSearch() {
           </div>
         )}
       </div>
-      {/* <PlaceList /> */}
+      <PlaceList />
     </div>
   );
 }

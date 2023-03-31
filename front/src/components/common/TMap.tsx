@@ -82,12 +82,10 @@ export default function TMap() {
 
         const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] =
           [];
-
         if (markers !== undefined) {
           for (let i in markers) {
             markers[i].setMap(null);
           }
-          setMarkers([]);
         }
         mapMarkersState.map((item: any) => {
           if (item.lat !== null || item.lng !== null) {
@@ -123,7 +121,6 @@ export default function TMap() {
         markers[i].setMap(null);
       }
     }
-    console.log(mapInstance);
 
     const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] = [];
     if (window.Tmapv2) {
@@ -151,6 +148,7 @@ export default function TMap() {
     );
   }, [mapMarkersState]);
 
+  useEffect(() => {}, [markers]);
   if (isLoading) return null;
 
   return <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>;

@@ -4,9 +4,28 @@ import ListCard from "../../../common/ListCard";
 import PlaceLike from "../items/PlaceLike";
 import PlaceModal from "../items/PlaceModal";
 import { useRecoilState } from "recoil";
-import { placeDetail } from "../../../../recoil/states/SearchPageState";
+import {
+  selectSido,
+  selectGugun,
+  completeWord,
+  selectCategory,
+  mapCenter,
+  mapMarkers,
+  placeDetail,
+} from "../../../../recoil/states/SearchPageState";
+import { useQuery } from "react-query";
+import { getPlacesWithConditions } from "../../../../apis/api/place";
 
-export default function PlaceList({ data }: any) {
+export default function PlaceList() {
+  const sidoState = useRecoilState(selectSido);
+  const gugunState = useRecoilState(selectGugun);
+  const wordState = useRecoilState(completeWord);
+  const categoryState = useRecoilState(selectCategory);
+  const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
+  const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
+  const LIMIT = 10;
+  const [offset, setOffset] = useState(0);
+
   const [detail, setDetail] = useRecoilState(placeDetail);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -20,10 +39,34 @@ export default function PlaceList({ data }: any) {
     setModalOpen(false);
   };
 
+  const { data, isLoading } = useQuery({
+    queryKey: [
+      "getPlacesWithConditions",
+      sidoState[0].sidoName,
+      gugunState[0].gugunName,
+      wordState[0],
+      categoryState[0],
+      LIMIT,
+      offset,
+    ],
+    queryFn: () =>
+      getPlacesWithConditions(
+        1,
+        sidoState[0].sidoName,
+        gugunState[0].gugunName,
+        wordState[0],
+        categoryState[0],
+        LIMIT,
+        offset
+      ),
+  });
+
+  if (isLoading || data === null) return null;
+
   return (
     <>
       <ListCard height={true}>
-        {data.map((items: any) => {
+        {data.places.map((items: any) => {
           return (
             <div key={items.placeId}>
               <div

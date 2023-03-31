@@ -13,6 +13,7 @@ import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import PaidIcon from "@mui/icons-material/Paid";
 import LikeImg from "../../../../assets/like.png";
 import NoLikeImg from "../../../../assets/no-like.png";
+import DefaultImg from "../../../../assets/login/pinkCosmos.png";
 import { useRecoilState } from "recoil";
 import { placeDetail } from "../../../../recoil/states/SearchPageState";
 import { useQuery } from "react-query";
@@ -25,7 +26,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
   const [review, setReview] = useState(false);
 
   const settings = {
-    dots: false,
+    dots: true,
     arrows: true,
     infinite: true,
     speed: 500,
@@ -69,6 +70,15 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
         <div className="h-full overflow-auto">
           <div className="m-auto w-[80%]">
             <Slider {...settings}>
+              {data.thumbNailUrl === "" ? (
+                <div className="slider-img mb-5">
+                  <img src={DefaultImg} alt="" />
+                </div>
+              ) : (
+                <div className="slider-img mb-5">
+                  <img src={data.thumbNailUrl} alt="" />
+                </div>
+              )}
               {data.img1 === "" ? null : (
                 <div className="slider-img mb-5">
                   <img src={data.img1} alt="" />
