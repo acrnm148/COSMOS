@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class PlanDto {
     private LocalDateTime    createTime;
     private LocalDateTime updateTime;
     private List<Course> courses;
-    private List<Long> courseIds;
+    private List<CourseIdAndDate> CourseIdAndDateList;
 
     /**
      * entity to dto
