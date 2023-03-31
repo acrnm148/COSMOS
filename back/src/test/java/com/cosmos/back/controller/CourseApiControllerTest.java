@@ -4,10 +4,7 @@ import antlr.Token;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.service.JwtService;
-import com.cosmos.back.dto.request.CourseRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
+import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.dto.response.place.FestivalResponseDto;
 import com.cosmos.back.service.CourseService;
@@ -50,10 +47,10 @@ public class CourseApiControllerTest {
     private JwtService jwtService;
 
     @Test
-    @DisplayName("CourseApiController 코스 생성")
+    @DisplayName("CourseApiController 코스 생성(추천 알고리즘)")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     // HTTP Status 200, courseResponseDto가 잘 나오는지 확인
-    public void 코스생성() throws Exception {
+    public void 코스_생성_추천알고리즘() throws Exception {
 
         CourseResponseDto courseResponseDto = CourseResponseDto.builder().name("예시 코스").date("20230324").courseId(1L).orders(1).build();
 
@@ -88,6 +85,29 @@ public class CourseApiControllerTest {
     }
 
     @Test
+    @DisplayName("CourseApiController 코스 생성(사용자 생성)")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void 코스_생성_사용자_생성() throws Exception {
+        CouserUesrRequestDto mockCourseUserRequestDto = CouserUesrRequestDto.builder().name("mock name").build();
+
+        when(courseService.createCourseByUser(anyLong(), any(CouserUesrRequestDto.class))).thenReturn(1995L);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/api/courses/users/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mockCourseUserRequestDto))
+                .accept(MediaType.APPLICATION_JSON);
+
+        String response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn().
+                getResponse().
+                getContentAsString();
+
+        Assertions.assertThat(response).contains("1995");
+    }
+
+    @Test
     @DisplayName("CourseApiController 코스 찜")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     // HTTP Status 200, courseResponseDto가 잘 나오는지 확인
@@ -95,12 +115,17 @@ public class CourseApiControllerTest {
         Map<String, String> mockMap = new HashMap<>();
         mockMap.put("courseId", "1995");
         mockMap.put("wish", "true");
+        mockMap.put("name", "mock name");
+
+        CourseNameRequestDto mockCourseNameRequestDto = CourseNameRequestDto.builder().name("mock name").build();
 
         // mocking
-        when(courseService.likeCourse(anyLong())).thenReturn(mockMap);
+        when(courseService.likeCourse(anyLong(), anyString())).thenReturn(mockMap);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .put("/api/courses/1")
+                .content(objectMapper.writeValueAsString(mockCourseNameRequestDto))
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
 
         String response = mockMvc.perform(request)
