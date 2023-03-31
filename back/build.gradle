@@ -50,9 +50,11 @@ jacocoTestCoverageVerification {
             }
 
             excludes = [
-//                    '*.KakaoProfile*',
-//                    '*.Jwt*',
-//                    '*.model*'
+                    '*.KakaoProfile*',
+                    '*.dto*',
+                    '*.KakaoProfile*',
+                    '*.KakaoToken*',
+                    '*.KakaoService'
             ] + Qdomains // 제외할 Qdomains 패턴 추가
         }
     }
@@ -81,9 +83,11 @@ jacocoTestReport {
         classDirectories.setFrom(
                 files(classDirectories.files.collect {
                     fileTree(dir: it, excludes: [
-//                            '**/KakaoProfile*',
-//                            '**/Jwt*',
-//                            '**/model*'
+                            '**/KakaoProfile*',
+                            '**/dto*',
+                            '**.KakaoProfile*',
+                            '**.KakaoToken*',
+                            '**.KakaoService'
                     ] + Qdomains)
                 })
         )

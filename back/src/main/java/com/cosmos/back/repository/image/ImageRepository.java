@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long>, ImageRepositoryCustom {
 
-    public List<Image> findAllByCoupleId(Long coupleId);
+
 }

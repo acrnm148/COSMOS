@@ -1,5 +1,6 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.dto.CourseIdAndDate;
 import com.cosmos.back.dto.PlanDto;
 import com.cosmos.back.dto.PlanCourseDto;
 import com.cosmos.back.model.Course;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.time.LocalDateTime.now;
 
@@ -36,12 +39,18 @@ public class PlanService {
                 .createTime(now())
                 .build();
         List<Course> newCourses = new ArrayList<> ();
-        List<Long> ids = dto.getCourseIds();
+        List<CourseIdAndDate> courseIdAndDateList = dto.getCourseIdAndDateList();
+        int len = courseIdAndDateList.size();
+
         int order = 1;
-        for (Long id : ids) {
+        for (int i=0; i<len; i++) {
+            Long id = courseIdAndDateList.get(i).getCourseId();
+            String date = courseIdAndDateList.get(i).getDate();
+
             Course course = courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
             course.setOrders(order++);
             course.setPlan(plan);
+            course.setDate(date);
             newCourses.add(course);
         }
 
@@ -67,9 +76,12 @@ public class PlanService {
     public Plan updatePlan(PlanDto dto) {
         Plan plan = planRepository.findByIdAndCoupleId(dto.getPlanId(), dto.getCoupleId());
 
-        List<Long> courseIds = dto.getCourseIds();
+        //List<Long> courseIds = dto.getCourseIds();
+        List<CourseIdAndDate> courseIdAndDateList = dto.getCourseIdAndDateList();
+        int len = courseIdAndDateList.size();
         List<Course> courses = new ArrayList<> ();
-        for (Long id: courseIds) {
+        for (int i=0; i<len; i++) {
+            Long id = courseIdAndDateList.get(i).getCourseId();
             Course course = courseRepository.findById(id).orElseThrow(()->new IllegalArgumentException("no such data"));
             courses.add(course);
         }

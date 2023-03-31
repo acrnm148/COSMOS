@@ -2,12 +2,12 @@ package com.cosmos.back.repository.place;
 
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.config.TestConfig;
+import com.cosmos.back.dto.SimplePlaceDto;
 import com.cosmos.back.dto.response.place.*;
-import com.cosmos.back.model.Review;
-import com.cosmos.back.model.ReviewPlace;
-import com.cosmos.back.model.User;
-import com.cosmos.back.model.UserPlace;
+import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
+import com.cosmos.back.repository.course.CoursePlaceRepository;
+import com.cosmos.back.repository.course.CourseRepository;
 import com.cosmos.back.repository.review.ReviewRepository;
 import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
@@ -21,8 +21,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -36,6 +38,12 @@ class PlaceRepositoryTest {
 
     @Autowired
     private UserPlaceRepository userPlaceRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private CoursePlaceRepository coursePlaceRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -197,15 +205,89 @@ class PlaceRepositoryTest {
         //then
         assertEquals(test1.get(0).getPlaceId(), place.getId());
         assertEquals(test2.get(0).getPlaceId(), festival.getId());
-        assertEquals(test3.get(0).getPlaceId(), place.getId());
-        Assertions.assertThat(test4.get(0).getAddress().contains("부산"));
+        for (PlaceSearchListResponseDto dto: test3) {
+            assertEquals(dto.getType(), "restaurant");
+            assertThat(dto.getName()).contains("갈비");
+        }
+
+        assertThat(test4.get(0).getAddress().contains("부산"));
     }
 
     @Test
     @DisplayName("장소 검색 자동 완성")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void findPlaceListByNameAutoCompleteQueryDslTest() throws Exception {
-        
+        //given
+        Place place = Place.builder().name("searchTest").build();
+        placeRepository.save(place);
+
+        //when
+        List<AutoCompleteResponseDto> list = placeRepository.findPlaceListByNameAutoCompleteQueryDsl(place.getName());
+
+        //then
+        assertEquals(list.get(0).getName(), place.getName());
     }
 
+    @Test
+    @DisplayName("장소별 별점 평균 가져오기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void findScoreByPlaceIdQueryDslTest() throws Exception {
+        //given
+        Place place = Place.builder().name("testPlace").build();
+        placeRepository.save(place);
+
+        Review review1 = Review.builder().score(5).reviewPlaces(new ArrayList<>()).build();
+        Review review2 = Review.builder().score(1).reviewPlaces(new ArrayList<>()).build();
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+
+        ReviewPlace reviewPlace1 = ReviewPlace.builder().review(review1).place(place).build();
+        ReviewPlace reviewPlace2 = ReviewPlace.builder().review(review2).place(place).build();
+        reviewPlaceRepository.save(reviewPlace1);
+        reviewPlaceRepository.save(reviewPlace2);
+
+        //when
+        Double result = placeRepository.findScoreByPlaceIdQueryDsl(place.getId());
+
+        //then
+        assertEquals(result, 3);
+    }
+
+    @Test
+    @DisplayName("시도, 구군, 타입별 장소 리스트 가져오기")
+    @WithMockUser(username = "테스트_최고관리자", roles={"SUPER"})
+    public void findAllByTypeAndSidoAndGugunTest() throws Exception{
+        //given
+        Place place = Place.builder().type("tour").address("부산광역시 강서구").build();
+        placeRepository.save(place);
+
+        //when
+        List<Place> result = placeRepository.findAllByTypeAndSidoAndGugun("tour", "부산광역시", "강서구");
+
+        //then
+        assertEquals(result.get(0).getType(), "tour");
+        assertThat(result.get(0).getAddress().contains("부산"));
+    }
+
+    @Test
+    @DisplayName("SimplePlaceDto 내용 가져오기")
+    @WithMockUser(username = "테스트_최고관리자", roles={"SUPER"})
+    public void findSimplePlaceDtoByPlaceIdQueryDslTest() throws Exception{
+        //given
+        User user = User.builder().build();
+        userRepository.save(user);
+        Place place = Place.builder().name("placeTest").build();
+        placeRepository.save(place);
+        Course course = Course.builder().coursePlaces(new ArrayList<>()).user(user).build();
+        courseRepository.save(course);
+        CoursePlace coursePlace = CoursePlace.builder().place(place).course(course).build();
+        coursePlaceRepository.save(coursePlace);
+
+        //when
+        SimplePlaceDto result = placeRepository.findSimplePlaceDtoByPlaceIdQueryDsl(place.getId(), course.getId());
+
+        //then
+        assertEquals(result.getPlaceId(), place.getId());
+
+    }
 }
