@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import Modal from "../../common/Modal";
+import Modal from "../../common/ModalSmall";
 import Cinema from "../../../assets/place/cinema.png";
 import Cutlery from "../../../assets/place/cutlery.png";
 import Coffee from "../../../assets/place/coffee-cup.png";
