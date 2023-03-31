@@ -54,7 +54,7 @@ public class CourseService {
     @Transactional
     public Long createCourseByUser(Long userSeq, CouserUesrRequestDto dto) {
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        Course course = Course.createCourse(user);
+        Course course = Course.createCourseByUser(user, dto.getName());
         course.setWish(true);
 
         courseRepository.save(course);
