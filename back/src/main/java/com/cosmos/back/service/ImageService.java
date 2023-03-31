@@ -30,9 +30,10 @@ public class ImageService {
     @RedisEvict(key = "image")
     public void createImage(List<MultipartFile> multipartFile, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
         List<String> imageUrls = s3Service.uploadFiles(multipartFile);
+        Long reviewId = null;
 
         for (String imageUrl:imageUrls) {
-            Image image = Image.createImage(imageUrl, coupleId);
+            Image image = Image.createImage(imageUrl, coupleId, reviewId);
             imageRepository.save(image);
         }
     }

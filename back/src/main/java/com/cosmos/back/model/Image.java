@@ -34,7 +34,10 @@ public class Image {
     @Column(name = "created_time")
     private String createdTime; // 사진 생성 시간
 
-    public static Image createImage(String imageUrl, Long coupleId) {
+    @Column(name = "review_id")
+    private Long reviewId;
+
+    public static Image createImage(String imageUrl, Long coupleId, Long reviewId) {
         Image image = new Image();
         LocalDateTime now = LocalDateTime.now();
 
@@ -42,6 +45,7 @@ public class Image {
         image.setImageUrl(imageUrl);
         image.setCoupleId(coupleId);
         image.setCreatedTime(now.toString().substring(0, 10).replace("-", ""));
+        image.setReviewId(reviewId);
 
         return image;
     }

@@ -8,6 +8,7 @@ import com.cosmos.back.dto.response.review.ReviewResponseDto;
 import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.Place;
+import com.cosmos.back.repository.image.ImageRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.review.*;
 import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
@@ -35,6 +36,7 @@ public class ReviewService {
     private final ReviewAdjectiveRepository reviewAdjectiveRepository;
     private final ReviewNounRepository reviewNounRepository;
     private final S3Service s3Service;
+    private final ImageRepository imageRepository;
 
     //리뷰 쓰기
     @Transactional
@@ -52,8 +54,15 @@ public class ReviewService {
 
         List<String> urls = s3Service.uploadFiles(multipartFile); // 사진 S3로부터 이미지 받아오기
 
+
         Review review = Review.createReview(user, dto.getContents(), dto.getScore(), formatedNow, urls, nickName, dto.getContentsOpen(), dto.getImageOpen());
         Review new_review = reviewRepository.save(review);
+
+
+        for (int i = 0; i < urls.size(); i++) {
+            Image image = Image.createImage(urls.get(i), user.getCoupleId(), review.getId());
+            imageRepository.save(image);
+        }
 
         ReviewPlace reviewPlace = ReviewPlace.createReviewPlace(review, place);
         reviewPlaceRepository.save(reviewPlace);
@@ -79,6 +88,8 @@ public class ReviewService {
     @Transactional
     @RedisEvict(key = "review")
     public Long deleteReview (Long reviewId, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
+        System.out.println("reviewId = " + reviewId);
+        System.out.println("userSeq = " + userSeq);
         // 카테고리 삭제(공통)(1)
         Long executeReviewCategory = reviewRepository.deleteReviewCategoryQueryDsl(reviewId);
         // 카테고리 삭제(개별)(2)
