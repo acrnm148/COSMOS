@@ -46,10 +46,10 @@ class PlaceServiceTest {
     @MockBean
     private GugunRepository gugunRepository;
 
-    @SpyBean
+    @MockBean
     private PlaceRepository placeRepository;
 
-    @SpyBean
+    @MockBean
     private UserRepository userRepository;
 
     @MockBean

@@ -73,6 +73,7 @@ public class ReviewApiController {
     @Operation(summary = "내 리뷰 모두 불러오기", description = "내가 쓴 리뷰를 모두 불러온다")
     @GetMapping("/reviews/users/{userSeq}")
     public ResponseEntity<List> findReviwesInUser(@PathVariable Long userSeq) {
+        System.out.println("userSeq = " + userSeq);
         List<ReviewUserResponseDto> reviewsInUser = reviewService.findReviewsInUser(userSeq);
         return new ResponseEntity<>(reviewsInUser, HttpStatus.OK);
     }

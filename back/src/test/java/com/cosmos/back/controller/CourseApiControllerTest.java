@@ -137,6 +137,7 @@ public class CourseApiControllerTest {
         Assertions.assertThat(response).isEqualTo("1995");
     }
 
+
     @Test
     @DisplayName("CourseApiController 코스 찜 삭제")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})

@@ -71,15 +71,30 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         return executeReviewPlace;
     }
 
+    @Override
+    public Long deleteReviewImagesQueryDsl(Long reviewId) {
+        QImage qImage = QImage.image;
+
+        Long executeReviewImages = queryFactory
+                .delete(qImage)
+                .where(qImage.review.id.eq(reviewId))
+                .execute();
+
+        return executeReviewImages;
+    }
+
     // 장소별로 유저, 커플아이디를 이용해 리뷰 모두 불러오기
     @Override
     public List<Review> findReviewInPlaceUserCoupleQueryDsl(Long userSeq, Long placeId) {
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+        QImage qImage = QImage.image;
 
         return queryFactory.selectFrom(qReview)
                 .leftJoin(qReviewPlace)
                 .on(qReviewPlace.review.id.eq(qReview.id))
+                .leftJoin(qImage)
+                .on(qReview.id.eq(qImage.review.id))
                 .distinct()
                 .where(qReview.user.userSeq.eq(userSeq)
                         .and(qReviewPlace.place.id.eq(placeId)))
@@ -114,6 +129,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
         QIndiReviewCategory qIndiReviewCategory = QIndiReviewCategory.indiReviewCategory;
+        QImage qImage = QImage.image;
 
         return queryFactory.selectFrom(qReview)
                 .distinct()
@@ -124,6 +140,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .on(qReview.id.eq(qReviewCategory.review.id))
                 .join(qIndiReviewCategory)
                 .on(qReview.id.eq(qIndiReviewCategory.review.id))
+                .join(qImage)
+                .on(qReview.id.eq(qImage.review.id))
                 .fetch();
     }
 }
