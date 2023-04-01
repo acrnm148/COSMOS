@@ -3,6 +3,7 @@ package com.cosmos.back.dto.response.review;
 import com.cosmos.back.model.Image;
 import com.cosmos.back.model.IndiReviewCategory;
 import com.cosmos.back.model.ReviewCategory;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,6 @@ public class ReviewUserResponseDto {
     private String contents;
     private Long placeId;
     private List<Image> images;
+    private Boolean contentsOpen;
+    private Boolean imageOpen;
 }

@@ -24,4 +24,6 @@ public class ReviewResponseDto {
     private String nickname;
     private String createdTime;
     private List<Image> images;
+    private Boolean contentsOpen;
+    private Boolean imageOpen;
 }

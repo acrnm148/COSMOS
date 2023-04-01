@@ -85,7 +85,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     // 장소별로 유저, 커플아이디를 이용해 리뷰 모두 불러오기
     @Override
-    public List<Review> findReviewInPlaceUserCoupleQueryDsl(Long userSeq, Long placeId) {
+    public List<Review> findReviewInPlaceUserCoupleQueryDsl(Long userSeq, Long placeId, Integer limit, Integer offset) {
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QImage qImage = QImage.image;
@@ -98,13 +98,15 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .distinct()
                 .where(qReview.user.userSeq.eq(userSeq)
                         .and(qReviewPlace.place.id.eq(placeId)))
+                .limit(limit)
+                .offset(offset)
                 .fetch();
     }
 
 
     // 장소에 대한 리뷰 모두 불러오기
     @Override
-    public List<Review> findReviewInPlaceQueryDsl(Long placeId) {
+    public List<Review> findReviewInPlaceQueryDsl(Long placeId, Integer limit, Integer offset) {
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReview qReview = QReview.review;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
@@ -119,12 +121,14 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .on(qReview.id.eq(qReviewCategory.review.id))
                 .join(qIndiReviewCategory)
                 .on(qReview.id.eq(qIndiReviewCategory.review.id))
+                .limit(limit)
+                .offset(offset)
                 .fetch();
     }
 
     // 내 리뷰 모두 불러오기
     @Override
-    public List<Review> findReviewInUserQueryDsl(Long userSeq) {
+    public List<Review> findReviewInUserQueryDsl(Long userSeq, Integer limit, Integer offset) {
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
         QReviewCategory qReviewCategory = QReviewCategory.reviewCategory;
@@ -142,6 +146,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .on(qReview.id.eq(qIndiReviewCategory.review.id))
                 .join(qImage)
                 .on(qReview.id.eq(qImage.review.id))
+                .limit(limit)
+                .offset(offset)
                 .fetch();
     }
 }
