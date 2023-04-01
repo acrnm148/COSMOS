@@ -130,6 +130,8 @@ public class PlanService {
                 newMonth += "0"+tmp;
         }
         String YearMonthNext = newYear+"-"+newMonth;
+        
+        System.out.println(YearMonthNow+"~"+YearMonthNext+" 일정 조회");
 
         List<PlanCourseDto> plansByMonth= planRepository.findByCoupleIdAndMonthQueryDsl(coupleId, YearMonthNext,YearMonthNow);
         List<SimpleCourseDto> courses = new ArrayList<> ();
@@ -137,6 +139,9 @@ public class PlanService {
         List<PlanDto> resultList = new ArrayList<>();
         Long lastPlanId = 0L;
         int len = plansByMonth.size();
+
+        System.out.println("len:"+len);
+        System.out.println("plansByMonth:"+plansByMonth);
 
         for (int i=0; i<len; i++) {
             PlanCourseDto planCourse = plansByMonth.get(i);
