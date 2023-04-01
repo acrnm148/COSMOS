@@ -163,10 +163,12 @@ public class UserService {
         couple.get(0).setCoupleProfileImgUrl(null);
         couple.get(0).setCoupleId(null);
         couple.get(0).setCoupleUserSeq(null);
+        couple.get(0).setCoupleSuccessDate(null);
         couple.get(1).setCoupleYn("N");
         couple.get(1).setCoupleProfileImgUrl(null);
         couple.get(1).setCoupleId(null);
         couple.get(1).setCoupleUserSeq(null);
+        couple.get(1).setCoupleSuccessDate(null);
         userRepository.save(couple.get(0));
         userRepository.save(couple.get(1));
         System.out.println("커플 연결이 끊어졌습니다.");
