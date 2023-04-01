@@ -48,9 +48,9 @@ public class ReviewApiController {
     @GetMapping(value = {"/reviews/users/{userSeq}/coupleId/{coupleId}/places/{placeId}",
             "/reviews/users/{userSeq}/coupleId/places/{placeId}"
     })
-    public ResponseEntity<List> findReviewInPlaceAndUser(@PathVariable Long userSeq, @PathVariable(required = false) Long coupleId, @PathVariable Long placeId) {
+    public ResponseEntity<List> findReviewInPlaceAndUser(@PathVariable Long userSeq, @PathVariable(required = false) Long coupleId, @PathVariable Long placeId, @RequestParam("limit") Integer limit, @RequestParam("offset") Integer offset) {
         if (coupleId == null) {coupleId = null;} // 커플 아이디가 없을 경우
-        List<ReviewResponseDto> list = reviewService.findReviewsInPlaceUserCouple(userSeq, coupleId, placeId);
+        List<ReviewResponseDto> list = reviewService.findReviewsInPlaceUserCouple(userSeq, coupleId, placeId, limit, offset);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -58,8 +58,8 @@ public class ReviewApiController {
     // 장소별 리뷰 모두 불러오기(완료)
     @Operation(summary = "장소별 리뷰 모두 불러오기", description = "장소별로 리뷰를 모두 불러온다, placeId만 입력")
     @GetMapping("/reviews/places/{placeId}")
-    public ResponseEntity<List> findReviewsInPlace(@PathVariable Long placeId) {
-        List<ReviewResponseDto> reviewsInPlace = reviewService.findReviewsInPlace(placeId);
+    public ResponseEntity<List> findReviewsInPlace(@PathVariable Long placeId, @RequestParam("limit") Integer limit, @RequestParam("offset") Integer offset) {
+        List<ReviewResponseDto> reviewsInPlace = reviewService.findReviewsInPlace(placeId, limit, offset);
         if (reviewsInPlace.size() > 0) {
             return new ResponseEntity<>(reviewsInPlace, HttpStatus.OK);
         } else {
@@ -70,9 +70,8 @@ public class ReviewApiController {
     // 내 리뷰 모두 불러오기
     @Operation(summary = "내 리뷰 모두 불러오기", description = "내가 쓴 리뷰를 모두 불러온다")
     @GetMapping("/reviews/users/{userSeq}")
-    public ResponseEntity<List> findReviwesInUser(@PathVariable Long userSeq) {
-        System.out.println("userSeq = " + userSeq);
-        List<ReviewUserResponseDto> reviewsInUser = reviewService.findReviewsInUser(userSeq);
+    public ResponseEntity<List> findReviwesInUser(@PathVariable Long userSeq, @RequestParam("limit") Integer limit, @RequestParam("offset") Integer offset) {
+        List<ReviewUserResponseDto> reviewsInUser = reviewService.findReviewsInUser(userSeq, limit, offset);
         return new ResponseEntity<>(reviewsInUser, HttpStatus.OK);
     }
 
