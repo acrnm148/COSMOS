@@ -226,6 +226,7 @@ public class ReviewService {
     @RedisEvict(key = "review")
     @Transactional
     public Long changeReview (Long reviewId, ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
+        User user = userRepository.findByUserSeq(userSeq);
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         review.setContents(dto.getContents());
@@ -236,6 +237,42 @@ public class ReviewService {
 
         List<ReviewCategory> list = reviewCategoryRepository.findAllByReviewId(reviewId);
         List<IndiReviewCategory> list_indi = indiReviewCategoryRepository.findAllByReviewId(reviewId);
+
+        // 사진 삭제 및 첨부
+        List<Image> images = imageRepository.findByReviewId(reviewId);
+
+        // 현재 존재하는 이미지들
+        boolean[] imagesArray = new boolean[images.size()];
+        // 새로 들어온 이미지들
+        boolean[] dtoArray = new boolean[dto.getImageUrls().size()];
+
+        // 같은 이미지 체크
+        for (int i = 0; i < images.size(); i++) {
+            for (int j = 0; j < dtoArray.length; j++) {
+                if (images.get(i).getImageUrl().equals(dto.getImageUrls().get(j))) {
+                    imagesArray[i] = true;
+                    dtoArray[j] = true;
+                    break;
+                }
+            }
+        }
+
+        // imagesArray false -> 기존에 있지만 새로운 것에는 없음 -> 삭제
+        for (int i = 0; i < imagesArray.length; i++) {
+            if (!imagesArray[i]) {
+                String[] urls = images.get(i).getImageUrl().split("/");
+                String fileName = urls[urls.length - 1];
+                s3Service.deleteFile(fileName);
+            }
+        }
+
+        // dtoArray false -> 기존에 없지만 새로운 것에는 있음 -> 저장
+        for (int j = 0; j < dtoArray.length; j++) {
+            if (!dtoArray[j]) {
+                Image image = Image.createImage(dto.getImageUrls().get(j), user.getCoupleId(), review);
+                imageRepository.save(image);
+            }
+        }
 
         for (ReviewCategory rc : list) {
             reviewCategoryRepository.deleteById(rc.getId());
