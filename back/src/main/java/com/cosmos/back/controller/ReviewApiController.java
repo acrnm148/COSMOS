@@ -28,10 +28,8 @@ public class ReviewApiController {
     // 리뷰 생성하기(완료)
     @Operation(summary = "리뷰 등록", description = "리뷰를 등록함, 헤더에 토큰 필요")
     @PostMapping("/reviews/users/{userSeq}")
-    public ResponseEntity<Long> createReview(@PathVariable Long userSeq,
-                                             @RequestPart("dto") ReviewRequestDto dto,
-                                             @RequestPart("file") List<MultipartFile> multipartFile) {
-        Long reviewId = reviewService.createReview(dto, userSeq, multipartFile);
+    public ResponseEntity<Long> createReview(@PathVariable Long userSeq, @RequestBody ReviewRequestDto dto) {
+        Long reviewId = reviewService.createReview(dto, userSeq);
 
         return new ResponseEntity<>(reviewId, HttpStatus.OK);
     }
