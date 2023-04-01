@@ -22,7 +22,7 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
      * 월별조회
      * SELECT * FROM plan
      * WHERE plan.couple_id = 132739941
-     * AND start_date < '2023-04-01' AND end_date >= '2023-03-01';
+     * AND start_date < '2023-04' AND end_date >= '2023-03';
      * ---
      * lt <, gt >
      * loe <=, goe >=
@@ -51,9 +51,11 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
                 .where(qPlan.coupleId.eq(coupleId)
                         .and(qPlan.startDate.lt(yearMonthNext))
                         .and(qPlan.endDate.goe(yearMonthNow))
-                        .and(qCourse.date.like(yearMonthNow+"%")))
+                        //.and(qCourse.date.like(yearMonthNow+"%"))
+                )
                 .orderBy(qPlan.id.asc(), qCourse.orders.asc())
                 .fetch();
+        System.out.println("result:"+result);
         return result;
     }
 
