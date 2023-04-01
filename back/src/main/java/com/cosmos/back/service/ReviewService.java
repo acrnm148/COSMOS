@@ -41,7 +41,7 @@ public class ReviewService {
     //리뷰 쓰기
     @Transactional
     @RedisEvict(key = "review")
-    public Long createReview(ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq, List<MultipartFile> multipartFile) {
+    public Long createReview(ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
 
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data")); // 유저
         Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
@@ -52,15 +52,12 @@ public class ReviewService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd"); // 포맷 작성
         String formatedNow = now.format(formatter); // 포맷으로 날짜 변경
 
-        List<String> urls = s3Service.uploadFiles(multipartFile); // 사진 S3로부터 이미지 받아오기
-
-
         Review review = Review.createReview(user, dto.getContents(), dto.getScore(), formatedNow, nickName, dto.getContentsOpen(), dto.getImageOpen());
         Review new_review = reviewRepository.save(review);
 
         // image 테이블에 이미지 삽입
-        for (int i = 0; i < urls.size(); i++) {
-            Image image = Image.createImage(urls.get(i), user.getCoupleId(), review);
+        for (int i = 0; i < dto.getImageUrls().size(); i++) {
+            Image image = Image.createImage(dto.getImageUrls().get(i), user.getCoupleId(), review);
             imageRepository.save(image);
         }
 
