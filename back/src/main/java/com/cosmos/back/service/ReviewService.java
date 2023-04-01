@@ -55,12 +55,12 @@ public class ReviewService {
         List<String> urls = s3Service.uploadFiles(multipartFile); // 사진 S3로부터 이미지 받아오기
 
 
-        Review review = Review.createReview(user, dto.getContents(), dto.getScore(), formatedNow, urls, nickName, dto.getContentsOpen(), dto.getImageOpen());
+        Review review = Review.createReview(user, dto.getContents(), dto.getScore(), formatedNow, nickName, dto.getContentsOpen(), dto.getImageOpen());
         Review new_review = reviewRepository.save(review);
 
-
+        // image 테이블에 이미지 삽입
         for (int i = 0; i < urls.size(); i++) {
-            Image image = Image.createImage(urls.get(i), user.getCoupleId(), review.getId());
+            Image image = Image.createImage(urls.get(i), user.getCoupleId(), review);
             imageRepository.save(image);
         }
 
@@ -88,26 +88,38 @@ public class ReviewService {
     @Transactional
     @RedisEvict(key = "review")
     public Long deleteReview (Long reviewId, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
-        System.out.println("reviewId = " + reviewId);
-        System.out.println("userSeq = " + userSeq);
         // 카테고리 삭제(공통)(1)
         Long executeReviewCategory = reviewRepository.deleteReviewCategoryQueryDsl(reviewId);
         // 카테고리 삭제(개별)(2)
         Long executeIndiReviewCategory = reviewRepository.deleteIndiReviewCategoryQueryDsl(reviewId);
         // 리뷰와 장소 연결 삭제(3)
         Long executeReviewPlace = reviewRepository.deleteReviewPlaceQueryDsl(reviewId);
-        // 리뷰 내용 삭제(4)
+        // S3내의 이미지 삭제 및 image 테이블 삭제
+        List<Image> imageList = imageRepository.findByReviewId(reviewId);
+
+        for (Image image : imageList) {
+            System.out.println("image = " + image);
+            String imageUrl = image.getImageUrl();
+            String[] urls = imageUrl.split("/");
+            String fileName = urls[urls.length - 1];
+            s3Service.deleteFile(fileName);
+//            imageRepository.deleteById(image.getId());
+        }
+
+        // 리뷰와 이미지 연결 삭제(4)
+        Long executeReviewImages = reviewRepository.deleteReviewImagesQueryDsl(reviewId);
+
+        // 리뷰 내용 삭제(5)
         Long executeReview = reviewRepository.deleteReviewQueryDsl(reviewId);
 
-        // 모두 삭제한 후 제대로 삭제됬는지 확인
-        Long execute = executeReviewCategory * executeIndiReviewCategory * executeReviewPlace * executeReview;
+
 
         // 존재하지 않는 review 일 때 error 처리
-        if (execute == 0) {
+        if (executeReview == 0) {
             throw new IllegalStateException("존재하지 않는 리뷰입니다.");
         }
 
-        return execute;
+        return executeReview;
     }
 
     // 커플 및 유저의 특정 장소에 대한 리뷰 불러오기
@@ -131,10 +143,8 @@ public class ReviewService {
                                 .contents(r.getContents())
                                 .userId(u.getUserSeq())
                                 .nickname(r.getNickname())
+                                .images(r.getReviewImages())
                                 .createdTime(r.getCreatedTime())
-                                .img1(r.getImg1())
-                                .img2(r.getImg2())
-                                .img3(r.getImg3())
                                 .build();
                         reviews.add(dto);
                     }
@@ -151,9 +161,7 @@ public class ReviewService {
                         .userId(userSeq)
                         .nickname(r.getNickname())
                         .createdTime(r.getCreatedTime())
-                        .img1(r.getImg1())
-                        .img2(r.getImg2())
-                        .img3(r.getImg3())
+                        .images(r.getReviewImages())
                         .build();
                 reviews.add(dto);
             }
@@ -178,9 +186,7 @@ public class ReviewService {
                     .userId(r.getUser().getUserSeq())
                     .nickname(r.getNickname())
                     .createdTime(r.getCreatedTime())
-                    .img1(r.getImg1())
-                    .img2(r.getImg2())
-                    .img3(r.getImg3())
+                    .images(r.getReviewImages())
                     .build();
             list.add(dto);
         }
@@ -203,6 +209,7 @@ public class ReviewService {
                     .score(r.getScore())
                     .contents(r.getContents())
                     .placeId(r.getReviewPlaces().get(0).getPlace().getId())
+                    .images(r.getReviewImages())
                     .build();
             list.add(dto);
         }

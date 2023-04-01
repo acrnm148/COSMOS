@@ -1,6 +1,7 @@
 package com.cosmos.back.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -34,18 +36,25 @@ public class Image {
     @Column(name = "created_time")
     private String createdTime; // 사진 생성 시간
 
-    @Column(name = "review_id")
-    private Long reviewId;
+    // 리뷰 상태 - 리뷰
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "review_id")
+    @JsonIgnore
+    private Review review;
 
-    public static Image createImage(String imageUrl, Long coupleId, Long reviewId) {
+    // 연관관계 메서드
+    public void setReview(Review review) {
+        this.review = review;
+        review.getReviewImages().add(this);
+    }
+
+    public static Image createImage(String imageUrl, Long coupleId, Review review) {
         Image image = new Image();
         LocalDateTime now = LocalDateTime.now();
-
-
         image.setImageUrl(imageUrl);
         image.setCoupleId(coupleId);
         image.setCreatedTime(now.toString().substring(0, 10).replace("-", ""));
-        image.setReviewId(reviewId);
+        image.setReview(review);
 
         return image;
     }

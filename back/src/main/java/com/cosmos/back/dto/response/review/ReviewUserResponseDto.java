@@ -1,5 +1,6 @@
 package com.cosmos.back.dto.response.review;
 
+import com.cosmos.back.model.Image;
 import com.cosmos.back.model.IndiReviewCategory;
 import com.cosmos.back.model.ReviewCategory;
 import lombok.AllArgsConstructor;
@@ -20,4 +21,5 @@ public class ReviewUserResponseDto {
     private Integer score;
     private String contents;
     private Long placeId;
+    private List<Image> images;
 }

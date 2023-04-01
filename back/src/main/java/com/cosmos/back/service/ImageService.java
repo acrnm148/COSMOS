@@ -7,6 +7,7 @@ import com.cosmos.back.config.RedisDB;
 import com.cosmos.back.dto.request.ImageRequestDto;
 import com.cosmos.back.dto.response.ImageResponseDto;
 import com.cosmos.back.model.Image;
+import com.cosmos.back.model.Review;
 import com.cosmos.back.repository.image.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,10 @@ public class ImageService {
     @RedisEvict(key = "image")
     public void createImage(List<MultipartFile> multipartFile, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
         List<String> imageUrls = s3Service.uploadFiles(multipartFile);
-        Long reviewId = null;
+        Review review = null;
 
         for (String imageUrl:imageUrls) {
-            Image image = Image.createImage(imageUrl, coupleId, reviewId);
+            Image image = Image.createImage(imageUrl, coupleId, review);
             imageRepository.save(image);
         }
     }

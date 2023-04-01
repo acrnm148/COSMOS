@@ -78,4 +78,19 @@ public class Course {
 
         return course;
     }
+
+    // 생성 메서드
+    public static Course createCourseByUser (User user, String name) {
+        Course course = new Course();
+
+        course.setUser(user);
+
+        course.setPlan(null);
+        course.setName(name);
+        course.setDate(null);
+        course.setOrders(0);
+        course.setWish(false);
+
+        return course;
+    }
 }
