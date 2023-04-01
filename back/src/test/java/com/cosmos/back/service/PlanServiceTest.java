@@ -171,8 +171,23 @@ public class PlanServiceTest {
         //then
         verify(planRepository, times(1)).delete(any(Plan.class));
         verify(planRepository, times(1)).findByIdAndCoupleId(anyLong(), anyLong());
-
-
     }
 
+    @Test
+    @DisplayName("커플 일정 월별 조회")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void getPlanListByMonthTest() throws Exception{
+        //given
+        Plan plan = Plan.builder().planName("planTest").build();
+
+        when(planRepository.findByIdAndCoupleId(anyLong(), anyLong())).thenReturn(plan);
+        doNothing().when(planRepository).delete(any(Plan.class));
+
+        //when
+        planService.deletePlan(1L, 1L);
+
+        //then
+        verify(planRepository, times(1)).delete(any(Plan.class));
+        verify(planRepository, times(1)).findByIdAndCoupleId(anyLong(), anyLong());
+    }
 }
