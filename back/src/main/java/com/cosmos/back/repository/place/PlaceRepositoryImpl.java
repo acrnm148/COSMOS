@@ -548,6 +548,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetchJoin()
                 .on(qPlace.id.eq(qCoursePlace.place.id))
                 .where(qCoursePlace.course.id.eq(courseId))
+                .orderBy(qCoursePlace.orders.asc())
                 .fetch();
     }
 }

@@ -176,7 +176,7 @@ public class PlanService {
                     result.setCourses(courses);
                     resultList.add(result);
                 }
-                else if (!(plansByMonth.get(i).getPlanId().equals(lastPlanId))) {
+                else {
                     result = new PlanDto();
                     result.setPlanId(planCourse.getPlanId());
                     result.setCoupleId(planCourse.getCoupleId());
