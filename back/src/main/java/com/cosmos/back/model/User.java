@@ -43,6 +43,8 @@ public class User {
     private String email;
     private String birthday;
     private String role; //USER,ADMIN
+    private Long coupleUserSeq;
+    private String coupleProfileImgUrl;
 
     //private String provider;
 

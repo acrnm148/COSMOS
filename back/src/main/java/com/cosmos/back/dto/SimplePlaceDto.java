@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class SimplePlaceDto {
+    private Long courseId; // id
     private Long placeId; // id
     private String name; // 이름
     private String latitude; // 위도
@@ -25,7 +26,8 @@ public class SimplePlaceDto {
 
 
     // 별점을 제외한 생성자
-    public SimplePlaceDto(Long placeId, String name, String latitude, String longitude, String thumbNailUrl, String address, String detail, Integer orders, String phoneNumber, String type) {
+    public SimplePlaceDto(Long courseId, Long placeId, String name, String latitude, String longitude, String thumbNailUrl, String address, String detail, Integer orders, String phoneNumber, String type) {
+        this.courseId = courseId;
         this.placeId = placeId;
         this.name = name;
         this.latitude = latitude;

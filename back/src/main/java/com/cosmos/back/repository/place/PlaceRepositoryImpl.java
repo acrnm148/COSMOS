@@ -505,6 +505,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
 
         return queryFactory.select(Projections.constructor(SimplePlaceDto.class,
+                    qCoursePlace.course.id,
                     qPlace.id,
                     qPlace.name,
                     qPlace.latitude,
@@ -522,5 +523,31 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .on(qPlace.id.eq(qCoursePlace.place.id).and(qCoursePlace.course.id.eq(courseId)))
                 .where(qPlace.id.eq(placeId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<SimplePlaceDto> findSimplePlaceDtoByCourseIdQueryDsl(Long courseId) {
+        QPlace qPlace = QPlace.place;
+        QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
+
+        return queryFactory.select(Projections.constructor(SimplePlaceDto.class,
+                        qCoursePlace.course.id,
+                        qPlace.id,
+                        qPlace.name,
+                        qPlace.latitude,
+                        qPlace.longitude,
+                        qPlace.thumbNailUrl,
+                        qPlace.address,
+                        qPlace.detail,
+                        qCoursePlace.orders,
+                        qPlace.phoneNumber,
+                        qPlace.type
+                ))
+                .from(qPlace)
+                .leftJoin(qCoursePlace)
+                .fetchJoin()
+                .on(qPlace.id.eq(qCoursePlace.place.id))
+                .where(qCoursePlace.course.id.eq(courseId))
+                .fetch();
     }
 }

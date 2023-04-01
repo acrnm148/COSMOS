@@ -58,6 +58,7 @@ public class UserService {
                     .coupleId(user.getCoupleId())
                     .coupleUserId(user.getCoupleId())
                     .createTime(LocalDateTime.now())
+                    .coupleProfileImgUrl(user.getCoupleProfileImgUrl())
                     .build();
 
             System.out.println("유저 프로필 : "+userProfileDto);
@@ -78,6 +79,8 @@ public class UserService {
             user.setCoupleYn(dto.getCoupleYn());
             if (dto.getCoupleYn() == "N") {
                 user.setCoupleId(dto.getCoupleId());
+                user.setCoupleProfileImgUrl(null);
+                user.setCoupleUserSeq(dto.getCoupleUserSeq());
             }
         }
         userRepository.save(user);
@@ -126,9 +129,13 @@ public class UserService {
         }
 
         user.setCoupleId(code);
-        coupleUser.setCoupleId(code);
         user.setCoupleYn("Y");
+        user.setCoupleUserSeq(coupleUserSeq);
+        user.setCoupleProfileImgUrl(coupleUser.getProfileImgUrl());
+        coupleUser.setCoupleId(code);
         coupleUser.setCoupleYn("Y");
+        coupleUser.setCoupleUserSeq(userSeq);
+        coupleUser.setCoupleProfileImgUrl(user.getProfileImgUrl());
         userRepository.save(user);
         userRepository.save(coupleUser);
 
@@ -149,9 +156,13 @@ public class UserService {
     public void disconnectCouple(Long coupleId) {
         List<User> couple = userRepository.findByCoupleId(coupleId);
         couple.get(0).setCoupleYn("N");
-        couple.get(1).setCoupleYn("N");
+        couple.get(0).setCoupleProfileImgUrl(null);
         couple.get(0).setCoupleId(null);
+        couple.get(0).setCoupleUserSeq(null);
+        couple.get(1).setCoupleYn("N");
+        couple.get(1).setCoupleProfileImgUrl(null);
         couple.get(1).setCoupleId(null);
+        couple.get(1).setCoupleUserSeq(null);
         userRepository.save(couple.get(0));
         userRepository.save(couple.get(1));
         System.out.println("커플 연결이 끊어졌습니다.");

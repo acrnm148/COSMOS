@@ -1,8 +1,11 @@
 package com.cosmos.back.dto;
 
+import com.cosmos.back.model.CoursePlace;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor

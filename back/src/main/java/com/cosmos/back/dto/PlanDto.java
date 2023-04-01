@@ -1,5 +1,6 @@
 package com.cosmos.back.dto;
 
+import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.model.Course;
 import com.cosmos.back.model.Plan;
 import lombok.*;
@@ -8,8 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class PlanDto {
     private Long planId;
@@ -17,9 +17,10 @@ public class PlanDto {
     private String planName;
     private String startDate;
     private String endDate;
-    private LocalDateTime    createTime;
+    private LocalDateTime createTime;
     private LocalDateTime updateTime;
-    private List<Course> courses;
+    //private List<Course> courses;
+    private List<SimpleCourseDto> courses;
     private List<CourseIdAndDate> CourseIdAndDateList;
 
     /**
@@ -34,7 +35,7 @@ public class PlanDto {
         this.endDate = plan.getEndDate();
         this.createTime = plan.getCreateTime();
         this.updateTime = plan.getUpdateTime();
-        this.courses = plan.getCourses();
+        //this.courses = plan.getCourses();
     }
 
     /**
@@ -49,7 +50,7 @@ public class PlanDto {
                 .endDate(endDate)
                 .createTime(createTime)
                 .updateTime(updateTime)
-                .courses(courses)
+                //.courses(courses)
                 .build();
     }
 }

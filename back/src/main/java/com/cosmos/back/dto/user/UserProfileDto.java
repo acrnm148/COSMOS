@@ -24,6 +24,7 @@ public class UserProfileDto {
     private String email;
     private String birthday;
     private String role; //USER,ADMIN
+    private String coupleProfileImgUrl; //커플의 프로필 사진
 
     private String type1;
     private String type2;
