@@ -45,6 +45,7 @@ public class User {
     private String role; //USER,ADMIN
     private Long coupleUserSeq;
     private String coupleProfileImgUrl;
+    private String coupleSuccessDate;
 
     //private String provider;
 

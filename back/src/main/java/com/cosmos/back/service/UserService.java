@@ -128,14 +128,18 @@ public class UserService {
             return null;
         }
 
+        String nowDate = (LocalDateTime.now().toString()).substring(0,10);
+        System.out.println("현재날짜:["+nowDate+"]");
         user.setCoupleId(code);
         user.setCoupleYn("Y");
         user.setCoupleUserSeq(coupleUserSeq);
         user.setCoupleProfileImgUrl(coupleUser.getProfileImgUrl());
+        user.setCoupleSuccessDate(nowDate);
         coupleUser.setCoupleId(code);
         coupleUser.setCoupleYn("Y");
         coupleUser.setCoupleUserSeq(userSeq);
         coupleUser.setCoupleProfileImgUrl(user.getProfileImgUrl());
+        coupleUser.setCoupleSuccessDate(nowDate);
         userRepository.save(user);
         userRepository.save(coupleUser);
 
