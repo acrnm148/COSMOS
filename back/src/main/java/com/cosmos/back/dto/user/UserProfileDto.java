@@ -4,8 +4,10 @@ import com.cosmos.back.model.Review;
 import com.cosmos.back.model.UserPlace;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -25,6 +27,8 @@ public class UserProfileDto {
     private String birthday;
     private String role; //USER,ADMIN
     private String coupleProfileImgUrl; //커플의 프로필 사진
+    private String coupleSuccessDate;
+    private Long coupleDay;
 
     private String type1;
     private String type2;

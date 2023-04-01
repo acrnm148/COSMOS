@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class User {
     private String role; //USER,ADMIN
     private Long coupleUserSeq;
     private String coupleProfileImgUrl;
+    private String coupleSuccessDate;
 
     //private String provider;
 
