@@ -56,7 +56,7 @@ export default function WishList() {
             {courseId != undefined &&
             editId === undefined &&
             makeCourse === undefined ? (
-                <CourseDetail id={courseId} />
+                <CourseDetail courseId={courseId} />
             ) : null}
             {courseId === undefined &&
             editId != undefined &&

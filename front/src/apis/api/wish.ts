@@ -6,11 +6,27 @@ import { AxiosAuthApi, defaultInstance } from "../utils";
 /**
  * @param {number} userSeq : 유저 seq
  * GET : 찜한 코스 리스트 데이터를 가져온다.
- * @returns [] : 찜한 코스 리스트`
+ * @returns [] : 찜한 코스 리스트
  */
 export const getWishCourseList = async (userSeq: number, ac: string | null) => {
     const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq);
     const { data } = await instance.get(`courses/users/${userSeq}`);
+    return data;
+};
+
+/**
+ * @param {number} courseId : 코스 id
+ * @param {number} userSeq : 유저 seq
+ * GET : 코스 상세보기를 가져온다.
+ * @returns : courseId, name, date, places
+ */
+export const getCourseDetail = async (
+    courseId: number,
+    userSeq: number,
+    ac: string | null
+) => {
+    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq);
+    const { data } = await instance.get(`courses/${courseId}/users/${userSeq}`);
     return data;
 };
 
