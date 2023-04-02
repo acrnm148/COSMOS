@@ -5,6 +5,7 @@ import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.service.CourseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class CourseApiController {
 
     @Operation(summary = "코스 생성(추천 알고리즘)", description = "코스 생성")
     @PostMapping("/courses")
-    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) {
+    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) throws JsonProcessingException {
         CourseResponseDto courseResponseDto = courseService.createCourse(dto);
 
         return new ResponseEntity<>(courseResponseDto, HttpStatus.OK);

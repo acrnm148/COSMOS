@@ -27,4 +27,8 @@ public interface ReviewRepositoryCustom {
     public List<Review> findReviewInPlaceUserCoupleQueryDsl (Long userSeq, Long placeId, Integer limit, Integer offset);
 
     public Long deleteIndiReviewCategoryQueryDsl(Long reviewId);
+
+    // userSeq으로 모든 리뷰 불러오기
+    public List<Review> findReviewByUserSeq(Long userSeq);
+
 }

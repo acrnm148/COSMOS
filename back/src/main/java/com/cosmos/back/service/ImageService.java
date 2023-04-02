@@ -61,6 +61,8 @@ public class ImageService {
             ImageResponseDto dto = ImageResponseDto.builder()
                     .imageId(i.getId())
                     .imageUrl(i.getImageUrl())
+                    .createdTime(i.getCreatedTime())
+                    .reviewId(i.getReview().getId())
                     .build();
             list.add(dto);
         }
