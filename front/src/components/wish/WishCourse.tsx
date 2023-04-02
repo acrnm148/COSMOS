@@ -91,7 +91,7 @@ function Item(props: { item: Course }) {
     return (
         <div className="mb-5">
             <div
-                className="col-md-4 p-3 h-46 bg-calendarGray rounded-t-lg"
+                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg"
                 onClick={() => {
                     navigate(`/wish/course/${props.item.courseId}/detail`);
                 }}
