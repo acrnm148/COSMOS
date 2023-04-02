@@ -19,6 +19,8 @@ import { placeDetail } from "../../../../recoil/states/RecommendPageState";
 import { useQuery } from "react-query";
 import { getPlaceDetail } from "../../../../apis/api/place";
 import "../../../../css/listItem.css";
+import ReviewAll from "../../../common/ReviewAll";
+import ReviewOurs from "../../../common/ReviewOurs";
 
 export default function PlaceModal({ modalOpen, closeModal }: any) {
   const detail = useRecoilState(placeDetail);
@@ -319,9 +321,13 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
               </button>
             </div>
             {!review ? (
-              <div className="mt-2 mb-5">리뷰 전체</div>
+              <div className="mt-2 mb-5">
+                <ReviewAll placeId={data.placeId} />
+              </div>
             ) : (
-              <div className="mt-2 mb-5">우리 리뷰</div>
+              <div className="mt-2 mb-5">
+                <ReviewOurs placeId={data.placeId} />
+              </div>
             )}
           </div>
         </div>
