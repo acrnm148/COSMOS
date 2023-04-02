@@ -44,7 +44,9 @@ public class SseController {
     @Operation(summary = "안읽은 알림 개수", description = "안읽은 알림 개수 리턴")
     @GetMapping(value = "/noti/unread/{userSeq}")
     public ResponseEntity<?> countUnReadNotifications(@PathVariable("userSeq") Long userSeq) {
+        System.out.println("userSeq = " + userSeq);
         Long count = notificationService.countUnReadNotifications(userSeq);
+        System.out.println("count = " + count);
         return ResponseEntity.ok().body(count);
     }
 
