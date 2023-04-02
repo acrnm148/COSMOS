@@ -59,6 +59,14 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         return executeReviewCategory;
     }
 
+    @Override
+    public List<Review> findReviewByUserSeq(Long userSeq) {
+        QReview qReview = QReview.review;
+        return queryFactory.selectFrom(qReview)
+                .where(qReview.user.userSeq.eq(userSeq))
+                .fetch();
+    }
+
     //reviewPlace 삭제
     @Override
     public Long deleteReviewPlaceQueryDsl(Long reviewId) {
@@ -150,4 +158,6 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .offset(offset)
                 .fetch();
     }
+
+
 }
