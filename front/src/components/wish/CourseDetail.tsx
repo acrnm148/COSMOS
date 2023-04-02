@@ -59,7 +59,7 @@ export default function CourseDetail(props: { courseId: any }) {
     });
 
     useEffect(() => {
-        setPlaces(data.places);
+        setPlaces(data?.places);
     }, [data]);
 
     return (
@@ -69,10 +69,10 @@ export default function CourseDetail(props: { courseId: any }) {
 
                 <ListCard height={false}>
                     <div className="mb-5 text-lg font-bold text-left pb-3 mx-5 border-b border-slate-400">
-                        {data.name}
+                        {data?.name}
                     </div>
 
-                    {places.map((p: Place) => (
+                    {places?.map((p: Place) => (
                         <Item key={p.placeId} item={p}></Item>
                     ))}
                 </ListCard>
