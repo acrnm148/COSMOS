@@ -19,7 +19,7 @@ import static javax.persistence.GenerationType.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "place")
+@Table(name = "place", indexes = @Index(name = "type", columnList = "type"))
 @DiscriminatorColumn(name = "dtype")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Getter
