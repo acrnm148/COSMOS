@@ -22,6 +22,7 @@ public class ReviewUserResponseDto {
     private Integer score;
     private String contents;
     private Long placeId;
+    private String nickName;
     private List<Image> images;
     private Boolean contentsOpen;
     private Boolean imageOpen;
