@@ -139,6 +139,58 @@ export const likePlace = async (userSeq: number, placeId: number) => {
   return data;
 };
 
+/**
+ * @param {number} placeId : 장소 ID
+ * GET : 장소별 리뷰 전체 불러오기
+ * @returns {}
+ */
+export const getReviewAll = async (
+  placeId: number,
+  limit: number,
+  offset: number
+) => {
+  const { data } = await defaultInstance.get(
+    `reviews/places/${placeId}?limit=${limit}&offset=${offset}`
+  );
+  return data;
+};
+
+export const reviewTest = async () => {
+  const { data } = await defaultInstance.get(
+    `reviews/users/1?limit=10&offset=0`
+  );
+  return data;
+};
+
+/**
+ * @param {number} userSeq : 사용자 번호
+ * @param {number} placeId : 장소 ID
+ * @param {number} coupleId : 커플 ID
+ * GET : 장소별 유저 리뷰 불러오기
+ * @returns {}
+ */
+export const getReviewOurs = async (
+  userSeq: number,
+  placeId: number,
+  coupleId: string,
+  limit: number,
+  offset: number
+) => {
+  if (coupleId === "0") {
+    // 솔로 유저
+    const { data } = await defaultInstance.get(
+      `reviews/users/${userSeq}/coupleId/places/${placeId}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  } else {
+    // 커플 유저
+    const { data } = await defaultInstance.get(
+      `reviews/users/${userSeq}/coupleId/${coupleId}/places/${placeId}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+};
+
 // POST APIs
 /**
  * @RequestBody JSON
