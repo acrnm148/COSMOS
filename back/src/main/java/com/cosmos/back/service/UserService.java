@@ -93,14 +93,6 @@ public class UserService {
     public User updateUserInfo(UserUpdateDto dto) {
         User user = userRepository.findByUserSeq(dto.getUserSeq());
         user.setPhoneNumber(dto.getPhoneNumber());
-        if (dto.getCoupleYn() != null) {
-            user.setCoupleYn(dto.getCoupleYn());
-            if (dto.getCoupleYn() == "N") {
-                user.setCoupleId(dto.getCoupleId());
-                user.setCoupleProfileImgUrl(null);
-                user.setCoupleUserSeq(dto.getCoupleUserSeq());
-            }
-        }
         userRepository.save(user);
         return user;
     }
@@ -113,17 +105,6 @@ public class UserService {
         String redisUserSeq = userSeq.toString();
         redisTemplate.delete(redisUserSeq); //redis에서 refresh 토큰 삭제
         System.out.println("로그아웃 완료, refresh토큰 삭제: "+userSeq);
-    }
-
-    /**
-     * 중복 유저 체크
-     */
-    public boolean validateDuplicated(String userid) {
-        if (userRepository.findByUserId(userid) != null) { //중복되면 true
-            System.out.println("유형 저장");
-            return true;
-        }
-        return false;
     }
 
     /**
