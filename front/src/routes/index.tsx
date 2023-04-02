@@ -24,7 +24,8 @@ import ScheduleLayout from "../layouts/ScheduleLayout";
 import WishList from "../pages/wish/WishList";
 import PlaceResult from "../pages/place/PlaceResult";
 import SearchLayout from "../layouts/SearchLayout";
-import { Logout } from "@mui/icons-material";
+import Logout from "../pages/login/Logout";
+import RequireAuth from "./RequireAuth";
 // import Test from "../pages/place/Test"; // 드래그앤드롭
 
 const router = createBrowserRouter([
@@ -39,17 +40,19 @@ const router = createBrowserRouter([
             { path: "login/oauth", element: <KakaoLogin /> },
             // 로그아웃
             { path: "logout", element: <Logout /> },
-            // 마이페이지
-            { path: "mypage", element: <MyPage /> },
         ],
     },
     // mypage
-    {
-        path: "/mypage",
-        element: <MainLayout />,
-        errorElement: <NotFound />,
-        children: [{ path: "", element: <MyPage /> }],
-    },
+    // { 
+    //     path: "/mypage",
+    //     element: <RequireAuth />,
+    //     errorElement: <NotFound />,
+    //     children: [{ path: "", 
+    //                 element: <MainLayout />,
+    //                 errorElement: <NotFound />,
+    //                 children: [{ path: "", element: <MyPage />}],
+    //             }]
+    // },
     // 찜 목록
     {
         path: "/wish",

@@ -7,6 +7,7 @@ import { getUserInfo  } from "../../apis/api/user"
 import { useQuery } from "react-query"
 import { UserDispatch } from "../../layouts/MainLayout"
 import { backgroundImageGif, bgPngUrl, bgPngUrlTailwind, dateCateNames } from "../../recoil/states/ServeyPageState"
+import { OnLoginSuccess } from "../login/KakaoLogin"
 
 interface USERINFORMATION {
   userId: number
@@ -21,6 +22,8 @@ interface USERINFORMATION {
   coupleId : number | null
   coupleUserId: number
   reviews: any
+  coupleProfileImgUrl : string
+  createTime : string | Date
 }
 
 declare const window: typeof globalThis & {
@@ -38,7 +41,7 @@ declare const window: typeof globalThis & {
       let dispatch = useContext(UserDispatch);
       
       // if ((LoginUser.seq > -1)&& (LoginUser.acToken)){
-          console.log('로그인된유저', LoginUser.acToken)
+          // console.log('로그인된유저', LoginUser.acToken)
       //   }
         const {data} =  useQuery({
             queryKey: ["getUserInfo"],
@@ -50,7 +53,7 @@ declare const window: typeof globalThis & {
         useEffect(()=>{
           // console.log(LoginUser)
           if(data){
-            console.log('유저', data)
+            // console.log('유저', data)
             setUserInfo({
               userId : data.userId,
               userName : data.userName,
@@ -63,7 +66,9 @@ declare const window: typeof globalThis & {
               birthYear : data.birthYear,
               coupleId : data.coupleId,
               coupleUserId : data.coupleUserId,
-              reviews : data.reviews
+              reviews : data.reviews,
+              coupleProfileImgUrl : data.coupleProfileImgUrl,
+              createTime : data.createTime
             })
 
           }
@@ -71,6 +76,9 @@ declare const window: typeof globalThis & {
 
   // 로그아웃
   function logout(){
+    console.log('user',user)
+    // 자동 로그인 중단
+    OnLoginSuccess(user.seq, user.acToken, false)
     axios.get((`https://j8e104.p.ssafy.io/api/accounts/logout/${user.seq}`),
       {
         headers:{
@@ -113,9 +121,11 @@ declare const window: typeof globalThis & {
               </div>
               <div className="flex text-lightMain items-end m-3">
                 <div className="w-10 h-px bg-lightMain"></div>
-                  <p className="text-sm">n일째 코스모스중</p>
+                  <p className="text-sm">코스모스중</p>
                   <div className="w-10 h-px bg-lightMain"></div>
-                  <div className="rounded-full bg-lightMain w-12 h-12"></div>
+                <div className={"rounded-full w-16 h-16 max-w-[950px]"}>
+                  <img src={userInfo? userInfo.coupleProfileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+                </div>
               </div>
               </>
               :

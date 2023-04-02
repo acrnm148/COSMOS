@@ -17,10 +17,11 @@ export const getDayCourse = async (coupleId:string, date:string) => {
 */
 interface params {
     schedule : any,
-    ac : string
+    ac : string,
+    userSeq :number
 }
-export const postSchedule = async ({schedule, ac}:params) => {
-    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac)
+export const postSchedule = async ({schedule, ac, userSeq}:params) => {
+    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq)
     const {data} = await instance.post('plans', schedule)
     console.log('일정생성 리턴데이터', data)
     return data

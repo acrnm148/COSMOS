@@ -12,6 +12,7 @@ import { styled  as muiStyle } from '@mui/material/styles'
 import { FaStar } from 'react-icons/fa'
 // styled component
 import {Stars} from '../../components/review/StarStyledComponent'
+import { REVIEW } from "./ScheduleDetail";
 
 export function ScheduleReview(){
     return (
@@ -37,7 +38,7 @@ const CATEGORY_QA:CATE_QA = {
 {/* 공통 선택지 */}
 const COMMON_QA = ['접근성이 좋아요', '분위기가 좋아요', '반려동물 동반이 가능해요', '주차 지원이 가능해요', '사진찍기 좋아요']
 
-export function ReviewForm(props:{isReview:boolean, category:string, setShowReview:Function}){
+export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, category:string, setShowReview:Function}){
     const inputRef = useRef<HTMLInputElement | null>(null);
     const uploadImgBtn = useCallback(() =>{
         inputRef.current?.click()
@@ -48,11 +49,35 @@ export function ReviewForm(props:{isReview:boolean, category:string, setShowRevi
     const [commonQ, setCommonQ] = useState<string | undefined>()
     const [contentOpen, setContentOpen] = useState< boolean>(true)
     const [content, setContent] =  useState<string | undefined>()
-    const [photoOpen, setPhotoOpen] = useState<boolean>(true)
+    const [photoOpen, setPhotoOpen] = useState<boolean |undefined>(true)
     const [photos, setPhotos] = useState<string[] | undefined>()
     const [score, setScore] = useState<number>()
 
     const [clicked, setClicked] = useState([false, false, false, false, false])
+
+    // 리뷰 수정시 정보 입력
+    useEffect(()=> {
+        if(props.review){
+            const rvw:REVIEW = props.review
+            setCateQ(rvw.cateQ)
+            // TODO : 수정
+            // setCommonQ(rvw.commonQ)
+            setCommonQ(rvw.cateQ)
+            setContent(rvw.content)
+            setPhotoOpen(rvw.photoOpen)
+            rvw.photos && setUplodedImg(rvw.photos)
+            setScore(rvw.score)
+
+            if(score){
+                let clickStates = [...clicked]
+                for (let i = 0; i < 5; i++) {
+                    clickStates[i] = i <= score ? true : false
+                }
+                setClicked(clickStates)
+            }
+        }
+        console.log(cateQ, commonQ, photoOpen)
+    })
 
     // 별점 관련
     useEffect(()=>{
@@ -213,12 +238,12 @@ export function ReviewForm(props:{isReview:boolean, category:string, setShowRevi
                         <div className="min-w-[80px] text-white"></div>
                         <p className="text-serveyCircle p-2">리뷰</p>
                         <div className="flex text-lightMain2 items-center">
-                            <div onClick={()=>setContentOpen(!contentOpen)}><IOSSwitch sx={{ m: 1 }} defaultChecked /></div>
+                            <div onClick={()=>setContentOpen(!contentOpen)}><IOSSwitch sx={{ m: 1 }}  checked={contentOpen} /></div>
                             <p className="min-w-[40px]">{contentOpen?'공개':'비공개'}</p>
                         </div>
                     </div>
                     <div className="mx-2 h-20 w-full min-h-[50px]">
-                        <textarea onChange={(e)=>setContent(e.target.value)} className="w-full h-full rounded-md focus:outline-none p-2 " placeholder="리뷰를 작성해주세요"/>
+                        <textarea value={content} onChange={(e)=>setContent(e.target.value)} className="w-full h-full rounded-md focus:outline-none p-2 " placeholder="리뷰를 작성해주세요"/>
                     </div>
                 </div>
                 <div className="w-full bg-white rounded-lg mb-2 text-xs p-2 flex flex-col items-center">
@@ -227,7 +252,7 @@ export function ReviewForm(props:{isReview:boolean, category:string, setShowRevi
                         <div className="min-w-[80px] text-white"></div>
                         <p className="text-serveyCircle p-2">사진</p>
                         <div className="flex text-lightMain2 items-center">
-                            <div onClick={()=>setPhotoOpen(!photoOpen)}><IOSSwitch sx={{ m: 1 }} defaultChecked /></div>
+                            <div onClick={()=>setPhotoOpen(!photoOpen)}><IOSSwitch sx={{ m: 1 }} checked={photoOpen} /></div>
                             <p className="min-w-[40px]">{photoOpen?'공개':'비공개'}</p>
                         </div>
                     </div>
@@ -276,12 +301,17 @@ export function ReviewForm(props:{isReview:boolean, category:string, setShowRevi
                             })}    
                     </Stars>
                 </div>  
-            <div onClick={submit} className="w-full"><ReviewSet /></div>         
+            <div onClick={submit} className="w-full"><ReviewSet edit={props.isReview} /></div>         
         </div>
     )
 }
-export function ReviewSet(){
+export function ReviewSet(props:{edit:boolean}){
     return(
+        props.edit?
+        <div className="cursor-pointer bg-white w-full h-10 text-sm rounded-lg text-lightMain flex justify-center items-center">
+            리뷰수정하기
+        </div>
+        :
         <div className="cursor-pointer bg-white w-full h-10 text-sm rounded-lg text-lightMain flex justify-center items-center">
             리뷰남기기
         </div>

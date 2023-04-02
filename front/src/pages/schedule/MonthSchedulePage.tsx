@@ -3,6 +3,11 @@ import { ScheduleMonth } from "../../components/common/ScheduleMonth";
 import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from "react";
 import galleryIcon from "../../assets/schedule/gallery.png"
 import { NavLink } from "react-router-dom";
+import { useQuery } from "react-query";
+import { getMonthSchedule } from "../../apis/api/schedule";
+import { useRecoilState } from "recoil";
+import { userState } from "../../recoil/states/UserState";
+import axios from "axios";
 
 const {
     format,
@@ -66,19 +71,52 @@ function takeMonth(start = new Date()) {
 //////////////////////////////////////////////////////////////////////////
 export function MonthSchedulePage(){
     const [currentDate, setCurrentDate] = useState(new Date());
-    let data = takeMonth(currentDate)()
+    let monthCalendar = takeMonth(currentDate)()
     const [monthLR, setMonthLR] = useState<string>()
-    useEffect(()=>{
-        data = takeMonth(currentDate)()
-        setSchedule((prev) => new Map([...prev, [20, ['기장여행','일광당','일광온오프','베지나랑']]]))
-        setSchedule((prev) => new Map([...prev, [28, ['경주 벚꽃여행','고고고','경주 머시기','머머머']]]))
-        if((month === '12월') && (monthLR === 'R')){setYear(format(subYears(currentDate, 1), 'yyyy년'))}
-        else if((month === '1월') && (monthLR === 'L')){setYear(format(addYears(currentDate, 1), 'yyyy년'))}
-        setMonth(format(currentDate, 'M월'))
-    }, [currentDate])
-    const [year, setYear] = useState(format(currentDate, 'yyyy년'))
-    const [month, setMonth] = useState(format(currentDate, 'M월'))
+    const [year, setYear] = useState(format(currentDate, 'yyyy'))
+    const [month, setMonth] = useState(format(currentDate, 'M'))
     const [schedule, setSchedule] = useState(new Map())
+    const [apiDate, setApiDate] = useState<string>(year + (month.length === 2 ? month : '0' + month))
+    const [loginUser, setLoginUser] = useRecoilState(userState)
+    
+    // 월별 일정조회
+    useEffect(()=>{
+        const day = (year + (month.length === 2 ? month : '0' + month))
+        let data:any
+        axios.get(`https://j8e104.p.ssafy.io/api/plans/${loginUser.coupleId}/month/${day}`)
+        .then((res) =>{
+            data = res.data
+            if(data){
+                data.map((plan: { courses: { name:string, places: { name: any; }[]; date:string}[]; }) =>{
+                    console.log('data', data)
+                    if (plan.courses.length === 0){return}
+                    const planDate = plan.courses[0].date.slice(-2)
+                    let planPlaces: any[] = []
+                    planPlaces.push(plan.courses[0].name)
+                    plan.courses[0].places.map((place: { name: any; }) =>{
+                        planPlaces.push(place.name)
+                    })
+                    // return [planDate, planPlaces]
+                    console.log(new Map( [...schedule, [planDate, planPlaces]]))
+                    setSchedule((prev) => new Map( [...prev,[planDate, planPlaces]]))
+                })
+            }else{
+                setSchedule(new Map())
+            }
+        })
+        
+    },[month, year])
+
+    // 월 달력 생성 함수
+    function setCalendar(){
+    }
+    useEffect(()=>{
+        monthCalendar = takeMonth(currentDate)()
+        if((month === '12') && (monthLR === 'R')){setYear(format(subYears(currentDate, 1), 'yyyy'))}
+        else if((month === '1') && (monthLR === 'L')){setYear(format(addYears(currentDate, 1), 'yyyy'))}
+        setMonth(format(currentDate, 'M'))
+        setCalendar()
+    }, [currentDate])
 
     const nextMonth =  () => {
         setCurrentDate(addMonths(currentDate, 1))
@@ -96,7 +134,7 @@ export function MonthSchedulePage(){
     return (
         <div className="bg-lightMain2 w-screen h-screen">
            <div className="bg-lightMain2 h-20 flex items-center justify-between p-5 text-xl font-bold text-white cursor-pointer">
-                <p>{year} {month}</p> 
+                <p>{year}년 {month}월</p> 
                 <img src={galleryIcon} />
             </div>
             <div className="box-border w-full h-full bg-white">
@@ -107,26 +145,26 @@ export function MonthSchedulePage(){
                 </div>
                     <div className="border">
                         <WeekNames/>
-                        {data.map((week, index) => <div className="grid grid-cols-7" key={index}>
+                        {monthCalendar.map((week, index) => <div className="grid grid-cols-7" key={index}>
                             {week.map((day:any) =>{
-                                if(format(day, 'M월') === month){
+                                if(format(day, 'M') === month){
                                     return(
                                     <div
-                                        className={`min-h-[8rem] flex flex-col items-center border-b border-r p-2`}
+                                        className={`overflow-hidden min-h-[8rem] flex flex-col items-center border-b border-r p-2`}
                                         key={day}>
                                         <NavLink to={"/schedule/day"} state={{year:{year}, month:{month}, week:{week}, day:{day}}}>
-                                        <div className={`number flex text-xs font-bold h-6 w-6 justify-center items-center cursor-pointer`}> 
+                                        <div className={`number flex flex-col text-xs font-bold  w-full max-w-[100%] justify-center items-center cursor-pointer`}> 
                                             {format(day, 'dd')}
-                                        </div>
-                                            {schedule.has(Number(format(day, 'dd'))) &&
-                                                schedule.get(Number(format(day, 'dd'))).map((scd: string, idx:number)=>{
+                                            {schedule.has(format(day, 'dd')) &&
+                                                schedule.get(format(day, 'dd')).map((scd: string, idx:number)=>{
                                                     if (idx === 0){
-                                                        return <div className="bg-lightMain text-white font-bold text-sm m-0.5 w-full rounded-md p-0.5 overflow-hidden "><p>{scd}</p></div>
+                                                        return <div className="bg-lightMain text-white font-bold text-sm m-0.5 w-full rounded-md p-0.5"><p>{scd}</p></div>
                                                     }
-                                                    return <div className="text-sm m-0.5 w-full text-darkBackground2 whitespace-nowrap bg-lightMain3 rounded-md p-0.5 overflow-hidden"><p>{scd}</p></div>
+                                                    return <div className="text-sm h-1 m-0.5 w-full text-darkBackground2 whitespace-nowrap bg-lightMain3 rounded-md p-0.5 overflow-hidden"><p></p></div>
                                                 })
-                                                    
+                                                
                                             }
+                                            </div>
                                         </NavLink>
                                     </div>
 

@@ -32,6 +32,10 @@ import { getWishCourseList } from "../../apis/api/wish";
 import { lstat } from "fs";
 import dayjs from "dayjs";
 
+// TODO : db를 영어에서 한글로 바꾸거나 받은 데이터 변환
+const PLACECATE = {
+    'cafe' : '카페'
+}
 interface Place{
     idx : number,
     name : string,
@@ -39,12 +43,13 @@ interface Place{
     category : string,
     location : string,
     date: string,
+    placeId : number
 }
 
-const testPlace:Place[] = [{idx:0,name:'파주 출판단지', imgUrl:파주출판단지, category:'관광', location:"경기도", date:'2023년 2월 28일'},
-                        {idx:1,name:'베지앙', imgUrl:베지앙, category:'카페', location:"경기도", date:'2023년 2월 28일'},
-                        {idx:2,name:'녹두', imgUrl:녹두, category:'음식', location:"경기도", date:'2023년 2월 28일'}
-]
+// const testPlace:Place[] = [{idx:0,name:'파주 출판단지', imgUrl:'파주출판단지', category:'관광', location:"경기도", date:'2023년 2월 28일'},
+//                         {idx:1,name:'베지앙', imgUrl:베지앙, category:'카페', location:"경기도", date:'2023년 2월 28일'},
+//                         {idx:2,name:'녹두', imgUrl:녹두, category:'음식', location:"경기도", date:'2023년 2월 28일'}
+// ]
 interface COURSE {
     courseId: any;
     seq:number, name:string, places:Object[]
@@ -69,20 +74,19 @@ export function DaySchedulePage(){
     // 일정명
     const [planName, setPlanName] = useState<string|undefined>()
     
-    const [month, getMonth] = useState(location.state.month)
+    const [month, getMonth] = useState(location.state.month.month)
     const[year, setYear] = useState(location.state.year)
-    let slicedMonth = month.month.slice(0,-1)
     
     // 찜한코스
     const [wishPlaces, setWishPlaces] =useState<COURSE[]>([])
     // 찜 코스 불러오기
     const { data } = useQuery({
-        queryKey: ["getWishCourseList"],
+        queryKey: ["getWishCourseList", loginUser.acToken], // authapi 요청시 acToken 변
         queryFn: () => getWishCourseList(loginUser.seq, loginUser.acToken),
       });
     const [selectedDate, setSelectedDate] = useState<string>()
     const [showCourse, setShowCourse] = useState<number|undefined>()
-    // console.log('찜한코스', data)
+
     useEffect(()=>{
      if(data){
         let temptemp: COURSE[] = []
@@ -102,16 +106,16 @@ export function DaySchedulePage(){
         setEndDate(undefined)
         setPlanName(undefined)
         
-        const yearStr =  year.year.slice(0,-1)
-        const month = slicedMonth.length === 1?'0'+ slicedMonth:slicedMonth
+        const yearStr =  year.year
         const day = String(Number(dayClicked)).length === 1? '0'+String(Number(dayClicked)) :dayClicked
 
         const coupleId = loginUser.coupleId
-        const date = yearStr+month+day
+        const date = yearStr+(month.length === 1?'0'+ month:month)+day
 
         if(dayClicked){
             axios.get(`https://j8e104.p.ssafy.io/api/plans/${coupleId}/day/${date}`)
             .then((res)=>{
+                console.log('res.data, ',res)
                 if(res.data.planName){
                     setScheduleTitle(res.data.planName)
                     setIsPlan(true)
@@ -119,12 +123,22 @@ export function DaySchedulePage(){
                     setScheduleTitle('일정 생성하기')
                     setIsPlan(false)
                 }
-                if(res.data.courses){
+                if(res.data.courses.length > 0){
                     setIsCourse(true)
                     // 코스 표출
                     console.log('해당일에 일정이 있음', res.data)
                     // let temp = res.data.coures[0].map(())
-                    // setPlaces()
+                    setPlaces(res.data.courses[0].places.map((place: {
+                        placeId: any; name: any; thumbNailUrl: any; type: any; address: any; 
+}, key: any) =>({
+                        idx : key,
+                        name : place.name,
+                        imgUrl : place.thumbNailUrl,
+                        category : PLACECATE[place.type as keyof typeof PLACECATE],
+                        location : place.address,
+                        date : res.data.courses[0].date,
+                        placeId : place.placeId
+                    })))
 
                     // interface Place{
                     //     idx : number,
@@ -208,7 +222,8 @@ export function DaySchedulePage(){
         }
         postPlan.mutate({
             schedule : dt,
-            ac : loginUser.acToken
+            ac : loginUser.acToken,
+            userSeq : loginUser.seq
         })
         // {
         //     "coupleId": 51106719,
@@ -332,22 +347,22 @@ export function DaySchedulePage(){
 
     }
     return (
-        <div className="bg-lightMain2 h-full max-h-[1000vh]">
-            <ScheduleMonth year={year.year} month={month.month}/>
-            <div className="bg-white rounded-t-lg w-full h-full max-h-[1000vh]" >
-                <div className="ml-2 mr-2 flex flex-col items-center content-center h-full max-h-[1000vh]">
-                    <div className="flex flex-col w-full justify-center md:w-5/6 lg:w-4/6  h-full max-h-[1000vh]">
+        <div className="bg-lightMain2 ">
+            <ScheduleMonth year={year.year} month={month}/>
+            <div className="bg-white rounded-t-lg w-full h-full " >
+                <div className="ml-2 mr-2 flex flex-col items-center content-center h-full">
+                    <div className="flex flex-col w-full justify-center md:w-5/6 lg:w-4/6  h-full">
                         <WeekCalendar setDayClicked={setDayClicked} day={location.state.day} week={location.state.week}/>
                             <div onClick={makeShedules} className="cursor-pointer">
                                 {!showModal && <ScheduleTitle scheduleTitle={scheduleTitle}/>}
-                                
                             </div>
-                            {isPlan?
-                                <>
+                            {isPlan? 
+                                <div className="h-full overflow-scroll">
                                 {
                                     places?.map((place, key)=>{
                                         return(
                                             <div
+                                            className=""
                                             // onClick={} 페이지이동
                                             onDragStart={(e) => onDragStart(e, key)}
                                             onDragEnter={(e) => onDragEnter(e, key)}
@@ -363,11 +378,9 @@ export function DaySchedulePage(){
                                         ) 
                                     })
                                 }
-                                </>
+                                </div>
                                 :
-                                <div className="h-full max-h-[1000vh]">
-                                    {!showModal && <div>일정이 없습니다</div>}
-                                    
+                                <div className="h-full max-h-[1000vh]">                                    
                                     {showModal&&
                                     <>
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -493,6 +506,7 @@ const CourseComponent = (props:{places:any[]}) =>{
                     let name = p.name.length > 7 ? p.name.slice(0, 7).concat("...") : p.name
                     return(
                         <div
+                        
                         key={p.placeId}
                         className="float-left flex-none w-28 min-h-28 max-h-34 mr-3 text-center"
                         >

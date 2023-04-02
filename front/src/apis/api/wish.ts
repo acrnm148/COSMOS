@@ -9,7 +9,7 @@ import { AxiosAuthApi, defaultInstance } from "../utils";
  * @returns [] : 찜한 코스 리스트`
  */
 export const getWishCourseList = async (userSeq: number, ac: string | null) => {
-    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac);
+    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq);
     const { data } = await instance.get(`courses/users/${userSeq}`);
     return data;
 };
