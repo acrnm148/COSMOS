@@ -213,6 +213,7 @@ public class ReviewService {
                     .contents(r.getContents())
                     .placeId(r.getReviewPlaces().get(0).getPlace().getId())
                     .images(r.getReviewImages())
+                    .nickName(r.getNickname())
                     .contentsOpen(r.getContentsOpen())
                     .imageOpen(r.getImageOpen())
                     .build();
