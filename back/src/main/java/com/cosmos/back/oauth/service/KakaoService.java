@@ -120,7 +120,7 @@ public class KakaoService {
 
         //처음이용자 강제 회원가입
         if(user ==null) {
-            /**/
+            /*
             //연령대 저장
             String newAgeRange = "";
             String oldAgeRange = profile.getKakao_account().getAge_range();
@@ -137,7 +137,7 @@ public class KakaoService {
                 case "80~89": newAgeRange += "80"; break;
                 case "90~": newAgeRange += "90"; break;
             }
-
+*/
             System.out.println("profileID:"+profile.getId());
             if (profile == null) return null;
             if (profile.getKakao_account().profile == null) {
@@ -149,8 +149,8 @@ public class KakaoService {
                     .userId(profile.getId())
                     .userName(profile.getKakao_account().getProfile().getNickname())
                     .profileImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
-                    .ageRange(newAgeRange)
-                    .birthday(profile.getKakao_account().getBirthday())
+                    //.ageRange(newAgeRange)
+                    //.birthday(profile.getKakao_account().getBirthday())
                     .email(profile.getKakao_account().getEmail())
                     .coupleYn("N")
                     .coupleId(0L)
