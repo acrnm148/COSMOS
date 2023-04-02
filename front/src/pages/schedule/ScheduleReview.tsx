@@ -13,6 +13,10 @@ import { FaStar } from 'react-icons/fa'
 // styled component
 import {Stars} from '../../components/review/StarStyledComponent'
 import { REVIEW } from "./ScheduleDetail";
+import { useMutation } from "react-query";
+import { postReview, putReview } from "../../apis/api/review";
+import { userState } from "../../recoil/states/UserState";
+import { useRecoilState } from "recoil";
 
 export function ScheduleReview(){
     return (
@@ -38,12 +42,13 @@ const CATEGORY_QA:CATE_QA = {
 {/* 공통 선택지 */}
 const COMMON_QA = ['접근성이 좋아요', '분위기가 좋아요', '반려동물 동반이 가능해요', '주차 지원이 가능해요', '사진찍기 좋아요']
 
-export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, category:string, setShowReview:Function}){
+export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, category:string, setShowReview:Function, edit:boolean}){
+    const [loginUser, setLoginUSer] = useRecoilState(userState)
     const inputRef = useRef<HTMLInputElement | null>(null);
     const uploadImgBtn = useCallback(() =>{
         inputRef.current?.click()
     },[])
-
+    // console.log('review',props.review)
     // 리뷰 정보
     const [cateQ, setCateQ] = useState<string | undefined>()
     const [commonQ, setCommonQ] = useState<string | undefined>()
@@ -52,32 +57,33 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
     const [photoOpen, setPhotoOpen] = useState<boolean |undefined>(true)
     const [photos, setPhotos] = useState<string[] | undefined>()
     const [score, setScore] = useState<number>()
+    const reviewId = props.review?.reviewId
+    const placeId = props.review?.placeId
 
     const [clicked, setClicked] = useState([false, false, false, false, false])
+
+    // 리뷰 수정요청Z
+    const editReview = useMutation(putReview)
+    // 리뷰 등록요청
+    const makeReview = useMutation(postReview)
+    const [submitB, setSubmit] = useState<boolean>(false)
+    const [review, setReview] = useState<Object>()
 
     // 리뷰 수정시 정보 입력
     useEffect(()=> {
         if(props.review){
             const rvw:REVIEW = props.review
             setCateQ(rvw.cateQ)
-            // TODO : 수정
-            // setCommonQ(rvw.commonQ)
-            setCommonQ(rvw.cateQ)
+            setCommonQ(rvw.commonQ)
+            setCateQ(rvw.cateQ)
             setContent(rvw.content)
             setPhotoOpen(rvw.photoOpen)
             rvw.photos && setUplodedImg(rvw.photos)
             setScore(rvw.score)
-
-            if(score){
-                let clickStates = [...clicked]
-                for (let i = 0; i < 5; i++) {
-                    clickStates[i] = i <= score ? true : false
-                }
-                setClicked(clickStates)
-            }
+            handleStarClick(rvw.score)
         }
-        console.log(cateQ, commonQ, photoOpen)
-    })
+    },[props.review])
+    
 
     // 별점 관련
     useEffect(()=>{
@@ -148,19 +154,55 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
         }
     };
 
+    useEffect(()=>{
+        if(review && submitB){
+            // console.log('props.edit',props.edit)
+        (props.edit === true)?
+        // 리뷰 수정요청
+         editReview.mutate({
+            review : review,
+            ac:loginUser.acToken,
+            userSeq: loginUser.seq,
+            reviewId : reviewId
+         })
+        :
+        // 리뷰 등록요청
+         makeReview.mutate({
+            review : review,
+            ac:loginUser.acToken,
+            userSeq: loginUser.seq,
+         })
+         // 리뷰등록/수정 닫고 장소 상세페이지로 이동
+            props.setShowReview(false)
+        }
+    }, [review])
     // 리뷰 submit
     function submit(){
+        setSubmit(true)
         // 리뷰 수정/ 등록
-        console.log('cateQ', cateQ)
-        console.log('commonQ', commonQ)
-        console.log('content', content)
-        console.log('score', score)
-        console.log('contentOpen', contentOpen)
-        console.log('photoOpen',photoOpen)
-        console.log('image', uploadedImg)
+        // console.log('cateQ', cateQ)
+        // console.log('commonQ', commonQ)
+        // console.log('content', content)
+        // console.log('score', score)
+        // console.log('contentOpen', contentOpen)
+        // console.log('photoOpen',photoOpen)
+        // console.log('image', uploadedImg)
 
-        // 리뷰등록/수정 닫고 장소 상세페이지로 이동
-        // props.setShowReview(false)
+        setReview({
+            "placeId" : placeId,
+            "categories": [
+                commonQ
+              ],
+              "indiCategories": [
+                cateQ
+              ],
+              "imageUrls": uploadedImg,
+              "score": score,
+              "contents": content,
+              "contentsOpen": contentOpen,
+              "imageOpen": photoOpen
+        })
+        
     }
 
     // 사진 삭제

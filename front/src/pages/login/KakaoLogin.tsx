@@ -58,6 +58,7 @@ export default function KakaoLogin(){
           })
           .catch((err:any) => {
             console.log('코스모스 로그인 실패', err)
+            navigate('/')
             // 카카오 로그아웃요청
             }
           )

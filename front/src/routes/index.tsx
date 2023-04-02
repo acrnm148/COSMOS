@@ -25,7 +25,7 @@ import WishList from "../pages/wish/WishList";
 import PlaceResult from "../pages/place/PlaceResult";
 import SearchLayout from "../layouts/SearchLayout";
 import Logout from "../pages/login/Logout";
-import RequireAuth from "./RequireAuth";
+import RequireAuth from "../../src/apis/utils/RequireAuth"
 // import Test from "../pages/place/Test"; // 드래그앤드롭
 
 const router = createBrowserRouter([
@@ -43,16 +43,16 @@ const router = createBrowserRouter([
         ],
     },
     // mypage
-    // { 
-    //     path: "/mypage",
-    //     element: <RequireAuth />,
-    //     errorElement: <NotFound />,
-    //     children: [{ path: "", 
-    //                 element: <MainLayout />,
-    //                 errorElement: <NotFound />,
-    //                 children: [{ path: "", element: <MyPage />}],
-    //             }]
-    // },
+    { 
+        path: "/mypage",
+        element: <MainLayout />,
+        errorElement: <NotFound />,
+        children: [{ path: "", 
+                    element: <MainLayout />,
+                    errorElement: <NotFound />,
+                    children: [{ path: "", element: <MyPage />}],
+                }]
+    },
     // 찜 목록
     {
         path: "/wish",

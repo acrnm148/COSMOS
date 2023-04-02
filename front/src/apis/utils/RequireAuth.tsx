@@ -1,7 +1,8 @@
 import axios from "axios"
-import { userState } from "../recoil/states/UserState"
+import { Navigate, Outlet } from "react-router-dom"
 import { useRecoilState } from "recoil"
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
+import { userState } from "../../recoil/states/UserState"
+
 
 function RequireAuth() {
     const [user, setUser] = useRecoilState(userState)
