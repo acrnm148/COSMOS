@@ -8,15 +8,24 @@ import com.cosmos.back.model.place.*;
 import com.cosmos.back.repository.course.CoursePlaceRepository;
 import com.cosmos.back.repository.course.CourseRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
+import com.cosmos.back.repository.review.ReviewRepository;
+import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import reactor.util.LinkedMultiValueMap;
+import reactor.util.MultiValueMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,27 +36,76 @@ public class CourseService {
     private final PlaceRepository placeRepository;
     private final CourseRepository courseRepository;
     private final CoursePlaceRepository coursePlaceRepository;
+    private final ReviewRepository reviewRepository;
+    private final ObjectMapper objectMapper;
 
     // 코스 생성(추천 알고리즘)
     @Transactional
-    public CourseResponseDto createCourse(CourseRequestDto dto) {
+    public CourseResponseDto createCourse(CourseRequestDto dto) throws JsonProcessingException {
         // 1. 데이트 코스 생성 후 저장
         Course course = saveCourse(dto.getUserSeq());
 
-        // 2. 카테고리별 장소 가져오기
-        List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun(), dto.getUserSeq());
+        List<Review> test = reviewRepository.findReviewByUserSeq(dto.getUserSeq());
 
-        // 3. return 해줄 CourseResponseDto 생성 후 courseId 넣기
-        CourseResponseDto courseResponseDto = new CourseResponseDto();
-        courseResponseDto.setCourseId(course.getId());
+        if (test.size() < 2) {
+            // 2. 카테고리별 장소 가져오기
+            List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun(), dto.getUserSeq());
 
-        // 4. CourseResponseDto에 midLatitude와 midLongitude 넣기
-        saveMidLatitudeAndMidLongitude(courseResponseDto, places);
+            // 3. return 해줄 CourseResponseDto 생성 후 courseId 넣기
+            CourseResponseDto courseResponseDto = new CourseResponseDto();
+            courseResponseDto.setCourseId(course.getId());
 
-        // 5. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
-        List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
+            // 4. CourseResponseDto에 midLatitude와 midLongitude 넣기
+            saveMidLatitudeAndMidLongitude(courseResponseDto, places);
 
-        return courseResponseDto;
+            // 5. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+            List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
+
+            return courseResponseDto;
+        } else {
+            // Django로 협업 필터링을 통한 알고리즘 장소 추천 받기
+            // RestTemplate 객체 생성
+            RestTemplate restTemplate = new RestTemplate();
+
+            // HttpHeader를 setting하기
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+            // Body Setting
+            CourseRequestDto body = new CourseRequestDto();
+            body.setCategories(dto.getCategories());
+            body.setSido(dto.getSido());
+            body.setGugun(dto.getGugun());
+
+            // HttpEntity 생성
+            HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
+
+            // API 호출
+            String url = "http://localhost:8000/api/CF/algorithm/userSeq/" + dto.getUserSeq() + "/";
+            ResponseEntity<String> responseData = restTemplate.postForEntity(url, requestMessage, String.class);
+            List list = new Gson().fromJson(responseData.getBody(), List.class);
+
+            // 연관 Place 찾아서 List로 만들어주기
+            List<Place> places = new ArrayList<>();
+            for (Object placeObject: list) {
+                String value = String.valueOf(placeObject);
+                Long placeId = Long.valueOf(value.substring(0, value.length() - 2));
+                Place place = placeRepository.findById(placeId).orElseThrow(() -> new NoSuchElementException("no such data"));
+                places.add(place);
+            }
+
+            // 3. return 해줄 CourseResponseDto 생성 후 courseId 넣기
+            CourseResponseDto courseResponseDto = new CourseResponseDto();
+            courseResponseDto.setCourseId(course.getId());
+
+            // 4. CourseResponseDto에 midLatitude와 midLongitude 넣기
+            saveMidLatitudeAndMidLongitude(courseResponseDto, places);
+
+            // 5. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+            List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
+
+            return courseResponseDto;
+        }
     }
 
     // 코스 생성(사용자 생성)
