@@ -15,6 +15,7 @@ public class ReviewRequestDto {
     private Long placeId;
     private List<String> categories;
     private List<String> indiCategories;
+    private List<String> imageUrls;
     private Integer score;
     private String contents;
     private Boolean contentsOpen;

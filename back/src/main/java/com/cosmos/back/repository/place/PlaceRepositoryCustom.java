@@ -49,4 +49,7 @@ public interface PlaceRepositoryCustom {
 
     // QueryDsl로 SimplePlaceDto 내용 가져오기
     public SimplePlaceDto findSimplePlaceDtoByPlaceIdQueryDsl(Long placeId, Long courseId);
+
+    // QueryDsl로 SimplePlaceDto 내용 가져오기
+    public List<SimplePlaceDto> findSimplePlaceDtoByCourseIdQueryDsl(Long courseId);
 }

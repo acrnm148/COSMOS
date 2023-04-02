@@ -1,7 +1,6 @@
 
 server:
   port: 8081
-
 file:
   path:
 spring:

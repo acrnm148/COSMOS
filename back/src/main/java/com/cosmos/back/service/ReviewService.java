@@ -41,7 +41,7 @@ public class ReviewService {
     //리뷰 쓰기
     @Transactional
     @RedisEvict(key = "review")
-    public Long createReview(ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq, List<MultipartFile> multipartFile) {
+    public Long createReview(ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
 
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data")); // 유저
         Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
@@ -52,15 +52,12 @@ public class ReviewService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd"); // 포맷 작성
         String formatedNow = now.format(formatter); // 포맷으로 날짜 변경
 
-        List<String> urls = s3Service.uploadFiles(multipartFile); // 사진 S3로부터 이미지 받아오기
-
-
         Review review = Review.createReview(user, dto.getContents(), dto.getScore(), formatedNow, nickName, dto.getContentsOpen(), dto.getImageOpen());
         Review new_review = reviewRepository.save(review);
 
         // image 테이블에 이미지 삽입
-        for (int i = 0; i < urls.size(); i++) {
-            Image image = Image.createImage(urls.get(i), user.getCoupleId(), review);
+        for (int i = 0; i < dto.getImageUrls().size(); i++) {
+            Image image = Image.createImage(dto.getImageUrls().get(i), user.getCoupleId(), review);
             imageRepository.save(image);
         }
 
@@ -123,7 +120,7 @@ public class ReviewService {
     }
 
     // 커플 및 유저의 특정 장소에 대한 리뷰 불러오기
-    public List<ReviewResponseDto> findReviewsInPlaceUserCouple (Long userSeq, Long coupleId, Long placeId) {
+    public List<ReviewResponseDto> findReviewsInPlaceUserCouple (Long userSeq, Long coupleId, Long placeId, Integer limit, Integer offset) {
         List<ReviewResponseDto> reviews = new ArrayList<>();
 
         // 커플일 경우
@@ -133,7 +130,7 @@ public class ReviewService {
 
             // 해당 커플의 유저를 한 명씩 돌면서 각자쓴 리뷰를 합친다.
             for (User u : users) {
-                List<Review> data = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(u.getUserSeq(), placeId);
+                List<Review> data = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(u.getUserSeq(), placeId, limit, offset);
                     for (Review r : data) {
                         ReviewResponseDto dto = ReviewResponseDto.builder()
                                 .reviewId(r.getId())
@@ -145,12 +142,14 @@ public class ReviewService {
                                 .nickname(r.getNickname())
                                 .images(r.getReviewImages())
                                 .createdTime(r.getCreatedTime())
+                                .contentsOpen(r.getContentsOpen())
+                                .imageOpen(r.getImageOpen())
                                 .build();
                         reviews.add(dto);
                     }
             }
         } else { // 솔로일 경우 자신의 리뷰를 불러온다.
-            List<Review> data = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(userSeq, placeId);
+            List<Review> data = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(userSeq, placeId, limit, offset);
             for (Review r : data) {
                 ReviewResponseDto dto = ReviewResponseDto.builder()
                         .reviewId(r.getId())
@@ -162,6 +161,8 @@ public class ReviewService {
                         .nickname(r.getNickname())
                         .createdTime(r.getCreatedTime())
                         .images(r.getReviewImages())
+                        .contentsOpen(r.getContentsOpen())
+                        .imageOpen(r.getImageOpen())
                         .build();
                 reviews.add(dto);
             }
@@ -171,8 +172,8 @@ public class ReviewService {
 
 
     // 장소별 리뷰 모두 불러오기
-    public List<ReviewResponseDto> findReviewsInPlace (Long placeId) {
-        List<Review> review = reviewRepository.findReviewInPlaceQueryDsl(placeId);
+    public List<ReviewResponseDto> findReviewsInPlace (Long placeId, Integer limit, Integer offset) {
+        List<Review> review = reviewRepository.findReviewInPlaceQueryDsl(placeId, limit, offset);
 
         List<ReviewResponseDto> list = new ArrayList<>();
         // ReviewResponseDto에 맞게 데이터 정제하여 List에 추가한다
@@ -187,6 +188,8 @@ public class ReviewService {
                     .nickname(r.getNickname())
                     .createdTime(r.getCreatedTime())
                     .images(r.getReviewImages())
+                    .contentsOpen(r.getContentsOpen())
+                    .imageOpen(r.getImageOpen())
                     .build();
             list.add(dto);
         }
@@ -196,8 +199,8 @@ public class ReviewService {
 
     // 내 리뷰 모두 불러오기
     @RedisCached(key = "review", expire = 240)
-    public List<ReviewUserResponseDto> findReviewsInUser (@RedisCachedKeyParam(key = "userSeq") Long userSeq) {
-        List<Review> review = reviewRepository.findReviewInUserQueryDsl(userSeq);
+    public List<ReviewUserResponseDto> findReviewsInUser (@RedisCachedKeyParam(key = "userSeq") Long userSeq, Integer limit, Integer offset) {
+        List<Review> review = reviewRepository.findReviewInUserQueryDsl(userSeq, limit, offset);
 
         List<ReviewUserResponseDto> list = new ArrayList<>();
         // Dto 형식에 맞춰서 Review 내용 중에 맞는 것을 골라 넣는다
@@ -210,6 +213,8 @@ public class ReviewService {
                     .contents(r.getContents())
                     .placeId(r.getReviewPlaces().get(0).getPlace().getId())
                     .images(r.getReviewImages())
+                    .contentsOpen(r.getContentsOpen())
+                    .imageOpen(r.getImageOpen())
                     .build();
             list.add(dto);
         }
@@ -221,13 +226,53 @@ public class ReviewService {
     @RedisEvict(key = "review")
     @Transactional
     public Long changeReview (Long reviewId, ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
+        User user = userRepository.findByUserSeq(userSeq);
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         review.setContents(dto.getContents());
         review.setScore(dto.getScore());
 
+        review.setContentsOpen(dto.getContentsOpen());
+        review.setImageOpen(dto.getImageOpen());
+
         List<ReviewCategory> list = reviewCategoryRepository.findAllByReviewId(reviewId);
         List<IndiReviewCategory> list_indi = indiReviewCategoryRepository.findAllByReviewId(reviewId);
+
+        // 사진 삭제 및 첨부
+        List<Image> images = imageRepository.findByReviewId(reviewId);
+
+        // 현재 존재하는 이미지들
+        boolean[] imagesArray = new boolean[images.size()];
+        // 새로 들어온 이미지들
+        boolean[] dtoArray = new boolean[dto.getImageUrls().size()];
+
+        // 같은 이미지 체크
+        for (int i = 0; i < images.size(); i++) {
+            for (int j = 0; j < dtoArray.length; j++) {
+                if (images.get(i).getImageUrl().equals(dto.getImageUrls().get(j))) {
+                    imagesArray[i] = true;
+                    dtoArray[j] = true;
+                    break;
+                }
+            }
+        }
+
+        // imagesArray false -> 기존에 있지만 새로운 것에는 없음 -> 삭제
+        for (int i = 0; i < imagesArray.length; i++) {
+            if (!imagesArray[i]) {
+                String[] urls = images.get(i).getImageUrl().split("/");
+                String fileName = urls[urls.length - 1];
+                s3Service.deleteFile(fileName);
+            }
+        }
+
+        // dtoArray false -> 기존에 없지만 새로운 것에는 있음 -> 저장
+        for (int j = 0; j < dtoArray.length; j++) {
+            if (!dtoArray[j]) {
+                Image image = Image.createImage(dto.getImageUrls().get(j), user.getCoupleId(), review);
+                imageRepository.save(image);
+            }
+        }
 
         for (ReviewCategory rc : list) {
             reviewCategoryRepository.deleteById(rc.getId());
