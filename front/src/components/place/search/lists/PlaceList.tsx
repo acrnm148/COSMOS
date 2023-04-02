@@ -89,7 +89,10 @@ export default function PlaceList() {
                   <div className="font-thin text-slate-400 text-sm">
                     {items.address}
                   </div>
-                  <p className="content-detail">{items.detail}</p>
+                  <p
+                    className="content-detail mb-4"
+                    dangerouslySetInnerHTML={{ __html: items.detail }}
+                  ></p>
                 </div>
                 <PlaceLike like={items.like} placeId={items.placeId} />
               </div>

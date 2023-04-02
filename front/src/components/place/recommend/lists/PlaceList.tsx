@@ -79,7 +79,7 @@ export default function PlaceList() {
                     {items.address}
                   </div>
                   <p
-                    className="content-detail"
+                    className="content-detail mb-4"
                     dangerouslySetInnerHTML={{ __html: items.detail }}
                   ></p>
                 </div>
