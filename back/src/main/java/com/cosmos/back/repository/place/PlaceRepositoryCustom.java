@@ -42,6 +42,9 @@ public interface PlaceRepositoryCustom {
     public Double findScoreByPlaceIdQueryDsl(Long placeId);
 
     // QueryDsl로 시도, 구군, 타입별 장소 리스트 가져오기
+    public List<Place> findAllByTypeAndSidoAndGugunT(String type, String sido, String gugun, String t);
+
+    // QueryDsl로 시도, 구군, 타입별 장소 리스트 가져오기
     public List<Place> findAllByTypeAndSidoAndGugun(String type, String sido, String gugun);
 
     // QueryDsl로 찜한 거 가져오기
