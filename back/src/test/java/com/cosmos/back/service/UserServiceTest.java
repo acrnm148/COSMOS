@@ -110,7 +110,6 @@ public class UserServiceTest {
         verify(redisTemplate, times(1)).delete(anyString());
     }
 
-    /*
     @Test
     @DisplayName("커플 연결 수락")
     @WithMockUser(username="테스트_최고관리자", roles = {"SUPER"})
@@ -132,9 +131,12 @@ public class UserServiceTest {
                 .coupleId(123123L)
                 .build();
         String nowDate = "2023-04-01";
+        when(userRepository.findByUserSeq(1L)).thenReturn(user);
+        when(userRepository.findByUserSeq(2L)).thenReturn(coupleUser);
+        when(userRepository.findByUserSeq(3L)).thenReturn(coupleUser2);
+        when(userRepository.findByUserSeq(4L)).thenReturn(user3);
+        when(userRepository.findByUserSeq(5L)).thenReturn(coupleUser3);
 
-        //verify(userRepository).save(user);
-        //verify(userRepository).save(coupleUser);
         when(userService.acceptCouple(1L,2L, 123123L))
                 .thenReturn(123123L);
         //when(userService.acceptCouple(1L,11L, 123123L)).thenReturn(null);
@@ -150,7 +152,6 @@ public class UserServiceTest {
         //then
         assertThat(user.getCoupleId()).isEqualTo(123123L);
     }
-     */
 
     @Test
     @DisplayName("커플 연결 끊기")

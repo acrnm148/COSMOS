@@ -86,8 +86,8 @@ public class PlaceService {
 
 
     // 구군 리스트 받아오기
-    @RedisCached(key = "listGugun", expire = 7200)
-    public List<GugunDto> listGugun (@RedisCachedKeyParam(key = "code") Integer code) {
+    //@RedisCached(key = "listGugun", expire = 7200)
+    public List<GugunDto> listGugun (Integer code){ //(@RedisCachedKeyParam(key = "code") Integer code) {
         List<Gugun> gugunList = gugunRepository.findBysidoCode(code);
         List<GugunDto> gugunDtoList = new ArrayList<>();
         for (Gugun item : gugunList) {
