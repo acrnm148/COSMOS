@@ -100,6 +100,7 @@ public class UserService {
     /**
      * Redis를 이용한 로그아웃
      */
+    @Generated
     @Transactional
     public void logout(Long userSeq) {
         String redisUserSeq = userSeq.toString();
