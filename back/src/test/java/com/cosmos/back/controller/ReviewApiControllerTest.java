@@ -56,17 +56,21 @@ class ReviewApiControllerTest {
 
         String reviewRequestDto = objectMapper.writeValueAsString(ReviewRequestDto.builder().placeId(1995L).build());
 
-        MockMultipartFile mockReviewRequestDto = new MockMultipartFile("dto", "dto", "application/json", reviewRequestDto.getBytes(StandardCharsets.UTF_8));
-        MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "test file".getBytes(StandardCharsets.UTF_8) );
+        when(reviewService.createReview(any(ReviewRequestDto.class), anyLong())).thenReturn(1995L);
 
-        when(reviewService.createReview(any(ReviewRequestDto.class), anyLong(), any())).thenReturn(1995L);
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/api/reviews/users/1")
+                .content(reviewRequestDto)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(multipart("/api/reviews/users/1")
-                        .file(mockReviewRequestDto)
-                        .file(file)
-                )
+        String response = mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andReturn();
+                .andReturn().
+                getResponse().
+                getContentAsString();
+
+        Assertions.assertThat(response).contains("1995");
     }
 
     @Test
@@ -103,10 +107,10 @@ class ReviewApiControllerTest {
         mockReviewResponseDtoList.add(dto1);
         mockReviewResponseDtoList.add(dto2);
 
-        when(reviewService.findReviewsInPlaceUserCouple(anyLong(), anyLong(), anyLong())).thenReturn(mockReviewResponseDtoList);
+        when(reviewService.findReviewsInPlaceUserCouple(anyLong(), anyLong(), anyLong(), anyInt(), anyInt())).thenReturn(mockReviewResponseDtoList);
 
         RequestBuilder request = MockMvcRequestBuilders
-                .get("/api/reviews/users/1/coupleId/1/places/1")
+                .get("/api/reviews/users/1/coupleId/1/places/1?limit=15&offset=0")
                 .accept(MediaType.APPLICATION_JSON);
 
         String response = mockMvc.perform(request)
@@ -132,10 +136,10 @@ class ReviewApiControllerTest {
         mockReviewResponseDtoList.add(dto1);
         mockReviewResponseDtoList.add(dto2);
 
-        when(reviewService.findReviewsInPlaceUserCouple(anyLong(), any(), anyLong())).thenReturn(mockReviewResponseDtoList);
+        when(reviewService.findReviewsInPlaceUserCouple(anyLong(), any(), anyLong(), anyInt(), anyInt())).thenReturn(mockReviewResponseDtoList);
 
         RequestBuilder request = MockMvcRequestBuilders
-                .get("/api/reviews/users/1/coupleId/places/1")
+                .get("/api/reviews/users/1/coupleId/places/1?limit=15&offset=0")
                 .accept(MediaType.APPLICATION_JSON);
 
         String response = mockMvc.perform(request)
@@ -161,10 +165,10 @@ class ReviewApiControllerTest {
         mockReviewResponseDtoList.add(dto1);
         mockReviewResponseDtoList.add(dto2);
 
-        when(reviewService.findReviewsInPlace(anyLong())).thenReturn(mockReviewResponseDtoList);
+        when(reviewService.findReviewsInPlace(anyLong(), anyInt(), anyInt())).thenReturn(mockReviewResponseDtoList);
 
         RequestBuilder request = MockMvcRequestBuilders
-                .get("/api/reviews/places/1")
+                .get("/api/reviews/places/1?limit=15&offset=0")
                 .accept(MediaType.APPLICATION_JSON);
 
         String response = mockMvc.perform(request)
@@ -184,10 +188,10 @@ class ReviewApiControllerTest {
     public void 장소별_리뷰_모두_불러오기_리뷰_없음() throws Exception {
         List<ReviewResponseDto> mockReviewResponseDtoList = new ArrayList<>();
 
-        when(reviewService.findReviewsInPlace(anyLong())).thenReturn(mockReviewResponseDtoList);
+        when(reviewService.findReviewsInPlace(anyLong(), anyInt(), anyInt())).thenReturn(mockReviewResponseDtoList);
 
         RequestBuilder request = MockMvcRequestBuilders
-                .get("/api/reviews/places/1")
+                .get("/api/reviews/places/1?limit=15&offset=0")
                 .accept(MediaType.APPLICATION_JSON);
 
         String response = mockMvc.perform(request)
@@ -210,10 +214,10 @@ class ReviewApiControllerTest {
         mockReviewUserResponseDto.add(reviewUserResponseDto1);
         mockReviewUserResponseDto.add(reviewUserResponseDto2);
 
-        when(reviewService.findReviewsInUser(anyLong())).thenReturn(mockReviewUserResponseDto);
+        when(reviewService.findReviewsInUser(anyLong(), anyInt(), anyInt())).thenReturn(mockReviewUserResponseDto);
 
         RequestBuilder request = MockMvcRequestBuilders
-                .get("/api/reviews/users/1")
+                .get("/api/reviews/users/1?limit=15&offset=0")
                 .accept(MediaType.APPLICATION_JSON);
 
         String response = mockMvc.perform(request)

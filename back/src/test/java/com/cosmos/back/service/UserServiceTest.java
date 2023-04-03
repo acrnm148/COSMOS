@@ -96,21 +96,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Redis를 이용한 로그아웃")
-    @WithMockUser(username="테스트_최고관리자", roles = {"SUPER"})
-    public void logoutTest() throws Exception{
-        //given
-        String redisUserSeq = "1";
-        when(redisTemplate.delete(redisUserSeq)).thenReturn(true);
-
-        //when
-        redisTemplate.delete(redisUserSeq);
-
-        //then
-        verify(redisTemplate, times(1)).delete(anyString());
-    }
-
-    @Test
     @DisplayName("커플 연결 수락")
     @WithMockUser(username="테스트_최고관리자", roles = {"SUPER"})
     public void acceptCoupleTest() throws Exception{
@@ -137,12 +122,7 @@ public class UserServiceTest {
         when(userRepository.findByUserSeq(4L)).thenReturn(user3);
         when(userRepository.findByUserSeq(5L)).thenReturn(coupleUser3);
 
-        when(userService.acceptCouple(1L,2L, 123123L))
-                .thenReturn(123123L);
-        //when(userService.acceptCouple(1L,11L, 123123L)).thenReturn(null);
-        when(userService.acceptCouple(11L,12L, 123123L))
-                .thenReturn(null);
-        doNothing().when(notificationService).send(anyLong(), NotificationType.MESSAGE, anyString(),anyString());
+        doNothing().when(notificationService).send(anyLong(), any(NotificationType.class), anyString(),anyString());
 
         //when
         Long code = userService.acceptCouple(1L,2L, 123123L);
@@ -158,17 +138,22 @@ public class UserServiceTest {
     @WithMockUser(username="테스트_최고관리자", roles = {"SUPER"})
     public void disconnectCoupleTest() throws Exception{
         //given
+        List<User> emptyList = new ArrayList<>();
         List<User> list = new ArrayList<>();
         User user = User.builder().userSeq(1L).build();
         User coupleUser = User.builder().userSeq(2L).build();
-        when(userRepository.findByCoupleId(anyLong())).thenReturn(list);
         list.add(user);
         list.add(coupleUser);
+        when(userRepository.findByCoupleId(anyLong()))
+                .thenReturn(list);
+        when(userRepository.findByCoupleId(10L))
+                .thenReturn(emptyList);
         //when
         userService.disconnectCouple(anyLong());
+        userService.disconnectCouple(10L);
         //then
         assertThat(user.getCoupleYn()).isEqualTo("N");
-        verify(userRepository, times(1)).findByCoupleId(anyLong());
+
     }
 
     @Test

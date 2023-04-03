@@ -143,27 +143,34 @@ public class CourseService {
     // 카테고리별 장소 가져오기
     public List<Place> selectPlaces (List<String> categories, String sido, String gugun, Long userSeq) {
         List<Place> places = new ArrayList<>();
+        List<Long> placeIds = new ArrayList<>();
 
         for (String category : categories) {
             boolean isOverlapped = false;
 
             int count = 0;
-            while(true) {
+            outer: while(true) {
                 isOverlapped = false;
                 Place place = chooseOne(category, sido, gugun, userSeq);
-                if (count > 3) {
-                    place = chooseOneWithInAll(category, sido, gugun);
-                    count = 0;
-                }
-                for (Place p : places) {
-                    if (p.getId().equals(place.getId())) {
-                        isOverlapped = true;
-                        break;
+                if (count > 3 && placeIds.contains(place.getId())) {
+                    while (true) {
+                        place = chooseOneWithInAll(category, sido, gugun);
+                        if (!placeIds.contains(place.getId())) {
+                            places.add(place);
+                            placeIds.add(place.getId());
+                            break outer;
+                        }
                     }
+                }
+
+                if (placeIds.contains(place.getId())) {
+                    isOverlapped = true;
                 }
 
                 if (!isOverlapped) {
                     places.add(place);
+                    placeIds.add(place.getId());
+                    count = 0;
                     break;
                 }
 
@@ -449,6 +456,48 @@ public class CourseService {
             CoursePlace coursePlace = map.get(placeId);
             coursePlace.setOrders(orders++);
             coursePlaceRepository.save(coursePlace);
+        }
+
+        return course.getId();
+    }
+
+    // 코스 수정(전체)
+    @Transactional
+    public Long updateCourse (Long courseId, CourseUpdateRequstDto dto) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+
+        course.setName(dto.getName());
+
+        List<CoursePlace> coursePlaces = coursePlaceRepository.findAllByCourseId(courseId);
+
+        boolean[] coursePlacesArray = new boolean[coursePlaces.size()];
+        boolean[] dtoPlacesArray = new boolean[dto.getPlaceIds().size()];
+
+        for (int i = 0; i < coursePlacesArray.length; i++) {
+            for (int j = 0; j < dtoPlacesArray.length; j++) {
+                if (coursePlaces.get(i).getId().equals(dto.getPlaceIds().get(j))) {
+                    coursePlacesArray[i] = true;
+                    dtoPlacesArray[j] = true;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < coursePlacesArray.length; i++) {
+            if (!coursePlacesArray[i]) {
+                coursePlaceRepository.deleteById(coursePlaces.get(i).getId());
+            }
+        }
+
+        int orders = 1;
+        for (int j = 0; j < dtoPlacesArray.length; j++) {
+            if (dtoPlacesArray[j]) {
+                CoursePlace coursePlace = coursePlaceRepository.findByCourseIdAndPlaceId(courseId, dto.getPlaceIds().get(j));
+                coursePlace.setOrders(orders++);
+            } else {
+                Place place = placeRepository.findById(dto.getPlaceIds().get(j)).orElseThrow(() -> new IllegalArgumentException("no such data"));
+                CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, orders++);
+            }
         }
 
         return course.getId();
