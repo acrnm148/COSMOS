@@ -8,6 +8,7 @@ import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.dto.response.place.FestivalResponseDto;
 import com.cosmos.back.service.CourseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -117,13 +118,13 @@ public class CourseApiControllerTest {
         mockMap.put("wish", "true");
         mockMap.put("name", "mock name");
 
-        CourseNameRequestDto mockCourseNameRequestDto = CourseNameRequestDto.builder().name("mock name").build();
+        CourseNameRequestDto mockCourseNameRequestDto = CourseNameRequestDto.builder().name("mock name").courseId(1L).build();
 
         // mocking
         when(courseService.likeCourse(anyLong(), anyString())).thenReturn(mockMap);
 
         RequestBuilder request = MockMvcRequestBuilders
-                .put("/api/courses/1")
+                .put("/api/courses")
                 .content(objectMapper.writeValueAsString(mockCourseNameRequestDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
@@ -344,101 +345,25 @@ public class CourseApiControllerTest {
     }
 
     @Test
-    @DisplayName("CourseApiController 코스내용 수정(이름 변경)")
+    @DisplayName("CourseApiController 코스 수정")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void 코스_내용_수정_name_only() throws Exception {
+    public void 코스_수정() throws Exception {
 
-        CourseUpdateContentsRequestDto mockCourseUpdateContentRequestDto = CourseUpdateContentsRequestDto.builder().name("mcok user").build();
+        when(courseService.updateCourse(anyLong(), any(CourseUpdateRequstDto.class))).thenReturn(1995L);
 
-        // mocking
-        when(courseService.updateCourseContents(anyLong(), any(CourseUpdateContentsRequestDto.class))).thenReturn(1995L);
+        CourseUpdateRequstDto courseUpdateRequstDto = CourseUpdateRequstDto.builder().name("코스 수정됨").build();
 
         RequestBuilder request = MockMvcRequestBuilders
-                .put("/api/courses/1/contents")
-                .content(objectMapper.writeValueAsString(mockCourseUpdateContentRequestDto))
+                .put("/api/courses/1/coursechange")
+                .content(objectMapper.writeValueAsString(courseUpdateRequstDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
 
         String response = mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andReturn().
-                getResponse().
-                getContentAsString();
-
-        Assertions.assertThat(response).contains("1995");
-    }
-
-    @Test
-    @DisplayName("CourseApiController 코스내용 수정(장소 추가)")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void 코스_내용_수정_장소_추가() throws Exception {
-
-        CourseUpdateAddDelRequestDto mockCourseUpdateAddDelRequestDto = CourseUpdateAddDelRequestDto.builder().placeId(1L).build();
-
-        // mocking
-        when(courseService.updateCourseAdd(anyLong(), any(CourseUpdateAddDelRequestDto.class))).thenReturn(1995L);
-
-        RequestBuilder request = MockMvcRequestBuilders
-                .put("/api/courses/1/add")
-                .content(objectMapper.writeValueAsString(mockCourseUpdateAddDelRequestDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON);
-
-        String response = mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andReturn().
-                getResponse().
-                getContentAsString();
-
-        Assertions.assertThat(response).contains("1995");
-    }
-
-    @Test
-    @DisplayName("CourseApiController 코스내용 수정(장소 삭제)")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void 코스_내용_수정_장소_삭제() throws Exception {
-
-        CourseUpdateAddDelRequestDto mockCourseUpdateAddDelRequestDto = CourseUpdateAddDelRequestDto.builder().placeId(1L).build();
-
-        // mocking
-        when(courseService.updateCourseDelete(anyLong(), any(CourseUpdateAddDelRequestDto.class))).thenReturn(1995L);
-
-        RequestBuilder request = MockMvcRequestBuilders
-                .put("/api/courses/1/delete")
-                .content(objectMapper.writeValueAsString(mockCourseUpdateAddDelRequestDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON);
-
-        String response = mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andReturn().
-                getResponse().
-                getContentAsString();
-
-        Assertions.assertThat(response).contains("1995");
-    }
-
-    @Test
-    @DisplayName("CourseApiController 코스 순서 수정")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void 코스_순서_수정() throws Exception {
-
-        CourseUpdateOrdersRequestDto mockCourseUpdateOrdersRequestDto = CourseUpdateOrdersRequestDto.builder().places(new ArrayList<>()).build();
-
-        // mocking
-        when(courseService.updateCourseOrders(anyLong(), any(CourseUpdateOrdersRequestDto.class))).thenReturn(1995L);
-
-        RequestBuilder request = MockMvcRequestBuilders
-                .put("/api/courses/1/orders")
-                .content(objectMapper.writeValueAsString(mockCourseUpdateOrdersRequestDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON);
-
-        String response = mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andReturn().
-                getResponse().
-                getContentAsString();
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         Assertions.assertThat(response).contains("1995");
     }
