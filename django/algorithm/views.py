@@ -41,7 +41,7 @@ def algorithm(request):
     
     place_object = Place.objects.all()
     # for place_idx in range(len(place_object)):
-    for place_idx in range(10):
+    for place_idx in range(len(place_object)):
         data = {'place_id' : place_object[place_idx].place_id, 'name' : place_object[place_idx].name}
         new_input = pd.DataFrame([data])
         place_data = pd.concat([place_data, new_input])
