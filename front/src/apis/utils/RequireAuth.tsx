@@ -2,18 +2,23 @@ import axios from "axios"
 import { Navigate, Outlet } from "react-router-dom"
 import { useRecoilState } from "recoil"
 import { userState } from "../../recoil/states/UserState"
+import { OnLoginSuccess } from "../../pages/login/KakaoLogin"
+import { useState } from "react"
 
 
-function RequireAuth() {
+export default function RequireAuth() {
     const [user, setUser] = useRecoilState(userState)
-    if (user.acToken){
-        GetNewAcToken()
-        return  <Outlet /> 
+    console.log(user.acToken)
+
+    if (user.acToken && user.seq){
+        
+        OnLoginSuccess(user.seq, user.acToken, true)
+        return  <div><Outlet /> </div>
     } else {
-        return <Navigate to="/login" />
+        return <div><Navigate to="/login" /></div>
     }  
 }
-export function GetNewAcToken(){// userState recoil
+function GetNewAcToken(){// userState recoil
     const [LoginUser, setLoginUser] = useRecoilState(userState)
     axios .get(`${process.env.REACT_APP_API_URL}/access/${LoginUser.seq}`, {
         headers: {
@@ -28,6 +33,6 @@ export function GetNewAcToken(){// userState recoil
         console.log(err)
         return 'refresh acTocken error'
     })
-    return
+    return 
 }
-export default {RequireAuth, GetNewAcToken}
+

@@ -8,6 +8,7 @@ import { useQuery } from "react-query"
 import { UserDispatch } from "../../layouts/MainLayout"
 import { backgroundImageGif, bgPngUrl, bgPngUrlTailwind, dateCateNames } from "../../recoil/states/ServeyPageState"
 import { OnLoginSuccess } from "../login/KakaoLogin"
+import Swal from "sweetalert2"
 
 interface USERINFORMATION {
   userId: number
@@ -75,45 +76,52 @@ declare const window: typeof globalThis & {
         },[data])
 
   // 로그아웃
+
   function logout(){
-    console.log('user',user)
-    // 자동 로그인 중단
-    OnLoginSuccess(user.seq, user.acToken, false)
-    axios.get((`https://j8e104.p.ssafy.io/api/accounts/logout/${user.seq}`),
-      {
-        headers:{
-          Authorization : 'baerer ' + user.acToken
-        }
-      }
-          ).then((res)=>{
-            console.log(res)
-            setLoginUser({...user,acToken:'',seq:0, isLoggedIn:false, coupleId:"" })
+    Swal.fire({
+      title: `로그아웃 하시겠습니까?`,
+      icon: "warning",
+      showCancelButton:true,
+      cancelButtonColor: "#FF8E9E",
+      cancelButtonText: "돌아가기",
+      confirmButtonColor: "#D9D9D9", // confrim 버튼 색깔 지정
+      confirmButtonText: "로그아웃", // confirm 버튼 텍스트 지정
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        // 자동 로그인 중단
+        OnLoginSuccess(user.seq, user.acToken, false)
+        axios.get((`https://j8e104.p.ssafy.io/api/accounts/logout/${user.seq}`),
+          {
+            headers:{
+              Authorization : 'baerer ' + user.acToken
+            }
           }
-          ).catch((err)=>{
-            console.log(err)
-          })
-        // 카카오 sdk 찾도록 초기화
-        if (!window.Kakao.isInitialized()){
-            window.Kakao.init(process.env.REACT_APP_KAKAO_LOGIN_JS_SUN)
-        }
-        navigate('/')
-        window.Kakao.Auth.logout()
-          // .then(function() {
-          //   alert('logout ok\naccess token -> ' + window.Kakao.Auth.getAccessToken());
-          //   console.log('loggedout')
-          //   navigate('/')
-          // })
-          // .catch(function() {
-          //   console.log('Not logged in')
-          // });
-        // console.log('로구아웃?', user)
+              ).then((res)=>{
+                console.log(res)
+                setLoginUser({...user,acToken:'',seq:0, isLoggedIn:false, coupleId:"" })
+              }
+              ).catch((err)=>{
+                console.log(err)
+              })
+            // 카카오 sdk 찾도록 초기화
+            if (!window.Kakao.isInitialized()){
+                window.Kakao.init(process.env.REACT_APP_KAKAO_LOGIN_JS_SUN)
+            }
+            navigate('/')
+            window.Kakao.Auth.logout()
+      } 
+      else{
+        //로그아웃취소
+      }
+    });
   }
 
   return (
-    <div className="h-screen">
+    <div className="">
       <div className="flex w-screen items-center content-center ">
-        <div className="w-full flex m-auto flex-col justify-center items-center md:w-5/6 lg:w-3/6">
-          <div className="profile justify-center items-end flex mt-10 mb-4">
+        <div className="w-full flex m-auto flex-col justify-center items-center md:w-5/6 lg:w-3/6 overflow-y-scroll mb-[1000px] overflow-x-hidden">
+          <div className="profile justify-center items-end flex mt-10 ">
               {userInfo?.coupleYn === 'Y' ?
               <>
               <div className={"rounded-full w-16 h-16 max-w-[950px]"}>
@@ -183,12 +191,10 @@ declare const window: typeof globalThis & {
               })}
             </div>
 
-          </div>
-          <div>
+          </div>            
           <div
             onClick={logout} 
-            className="cursor-pointer text-xl text-white bg-lightMain2 px-8 py-4 rounded-lg">로그아웃</div>
-          </div>
+            className="mt-8 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center hover:bg-lightMain3">로그아웃</div>
         </div>
         </div>
         </div>
