@@ -59,7 +59,7 @@ public class CourseServiceTest {
     @DisplayName("CourseService saveCourse 메소드")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void saveCourse() throws Exception {
-        User user = User.builder().userName("테스트 유저가 될지도?").build();
+        User user = User.builder().userName("테스트 유저가 될지도!!!!").build();
         userRepository.save(user);
 
         User mockUser = User.builder().userSeq(1L).courses(new ArrayList<>()).build();

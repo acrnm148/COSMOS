@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -489,12 +490,36 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetchOne();
     }
 
+    // QueryDsl로 시도, 구군, 타입별, 경향별 장소 리스트 가져오기
+    @Override
+    public List<Place> findAllByTypeAndSidoAndGugunT(String type, String sido, String gugun, String t) {
+        QPlace qPlace = QPlace.place;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("%");
+        for (int i = 0; i < t.length(); i++) {
+            sb.append(t.charAt(i));
+            sb.append("%");
+        }
+
+        String tendency = sb.toString();
+        return queryFactory.selectFrom(qPlace)
+                .where(qPlace.type.eq(type)
+                        .and(qPlace.address.contains(sido)
+                                .and(qPlace.address.contains(gugun))
+                                .and(qPlace.tendency.like(tendency))))
+                .fetch();
+    }
+
     // QueryDsl로 시도, 구군, 타입별 장소 리스트 가져오기
     @Override
     public List<Place> findAllByTypeAndSidoAndGugun(String type, String sido, String gugun) {
         QPlace qPlace = QPlace.place;
+
         return queryFactory.selectFrom(qPlace)
-                .where(qPlace.type.eq(type).and(qPlace.address.contains(sido).and(qPlace.address.contains(gugun))))
+                .where(qPlace.type.eq(type)
+                        .and(qPlace.address.contains(sido)
+                                .and(qPlace.address.contains(gugun))))
                 .fetch();
     }
 
@@ -505,6 +530,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
 
         return queryFactory.select(Projections.constructor(SimplePlaceDto.class,
+                    qCoursePlace.course.id,
                     qPlace.id,
                     qPlace.name,
                     qPlace.latitude,
@@ -522,5 +548,32 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .on(qPlace.id.eq(qCoursePlace.place.id).and(qCoursePlace.course.id.eq(courseId)))
                 .where(qPlace.id.eq(placeId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<SimplePlaceDto> findSimplePlaceDtoByCourseIdQueryDsl(Long courseId) {
+        QPlace qPlace = QPlace.place;
+        QCoursePlace qCoursePlace = QCoursePlace.coursePlace;
+
+        return queryFactory.select(Projections.constructor(SimplePlaceDto.class,
+                        qCoursePlace.course.id,
+                        qPlace.id,
+                        qPlace.name,
+                        qPlace.latitude,
+                        qPlace.longitude,
+                        qPlace.thumbNailUrl,
+                        qPlace.address,
+                        qPlace.detail,
+                        qCoursePlace.orders,
+                        qPlace.phoneNumber,
+                        qPlace.type
+                ))
+                .from(qPlace)
+                .leftJoin(qCoursePlace)
+                .fetchJoin()
+                .on(qPlace.id.eq(qCoursePlace.place.id))
+                .where(qCoursePlace.course.id.eq(courseId))
+                .orderBy(qCoursePlace.orders.asc())
+                .fetch();
     }
 }

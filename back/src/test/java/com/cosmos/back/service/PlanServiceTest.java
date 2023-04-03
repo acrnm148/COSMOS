@@ -2,7 +2,9 @@ package com.cosmos.back.service;
 
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.CourseIdAndDate;
+import com.cosmos.back.dto.PlanCourseDto;
 import com.cosmos.back.dto.PlanDto;
+import com.cosmos.back.dto.SimpleCourseDto;
 import com.cosmos.back.model.Course;
 import com.cosmos.back.model.CoursePlace;
 import com.cosmos.back.model.Plan;
@@ -171,8 +173,31 @@ public class PlanServiceTest {
         //then
         verify(planRepository, times(1)).delete(any(Plan.class));
         verify(planRepository, times(1)).findByIdAndCoupleId(anyLong(), anyLong());
-
-
     }
 
+    @Test
+    @DisplayName("커플 일정 월별 조회")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void getPlanListByMonthTest() throws Exception{
+        //given
+        String yearMonthNow = "2023-03";
+        String yearMonthNext = "2023-04";
+        List<PlanCourseDto> plansByMonth = new ArrayList<>();
+        PlanCourseDto planCourseDto = PlanCourseDto.builder()
+                .id(1L)
+                .name("test course")
+                .date("2023-03-01")
+                .build();
+        plansByMonth.add(planCourseDto);
+        List<SimpleCourseDto> simpleCourseDtos = new ArrayList<>();
+
+
+
+
+        //when
+
+
+        //then
+
+    }
 }

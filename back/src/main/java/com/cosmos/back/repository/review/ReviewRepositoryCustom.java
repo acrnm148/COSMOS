@@ -15,15 +15,16 @@ public interface ReviewRepositoryCustom {
     public Long deleteReviewQueryDsl (Long reviewId);
     public Long deleteReviewCategoryQueryDsl (Long reviewId);
     public Long deleteReviewPlaceQueryDsl (Long reviewId);
+    public Long deleteReviewImagesQueryDsl (Long reviewId);
 
     // QueryDsl로 장소별 review 불러오기
-    public List<Review> findReviewInPlaceQueryDsl (Long placeId);
+    public List<Review> findReviewInPlaceQueryDsl (Long placeId, Integer limit, Integer offset);
 
     // QueryDsl로 내 review 불러오기
-    public List<Review> findReviewInUserQueryDsl (Long userSeq);
+    public List<Review> findReviewInUserQueryDsl (Long userSeq, Integer limit, Integer offset);
 
     // QueryDsl로 장소별로 커플 및 유저 review 불러오기
-    public List<Review> findReviewInPlaceUserCoupleQueryDsl (Long userSeq, Long placeId);
+    public List<Review> findReviewInPlaceUserCoupleQueryDsl (Long userSeq, Long placeId, Integer limit, Integer offset);
 
     public Long deleteIndiReviewCategoryQueryDsl(Long reviewId);
 }

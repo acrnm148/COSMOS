@@ -35,7 +35,7 @@ public class CourseService {
         Course course = saveCourse(dto.getUserSeq());
 
         // 2. 카테고리별 장소 가져오기
-        List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun());
+        List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun(), dto.getUserSeq());
 
         // 3. return 해줄 CourseResponseDto 생성 후 courseId 넣기
         CourseResponseDto courseResponseDto = new CourseResponseDto();
@@ -54,7 +54,7 @@ public class CourseService {
     @Transactional
     public Long createCourseByUser(Long userSeq, CouserUesrRequestDto dto) {
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        Course course = Course.createCourse(user);
+        Course course = Course.createCourseByUser(user, dto.getName());
         course.setWish(true);
 
         courseRepository.save(course);
@@ -81,11 +81,34 @@ public class CourseService {
     }
 
     // 카테고리별 장소 가져오기
-    public List<Place> selectPlaces (List<String> categories, String sido, String gugun) {
+    public List<Place> selectPlaces (List<String> categories, String sido, String gugun, Long userSeq) {
         List<Place> places = new ArrayList<>();
 
         for (String category : categories) {
-            places.add(chooseOne(category, sido, gugun));
+            boolean isOverlapped = false;
+
+            int count = 0;
+            while(true) {
+                isOverlapped = false;
+                Place place = chooseOne(category, sido, gugun, userSeq);
+                if (count > 3) {
+                    place = chooseOneWithInAll(category, sido, gugun);
+                    count = 0;
+                }
+                for (Place p : places) {
+                    if (p.getId().equals(place.getId())) {
+                        isOverlapped = true;
+                        break;
+                    }
+                }
+
+                if (!isOverlapped) {
+                    places.add(place);
+                    break;
+                }
+
+                count++;
+            }
         }
 
         return places;
@@ -142,10 +165,78 @@ public class CourseService {
         return coursePlaceIds;
     }
 
-    public Place chooseOne(String type, String sido, String gugun) {
+    public Place chooseOneWithInAll(String type, String sido, String gugun) {
         List<Place> places = placeRepository.findAllByTypeAndSidoAndGugun(type, sido, gugun);
 
         Integer size = places.size();
+
+        Integer randomNum = (int) (Math.random() * size);
+
+        return places.get(randomNum);
+    }
+
+    public Place chooseOne(String type, String sido, String gugun, Long userSeq) {
+        User user = userRepository.findByUserSeq(userSeq);
+
+        String type1 = user.getType1();
+        String type2 = user.getType2();
+
+        // EAT -> spo
+
+        String typeTransformed1 = "";
+        String typeTransformed2 = "";
+
+        for (int i = 0; i < type1.length(); i++) {
+            if (type1.charAt(i) == 'E') {
+                typeTransformed1 += 's';
+            } else if (type1.charAt(i) == 'A') {
+                typeTransformed1 += 'p';
+            } else if (type1.charAt(i) == 'T') {
+                typeTransformed1 += 'o';
+            } else if (type1.charAt(i) == 'J') {
+                typeTransformed1 += 'd';
+            } else if (type1.charAt(i) == 'O') {
+                typeTransformed1 += 'f';
+            } else if (type1.charAt(i) == 'Y') {
+                typeTransformed1 += 'i';
+            }
+        }
+
+        for (int i = 0; i < type2.length(); i++) {
+            if (type2.charAt(i) == 'E') {
+                typeTransformed2 += 's';
+            } else if (type2.charAt(i) == 'A') {
+                typeTransformed2 += 'p';
+            } else if (type2.charAt(i) == 'T') {
+                typeTransformed2 += 'o';
+            } else if (type2.charAt(i) == 'J') {
+                typeTransformed2 += 'd';
+            } else if (type2.charAt(i) == 'O') {
+                typeTransformed2 += 'f';
+            } else if (type2.charAt(i) == 'Y') {
+                typeTransformed2 += 'i';
+            }
+        }
+
+        List<Place> places1 = placeRepository.findAllByTypeAndSidoAndGugunT(type, sido, gugun, typeTransformed1);
+        List<Place> places2 = placeRepository.findAllByTypeAndSidoAndGugunT(type, sido, gugun, typeTransformed2);
+
+        List<Place> places = new ArrayList<>();
+
+        for (int i = 0; i < places1.size(); i++) {
+            places.add(places1.get(i));
+        }
+
+        for (int i = 0; i < places2.size(); i++) {
+            places.add(places2.get(i));
+        }
+
+        Integer size = places.size();
+
+        if (size == 0) {
+            places = placeRepository.findAllByTypeAndSidoAndGugun(type, sido, gugun);
+            size = places.size();
+        }
 
         Integer randomNum = (int) (Math.random() * size);
 
