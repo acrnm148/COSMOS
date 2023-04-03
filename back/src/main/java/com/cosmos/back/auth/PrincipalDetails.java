@@ -1,5 +1,6 @@
 package com.cosmos.back.auth;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.model.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ import java.util.Collection;
  * 커스텀
  */
 @Data
+@Generated
 public class PrincipalDetails implements UserDetails {
 
     private User user;

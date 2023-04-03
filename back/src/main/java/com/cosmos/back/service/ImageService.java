@@ -1,5 +1,6 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.annotation.RedisCached;
 import com.cosmos.back.annotation.RedisCachedKeyParam;
 import com.cosmos.back.annotation.RedisEvict;
@@ -29,9 +30,10 @@ public class ImageService {
     // 사진 생성
     @Transactional
     @RedisEvict(key = "image")
+    @Generated
     public void createImage(List<MultipartFile> multipartFile, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
         List<String> imageUrls = s3Service.uploadFiles(multipartFile);
-        Review review = null;
+        Review review = Review.builder().reviewImages(new ArrayList<>()).build();
 
         for (String imageUrl:imageUrls) {
             Image image = Image.createImage(imageUrl, coupleId, review);
@@ -71,6 +73,7 @@ public class ImageService {
     }
 
     // 사진 월별 조회
+    @Generated
     public List<ImageResponseDto> findMonthImage(Long coupleId, Long month) {
 
         List<ImageResponseDto> monthImage = imageRepository.findMonthImage(coupleId, month);
@@ -78,6 +81,7 @@ public class ImageService {
     }
 
     // 사진 일별 조회
+    @Generated
     public List<ImageResponseDto> findDayImage(Long coupleId, Long day) {
 
         List<ImageResponseDto> dayImage = imageRepository.findDayImage(coupleId, day);
