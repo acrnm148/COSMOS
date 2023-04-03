@@ -41,7 +41,7 @@ def algorithm(request):
     
     place_object = Place.objects.all()
     # for place_idx in range(len(place_object)):
-    for place_idx in range(10):
+    for place_idx in range(len(place_object)):
         data = {'place_id' : place_object[place_idx].place_id, 'name' : place_object[place_idx].name}
         new_input = pd.DataFrame([data])
         place_data = pd.concat([place_data, new_input])
@@ -58,6 +58,11 @@ def algorithm(request):
     user_based_collabor = pd.DataFrame(data = user_based_collabor, index=user_place_rating.index, columns = user_place_rating.index)
     
     return Response(status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def test(request):
+    return Response("test", status=status.HTTP_200_OK)
+
 
 '''
 해당 유저와 가장 유사도가 높은 유저를 반환
