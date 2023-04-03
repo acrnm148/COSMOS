@@ -2,12 +2,14 @@ package com.cosmos.back.dto.response;
 
 import com.cosmos.back.model.Notification;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class NotificationDto {
 
     private Long id;
