@@ -1,4 +1,4 @@
-package com.cosmos.back.repository.place;
+package com.cosmos.back.repository;
 
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.config.TestConfig;
@@ -8,6 +8,8 @@ import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
 import com.cosmos.back.repository.course.CoursePlaceRepository;
 import com.cosmos.back.repository.course.CourseRepository;
+import com.cosmos.back.repository.place.PlaceRepository;
+import com.cosmos.back.repository.place.UserPlaceRepository;
 import com.cosmos.back.repository.review.ReviewRepository;
 import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
