@@ -400,68 +400,7 @@ public class CourseService {
         return courseResponseDto;
     }
 
-    // 코스 내용 수정
-    @Transactional
-    public Long updateCourseContents (Long courseId, CourseUpdateContentsRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        course.setName(dto.getName());
-        courseRepository.save(course);
-        return course.getId();
-    }
-
-    // 코스 수정(추가)
-    @Transactional
-    public Long updateCourseAdd (Long courseId, CourseUpdateAddDelRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        int size = course.getCoursePlaces().size();
-        CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, ++size);
-        coursePlaceRepository.save(coursePlace);
-
-        return place.getId();
-    }
-
-    // 코스 수정(삭제)
-    @Transactional
-    public Long updateCourseDelete (Long courseId, CourseUpdateAddDelRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        List<CoursePlace> coursePlaces = course.getCoursePlaces();
-
-        int order = 1;
-        for (CoursePlace cp: coursePlaces) {
-            if (cp.getPlace().getId().equals(dto.getPlaceId())) {
-                courseRepository.deleteCoursePlaceQueryDSL(courseId, cp);
-            } else {
-                cp.setOrders(order++);
-            }
-        }
-
-        return dto.getPlaceId();
-    }
-
-    // 코스 수정(순서)
-    @Transactional
-    public Long updateCourseOrders (Long courseId, CourseUpdateOrdersRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        List<CoursePlace> coursePlaces = course.getCoursePlaces();
-
-        HashMap<Long, CoursePlace> map = new HashMap<>();
-
-        for (CoursePlace cp : coursePlaces) {
-            map.put(cp.getPlace().getId(), cp);
-        }
-
-        int orders = 1;
-        for (Long placeId: dto.getPlaces()) {
-            CoursePlace coursePlace = map.get(placeId);
-            coursePlace.setOrders(orders++);
-            coursePlaceRepository.save(coursePlace);
-        }
-
-        return course.getId();
-    }
-
-    // 코스 수정(전체)
+    // 코스 수정
     @Transactional
     public Long updateCourse (Long courseId, CourseUpdateRequstDto dto) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
