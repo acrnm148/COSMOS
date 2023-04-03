@@ -2,6 +2,7 @@ package com.cosmos.back.service;
 
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.user.UserProfileDto;
+import com.cosmos.back.dto.user.UserUpdateDto;
 import com.cosmos.back.model.User;
 import com.cosmos.back.repository.user.UserRepository;
 import org.assertj.core.api.Assertions;
@@ -49,5 +50,29 @@ public class UserServiceTest {
         assertThat(userProfileDtoSuccess.getUserSeq()).isEqualTo(user.getUserSeq());
         assertEquals(userProfileDtoSuccess.getUserName(), user.getUserName());
         assertEquals(userProfileDtoFail, null);
+    }
+
+    @Test
+    @DisplayName("유저 정보 수정")
+    @WithMockUser(username="테스트_최고관리자", roles = {"SUPER"})
+    public void updateUserInfoTest() throws Exception {
+        //given
+        UserUpdateDto userUpdateDto = UserUpdateDto.builder()
+                .userSeq(1L)
+                .phoneNumber("01012341234")
+                .build();
+        User user = User.builder()
+                .userSeq(1L)
+                .build();
+        when(userRepository.findByUserSeq(1L))
+                .thenReturn(user);
+
+        //when
+
+
+
+        //then
+
+
     }
 }
