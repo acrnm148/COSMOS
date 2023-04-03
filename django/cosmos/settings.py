@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'j8e104.p.ssafy.io:8000','j8e104.p.ssafy.io']
+ALLOWED_HOSTS = [*]
 
 
 # Application definition
