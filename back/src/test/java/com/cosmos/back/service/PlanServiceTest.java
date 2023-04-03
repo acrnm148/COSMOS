@@ -1,10 +1,7 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.annotation.EnableMockMvc;
-import com.cosmos.back.dto.CourseIdAndDate;
-import com.cosmos.back.dto.PlanCourseDto;
-import com.cosmos.back.dto.PlanDto;
-import com.cosmos.back.dto.SimpleCourseDto;
+import com.cosmos.back.dto.*;
 import com.cosmos.back.model.Course;
 import com.cosmos.back.model.CoursePlace;
 import com.cosmos.back.model.Plan;
@@ -180,8 +177,18 @@ public class PlanServiceTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void getPlanListByMonthTest() throws Exception{
         //given
-        String yearMonthNow = "2023-03";
-        String yearMonthNext = "2023-04";
+        String date="202303";
+        List<PlanDto> resultList = new ArrayList<>();
+        Plan plan = Plan.builder()
+                .id(1L)
+                .coupleId(123123L)
+                .planName("cosmos plan")
+                .build();
+        PlanDto planDto = PlanDto.builder()
+                .plan(plan)
+                .build();
+        resultList.add(planDto);
+
         List<PlanCourseDto> plansByMonth = new ArrayList<>();
         PlanCourseDto planCourseDto = PlanCourseDto.builder()
                 .id(1L)
@@ -189,15 +196,103 @@ public class PlanServiceTest {
                 .date("2023-03-01")
                 .build();
         plansByMonth.add(planCourseDto);
-        List<SimpleCourseDto> simpleCourseDtos = new ArrayList<>();
 
+        List<SimpleCourseDto> courses = new ArrayList<>();
+        SimpleCourseDto simpleCourseDto = SimpleCourseDto.builder()
+                .id(1L)
+                .name("test course")
+                .build();
+        courses.add(simpleCourseDto);
 
+        List<SimplePlaceDto> places = new ArrayList<>();
+        SimplePlaceDto simplePlaceDto = SimplePlaceDto.builder()
+                .courseId(1L)
+                .name("장소명")
+                .build();
+        SimplePlaceDto simplePlaceDto2 = SimplePlaceDto.builder()
+                .courseId(2L)
+                .name("장소명")
+                .build();
+        SimplePlaceDto simplePlaceDto3 = SimplePlaceDto.builder()
+                .courseId(3L)
+                .name("장소명")
+                .build();
+        places.add(simplePlaceDto);
+        places.add(simplePlaceDto2);
+        places.add(simplePlaceDto3);
 
+        when(planRepository.findByCoupleIdAndMonthQueryDsl(1L, "202304", "202303"))
+                .thenReturn(plansByMonth);
+        when(placeRepository.findSimplePlaceDtoByCourseIdQueryDsl(2L)).thenReturn(places);
 
         //when
-
+        planService.getPlanListByMonth(1L, "202303");
+        planService.getPlanListByMonth(1L, "202312");
 
         //then
+        assertThat(resultList.get(0).getCoupleId()).isEqualTo(123123L);
+
+    }
+
+    @Test
+    @DisplayName("커플 일정 일별 조회")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void getPlanListByDayTest() throws Exception{
+        //given
+        String date="20230301";
+        List<PlanDto> resultList = new ArrayList<>();
+        Plan plan = Plan.builder()
+                .id(1L)
+                .coupleId(123123L)
+                .planName("cosmos plan")
+                .build();
+        PlanDto planDto = PlanDto.builder()
+                .plan(plan)
+                .build();
+        resultList.add(planDto);
+
+        List<PlanCourseDto> plansByDay = new ArrayList<>();
+        PlanCourseDto planCourseDto = PlanCourseDto.builder()
+                .id(1L)
+                .name("test course")
+                .date("2023-03-01")
+                .build();
+        plansByDay.add(planCourseDto);
+
+        List<SimpleCourseDto> courses = new ArrayList<>();
+        SimpleCourseDto simpleCourseDto = SimpleCourseDto.builder()
+                .id(1L)
+                .name("test course")
+                .build();
+        courses.add(simpleCourseDto);
+
+        List<SimplePlaceDto> places = new ArrayList<>();
+        SimplePlaceDto simplePlaceDto = SimplePlaceDto.builder()
+                .courseId(1L)
+                .name("장소명")
+                .build();
+        SimplePlaceDto simplePlaceDto2 = SimplePlaceDto.builder()
+                .courseId(2L)
+                .name("장소명")
+                .build();
+        SimplePlaceDto simplePlaceDto3 = SimplePlaceDto.builder()
+                .courseId(3L)
+                .name("장소명")
+                .build();
+        places.add(simplePlaceDto);
+        places.add(simplePlaceDto2);
+        places.add(simplePlaceDto3);
+
+        when(planRepository.findByCoupleIdAndMonthQueryDsl(1L, "202304", "202303"))
+                .thenReturn(plansByMonth);
+        when(placeRepository.findSimplePlaceDtoByCourseIdQueryDsl(2L)).thenReturn(places);
+
+        //when
+        planService.getPlanListByMonth(1L, "202303");
+        planService.getPlanListByMonth(1L, "202312");
+
+        //then
+        assertThat(resultList.get(0).getCoupleId()).isEqualTo(123123L);
 
     }
 }
