@@ -9,8 +9,6 @@ public interface CourseRepositoryCustom {
 
     public CourseResponseDto findByCourseIdQueryDSL(Long courseId);
 
-    public Long deleteCoursePlaceQueryDSL(Long courseId, CoursePlace cp);
-
     // 내 찜한 코스 보기
     public List<CourseResponseDto> findAllCourseByUserSeq(Long userSeq);
 }
