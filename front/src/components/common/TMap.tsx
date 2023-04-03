@@ -9,10 +9,12 @@ import {
   mapCenter,
   mapMarkers,
 } from "../../recoil/states/SearchPageState";
+import { userState } from "../../recoil/states/UserState";
 import { useQuery } from "react-query";
 import { getPlacesWithConditions } from "../../apis/api/place";
 
 export default function TMap() {
+  const userSeq = useRecoilState(userState);
   const sidoState = useRecoilState(selectSido);
   const gugunState = useRecoilState(selectGugun);
   const wordState = useRecoilState(completeWord);
@@ -40,7 +42,7 @@ export default function TMap() {
     ],
     queryFn: () =>
       getPlacesWithConditions(
-        1,
+        userSeq[0].seq,
         sidoState[0].sidoName,
         gugunState[0].gugunName,
         wordState[0],

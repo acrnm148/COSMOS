@@ -16,11 +16,15 @@ import NoLikeImg from "../../../../assets/no-like.png";
 import DefaultImg from "../../../../assets/login/pinkCosmos.png";
 import { useRecoilState } from "recoil";
 import { placeDetail } from "../../../../recoil/states/RecommendPageState";
+import { userState } from "../../../../recoil/states/UserState";
 import { useQuery } from "react-query";
 import { getPlaceDetail } from "../../../../apis/api/place";
 import "../../../../css/listItem.css";
+import ReviewAll from "../../../common/ReviewAll";
+import ReviewOurs from "../../../common/ReviewOurs";
 
 export default function PlaceModal({ modalOpen, closeModal }: any) {
+  const userSeq = useRecoilState(userState);
   const detail = useRecoilState(placeDetail);
   const [items, setItems] = useState(detail[0]);
   const [review, setReview] = useState(false);
@@ -40,7 +44,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getPlaceDetail", items.placeId],
-    queryFn: () => getPlaceDetail(1, items.placeId, items.type),
+    queryFn: () => getPlaceDetail(userSeq[0].seq, items.placeId, items.type),
   });
 
   if (isLoading) return null;
@@ -319,9 +323,13 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
               </button>
             </div>
             {!review ? (
-              <div className="mt-2 mb-5">리뷰 전체</div>
+              <div className="mt-2 mb-5">
+                <ReviewAll placeId={data.placeId} />
+              </div>
             ) : (
-              <div className="mt-2 mb-5">우리 리뷰</div>
+              <div className="mt-2 mb-5">
+                <ReviewOurs placeId={data.placeId} />
+              </div>
             )}
           </div>
         </div>

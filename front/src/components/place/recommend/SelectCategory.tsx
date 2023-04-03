@@ -4,8 +4,6 @@ import { useRecoilState } from "recoil";
 import { selectCategory } from "../../../recoil/states/RecommendPageState";
 import SelectCategoryItem from "./items/SelectCategoryItem";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import Logo from "../../../assets/login/pinkCosmos.png";
-import Loading from "../../../assets/loading/modal-loading.gif";
 import Swal from "sweetalert2";
 import "../../../css/placeSearch.css";
 
@@ -21,7 +19,7 @@ export default function SelecctCategory() {
     setNumber((cur) => cur + 1);
     setList(list.concat({ index: number, state: true }));
   };
-  console.log(category);
+
   const handleComplete = () => {
     const clicked = document.querySelectorAll(".content-clicked");
     let selected: any[] | ((currVal: {}[]) => {}[]) = [];
@@ -65,20 +63,8 @@ export default function SelecctCategory() {
     }).then((result) => {
       // 만약 Promise리턴을 받으면,
       if (result.isConfirmed) {
-        // 만약 모달창에서 confirm 버튼을 눌렀다면
-
-        Swal.fire({
-          html: `<div>
-                  <img class="modal-loading" src=${Logo} />
-                  <img class="modal-loading" src=${Loading} />
-                </div>`,
-          timer: 4000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        }).then(() => {
-          // 추천 코스 페이지로 이동
-          navigate("/place/result");
-        });
+        navigate("/place/result");
+        // });
       }
     });
   };

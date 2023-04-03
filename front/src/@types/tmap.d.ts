@@ -18,7 +18,21 @@ declare global {
       setMap(marker: object | null): void;
       // on: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
     }
-
+    class Point {
+      constructor(num1: number, num2: number);
+    }
+    class Projection {
+      static convertEPSG3857ToWGS84GEO: any;
+    }
+    class Polyline {
+      constructor({
+        path: LatLng,
+        strokeColor: string,
+        strokeWeight: number,
+        map: Map,
+      });
+      setMap(polyline: any): void;
+    }
     interface MapOptions {
       center: LatLng;
       width: string;
