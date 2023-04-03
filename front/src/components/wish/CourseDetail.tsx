@@ -5,8 +5,9 @@ import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
-import { useQuery } from "react-query";
-import { getCourseDetail } from "../../apis/api/wish";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { deleteWishCourse, getCourseDetail } from "../../apis/api/wish";
+import Swal from "sweetalert2";
 
 interface Place {
     placeId: number;
@@ -57,6 +58,30 @@ export default function CourseDetail(props: { courseId: any }) {
         queryFn: () =>
             getCourseDetail(props.courseId, userSeq.seq, userSeq.acToken),
     });
+    const queryClient = useQueryClient();
+    const mutation = useMutation(deleteWishCourse, {
+        onSuccess: (data) => {
+            Toast.fire({
+                icon: "success",
+                title: "삭제되었습니다. ",
+            });
+
+            queryClient.invalidateQueries();
+        },
+        onError: () => {
+            Toast.fire({
+                icon: "error",
+                title: "삭제 실패했습니다. ",
+            });
+        },
+    });
+    const Toast = Swal.mixin({
+        toast: true, // 토스트 형식
+        position: "bottom-end", // 알림 위치
+        showConfirmButton: false, // 확인버튼 생성 유무
+        timer: 1000, // 지속 시간
+        timerProgressBar: true, // 지속시간바 생성 여부
+    });
 
     useEffect(() => {
         setPlaces(data?.places);
@@ -102,7 +127,30 @@ export default function CourseDetail(props: { courseId: any }) {
                     />
                     편집
                 </div>
-                <div className="float-left w-1/3 m-auto">
+                <div
+                    className="float-left w-1/3 m-auto"
+                    onClick={() => {
+                        Swal.fire({
+                            // title: `${props.item.title}을 찜 해제하시겠습니까?`,
+                            text: `${data?.name} 코스를 삭제하시겠습니까?`,
+                            icon: "question",
+
+                            showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+                            confirmButtonColor: "#FF8E9E", // confrim 버튼 색깔 지정
+                            cancelButtonColor: "#B9B9B9", // cancel 버튼 색깔 지정
+                            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                            cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                        }).then((result) => {
+                            // 만약 Promise리턴을 받으면,
+                            if (result.isConfirmed) {
+                                // 만약 모달창에서 confirm 버튼을 눌렀다면
+                                // 해당 장소 찜 목록에서 삭제
+
+                                mutation.mutate(Number(props.courseId));
+                            }
+                        });
+                    }}
+                >
                     <Icon
                         icon="material-symbols:delete-forever-outline"
                         width="22"
