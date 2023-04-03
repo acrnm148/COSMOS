@@ -83,7 +83,7 @@ public class CourseService {
             HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
 
             // API 호출
-            String url = "http://localhost:8000/api/CF/algorithm/userSeq/" + dto.getUserSeq() + "/";
+            String url = "http://j8e104.p.ssafy.io:8000/django/CF/algorithm/userSeq/" + dto.getUserSeq() + "/";
             ResponseEntity<String> responseData = restTemplate.postForEntity(url, requestMessage, String.class);
             List list = new Gson().fromJson(responseData.getBody(), List.class);
 
