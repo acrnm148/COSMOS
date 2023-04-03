@@ -3,8 +3,12 @@ import TMapResult from "../common/TMapResult";
 import ListCard from "../common/ListCard";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
-import { useQuery, useMutation, useQueries } from "react-query";
-import { getWishPlaceList, getCourseDetail } from "../../apis/api/wish";
+import { useMutation, useQueries } from "react-query";
+import {
+    getWishPlaceList,
+    getCourseDetail,
+    wishCourseEdit,
+} from "../../apis/api/wish";
 import Swal from "sweetalert2";
 
 interface Place {
@@ -58,27 +62,67 @@ export default function CourseEdit(props: { courseId: any }) {
             queryFn: () => getWishPlaceList(userSeq.seq),
         },
     ]);
-    console.log(res);
+    const mutation = useMutation(wishCourseEdit, {
+        onSuccess: (data) => {
+            Swal.fire({
+                text: "수정되었습니다. ",
+                icon: "success",
+                confirmButtonColor: "#FF8E9E",
+            });
+        },
+        onError: () => {
+            Swal.fire({
+                text: "수정 실패했습니다. ",
+                icon: "error",
+                confirmButtonColor: "#FF8E9E",
+            });
+        },
+    });
 
-    /////////////////////////////////
-    // const [places, setPlaces] = useState<any>([...res[0].data.places]);
+    console.log(res[0]);
     const [places, setPlaces] = useState<any>();
     const [wishPlaces, setWishPlaces] = useState<any>();
 
     let copy: Place[] = [];
+    let copyPlaces: Place[] = [];
     const set = new Set();
     useEffect(() => {
-        places?.map((p: Place) => set.add(p.placeId));
+        if (!res[0].isLoading && res[0].data) {
+            copyPlaces = [...res[0].data.places];
 
-        res[0].data.places.map((p: Place) => {
-            if (!set.has(p.placeId)) {
-                copy.push(p);
-                set.add(p.placeId);
+            if (!res[1].isLoading && res[1].data) {
+                copyPlaces?.map((p: Place) => {
+                    set.add(p.placeId);
+                    orders.push(p.placeId);
+                });
+
+                res[1].data.map((p: Place) => {
+                    if (!set.has(p.placeId)) {
+                        copy.push(p);
+                        set.add(p.placeId);
+                    }
+                });
+
+                setWishPlaces([...copy]);
+                setPlaces([...copyPlaces]);
             }
-        });
+        }
+    }, [res[0].data, res[1].data]);
 
-        setWishPlaces([...copy]);
-    }, [res[0].isLoading, res[0].data, res[1].data, res[1].isLoading]);
+    // 장소 순서 저장하는 로직
+    const [orders, setOrders] = useState<number[]>([]);
+    function handleOrders(placeId: number) {
+        const copy = [...orders];
+
+        copy.includes(placeId)
+            ? copy.includes(placeId) && copy?.splice(copy.indexOf(placeId), 1)
+            : !copy.includes(placeId) && copy?.push(placeId);
+
+        setOrders(copy);
+    }
+    useEffect(() => {
+        setOrders(orders);
+    }, [orders]);
 
     return (
         <div>
@@ -86,29 +130,68 @@ export default function CourseEdit(props: { courseId: any }) {
                 <TMapResult state={state} marker={marker} className="fixed" />
                 {places && (
                     <ListCard height={false}>
-                        <div className="mb-5 font-bold">
+                        <div className="mb-1 text-lg font-bold text-left pb-3 mx-5">
+                            {res[0].data?.name}
+                        </div>
+
+                        <div className="mb-5 font-bold mx-5">
                             계획할 장소를 순서대로 눌러주세요!
                         </div>
 
                         {places?.map((a: Place) => (
-                            <Item key={a.placeId} item={a}></Item>
+                            <Item
+                                key={a.placeId}
+                                item={a}
+                                orders={orders}
+                                handleOrders={handleOrders}
+                            ></Item>
                         ))}
 
                         {wishPlaces?.map((a: Place) => (
-                            <Item key={a.placeId} item={a}></Item>
+                            <Item
+                                key={a.placeId}
+                                item={a}
+                                orders={orders}
+                                handleOrders={handleOrders}
+                            ></Item>
                         ))}
                     </ListCard>
                 )}
             </div>
 
-            <div className="w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold">
+            <div
+                className="w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                onClick={() => {
+                    (async () => {
+                        const { value: getName } = await Swal.fire({
+                            text: "코스 이름을 입력해주세요. ",
+                            input: "text",
+                            inputValue: res[0].data?.name,
+                            confirmButtonText: "수정",
+                            confirmButtonColor: "#FF8E9E",
+                            showCancelButton: true,
+                            cancelButtonText: "취소",
+                            cancelButtonColor: "#B9B9B9",
+                        });
+
+                        if (getName) {
+                            // 이후 처리되는 내용.
+                            mutation.mutate({
+                                courseId: res[0].data.courseId,
+                                placeIds: orders,
+                                name: getName,
+                            });
+                        }
+                    })();
+                }}
+            >
                 코스 수정
             </div>
         </div>
     );
 }
 
-function Item(props: { item: Place }) {
+function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
     let name =
         props.item.name.length > 7
             ? props.item.name.slice(0, 7).concat("...")
@@ -134,108 +217,24 @@ function Item(props: { item: Place }) {
                     </div>
                 </div>
 
-                {props.item.orders > 0 && (
-                    <div className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl">
-                        {props.item.orders}
+                {props.orders.includes(props.item.placeId) ? (
+                    <div
+                        className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        onClick={() => {
+                            props.handleOrders(props.item.placeId);
+                        }}
+                    >
+                        {props.orders.indexOf(props.item.placeId) + 1}
                     </div>
-                )}
-
-                {props.item.orders === 0 && (
-                    <div className="idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"></div>
+                ) : (
+                    <div
+                        className="idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        onClick={() => {
+                            props.handleOrders(props.item.placeId);
+                        }}
+                    ></div>
                 )}
             </div>
         </div>
     );
 }
-
-// const coursePlace: Place[] = [
-//     {
-//         placeId: 1,
-//         placeName: "해운대 우시야",
-//         thumbNailUrl:
-//             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
-//         address: "부산 해운대구 우동1로38번길 2",
-//         date: "2023년 2월 28일",
-//         phoneNumber: "010-1234-5678",
-//         score: 3.5,
-//         orders: 1,
-//         latitude: "37.566481622437934",
-//         longitude: "126.98502302169841",
-//         overview:
-//             "서울 광화문에 위치한 사발은 새로운 스타일의 퓨전국수, 덮밥, 국밥을 정성스롭고 아름답게 대접합니다.",
-//     },
-//     {
-//         placeId: 2,
-//         placeName: "읍천리",
-//         thumbNailUrl:
-//             "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
-//         address: "서울 종로구 자하문로7길 11",
-//         date: "2023년 2월 28일",
-//         phoneNumber: "051-351-1234",
-//         score: 4.5,
-//         orders: 2,
-//         latitude: "37.566481622437934",
-//         longitude: "126.98502302169841",
-//         overview: "숙성사시미 전문 캐쥬얼 스시야",
-//     },
-//     {
-//         placeId: 3,
-//         placeName: "서면 CGV",
-//         thumbNailUrl:
-//             "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
-//         address: "부산 해운대구 우동1로38번길 2",
-//         date: "2023년 2월 28일",
-//         phoneNumber: "010-5678-4321",
-//         score: 5.0,
-//         orders: 3,
-//         latitude: "37.566481622437934",
-//         longitude: "126.98502302169841",
-//         overview: "부산 소고기 오마카세 수요미식회에도 나온 맛있는 소고기",
-//     },
-// ];
-
-// const wishPlace: Place[] = [
-//     {
-//         placeId: 1,
-//         placeName: "해운대 우시야",
-//         thumbNailUrl:
-//             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJBHxJjvxdcCde02FU-xFtiN9IsfbChk2vrAI5CmMfkBiSIZJPym3uNJGDEeWuPDs6wOI&usqp=CAU",
-//         address: "부산 해운대구 우동1로38번길 2",
-//         date: "2023년 2월 28일",
-//         phoneNumber: "010-1234-5678",
-//         score: 3.5,
-//         orders: 0,
-//         latitude: "37.566481622437934",
-//         longitude: "126.98502302169841",
-//         overview:
-//             "서울 광화문에 위치한 사발은 새로운 스타일의 퓨전국수, 덮밥, 국밥을 정성스롭고 아름답게 대접합니다.",
-//     },
-//     {
-//         placeId: 7,
-//         placeName: "2222 읍천리",
-//         thumbNailUrl:
-//             "https://img.siksinhot.com/place/1600741858600366.jpg?w=307&h=300&c=Y",
-//         address: "서울 종로구 자하문로7길 11",
-//         date: "2023년 2월 28일",
-//         phoneNumber: "051-351-1234",
-//         score: 4.5,
-//         orders: 0,
-//         latitude: "37.567481622437934",
-//         longitude: "126.98602302169841",
-//         overview: "숙성사시미 전문 캐쥬얼 스시야",
-//     },
-//     {
-//         placeId: 8,
-//         placeName: "2222 서면 CGV",
-//         thumbNailUrl:
-//             "https://blog.kakaocdn.net/dn/zUGvC/btqRjgDOk3L/c8GzoRfUoTRKCWaMAgtxk0/img.jpg",
-//         address: "부산 해운대구 우동1로38번길 2",
-//         date: "2023년 2월 28일",
-//         phoneNumber: "010-5678-4321",
-//         score: 5.0,
-//         orders: 0,
-//         latitude: "37.567381622437934",
-//         longitude: "126.98502302169841",
-//         overview: "부산 소고기 오마카 세 수요미식회에도 나온 맛있는 소고기",
-//     },
-// ];

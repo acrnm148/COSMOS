@@ -95,3 +95,29 @@ export const wishMakeCourse = async ({
     });
     return data;
 };
+
+// PUT APIs
+// 찜한 코스 수정 (사용자 커스텀)
+/**
+ * @param {number} courseId : 코스 id
+ * PUT : 찜한 코스를 수정한다. (장소, 순서 변경)
+ */
+interface courseEditParams {
+    courseId: number;
+    placeIds: number[];
+    name: string;
+}
+export const wishCourseEdit = async ({
+    courseId,
+    name,
+    placeIds,
+}: courseEditParams) => {
+    const { data } = await defaultInstance.put(
+        `courses/${courseId}/coursechange`,
+        {
+            name: name,
+            placeIds: placeIds,
+        }
+    );
+    return data;
+};
