@@ -31,11 +31,18 @@ export interface REVIEW {
 export default function ReviewOurs({ placeId }: any) {
   const LIMIT = 5;
   const [offset, setOffset] = useState(0);
-  const user = useRecoilState(userState);
+  const userSeq = useRecoilState(userState);
 
   const { data, isLoading } = useQuery({
     queryKey: ["getReviewOurs", placeId, offset],
-    queryFn: () => getReviewOurs(1, placeId, user[0].coupleId, LIMIT, offset),
+    queryFn: () =>
+      getReviewOurs(
+        userSeq[0].seq,
+        placeId,
+        userSeq[0].coupleId,
+        LIMIT,
+        offset
+      ),
   });
 
   if (isLoading) return null;

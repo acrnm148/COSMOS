@@ -7,11 +7,11 @@ import {
   selectCategory,
   mapCenter,
   mapMarkers,
-  currentCourseId,
 } from "../../recoil/states/RecommendPageState";
 import { useQuery } from "react-query";
 import { getDateCourse } from "../../apis/api/place";
 import Loading from "../../components/common/Loading";
+import CourseLike from "./CourseLike";
 
 export default function TMapRecommend() {
   const sido = useRecoilState(selectSido);
@@ -19,7 +19,6 @@ export default function TMapRecommend() {
   const category = useRecoilState(selectCategory);
   const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
   const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
-  const [currentCourse, setCurrentcourse] = useRecoilState(currentCourseId);
 
   const tmp = {
     sido: sido[0].sidoName,
@@ -34,7 +33,6 @@ export default function TMapRecommend() {
   const [tFare, setTFare] = useState("");
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
   const [markers, setMarkers] = useState<Tmapv2.Marker[]>();
-  const [allMarkers, setAllMarkers] = useState([]);
   // 지도 div
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -236,15 +234,14 @@ export default function TMapRecommend() {
 
   if (isLoading || data === undefined) return <Loading />;
 
-  setCurrentcourse(data.data.courseId);
-
   return (
     <>
-      <div className="flex flex-row gap-3 bg-lightMain3 justify-center p-3 wb-3">
-        <span className="font-bold">{tDistance}</span>
-        <span className="font-bold">{tTime}</span>
-        <span className="font-bold">{tFare}</span>
-      </div>
+      <CourseLike
+        tDistance={tDistance}
+        tTime={tTime}
+        tFare={tFare}
+        courseId={data.data.courseId}
+      />
       <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>
     </>
   );

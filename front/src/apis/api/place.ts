@@ -149,6 +149,7 @@ export const getReviewAll = async (
   limit: number,
   offset: number
 ) => {
+  if (placeId === null) return null;
   const { data } = await defaultInstance.get(
     `reviews/places/${placeId}?limit=${limit}&offset=${offset}`
   );
@@ -192,6 +193,18 @@ export const getReviewOurs = async (
  */
 export const getDateCourse = async (data: any) => {
   const res = await defaultInstance.post(`/courses`, data, {
+    headers: { "Content-Type": "application/json" },
+  });
+  return res;
+};
+
+// PUT APIs
+/**
+ * @param courseId: 코스 id
+ * PUT : 코스 찜
+ */
+export const likeThisCourse = async (data: any) => {
+  const res = await defaultInstance.put(`/courses`, data, {
     headers: { "Content-Type": "application/json" },
   });
   return res;

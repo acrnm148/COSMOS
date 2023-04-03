@@ -13,10 +13,12 @@ import {
   mapMarkers,
   placeDetail,
 } from "../../../../recoil/states/SearchPageState";
+import { userState } from "../../../../recoil/states/UserState";
 import { useQuery } from "react-query";
 import { getPlacesWithConditions } from "../../../../apis/api/place";
 
 export default function PlaceList() {
+  const userSeq = useRecoilState(userState);
   const sidoState = useRecoilState(selectSido);
   const gugunState = useRecoilState(selectGugun);
   const wordState = useRecoilState(completeWord);
@@ -49,7 +51,7 @@ export default function PlaceList() {
     ],
     queryFn: () =>
       getPlacesWithConditions(
-        1,
+        userSeq[0].seq,
         sidoState[0].sidoName,
         gugunState[0].gugunName,
         wordState[0],
