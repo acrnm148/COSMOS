@@ -3,6 +3,7 @@ package com.cosmos.back.service;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.response.ImageResponseDto;
 import com.cosmos.back.model.Image;
+import com.cosmos.back.model.Review;
 import com.cosmos.back.repository.image.ImageRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +40,7 @@ public class ImageServiceTest {
     @MockBean
     private S3Service s3Service;
 
-    @SpyBean
+    @MockBean
     private ImageRepository imageRepository;
 
     @Autowired
@@ -84,7 +85,7 @@ public class ImageServiceTest {
     }
 
     @Test
-    @DisplayName("deleteImage 사진 생성")
+    @DisplayName("deleteImage 사진 삭제")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void deleteImageTest() throws Exception{
         //given
@@ -109,7 +110,8 @@ public class ImageServiceTest {
         //given
         List<Image> list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            Image image = Image.builder().imageUrl("imgUrl").build();
+            Review review = Review.builder().id((long) i).build();
+            Image image = Image.builder().id((long) i).imageUrl("imgUrl").createdTime("20230403").review(review).build();
             image.setId((long) i);
             list.add(image);
         }
