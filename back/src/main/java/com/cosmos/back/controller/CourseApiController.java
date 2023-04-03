@@ -5,6 +5,7 @@ import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.service.CourseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class CourseApiController {
 
     @Operation(summary = "코스 생성(추천 알고리즘)", description = "코스 생성")
     @PostMapping("/courses")
-    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) {
+    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) throws JsonProcessingException {
         CourseResponseDto courseResponseDto = courseService.createCourse(dto);
 
         return new ResponseEntity<>(courseResponseDto, HttpStatus.OK);
@@ -120,6 +121,14 @@ public class CourseApiController {
     @PutMapping("/courses/{courseId}/orders")
     public ResponseEntity<Long> updateCourseOrders(@PathVariable Long courseId, @RequestBody CourseUpdateOrdersRequestDto dto) {
         Long id = courseService.updateCourseOrders(courseId, dto);
+        return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @Operation(summary = "코스 수정(찜한 코스 커스텀)", description = "코스 전체 수정")
+    @PutMapping("/courses/{couseId}/coursechange")
+    public ResponseEntity<Long> updateCourseFinal(@PathVariable Long courseId, @RequestBody CourseUpdateRequstDto courseUpdateRequstDto) {
+        Long id = courseService.updateCourse(courseId, courseUpdateRequstDto);
+
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }
