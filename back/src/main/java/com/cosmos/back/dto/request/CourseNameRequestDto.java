@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CourseNameRequestDto {
 
+    private Long courseId;
     private String name;
 }
