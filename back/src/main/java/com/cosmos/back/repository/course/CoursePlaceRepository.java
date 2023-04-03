@@ -12,6 +12,6 @@ import java.util.List;
 public interface CoursePlaceRepository extends JpaRepository<CoursePlace, Long> {
     public List<CoursePlace> findAllByCourseId(Long courseId);
 
-    @Query("SELECT * FROM courseplace cp WHERE cp.course_id = :courseId AND cp.place_id = :placeId")
+    @Query(value = "SELECT * FROM courseplace cp WHERE cp.course_id = :courseId AND cp.place_id = :placeId", nativeQuery = true)
     public CoursePlace findByCourseIdAndPlaceId(@Param("courseId") Long courseId, @Param("placeId") Long placeId);
 }
