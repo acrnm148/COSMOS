@@ -497,6 +497,7 @@ public class CourseService {
             } else {
                 Place place = placeRepository.findById(dto.getPlaceIds().get(j)).orElseThrow(() -> new IllegalArgumentException("no such data"));
                 CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, orders++);
+                coursePlaceRepository.save(coursePlace);
             }
         }
 
