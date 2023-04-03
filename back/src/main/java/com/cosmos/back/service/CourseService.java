@@ -83,7 +83,7 @@ public class CourseService {
             HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
 
             // API 호출
-            String url = "http://localhost:8000/api/CF/algorithm/userSeq/" + dto.getUserSeq() + "/";
+            String url = "http://j8e104.p.ssafy.io:8000/django/CF/algorithm/userSeq/" + dto.getUserSeq() + "/";
             ResponseEntity<String> responseData = restTemplate.postForEntity(url, requestMessage, String.class);
             List list = new Gson().fromJson(responseData.getBody(), List.class);
 
@@ -143,27 +143,34 @@ public class CourseService {
     // 카테고리별 장소 가져오기
     public List<Place> selectPlaces (List<String> categories, String sido, String gugun, Long userSeq) {
         List<Place> places = new ArrayList<>();
+        List<Long> placeIds = new ArrayList<>();
 
         for (String category : categories) {
             boolean isOverlapped = false;
 
             int count = 0;
-            while(true) {
+            outer: while(true) {
                 isOverlapped = false;
                 Place place = chooseOne(category, sido, gugun, userSeq);
-                if (count > 3) {
-                    place = chooseOneWithInAll(category, sido, gugun);
-                    count = 0;
-                }
-                for (Place p : places) {
-                    if (p.getId().equals(place.getId())) {
-                        isOverlapped = true;
-                        break;
+                if (count > 3 && placeIds.contains(place.getId())) {
+                    while (true) {
+                        place = chooseOneWithInAll(category, sido, gugun);
+                        if (!placeIds.contains(place.getId())) {
+                            places.add(place);
+                            placeIds.add(place.getId());
+                            break outer;
+                        }
                     }
+                }
+
+                if (placeIds.contains(place.getId())) {
+                    isOverlapped = true;
                 }
 
                 if (!isOverlapped) {
                     places.add(place);
+                    placeIds.add(place.getId());
+                    count = 0;
                     break;
                 }
 
@@ -393,62 +400,44 @@ public class CourseService {
         return courseResponseDto;
     }
 
-    // 코스 내용 수정
+    // 코스 수정
     @Transactional
-    public Long updateCourseContents (Long courseId, CourseUpdateContentsRequestDto dto) {
+    public Long updateCourse (Long courseId, CourseUpdateRequstDto dto) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+
         course.setName(dto.getName());
-        courseRepository.save(course);
-        return course.getId();
-    }
 
-    // 코스 수정(추가)
-    @Transactional
-    public Long updateCourseAdd (Long courseId, CourseUpdateAddDelRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        int size = course.getCoursePlaces().size();
-        CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, ++size);
-        coursePlaceRepository.save(coursePlace);
+        List<CoursePlace> coursePlaces = coursePlaceRepository.findAllByCourseId(courseId);
 
-        return place.getId();
-    }
+        boolean[] coursePlacesArray = new boolean[coursePlaces.size()];
+        boolean[] dtoPlacesArray = new boolean[dto.getPlaceIds().size()];
 
-    // 코스 수정(삭제)
-    @Transactional
-    public Long updateCourseDelete (Long courseId, CourseUpdateAddDelRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        List<CoursePlace> coursePlaces = course.getCoursePlaces();
-
-        int order = 1;
-        for (CoursePlace cp: coursePlaces) {
-            if (cp.getPlace().getId().equals(dto.getPlaceId())) {
-                courseRepository.deleteCoursePlaceQueryDSL(courseId, cp);
-            } else {
-                cp.setOrders(order++);
+        for (int i = 0; i < coursePlacesArray.length; i++) {
+            for (int j = 0; j < dtoPlacesArray.length; j++) {
+                if (coursePlaces.get(i).getId().equals(dto.getPlaceIds().get(j))) {
+                    coursePlacesArray[i] = true;
+                    dtoPlacesArray[j] = true;
+                    break;
+                }
             }
         }
 
-        return dto.getPlaceId();
-    }
-
-    // 코스 수정(순서)
-    @Transactional
-    public Long updateCourseOrders (Long courseId, CourseUpdateOrdersRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        List<CoursePlace> coursePlaces = course.getCoursePlaces();
-
-        HashMap<Long, CoursePlace> map = new HashMap<>();
-
-        for (CoursePlace cp : coursePlaces) {
-            map.put(cp.getPlace().getId(), cp);
+        for (int i = 0; i < coursePlacesArray.length; i++) {
+            if (!coursePlacesArray[i]) {
+                coursePlaceRepository.deleteById(coursePlaces.get(i).getId());
+            }
         }
 
         int orders = 1;
-        for (Long placeId: dto.getPlaces()) {
-            CoursePlace coursePlace = map.get(placeId);
-            coursePlace.setOrders(orders++);
-            coursePlaceRepository.save(coursePlace);
+        for (int j = 0; j < dtoPlacesArray.length; j++) {
+            if (dtoPlacesArray[j]) {
+                CoursePlace coursePlace = coursePlaceRepository.findByCourseIdAndPlaceId(courseId, dto.getPlaceIds().get(j));
+                coursePlace.setOrders(orders++);
+            } else {
+                Place place = placeRepository.findById(dto.getPlaceIds().get(j)).orElseThrow(() -> new IllegalArgumentException("no such data"));
+                CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, orders++);
+                coursePlaceRepository.save(coursePlace);
+            }
         }
 
         return course.getId();

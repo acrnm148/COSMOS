@@ -1,5 +1,6 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.dto.response.NotificationDto;
 import com.cosmos.back.model.Notification;
 import com.cosmos.back.model.NotificationType;

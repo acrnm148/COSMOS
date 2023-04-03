@@ -29,20 +29,6 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
                 .fetchOne();
     }
 
-    @Override
-    public Long deleteCoursePlaceQueryDSL(Long courseId, CoursePlace cp) {
-
-        QCourse course = QCourse.course;
-        QCoursePlace coursePlace = QCoursePlace.coursePlace;
-
-        long execute = queryFactory.delete(coursePlace)
-                .where(coursePlace.id.eq(cp.getId()))
-                .execute();
-
-        return execute;
-
-    }
-
     // 내 찜한 코스 보기
     @Override
     public List<CourseResponseDto> findAllCourseByUserSeq(Long userSeq) {
