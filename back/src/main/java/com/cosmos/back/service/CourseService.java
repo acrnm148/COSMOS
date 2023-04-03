@@ -45,9 +45,11 @@ public class CourseService {
         // 1. 데이트 코스 생성 후 저장
         Course course = saveCourse(dto.getUserSeq());
 
-        List<Review> test = reviewRepository.findReviewByUserSeq(dto.getUserSeq());
+        // Review 개수 파악
+        List<Review> reviews = reviewRepository.findReviewByUserSeq(dto.getUserSeq());
 
-        if (test.size() < 2) {
+        // 20개 이하이면 컨텐츠 기반으로 리뷰 작성
+        if (reviews.size() < 20) {
             // 2. 카테고리별 장소 가져오기
             List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun(), dto.getUserSeq());
 
