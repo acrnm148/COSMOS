@@ -3,6 +3,7 @@ package com.cosmos.back.repository.image;
 import com.cosmos.back.dto.response.ImageResponseDto;
 import com.cosmos.back.model.Image;
 import com.cosmos.back.model.QImage;
+import com.cosmos.back.model.QReview;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,12 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
     @Override
     public List<Image> findAllByCoupleId(Long coupleId, Integer limit, Integer offset) {
         QImage qImage = QImage.image;
+        QReview qReview = QReview.review;
+
         return queryFactory.selectFrom(qImage)
+                .leftJoin(qReview)
+                .on(qImage.review.id.eq(qReview.id))
+                .fetchJoin()
                 .where(qImage.coupleId.eq(coupleId))
                 .limit(limit)
                 .offset(offset)
