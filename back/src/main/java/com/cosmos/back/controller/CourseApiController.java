@@ -125,7 +125,7 @@ public class CourseApiController {
     }
 
     @Operation(summary = "코스 수정(찜한 코스 커스텀)", description = "코스 전체 수정")
-    @PutMapping("/courses/{couseId}/coursechange")
+    @PutMapping("/courses/{courseId}/coursechange")
     public ResponseEntity<Long> updateCourseFinal(@PathVariable Long courseId, @RequestBody CourseUpdateRequstDto courseUpdateRequstDto) {
         Long id = courseService.updateCourse(courseId, courseUpdateRequstDto);
 
