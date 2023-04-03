@@ -59,6 +59,11 @@ def algorithm(request):
     
     return Response(status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def test(request):
+    return Response("test", status=status.HTTP_200_OK)
+
+
 '''
 해당 유저와 가장 유사도가 높은 유저를 반환
 '''
