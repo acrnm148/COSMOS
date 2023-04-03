@@ -7,9 +7,11 @@ import {
   selectCategory,
   mapCenter,
   mapMarkers,
+  currentCourseId,
 } from "../../recoil/states/RecommendPageState";
 import { useQuery } from "react-query";
 import { getDateCourse } from "../../apis/api/place";
+import Loading from "../../components/common/Loading";
 
 export default function TMapRecommend() {
   const sido = useRecoilState(selectSido);
@@ -17,6 +19,7 @@ export default function TMapRecommend() {
   const category = useRecoilState(selectCategory);
   const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
   const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
+  const [currentCourse, setCurrentcourse] = useRecoilState(currentCourseId);
 
   const tmp = {
     sido: sido[0].sidoName,
@@ -26,8 +29,12 @@ export default function TMapRecommend() {
   };
 
   const [item, setItem] = useState(JSON.stringify(tmp));
+  const [tDistance, setTDistance] = useState("");
+  const [tTime, setTTime] = useState("");
+  const [tFare, setTFare] = useState("");
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
   const [markers, setMarkers] = useState<Tmapv2.Marker[]>();
+  const [allMarkers, setAllMarkers] = useState([]);
   // 지도 div
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -76,12 +83,13 @@ export default function TMapRecommend() {
 
         const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] =
           [];
+        const all: any[] = [];
         if (markers !== undefined) {
           for (let i in markers) {
             markers[i].setMap(null);
           }
         }
-        mapMarkersState.map((item: any) => {
+        mapMarkersState.map((item: any, index: number) => {
           if (item.lat !== null || item.lng !== null) {
             const marker = new window.Tmapv2.Marker({
               position: new window.Tmapv2.LatLng(item.lat, item.lng),
@@ -89,18 +97,135 @@ export default function TMapRecommend() {
               map: map,
               title: item.name,
             });
+            all.push(item);
             newMarkers.push(marker);
           }
-
-          //   // 웹
-          //   marker.addListener("click", function () {
-          //     console.log("CLICK");
-          //   });
-          //   // 앱
-          //   marker.addListener("touchstart", function () {
-          //     console.log("터치!");
-          //   });
         });
+
+        var rest: any[] = [];
+
+        for (let i = 1; i < all.length - 1; i++) {
+          const data = {
+            viaPointId: `${all[i].placeId}`,
+            viaPointName: `${all[i].name}`,
+            viaX: `${all[i].lng}`,
+            viaY: `${all[i].lat}`,
+          };
+          rest.push(data);
+        }
+
+        // 경로 탐색 API 사용 요청
+        var routeLayer;
+        var selectOption = "0";
+        var headers = {
+          appKey: "aqfIFlCTMCk4ui6GBQGW6wTurELvMKx8baquZQG8",
+          "Content-Type": "application/json",
+        };
+
+        var param = JSON.stringify({
+          startName: "출발지",
+          startX: all[0].lng,
+          startY: all[0].lat,
+          startTime: "201708081103",
+          endName: "도착지",
+          endX: all[all.length - 1].lng,
+          endY: all[all.length - 1].lat,
+          viaPoints: rest,
+          reqCoordType: "WGS84GEO",
+          resCoordType: "EPSG3857",
+          searchOption: selectOption,
+        });
+
+        var resultInfoArr: Tmapv2.Polyline[];
+        var drawInfoArr = [];
+
+        $.ajax({
+          method: "POST",
+          url: "https://apis.openapi.sk.com/tmap/routes/routeSequential30?version=1&format=json", //
+          headers: headers,
+          async: false,
+          data: param,
+          success: function (response) {
+            console.log(response);
+            var resultData = response.properties;
+            var resultFeatures = response.features;
+
+            // 결과 출력
+            setTDistance(
+              "총 거리 : " + (resultData.totalDistance / 1000).toFixed(1) + "km"
+            );
+            setTTime(
+              "총 시간 : " + (resultData.totalTime / 60).toFixed(0) + "분"
+            );
+            setTFare("총 요금 : " + resultData.totalFare + "원");
+
+            //기존  라인 초기화
+
+            if (resultInfoArr !== undefined) {
+              if (resultInfoArr.length > 0) {
+                for (var i in resultInfoArr) {
+                  resultInfoArr[i].setMap(null);
+                }
+                resultInfoArr = [];
+              }
+            }
+
+            for (var i in resultFeatures) {
+              var geometry = resultFeatures[i].geometry;
+              var properties = resultFeatures[i].properties;
+              var polyline_;
+
+              drawInfoArr = [];
+
+              if (geometry.type === "LineString") {
+                for (var j in geometry.coordinates) {
+                  // 경로들의 결과값(구간)들을 포인트 객체로 변환
+                  var latlng = new Tmapv2.Point(
+                    geometry.coordinates[j][0],
+                    geometry.coordinates[j][1]
+                  );
+                  // 포인트 객체를 받아 좌표값으로 변환
+                  var convertPoint =
+                    new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlng);
+                  // 포인트객체의 정보로 좌표값 변환 객체로 저장
+                  var convertChange = new Tmapv2.LatLng(
+                    convertPoint._lat,
+                    convertPoint._lng
+                  );
+
+                  if (drawInfoArr !== undefined) {
+                    drawInfoArr.push(convertChange);
+                  }
+                }
+
+                polyline_ = new Tmapv2.Polyline({
+                  path: drawInfoArr,
+                  strokeColor: "#FF8E9E",
+                  strokeWeight: 6,
+                  map: map,
+                });
+
+                if (resultInfoArr !== undefined) {
+                  resultInfoArr.push(polyline_);
+                }
+              }
+            }
+          },
+          error: function (request, status, error) {
+            // 429 에러 => 일별 무료제공 쿼터 소진
+            console.log(
+              "code:" +
+                request.status +
+                "\n" +
+                "message:" +
+                request.responseText +
+                "\n" +
+                "error:" +
+                error
+            );
+          },
+        });
+
         setMarkers(newMarkers);
         setMapInstance(map);
       }
@@ -109,39 +234,18 @@ export default function TMapRecommend() {
     }
   }, [mapRef.current]);
 
-  useEffect(() => {
-    if (markers !== undefined) {
-      for (let i in markers) {
-        markers[i].setMap(null);
-      }
-    }
+  if (isLoading || data === undefined) return <Loading />;
 
-    const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] = [];
-    if (window.Tmapv2) {
-      if (mapInstance !== undefined) {
-        mapMarkersState.map((item: any) => {
-          if (item.lat !== null || item.lng !== null) {
-            const marker = new window.Tmapv2.Marker({
-              position: new window.Tmapv2.LatLng(item.lat, item.lng),
-              icon: LightMarker,
-              map: mapInstance,
-              title: item.name,
-            });
-            newMarkers.push(marker);
-          }
-        });
-      }
-    } else {
-      console.error("TmapV2 API is not loaded");
-    }
+  setCurrentcourse(data.data.courseId);
 
-    setMarkers(newMarkers);
-
-    mapInstance?.setCenter(
-      new window.Tmapv2.LatLng(mapCenterState.lat, mapCenterState.lng)
-    );
-  }, [mapMarkersState]);
-
-  if (isLoading || data === undefined) return null;
-  return <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>;
+  return (
+    <>
+      <div className="flex flex-row gap-3 bg-lightMain3 justify-center p-3 wb-3">
+        <span className="font-bold">{tDistance}</span>
+        <span className="font-bold">{tTime}</span>
+        <span className="font-bold">{tFare}</span>
+      </div>
+      <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>
+    </>
+  );
 }

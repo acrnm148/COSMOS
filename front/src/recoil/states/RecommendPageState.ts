@@ -24,7 +24,13 @@ export const mapMarkers = atom({
   key: "mapMarkersRec",
   default: [{}],
 });
+
 export const placeDetail = atom({
   key: "placeDetailRec",
   default: { placeId: 1, type: "tour" },
+});
+
+export const currentCourseId = atom({
+  key: "currentCourseId",
+  default: 0,
 });

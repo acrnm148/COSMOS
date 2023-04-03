@@ -155,13 +155,6 @@ export const getReviewAll = async (
   return data;
 };
 
-export const reviewTest = async () => {
-  const { data } = await defaultInstance.get(
-    `reviews/users/1?limit=10&offset=0`
-  );
-  return data;
-};
-
 /**
  * @param {number} userSeq : 사용자 번호
  * @param {number} placeId : 장소 ID
@@ -176,7 +169,7 @@ export const getReviewOurs = async (
   limit: number,
   offset: number
 ) => {
-  if (coupleId === "0") {
+  if (coupleId === "") {
     // 솔로 유저
     const { data } = await defaultInstance.get(
       `reviews/users/${userSeq}/coupleId/places/${placeId}/?limit=${limit}&offset=${offset}`
