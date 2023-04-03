@@ -5,12 +5,8 @@ import StarIcon from "@mui/icons-material/Star";
 
 export interface REVIEW {
   reviewId: number | undefined;
-  categories:
-    | [{ id: number; reviewCategoryCode: "string"; reviewCategory: "string" }]
-    | undefined;
-  indiReviewCategories:
-    | [{ id: number; reviewCategoryCode: "string" }]
-    | undefined;
+  categories: [{ id: number; reviewCategoryCode: "string" }] | undefined;
+  indiReviewCategories: [{ id: number; reviewCategory: "string" }] | undefined;
   score: number;
   contents: string | undefined;
   placeId: number;
@@ -36,7 +32,7 @@ export default function ReviewAll({ placeId }: any) {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getReviewAll", placeId, offset],
-    queryFn: () => getReviewAll(72, LIMIT, offset),
+    queryFn: () => getReviewAll(placeId, LIMIT, offset),
   });
 
   if (isLoading) return null;
@@ -116,11 +112,13 @@ export default function ReviewAll({ placeId }: any) {
         </span>
         <span
           className={
-            data === ""
+            data.length < 5
               ? "absolute right-3 font-bold text-slate-400 cursor-default"
               : "absolute right-3 font-bold text-slate-400 hover:text-black cursor-pointer"
           }
-          onClick={() => setOffset((cur) => (data === "" ? cur : cur + LIMIT))}
+          onClick={() =>
+            setOffset((cur) => (data.length < 5 ? cur : cur + LIMIT))
+          }
         >
           NEXT
         </span>
