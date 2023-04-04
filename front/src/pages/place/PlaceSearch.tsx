@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SearchWait from "../../assets/place/search-wait.png";
+import DarkSearchWait from "../../assets/place/dark/dark-search-wait.png";
 import SearchWord from "../../components/place/search/SearchWord";
 import GugunList from "../../components/place/search/lists/GugunList";
 import SidoList from "../../components/place/search/lists/SidoList";
@@ -13,15 +14,17 @@ import {
   selectCategory,
 } from "../../recoil/states/SearchPageState";
 import SearchFilter from "../../components/place/search/SearchFilter";
+import { darkMode } from "../../recoil/states/UserState";
 
 export default function PlaceSearch() {
+  const isDark = useRecoilState(darkMode);
   const sidoState = useRecoilState(selectSido);
   const gugunState = useRecoilState(selectGugun);
   const wordState = useRecoilState(completeWord);
   const categoryState = useRecoilState(selectCategory);
 
   return (
-    <div className="w-[90%] text-center">
+    <div className="w-[90%] text-center pb-24">
       <div className="flex flex-row justify-center mt-10">
         <div className="basis-1/3 h-14">
           <SidoList />
@@ -44,7 +47,11 @@ export default function PlaceSearch() {
           <TMap />
         ) : (
           <div className="w-full h-[50vh]">
-            <img className="h-full m-auto rounded-lg" src={SearchWait} />
+            {isDark ? (
+              <img className="h-full m-auto rounded-lg" src={DarkSearchWait} />
+            ) : (
+              <img className="h-full m-auto rounded-lg" src={SearchWait} />
+            )}
           </div>
         )}
       </div>

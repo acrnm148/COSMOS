@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import LightBigData from "../../assets/place/light-bigdata.gif";
+import DarkBigData from "../../assets/place/dark/dark-bigdata.gif";
 import SelecctCategory from "../../components/place/recommend/SelectCategory";
 import SelectRegion from "../../components/place/recommend/SelectRegion";
+import { useRecoilState } from "recoil";
+import { darkMode } from "../../recoil/states/UserState";
+
 export default function PlaceRecommend() {
+  const isDark = useRecoilState(darkMode);
   const [selects, setSelects] = useState([false, false]);
 
   return (
@@ -10,14 +15,14 @@ export default function PlaceRecommend() {
       <div className="flex flex-row justify-center gap-[20vw]">
         {selects[0] ? (
           <div
-            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain text-white cursor-pointer"
+            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain text-white cursor-pointer dark:bg-darkMain3"
             onClick={() => setSelects([true, false])}
           >
             지역 선택
           </div>
         ) : (
           <div
-            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain2 text-white cursor-pointer"
+            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain2 text-white cursor-pointer dark:bg-darkMain"
             onClick={() => setSelects([true, false])}
           >
             지역 선택
@@ -25,14 +30,14 @@ export default function PlaceRecommend() {
         )}
         {selects[1] ? (
           <div
-            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain text-white cursor-pointer"
+            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain text-white cursor-pointer dark:bg-darkMain3"
             onClick={() => setSelects([false, true])}
           >
             카테고리 선택
           </div>
         ) : (
           <div
-            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain2 text-white cursor-pointer"
+            className="w-[200px] p-3 rounded-lg font-bold bg-lightMain2 text-white cursor-pointer dark:bg-darkMain"
             onClick={() => setSelects([false, true])}
           >
             카테고리 선택
@@ -42,14 +47,18 @@ export default function PlaceRecommend() {
       <hr className="my-[3vh]" />
       <div className="flex justify-center w-[100%]">
         {!selects[0] && !selects[1] ? (
-          <img src={LightBigData} className="w-[100%] max-w-[600px]" />
+          isDark ? (
+            <img src={DarkBigData} className="w-[100%] max-w-[600px]" />
+          ) : (
+            <img src={LightBigData} className="w-[100%] max-w-[600px]" />
+          )
         ) : null}
       </div>
       {selects[0] ? (
         <SelectRegion setSelects={setSelects} />
-      ) : (
+      ) : selects[1] ? (
         <SelecctCategory />
-      )}
+      ) : null}
     </div>
   );
 }
