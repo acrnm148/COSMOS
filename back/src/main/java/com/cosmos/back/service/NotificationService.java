@@ -36,7 +36,7 @@ public class NotificationService {
      */
     public SseEmitter subscribe(Long userSeq, String lastEventId) {
         String emitterId = makeTimeIncludeId(userSeq);
-        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(timeout));
+        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(-1L));
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 
@@ -72,7 +72,7 @@ public class NotificationService {
         User receiver = userRepository.findByUserSeq(userSeq);
         if (receiver != null) {
             Notification notification = createNotification(receiver, notificationType, content, url);
-
+            System.out.println("notification!?!?!?!? = " + notification);
             // 알림 db에 저장 - SSE는 새로고침하면 이전 알림을 볼 수 없어서 추가
             notificationRepository.save(notification);
 

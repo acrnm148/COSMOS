@@ -123,11 +123,11 @@ public class UserService {
             System.out.println("커플유저가 존재하지 않습니다.");
             return null;
         }
-        if (!(user.getCoupleId()==null && coupleUser.getCoupleId()==null)) {
+        System.out.println("id : ["+user.getCoupleId()+"] ["+user.getCoupleId()+"]");
+        if (!(user.getCoupleId()==0 && coupleUser.getCoupleId()==0)) {
             System.out.println("이미 커플인 유저입니다.");
             return null;
         }
-
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String nowDate = format.format(date);
@@ -152,7 +152,7 @@ public class UserService {
 
         // 알림 전송
         notificationService.send(userSeq, NotificationType.MESSAGE, "커플 요청이 수락되었습니다.", "");
-
+        //notificationService.subscribe(userSeq,"");
         return code;
     }
 
@@ -168,12 +168,12 @@ public class UserService {
         }
         couple.get(0).setCoupleYn("N");
         couple.get(0).setCoupleProfileImgUrl(null);
-        couple.get(0).setCoupleId(null);
+        couple.get(0).setCoupleId(0L);
         couple.get(0).setCoupleUserSeq(null);
         couple.get(0).setCoupleSuccessDate(null);
         couple.get(1).setCoupleYn("N");
         couple.get(1).setCoupleProfileImgUrl(null);
-        couple.get(1).setCoupleId(null);
+        couple.get(1).setCoupleId(0L);
         couple.get(1).setCoupleUserSeq(null);
         couple.get(1).setCoupleSuccessDate(null);
         userRepository.save(couple.get(0));
@@ -201,6 +201,10 @@ public class UserService {
         Random random = new Random(); // 랜덤 객체 생성
         Long coupleId = Long.valueOf(random.nextInt(1000000000));//10자리 미만의 난수 반환
         System.out.println("생성된 커플아이디: " +coupleId);
+        // 알림 전송
+//        notificationService.send(1L, NotificationType.MESSAGE, "커플 요청이 수락되었습니다.", "");
+
+
         return coupleId;
     }
 }
