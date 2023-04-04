@@ -34,7 +34,7 @@ public class SseRepositoryTest {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    @SpyBean
+    @Autowired
     private EmitterRepository emitterRepository;
 
     @Test
@@ -45,7 +45,6 @@ public class SseRepositoryTest {
         Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
         String emitterId = "emitterId";
         SseEmitter sseEmitter = new SseEmitter();
-
 
         //when
         SseEmitter result = emitterRepository.save(emitterId, sseEmitter);
