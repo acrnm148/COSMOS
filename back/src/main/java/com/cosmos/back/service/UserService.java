@@ -123,11 +123,11 @@ public class UserService {
             System.out.println("커플유저가 존재하지 않습니다.");
             return null;
         }
-        if (!(user.getCoupleId()==null && coupleUser.getCoupleId()==null)) {
+        System.out.println("id : ["+user.getCoupleId()+"] ["+user.getCoupleId()+"]");
+        if (!(user.getCoupleId()==0 && coupleUser.getCoupleId()==0)) {
             System.out.println("이미 커플인 유저입니다.");
             return null;
         }
-
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String nowDate = format.format(date);

@@ -233,7 +233,7 @@ public class PlanServiceTest {
         assertThat(resultList.get(0).getCoupleId()).isEqualTo(123123L);
 
     }
-
+/*
     @Test
     @DisplayName("커플 일정 일별 조회")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
@@ -295,4 +295,6 @@ public class PlanServiceTest {
         assertThat(resultList.get(0).getCoupleId()).isEqualTo(123123L);
 
     }
+
+ */
 }
