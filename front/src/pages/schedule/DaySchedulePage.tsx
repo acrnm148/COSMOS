@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { PlaceItem } from "../../components/common/PlaceItem";
 import { ScheduleMonth } from "../../components/common/ScheduleMonth";
@@ -37,7 +37,8 @@ import DatePickerTest from "../../components/schedule/datePickerTest";
 
 // TODO : db를 영어에서 한글로 바꾸거나 받은 데이터 변환
 const PLACECATE = {
-    'cafe' : '카페'
+    'cafe' : '카페',
+    'shopping' : '쇼핑',
 }
 interface Place{
     idx : number,
@@ -91,10 +92,10 @@ export function DaySchedulePage(){
     const [showCourse, setShowCourse] = useState<number|undefined>()
 
     useEffect(()=>{
-    if(data && Object.keys(data).includes('status') && (data.status === '401')){
-        GetNewAcToken()
-        return
-    }
+    // if(data && Object.keys(data).includes('status') && (data.status === '401')){
+    //     GetNewAcToken()
+    //     return
+    // }
      if(data){
         console.log(data, '찜한코스')
         let temptemp: COURSE[] = []
@@ -125,7 +126,6 @@ export function DaySchedulePage(){
             setStartDate(new Date(year+'-'+date+'-'+day))
             axios.get(`https://j8e104.p.ssafy.io/api/plans/${coupleId}/day/${date}`)
             .then((res)=>{
-                console.log('res.data, ',res)
                 if(res.data.planName){
                     setScheduleTitle(res.data.planName)
                     setIsPlan(true)
@@ -554,8 +554,4 @@ const CourseComponent = (props:{places:any[]}) =>{
         }
         </div>
     )
-}
-
-function GetNewAcToken() {
-    throw new Error("Function not implemented.");
 }

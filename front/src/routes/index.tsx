@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         errorElement: <NotFound />,
         children: [
-            { index: true, path: "/", element: <Home /> },
+            
             //로그인
             { path: "login", element: <Login /> },
             { path: "login/oauth", element: <KakaoLogin /> },
@@ -42,15 +42,19 @@ const router = createBrowserRouter([
             { path: "logout", element: <Logout /> },
         ],
     },
-    // mypage
+    // auth
+    // ,ainpage, mypage
     { 
-        path: "/mypage",
+        path: "/",
         element: <RequireAuth />,
         errorElement: <NotFound />,
         children: [{ path: "", 
                     element: <MainLayout />,
                     errorElement: <NotFound />,
-                    children: [{ path: "", element: <MyPage />}],
+                    children: [
+                        { index: true, path: "", element: <Home /> },
+                        { path: "mypage", element: <MyPage />}
+                    ],
                 }]
     },
     // 찜 목록

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useEffect, useRef, useState, useCallback } from "react"
+import React, { useEffect, useRef, useState, useCallback } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import  "../../css/detailSchedule.css"
 import { ReviewForm, ReviewSet } from "./ScheduleReview"
@@ -46,7 +46,6 @@ export function ScheduleDetail(){
     const [coupleReview, setCoupleReview] = useState<REVIEW>()
     useEffect(()=>{
         if(data){
-            // console.log(data)
             setIsReview(true)
             data.map((review: { reviewId:number,userId: number; score: any; images: any; contents: any; categories:{reviewCategoryCode:string}[], indiReviewCategories: { reviewCategory: any }[]; contentOpen: any; imageOpen: any; createdTime: any }) => {
                 if(String(review.userId)===String(loginUser.seq)){
@@ -77,8 +76,10 @@ export function ScheduleDetail(){
                         placeId : place.placeId
                     })
                 }
+                console.log('userReview, coupleReview',userReview, coupleReview)
             })
         }
+        console.log(isReview)
     },[data])
     
     return (
@@ -109,7 +110,7 @@ export function ScheduleDetail(){
                 <div className="min-h-[200px] bg-lightMain4 w-full h-full rounded-lg">
                     {showReview?
                         <div className=" w-full h-full flex flex-col justify-end items-center p-2">
-                            <ReviewForm review={userReview} isReview={isReview} category={place.category} setShowReview={setShowReview} edit={true}/>
+                            <ReviewForm review={userReview} isReview={isReview} category={place.category} setShowReview={setShowReview} edit={isReview}/>
                         </div>
                         
                     :
@@ -123,7 +124,7 @@ export function ScheduleDetail(){
                                     {showMine ?
                                     <div className="p-2">
                                         {
-                                            isReview?
+                                            isReview && userReview?
                                                 <ReviewContents Review={userReview} setShowReview={setShowReview} isMine={true}/>
                                             :
                                             <div className="h-40 w-full  w-full flex flex-col justify-end items-center p-4">

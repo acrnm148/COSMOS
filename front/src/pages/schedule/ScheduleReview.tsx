@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useEffect, useRef, useState, useCallback, MouseEvent } from "react"
+import React, { useEffect, useRef, useState, useCallback, MouseEvent } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 //alert
 import Swal from "sweetalert2";
@@ -48,7 +48,7 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
     const uploadImgBtn = useCallback(() =>{
         inputRef.current?.click()
     },[])
-    // console.log('review',props.review)
+    console.log('review',props.category)
     // 리뷰 정보
     const [cateQ, setCateQ] = useState<string | undefined>()
     const [commonQ, setCommonQ] = useState<string | undefined>()
@@ -96,6 +96,7 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
     }
 
     const handleStarClick = (index:any) => {
+        console.log(props.category,'props.category')
         let clickStates = [...clicked]
         for (let i = 0; i < 5; i++) {
             clickStates[i] = i <= index ? true : false
@@ -180,13 +181,6 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
     function submit(){
         setSubmit(true)
         // 리뷰 수정/ 등록
-        // console.log('cateQ', cateQ)
-        // console.log('commonQ', commonQ)
-        // console.log('content', content)
-        // console.log('score', score)
-        // console.log('contentOpen', contentOpen)
-        // console.log('photoOpen',photoOpen)
-        // console.log('image', uploadedImg)
 
         setReview({
             "placeId" : placeId,
@@ -233,7 +227,7 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
             {/* 카테고리별 선택지 */}
             <div className="mb-5 w-full grid grid-col-2">
                 {
-                    CATEGORY_QA[props.category as keyof CATE_QA].map((ask:string, i:number)=>{
+                    CATEGORY_QA[props.category as keyof CATE_QA]&&CATEGORY_QA[props.category as keyof CATE_QA].map((ask:string, i:number)=>{
                         if (i === 2){
                             return(<div onClick={() => setCateQ(ask)}  className={`cursor-pointer col-span-2 rounded-lg flex justify-center items-center text-xs h-8 mx-1 my-0.5 mw-s"
                                             ${cateQ === ask ? "bg-lightMain font-white" : "bg-white"}`}
@@ -343,7 +337,7 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
                             })}    
                     </Stars>
                 </div>  
-            <div onClick={submit} className="w-full"><ReviewSet edit={props.isReview} /></div>         
+            <div onClick={submit} className="w-full"><ReviewSet edit={props.edit} /></div>         
         </div>
     )
 }
