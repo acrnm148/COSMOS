@@ -47,7 +47,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getPlaceDetail", items.placeId],
-    queryFn: () => getPlaceDetail(1, items.placeId, items.type),
+    queryFn: () => getPlaceDetail(userSeq[0].seq, items.placeId, items.type),
   });
 
   if (isLoading) return null;
