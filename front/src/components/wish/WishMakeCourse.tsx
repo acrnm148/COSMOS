@@ -127,7 +127,6 @@ export default function WishMakeCourse() {
 
                         if (getName) {
                             // 이후 처리되는 내용.
-                            console.log(getName);
                             mutation.mutate({
                                 userSeq: userSeq.seq,
                                 placeIds: orders,
