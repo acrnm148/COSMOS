@@ -17,6 +17,7 @@ import {
 import { userState, darkMode } from "../../../../recoil/states/UserState";
 import { useQuery } from "react-query";
 import { getPlacesWithConditions } from "../../../../apis/api/place";
+import Swal from "sweetalert2";
 
 export default function PlaceList() {
   const isDark = useRecoilState(darkMode);
@@ -25,8 +26,6 @@ export default function PlaceList() {
   const gugunState = useRecoilState(selectGugun);
   const wordState = useRecoilState(completeWord);
   const categoryState = useRecoilState(selectCategory);
-  const LIMIT = 10;
-  const [offset, setOffset] = useState(0);
 
   const [detail, setDetail] = useRecoilState(placeDetail);
   const [modalOpen, setModalOpen] = useState(false);
@@ -48,8 +47,6 @@ export default function PlaceList() {
       gugunState[0].gugunName,
       wordState[0],
       categoryState[0],
-      LIMIT,
-      offset,
     ],
     queryFn: () =>
       getPlacesWithConditions(
@@ -57,14 +54,13 @@ export default function PlaceList() {
         sidoState[0].sidoName,
         gugunState[0].gugunName,
         wordState[0],
-        categoryState[0],
-        LIMIT,
-        offset
+        categoryState[0]
       ),
   });
 
   if (isLoading || data === null) return null;
 
+  console.log(data);
   return (
     <>
       <ListCard height={true}>

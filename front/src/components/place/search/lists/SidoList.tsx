@@ -31,8 +31,11 @@ export default function SidoList() {
       id="selectSido"
       onChange={handleSidoList}
       value={sido.sidoName === "" ? "시/도 선택" : sido.sidoName}
+      data-key=""
     >
-      <option value="">시/도 선택</option>
+      <option value="" data-key="">
+        시/도 선택
+      </option>
       {data.map((item: any) => {
         return (
           <option

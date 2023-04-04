@@ -23,8 +23,6 @@ export default function TMap() {
   const categoryState = useRecoilState(selectCategory);
   const [mapCenterState, setMapCenterState] = useRecoilState(mapCenter);
   const [mapMarkersState, setMapMarkersState] = useRecoilState(mapMarkers);
-  const LIMIT = 10;
-  const [offset, setOffset] = useState(0);
 
   const [mapInstance, setMapInstance] = useState<Tmapv2.Map>();
   const [markers, setMarkers] = useState<Tmapv2.Marker[]>();
@@ -39,8 +37,6 @@ export default function TMap() {
       gugunState[0].gugunName,
       wordState[0],
       categoryState[0],
-      LIMIT,
-      offset,
     ],
     queryFn: () =>
       getPlacesWithConditions(
@@ -48,9 +44,7 @@ export default function TMap() {
         sidoState[0].sidoName,
         gugunState[0].gugunName,
         wordState[0],
-        categoryState[0],
-        LIMIT,
-        offset
+        categoryState[0]
       ),
   });
   useEffect(() => {

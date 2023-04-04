@@ -48,56 +48,54 @@ export const getPlacesWithConditions = async (
   sido: string,
   gugun: string,
   text: string,
-  filter: string,
-  limit: number,
-  offset: number
+  filter: string
 ) => {
   // 검색어
   if (sido === "" && gugun === "" && text !== "" && filter === "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/`
     );
     return data;
   }
   // 검색필터
   else if (sido === "" && gugun === "" && text === "" && filter !== "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/gugun/text/filter/${filter}/`
     );
     return data;
   }
   // 검색어, 검색필터
   else if (sido === "" && gugun === "" && text !== "" && filter !== "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/${filter}/`
     );
     return data;
   }
   // 시/도, 구/군
   else if (sido !== "" && gugun !== "" && text === "" && filter === "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/`
     );
     return data;
   }
   // 시/도, 구/군, 검색어
   else if (sido !== "" && gugun !== "" && text !== "" && filter === "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter/`
     );
     return data;
   }
   // 시/도, 구/군, 검색필터
   else if (sido !== "" && gugun !== "" && text === "" && filter !== "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/${filter}/`
     );
     return data;
   }
   // 시/도, 구/군, 검색어, 검색필터
   else if (sido !== "" && gugun !== "" && text !== "" && filter !== "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter${filter}/`
     );
     return data;
   }
