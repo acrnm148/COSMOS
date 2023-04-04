@@ -12,7 +12,7 @@ import {
 import Swal from "sweetalert2";
 
 export default function PlaceRecommend() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const sido = useRecoilState(selectSido);
   const gugun = useRecoilState(selectGugun);
   const [selects, setSelects] = useState([false, false]);

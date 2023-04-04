@@ -17,7 +17,7 @@ import SearchFilter from "../../components/place/search/SearchFilter";
 import { darkMode } from "../../recoil/states/UserState";
 
 export default function PlaceSearch() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const sidoState = useRecoilState(selectSido);
   const gugunState = useRecoilState(selectGugun);
   const wordState = useRecoilState(completeWord);

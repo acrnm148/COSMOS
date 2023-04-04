@@ -18,7 +18,7 @@ import { selectCategory } from "../../../recoil/states/SearchPageState";
 import { darkMode } from "../../../recoil/states/UserState";
 
 export default function SearchFilter() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const [category, setCategory] = useRecoilState(selectCategory);
   const [modalOpen, setModalOpen] = useState(false);
 

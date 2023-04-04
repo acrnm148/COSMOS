@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import DefaultImg from "../../../../assets/login/pinkCosmos.png";
 import DarkDefaultImg from "../../../../assets/login/darkCosmos.png";
 import ListCard from "../../../common/ListCard";
 import PlaceLike from "../items/PlaceLike";
@@ -17,10 +16,9 @@ import {
 import { userState, darkMode } from "../../../../recoil/states/UserState";
 import { useQuery } from "react-query";
 import { getPlacesWithConditions } from "../../../../apis/api/place";
-import Swal from "sweetalert2";
 
 export default function PlaceList() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const userSeq = useRecoilState(userState);
   const sidoState = useRecoilState(selectSido);
   const gugunState = useRecoilState(selectGugun);

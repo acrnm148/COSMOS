@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { darkMode } from "../../../recoil/states/UserState";
 
 export default function SelectRegion({ setSelects }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const sido = useRecoilState(selectSido);
   const gugun = useRecoilState(selectGugun);
 

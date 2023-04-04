@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 import { darkMode } from "../../recoil/states/UserState";
 
 export default function Loading() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   return (
     <div className="h-[calc(100vh-10rem)] text-center flex bg-white justif-center dark:bg-darkBackground">
       <div className="m-auto">

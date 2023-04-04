@@ -9,7 +9,7 @@ import "../../../css/placeSearch.css";
 import { darkMode } from "../../../recoil/states/UserState";
 
 export default function SelecctCategory() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const navigate = useNavigate();
   const [category, setCategory] = useRecoilState(selectCategory);
   const categoryRef = useRef<HTMLDivElement>(null);
