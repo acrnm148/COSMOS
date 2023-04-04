@@ -53,20 +53,21 @@ public class UserService {
                 String coupleSuccessDate = user.getCoupleSuccessDate();
                 LocalDate date = LocalDate.parse(coupleSuccessDate, DateTimeFormatter.ISO_DATE);
                 LocalDate nowDate = LocalDate.now();
-                coupleDay = ChronoUnit.DAYS.between(date, nowDate);
+                coupleDay = ChronoUnit.DAYS.between(date, nowDate) + 1;
                 System.out.println("며칠차:"+ coupleDay);
             }
+            System.out.println("user:"+user);
 
             UserProfileDto userProfileDto = UserProfileDto.builder()
                     .userSeq(user.getUserSeq())
                     .userId(user.getUserId())
                     .userName(user.getUserName())
-                    .phoneNumber(user.getPhoneNumber())
+                    //.phoneNumber(user.getPhoneNumber())
                     .profileImgUrl(user.getProfileImgUrl())
                     .coupleYn(user.getCoupleYn())
-                    .ageRange(user.getAgeRange())
+                    //.ageRange(user.getAgeRange())
                     .email(user.getEmail())
-                    .birthday(user.getBirthday())
+                    //.birthday(user.getBirthday())
                     .role("USER")
                     .type1(user.getType1())
                     .type2(user.getType2())
@@ -75,13 +76,13 @@ public class UserService {
                     .createTime(LocalDateTime.now())
                     .coupleProfileImgUrl(user.getCoupleProfileImgUrl())
                     .coupleSuccessDate(user.getCoupleSuccessDate())
-                    .coupleDay(coupleDay+1)
+                    .coupleDay(coupleDay)
                     .build();
 
             System.out.println("유저 프로필 : "+userProfileDto);
             return userProfileDto;
         }catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return null;
         }
     }
