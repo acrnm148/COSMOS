@@ -112,9 +112,9 @@ export default function SearchFilter() {
         size="small"
       >
         {isDark ? (
-          <div className="modal-content">
+          <div className={isDark ? "modal-content" : "modal-content"}>
             <div
-              className={tag0 ? "content-clicked" : ""}
+              className={tag0 ? "content-clicked darkMode" : ""}
               onClick={() => setTag0((cur) => !cur)}
             >
               <img
@@ -125,7 +125,7 @@ export default function SearchFilter() {
               <p>음식</p>
             </div>
             <div
-              className={tag1 ? "content-clicked" : ""}
+              className={tag1 ? "content-clicked darkMode" : ""}
               onClick={() => setTag1((cur) => !cur)}
             >
               <img
@@ -136,7 +136,7 @@ export default function SearchFilter() {
               <p>카페</p>
             </div>
             <div
-              className={tag2 ? "content-clicked" : ""}
+              className={tag2 ? "content-clicked darkMode" : ""}
               onClick={() => setTag2((cur) => !cur)}
             >
               <img
@@ -147,7 +147,7 @@ export default function SearchFilter() {
               <p>문화</p>
             </div>
             <div
-              className={tag3 ? "content-clicked" : ""}
+              className={tag3 ? "content-clicked darkMode" : ""}
               onClick={() => setTag3((cur) => !cur)}
             >
               <img
@@ -158,7 +158,7 @@ export default function SearchFilter() {
               <p>쇼핑</p>
             </div>
             <div
-              className={tag4 ? "content-clicked" : ""}
+              className={tag4 ? "content-clicked darkMode" : ""}
               onClick={() => setTag4((cur) => !cur)}
             >
               <img
@@ -169,7 +169,7 @@ export default function SearchFilter() {
               <p>관광</p>
             </div>
             <div
-              className={tag5 ? "content-clicked" : ""}
+              className={tag5 ? "content-clicked darkMode" : ""}
               onClick={() => setTag5((cur) => !cur)}
             >
               <img
