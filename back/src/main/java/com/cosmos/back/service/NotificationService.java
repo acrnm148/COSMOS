@@ -36,7 +36,7 @@ public class NotificationService {
      */
     public SseEmitter subscribe(Long userSeq, String lastEventId) {
         String emitterId = makeTimeIncludeId(userSeq);
-        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(timeout));
+        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(-1L));
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 

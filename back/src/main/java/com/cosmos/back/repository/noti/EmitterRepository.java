@@ -7,11 +7,11 @@ import java.util.Map;
 
 //@Repository
 public interface EmitterRepository {
-    SseEmitter save(String emitterId, SseEmitter sseEmitter);
-    void saveEventCache(String emitterId, Object event);
-    Map<String, SseEmitter> findAllEmitterStartWithByUserSeq(String userSeq);
-    Map<String, Object> findAllEventCacheStartWithByUserSeq(String userSeq);
-    void deleteById(String id);
-    void deleteAllEmitterStartWithId(String memberId);
-    void deleteAllEventCacheStartWithId(String memberId);
+    public SseEmitter save(String emitterId, SseEmitter sseEmitter);
+    public void saveEventCache(String emitterId, Object event);
+    public Map<String, SseEmitter> findAllEmitterStartWithByUserSeq(String userSeq);
+    public Map<String, Object> findAllEventCacheStartWithByUserSeq(String userSeq);
+    public void deleteById(String id);
+    public void deleteAllEmitterStartWithId(String memberId);
+    public void deleteAllEventCacheStartWithId(String memberId);
 }
