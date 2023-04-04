@@ -47,6 +47,7 @@ export default function Header() {
                         <img src={Logo} alt="logo" className="h-20" />
                     )}
                 </div>
+
                 <Alarm />
             </header>
         </div>

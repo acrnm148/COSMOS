@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import TMapResult from "../common/TMapResult";
+import TMapWish from "../common/TMapWish";
 import ListCard from "../common/ListCard";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
@@ -90,7 +91,8 @@ export default function CourseDetail(props: { courseId: any }) {
     return (
         <div>
             <div className="text-center w-full max-w-[950px] overflow-y-scroll">
-                <TMapResult state={state} marker={marker} className="fixed" />
+                {/* <TMapResult state={state} marker={marker} className="fixed" /> */}
+                <TMapWish courseId={props.courseId} />
 
                 <ListCard height={false}>
                     <div className="mb-5 text-lg font-bold text-left pb-3 mx-5 border-b border-slate-400">

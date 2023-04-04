@@ -23,7 +23,7 @@ export default function Alarm() {
                 AccessToken: `Bearer ${userSeq.acToken}`,
                 "Cache-Control": "no-cache",
             },
-            heartbeatTimeout: 60000,
+            heartbeatTimeout: 100000,
             withCredentials: true,
         });
         eventSource.onerror = function () {
@@ -35,38 +35,33 @@ export default function Alarm() {
                     AccessToken: `Bearer ${userSeq.acToken}`,
                     "Cache-Control": "no-cache",
                 },
-                heartbeatTimeout: 6000,
+                heartbeatTimeout: 100000,
                 withCredentials: true,
             });
             eventSource.addEventListener("connect", function (e: any) {
-                // setMessage(e.data);
-                const data = JSON.parse(e.data);
-                console.log("connect: " + data);
+                // console.log("connect: " + e.data);
             });
             eventSource.addEventListener("sse", function (e: any) {
-                const data = JSON.parse(e.data);
-                console.log("sse 푸쉬: " + data);
+                console.log(e.data);
             });
             eventSource.addEventListener("error", function (e: any) {
-                console.log("error");
+                // console.log("error");
             });
         };
 
         eventSource.addEventListener("connect", function (e: any) {
-            // setMessage(e.data);
-            const data = JSON.parse(e.data);
-            console.log("connect: " + data);
+            // console.log("connect: " + e.data);
         });
         eventSource.addEventListener("sse", function (e: any) {
-            const data = JSON.parse(e.data);
-            console.log("sse 푸쉬: " + data);
+            console.log(e.data);
         });
         eventSource.addEventListener("error", function (e: any) {
-            console.log("error");
+            // console.log("error");
         });
-        // eventSource.addEventListener("message", function (e: any) {
-        //     console.log(e.data);
-        // });
+
+        return () => {
+            eventSource.close();
+        };
     }, []);
 
     const { data } = useQuery({
