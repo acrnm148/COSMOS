@@ -2,6 +2,7 @@
 
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -17,8 +18,8 @@ module.exports = {
         lightMain2: "#FFB5C0",
         lightMain3: "#FFDBE0",
         lightMain4: "#FFF0F2",
-        calendarGray : "#F4F4F4",
-        calendarDark : "#B9B9B9"
+        calendarGray: "#F4F4F4",
+        calendarDark: "#B9B9B9",
       },
       fontFamily: {
         baloo: ["Baloo 2", "cursive"],
