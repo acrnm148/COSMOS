@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.cosmos.back.controller;
 
 import com.cosmos.back.annotation.EnableMockMvc;
@@ -383,3 +384,4 @@ class PlaceApiControllerTest {
     }
 
 }
+

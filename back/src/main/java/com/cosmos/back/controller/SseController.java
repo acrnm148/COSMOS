@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 
@@ -30,7 +31,13 @@ public class SseController {
     @Operation(summary = "알림 구독(SSE에 연결)", description = "알림 구독(SSE에 연결)")
     @GetMapping(value = "/noti/subscribe/{userSeq}", produces = "text/event-stream") //produces: response의 content-type
     public SseEmitter subscribe(@PathVariable("userSeq") Long userSeq,
-                                @RequestHeader(value = "lastEventId", required = false, defaultValue = "") String lastEventId) {
+                                @RequestHeader(value = "lastEventId", required = false, defaultValue = "") String lastEventId,
+                                HttpServletResponse response) {
+        response.addHeader("X-Accel-Buffering", "no");
+        response.addHeader("Content-Type", "text/event-stream");
+        response.setHeader("Connection", "keep-alive");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setHeader("Transfer-Encoding","chunked");
         return notificationService.subscribe(userSeq, lastEventId);
     }
 

@@ -399,7 +399,6 @@ public class CourseServiceTest {
         CoursePlace coursePlace = CoursePlace.builder().id(1L).course(course).place(place).build();
         coursePlaces.add(coursePlace);
 
-
         when(courseRepository.findByCourseIdQueryDSL(anyLong())).thenReturn(courseResponseDto);
         when(coursePlaceRepository.findAllByCourseId(anyLong())).thenReturn(coursePlaces);
         when(placeRepository.findSimplePlaceDtoByPlaceIdQueryDsl(anyLong(), anyLong())).thenReturn(simplePlaceDto);
