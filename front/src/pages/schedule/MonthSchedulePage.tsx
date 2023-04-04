@@ -8,6 +8,7 @@ import { getMonthSchedule } from "../../apis/api/schedule";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import axios from "axios";
+import React from "react"
 
 const {
     format,

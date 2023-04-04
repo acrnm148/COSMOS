@@ -1,25 +1,33 @@
 import axios from "axios"
 import { Navigate, Outlet } from "react-router-dom"
 import { useRecoilState } from "recoil"
-import { userState } from "../../recoil/states/UserState"
-import { OnLoginSuccess } from "../../pages/login/KakaoLogin"
-import { useState } from "react"
+import { loggedIn, userState } from "../../recoil/states/UserState"
+import { onLoginSuccess } from "../../pages/login/KakaoLogin"
+import React, { useEffect, useState } from "react"
 
 
-export default function RequireAuth() {
+export default function RequireAuth(props:any) {
     const [user, setUser] = useRecoilState(userState)
-    console.log(user.acToken)
-
+    const[ acChecked, setAcChecked] = useRecoilState(loggedIn)
+    // console.log(user)
+    // console.log(user.acToken , user.seq,acChecked)
+    useEffect(()=>{
+        if(!acChecked){
+            getNewAcToken(user, setUser)
+            setAcChecked(true)
+        } 
+    },[acChecked])
     if (user.acToken && user.seq){
-        
-        OnLoginSuccess(user.seq, user.acToken, true)
+        onLoginSuccess(user.seq, user.acToken, true, user.coupleId, setUser)
         return  <div><Outlet /> </div>
     } else {
+        console.log(user)
+        console.log('there is NO acToken')
         return <div><Navigate to="/login" /></div>
     }  
 }
-function GetNewAcToken(){// userState recoil
-    const [LoginUser, setLoginUser] = useRecoilState(userState)
+
+function getNewAcToken(LoginUser:any, setLoginUser:Function){// userState recoil
     axios .get(`${process.env.REACT_APP_API_URL}/access/${LoginUser.seq}`, {
         headers: {
             Authorization: `Bearer ${LoginUser.acToken}`,

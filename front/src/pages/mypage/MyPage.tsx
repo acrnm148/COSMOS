@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
 import { LUser, userState } from "../../recoil/states/UserState"
@@ -7,7 +7,7 @@ import { getUserInfo  } from "../../apis/api/user"
 import { useQuery } from "react-query"
 import { UserDispatch } from "../../layouts/MainLayout"
 import { backgroundImageGif, bgPngUrl, bgPngUrlTailwind, dateCateNames } from "../../recoil/states/ServeyPageState"
-import { OnLoginSuccess } from "../login/KakaoLogin"
+import { onLoginSuccess } from "../login/KakaoLogin"
 import Swal from "sweetalert2"
 
 interface USERINFORMATION {
@@ -32,18 +32,16 @@ declare const window: typeof globalThis & {
   };
   
   export default function MyPage(){
-      const [bgPng, setBgPng] = useRecoilState(bgPngUrlTailwind)
-      const [backgroundImage, setBackgroundImage] = useRecoilState(backgroundImageGif)
-      const [dateCate, setDateCateNames] =useRecoilState(dateCateNames)
-      const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
-      const [userInfo, setUserInfo] = useState<USERINFORMATION|null>(null)
-      const [coupleInfo, setCoupleInfo] = useState<USERINFORMATION>()
-      const navigate = useNavigate();
-      let dispatch = useContext(UserDispatch);
+    const [bgPng, setBgPng] = useRecoilState(bgPngUrlTailwind)
+    const [backgroundImage, setBackgroundImage] = useRecoilState(backgroundImageGif)
+    const [dateCate, setDateCateNames] =useRecoilState(dateCateNames)
+    const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
+    const [userInfo, setUserInfo] = useState<USERINFORMATION|null>(null)
+    const [coupleInfo, setCoupleInfo] = useState<USERINFORMATION>()
+    const navigate = useNavigate();
+    let dispatch = useContext(UserDispatch);
       
-      // if ((LoginUser.seq > -1)&& (LoginUser.acToken)){
-          // console.log('로그인된유저', LoginUser.acToken)
-      //   }
+
         const {data} =  useQuery({
             queryKey: ["getUserInfo"],
             queryFn: () => getUserInfo(LoginUser.seq,dispatch)
@@ -54,7 +52,7 @@ declare const window: typeof globalThis & {
         useEffect(()=>{
           // console.log(LoginUser)
           if(data){
-            // console.log('유저', data)
+            console.log('유저', data)
             setUserInfo({
               userId : data.userId,
               userName : data.userName,
@@ -90,7 +88,7 @@ declare const window: typeof globalThis & {
       if (result.isConfirmed) {
         
         // 자동 로그인 중단
-        OnLoginSuccess(user.seq, user.acToken, false)
+        onLoginSuccess(user.seq, user.acToken, false, user.coupleId, setUser)
         axios.get((`https://j8e104.p.ssafy.io/api/accounts/logout/${user.seq}`),
           {
             headers:{
