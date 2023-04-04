@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import DefaultImg from "../../../../assets/login/pinkCosmos.png";
+import DarkDefaultImg from "../../../../assets/login/darkCosmos.png";
 import ListCard from "../../../common/ListCard";
 import PlaceLike from "../items/PlaceLike";
 import PlaceModal from "../items/PlaceModal";
@@ -13,11 +14,12 @@ import {
   mapMarkers,
   placeDetail,
 } from "../../../../recoil/states/SearchPageState";
-import { userState } from "../../../../recoil/states/UserState";
+import { userState, darkMode } from "../../../../recoil/states/UserState";
 import { useQuery } from "react-query";
 import { getPlacesWithConditions } from "../../../../apis/api/place";
 
 export default function PlaceList() {
+  const isDark = useRecoilState(darkMode);
   const userSeq = useRecoilState(userState);
   const sidoState = useRecoilState(selectSido);
   const gugunState = useRecoilState(selectGugun);
@@ -70,7 +72,7 @@ export default function PlaceList() {
           return (
             <div key={items.placeId}>
               <div
-                className="flex flex-row relative card-content"
+                className="flex flex-row relative card-content dark:bg-darkBackground2 dark:hover:bg-[#676767]"
                 onClick={() => {
                   openModal(items.placeId, items.type);
                 }}
@@ -78,21 +80,26 @@ export default function PlaceList() {
                 <div className="flex justify-center my-auto basis-3/12">
                   <img
                     src={
-                      items.thumbNailUrl === null
-                        ? DefaultImg
+                      items.thumbNailUrl ===
+                      "https://cosmoss3.s3.ap-northeast-2.amazonaws.com/dc27450e-9c2c-4ae0-b2d2-d0b106e92288.png"
+                        ? isDark
+                          ? DarkDefaultImg
+                          : items.thumbNailUrl
                         : items.thumbNailUrl
                     }
                     alt=""
-                    className="w-[20vw] h-[15vw] max-w-[200px] max-h-[150px] rounded-lg"
+                    className="w-[15vw] h-[15vw] max-w-[200px] max-h-[150px] rounded-lg"
                   />
                 </div>
                 <div className="flex flex-col column-3 basis-8/12 text-left">
-                  <div className="font-bold text-lg">{items.name}</div>
-                  <div className="font-thin text-slate-400 text-sm">
+                  <div className="font-bold text-lg dark:text-white">
+                    {items.name}
+                  </div>
+                  <div className="font-thin text-slate-400 text-sm dark:text-white dark:opacity-30">
                     {items.address}
                   </div>
                   <p
-                    className="content-detail mb-4"
+                    className="content-detail mb-4 dark:text-white"
                     dangerouslySetInnerHTML={{ __html: items.detail }}
                   ></p>
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import {
   clickBackground,
   searchWord,
@@ -7,7 +7,6 @@ import {
 import SearchWordList from "./lists/SearchWordList";
 
 export default function SearchWordItem() {
-  // const setSearchWord = useSetRecoilState(searchWord); // 검색어 Recoil State 수정
   const [search, setSearch] = useRecoilState(searchWord); // 검색어
   const [clickBg, setClickBg] = useRecoilState(clickBackground); // 검색창 클릭
 
@@ -26,7 +25,7 @@ export default function SearchWordItem() {
   return (
     <>
       <input
-        className="w-full h-14 m-auto border-[4px] border-lightMain opacity-50 rounded-lg outline-none"
+        className="w-full h-14 m-auto border-[4px] border-lightMain dark:border-darkMain dark:bg-black dark:text-white rounded-lg outline-none"
         placeholder="장소명으로 검색"
         value={search}
         onChange={handleSearchWord}
