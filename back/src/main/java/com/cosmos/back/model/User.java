@@ -1,11 +1,7 @@
 package com.cosmos.back.model;
 
 import com.cosmos.back.dto.request.NotificationRequestDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Setter;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
@@ -21,8 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
 public class User {
 
     @Id
