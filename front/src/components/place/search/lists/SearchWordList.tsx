@@ -11,7 +11,7 @@ import DarkDefaultImg from "../../../../assets/login/darkCosmos.png";
 import { darkMode } from "../../../../recoil/states/UserState";
 
 export default function SearchWordList() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const [clickBg, setClickBg] = useRecoilState(clickBackground);
   const [word, setWord] = useRecoilState(searchWord);
   const [comWord, setComWord] = useRecoilState(completeWord);
@@ -30,9 +30,7 @@ export default function SearchWordList() {
         : data.map((item: any) => (
             <div
               className={
-                isDark
-                  ? "flex flex-row py-2 cursor-pointer pl-2 leading-10 bg-darkMain3 hover:bg-darkMain4"
-                  : "flex flex-row py-2 cursor-pointer pl-2 leading-10 bg-darkMain3 hover:bg-darkMain4"
+                "flex flex-row py-2 cursor-pointer pl-2 leading-10 bg-lightMain3 hover:bg-lightMain2 dark:bg-darkMain3 dark:hover:bg-darkMain4"
               }
               key={item.placeId}
               onClick={() => {

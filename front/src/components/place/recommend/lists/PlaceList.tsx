@@ -16,7 +16,7 @@ import { getDateCourse } from "../../../../apis/api/place";
 import { userState, darkMode } from "../../../../recoil/states/UserState";
 
 export default function PlaceList() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const user = useRecoilState(userState);
   const sido = useRecoilState(selectSido);
   const gugun = useRecoilState(selectGugun);

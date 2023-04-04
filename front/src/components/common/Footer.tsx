@@ -15,7 +15,7 @@ export default function Footer() {
         <div className="menuItems m-auto w-full">
           <div className="float-left w-1/5 flex justify-center">
             <NavLink to="/mypage">
-              {isDark ? (
+              {isDark[0] ? (
                 <Icon
                   icon="healthicons:ui-user-profile"
                   color="#9C4395"
@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
           <div className="float-left w-1/5 flex justify-center">
             <NavLink to="/wish">
-              {isDark ? (
+              {isDark[0] ? (
                 <Icon
                   icon="mdi:cards-heart"
                   color="#9C4395"
@@ -53,7 +53,7 @@ export default function Footer() {
           </div>
           <div className="float-left w-1/5 flex justify-center">
             <NavLink to="/">
-              {isDark ? (
+              {isDark[0] ? (
                 <img src={Cosmos2} alt="logo" className="h-12 w-12" />
               ) : (
                 <img src={Cosmos} alt="logo" className="h-12 w-12" />
@@ -62,7 +62,7 @@ export default function Footer() {
           </div>
           <div className="float-left w-1/5 flex justify-center">
             <NavLink to="/schedule/month">
-              {isDark ? (
+              {isDark[0] ? (
                 <img src={CoupleIcon2} alt="logo" className="h-10 w-10" />
               ) : (
                 <img src={CoupleIcon} alt="logo" className="h-10 w-10" />
@@ -71,7 +71,7 @@ export default function Footer() {
           </div>
           <div className="float-left w-1/5 flex justify-center">
             <NavLink to="/place/recommend">
-              {isDark ? (
+              {isDark[0] ? (
                 <Icon
                   icon="material-symbols:temp-preferences-custom"
                   color="#9C4395"

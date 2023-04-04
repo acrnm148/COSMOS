@@ -17,7 +17,7 @@ import { useRecoilState } from "recoil";
 import { darkMode } from "../../../../recoil/states/UserState";
 
 export default function SelectCategoryItem({ tags, index }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const [tag, setTag] = useState(tags);
 
   return (

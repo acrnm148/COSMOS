@@ -12,7 +12,7 @@ import { useRecoilState } from "recoil";
 import { darkMode } from "../../recoil/states/UserState";
 
 export default function CourseLike({ tDistance, tTime, tFare, courseId }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const navigate = useNavigate();
   const [isLike, setIsLike] = useState(false);
   const handleThisCourse = () => {

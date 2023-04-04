@@ -28,7 +28,7 @@ import CourseLike from "./CourseLike";
 import { userState, darkMode } from "../../recoil/states/UserState";
 
 export default function TMapRecommend() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const sido = useRecoilState(selectSido);
   const gugun = useRecoilState(selectGugun);
   const category = useRecoilState(selectCategory);

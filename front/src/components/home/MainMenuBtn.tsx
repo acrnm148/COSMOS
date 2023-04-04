@@ -8,7 +8,7 @@ import { useRecoilState } from "recoil";
 import { darkMode } from "../../recoil/states/UserState";
 
 export default function MainMenuBtn() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
 
   return (
     <div className="flex flex-row btns w-full h-44 pt-3 justify-center">
