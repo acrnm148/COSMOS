@@ -1,8 +1,12 @@
 import { Icon } from "@iconify/react";
 import { Badge } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { getAlarmList } from "../../apis/api/alarm";
+import { useQuery, useQueries, useQueryClient, useMutation } from "react-query";
+import {
+    getAlarmList,
+    getUnReadAlarm,
+    deleteAlarm,
+} from "../../apis/api/alarm";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import { EventSourcePolyfill } from "event-source-polyfill";
@@ -64,9 +68,28 @@ export default function Alarm() {
         };
     }, []);
 
-    const { data } = useQuery({
-        queryKey: ["getAlarmList", "userSeq"],
-        queryFn: () => getAlarmList(userSeq.seq),
+    // api
+    const res = useQueries([
+        {
+            // list
+            queryKey: ["getAlarmList", "userSeq"],
+            queryFn: () => getAlarmList(userSeq.seq),
+        },
+        {
+            // 안 읽은 알림 개수
+            queryKey: ["getUnReadAlarm", "userSeq"],
+            queryFn: () => getUnReadAlarm(userSeq.seq),
+        },
+    ]);
+
+    const queryClient = useQueryClient();
+    const mutation = useMutation(deleteAlarm, {
+        onSuccess: (data) => {
+            queryClient.invalidateQueries();
+        },
+        onError: () => {
+            console.log("삭제 실패");
+        },
     });
 
     const badgeStyle = {
@@ -82,7 +105,7 @@ export default function Alarm() {
     return (
         <div className="alertIcon absolute right-8 top-1/2 -translate-y-1/2">
             <Badge
-                badgeContent={3}
+                badgeContent={res[1].data}
                 sx={badgeStyle}
                 overlap="circular"
                 onClick={() => {
@@ -101,14 +124,32 @@ export default function Alarm() {
             </Badge>
 
             {show && (
-                <div className="absolute w-[340px] h-[500px] bg-white right-0 top-11 rounded-lg border-2 border-calendarDark">
-                    <div
-                        onClick={() => {
-                            setShow(!show);
-                        }}
-                    >
-                        닫기
+                <div className="p-5 absolute w-[340px] h-[550px] bg-white right-0 top-11 rounded-lg border border-calendarDark">
+                    <div className="text-xl border-b border-gray-500 pb-3">
+                        알림
                     </div>
+                    {res[0].data?.map((item: any) => (
+                        <div
+                            key={item.id}
+                            className="py-4 px-2 text-base font-normal border-b border-gray-300"
+                        >
+                            {item.content}
+
+                            <div
+                                className="float-right"
+                                onClick={() => {
+                                    // 삭제
+                                    mutation.mutate({
+                                        notiId: Number(item.id),
+                                        userSeq: userSeq.seq,
+                                        ac: userSeq.acToken,
+                                    });
+                                }}
+                            >
+                                ✕
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
         </div>
