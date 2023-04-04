@@ -14,40 +14,64 @@ export default function Alarm() {
     const [message, setMessage] = useState();
     const [isCheck, setIscheck] = useState(false);
     const [show, setShow] = useState(false);
-    const [start, setStart] = useState(true);
-    const [click, setClick] = useState(false);
-    const [count, setCount] = useState(0);
+
+    // useEffect(() => {
+    //     let eventSource = new EventSourcePolyfill(subscribeUrl, {
+    //         headers: {
+    //             "Content-Type": "text/event-stream",
+    //             "Access-Control-Allow-Origin": "",
+    //             AccessToken: `Bearer ${userSeq.acToken}`,
+    //             "Cache-Control": "no-cache",
+    //         },
+    //         // heartbeatTimeout: 60000,
+    //         withCredentials: true,
+    //     });
+    //     eventSource.onerror = function () {
+    //         eventSource.close();
+    //         eventSource = new EventSourcePolyfill(subscribeUrl, {
+    //             headers: {
+    //                 "Content-Type": "text/event-stream",
+    //                 "Access-Control-Allow-Origin": "",
+    //                 AccessToken: `Bearer ${userSeq.acToken}`,
+    //                 "Cache-Control": "no-cache",
+    //             },
+    //             heartbeatTimeout: 6000,
+    //             withCredentials: true,
+    //         });
+    //         eventSource.addEventListener("connect", function (e: any) {
+    //             // setMessage(e.data);
+    //             const data = JSON.parse(e.data);
+    //             console.log("connect: " + data);
+    //         });
+    //         eventSource.addEventListener("sse", function (e: any) {
+    //             const data = JSON.parse(e.data);
+    //             console.log("sse 푸쉬: " + data);
+    //         });
+    //         eventSource.addEventListener("error", function (e: any) {
+    //             console.log("error");
+    //         });
+    //     };
+
+    //     eventSource.addEventListener("connect", function (e: any) {
+    //         // setMessage(e.data);
+    //         const data = JSON.parse(e.data);
+    //         console.log("connect: " + data);
+    //     });
+    //     eventSource.addEventListener("sse", function (e: any) {
+    //         const data = JSON.parse(e.data);
+    //         console.log("sse 푸쉬: " + data);
+    //     });
+    //     eventSource.addEventListener("error", function (e: any) {
+    //         console.log("error");
+    //     });
+    //     // eventSource.addEventListener("message", function (e: any) {
+    //     //     console.log(e.data);
+    //     // });
+    // }, []);
 
     const { data } = useQuery({
         queryKey: ["getAlarmList", "userSeq"],
         queryFn: () => getAlarmList(userSeq.seq),
-    });
-
-    // console.log(data);
-
-    const handleAlarmDetail = (item: any) => {};
-
-    useEffect(() => {
-        let eventSource = new EventSourcePolyfill(subscribeUrl, {
-            headers: {
-                "Content-Type": "text/event-stream",
-                "Access-Control-Allow-Origin": "",
-                AccessToken: `Bearer ${userSeq.acToken}`,
-                "Cache-Control": "no-cache",
-            },
-            heartbeatTimeout: 60000,
-            withCredentials: true,
-        });
-        eventSource.addEventListener("connect", function (e: any) {
-            // setMessage(e.data);
-            console.log(e.data);
-        });
-        eventSource.addEventListener("message", function (e: any) {
-            console.log(e.data);
-        });
-        eventSource.addEventListener("error", function (e: any) {
-            console.log("error");
-        });
     });
 
     const badgeStyle = {
@@ -77,7 +101,6 @@ export default function Alarm() {
                     height="40"
                     onClick={() => {
                         setIscheck(false);
-                        setStart(false);
                     }}
                 />
             </Badge>
