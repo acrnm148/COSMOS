@@ -382,4 +382,32 @@ public class CourseServiceTest {
         assertEquals(courseResponseDto.getMidLatitude(), 4.0);
         assertEquals(courseResponseDto.getMidLongitude(), 4.0);
     }
+
+    @Test
+    @DisplayName("CourseService 내 코스 상세보기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void 내_코스_상세보기() throws Exception {
+        reset(courseRepository, coursePlaceRepository, placeRepository);
+
+        CourseResponseDto courseResponseDto = CourseResponseDto.builder().courseId(1L).build();
+
+        SimplePlaceDto simplePlaceDto = SimplePlaceDto.builder().courseId(1L).placeId(1L).build();
+
+        List<CoursePlace> coursePlaces = new ArrayList<>();
+        Place place = Place.builder().id(1L).build();
+        Course course = Course.builder().id(1L).build();
+        CoursePlace coursePlace = CoursePlace.builder().id(1L).course(course).place(place).build();
+        coursePlaces.add(coursePlace);
+
+
+        when(courseRepository.findByCourseIdQueryDSL(anyLong())).thenReturn(courseResponseDto);
+        when(coursePlaceRepository.findAllByCourseId(anyLong())).thenReturn(coursePlaces);
+        when(placeRepository.findSimplePlaceDtoByPlaceIdQueryDsl(anyLong(), anyLong())).thenReturn(simplePlaceDto);
+        when(placeRepository.findScoreByPlaceIdQueryDsl(anyLong())).thenReturn(3.14);
+
+        CourseResponseDto ret = courseService.getMyCourseDetail(1L);
+
+        assertEquals(ret.getPlaces().size(), 1);
+        assertEquals(ret.getPlaces().get(0).getScore(), 3.14);
+    }
 }
