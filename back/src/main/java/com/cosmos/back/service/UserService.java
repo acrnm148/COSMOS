@@ -152,7 +152,7 @@ public class UserService {
 
         // 알림 전송
         notificationService.send(userSeq, NotificationType.MESSAGE, "커플 요청이 수락되었습니다.", "");
-
+        notificationService.subscribe(userSeq,"");
         return code;
     }
 

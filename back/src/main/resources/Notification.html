@@ -12,7 +12,7 @@
 <script type="text/javaScript">
     function login() {
         let subscribeUrl = "http://localhost:8081";
-        const eventSource = new EventSource(subscribeUrl+`/api/noti/subscribe/1`);
+        const eventSource = new EventSource(subscribeUrl+`/api/noti/subscribe/98`);
         eventSource.addEventListener("sse", function (event) {
 
             let message = event.data;
