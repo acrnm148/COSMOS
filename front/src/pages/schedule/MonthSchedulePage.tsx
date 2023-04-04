@@ -104,15 +104,15 @@ export function MonthSchedulePage(){
                         // key값 : 일자
                         const planDate = crs.date.slice(-2)
                         // return [planDate, planPlaces]
-                        console.log(new Map( [...schedule, [planDate, planPlaces]]))
-                        console.log('schedule',schedule)
+                        // console.log(new Map( [...schedule, [planDate, planPlaces]]))
+                        // console.log('schedule',schedule)
                         setSchedule((prev) => new Map( [...prev,[planDate, planPlaces]]))
                     })
                 })
             }else{
                 setSchedule(new Map())
             }
-            console.log(schedule)
+            // console.log(schedule)
         })
         
     },[month, year])
@@ -137,21 +137,21 @@ export function MonthSchedulePage(){
         setMonthLR('L')
     };
 
-    function setSelectedDateAndWeek(week:Date[],day:Date){
-        console.log('선택된 주',week)
-        console.log('선택된 일', day)
-    }
+    // function setSelectedDateAndWeek(week:Date[],day:Date){
+    //     console.log('선택된 주',week)
+    //     console.log('선택된 일', day)
+    // }
     return (
-        <div className="bg-lightMain2 w-screen h-screen">
+        <div className="bg-lightMain2 w-screen">
            <div className="bg-lightMain2 h-20 flex items-center justify-between p-5 text-xl font-bold text-white cursor-pointer">
                 <p>{year}년 {month}월</p> 
                 <img src={galleryIcon} />
             </div>
-            <div className="box-border w-full h-full bg-white">
+            <div className="box-border w-full h-full bg-white overflow-y-scroll mb-20">
                 
                 <div className="flex justify-between p-8 py-4">
-                    <button onClick={prevMonth} className="bg-lightMain2 p-6 py-4 rounded-md">이전달</button>
-                    <button onClick={nextMonth} className="bg-lightMain2 p-6 py-4 rounded-md">다음달</button>
+                    <button onClick={prevMonth} className="bg-lightMain2 p-6 py-2 rounded-md">이전달</button>
+                    <button onClick={nextMonth} className="bg-lightMain2 p-6 py-2 rounded-md">다음달</button>
                 </div>
                     <div className="border">
                         <WeekNames/>

@@ -30,7 +30,6 @@ export function ScheduleDetail(){
     const { state } = location
     const placeId = state.placeId
     const place = state.place
-
     const [isReview, setIsReview] = useState<boolean>(false)
     const [showReview, setShowReview] = useState<boolean>(false)
 
@@ -84,10 +83,7 @@ export function ScheduleDetail(){
     },[data])
     
     return (
-        <div className='bg-lightMain2 mb-5'>
-            {!showReview &&
-            <div className="h-20 flex justify-center items-center">{state.scheduleTitle}</div>
-            }
+        <div className='bg-lightMain2 mb-5 w-full'>
             <div className={"bg-white rounded-t-lg w-full flex flex-col items-between" + (!showReview ? 'p-2':'w-full')}>
                 <div>
                     <div className="flex flex-col justify-center items-center">
@@ -108,17 +104,17 @@ export function ScheduleDetail(){
                         </div>
                     }
                 </div>
-                <div className="min-h-[200px] bg-lightMain4 w-full h-full rounded-lg">
+                <div className="min-h-[200px] bg-lightMain4 w-full h-full rounded-lg mb-20">
                     {showReview?
                         <div className=" w-full h-full flex flex-col justify-end items-center p-2">
-                            <ReviewForm review={userReview} isReview={isReview} category={place.category} setShowReview={setShowReview} edit={isReview}/>
+                            <ReviewForm placeId={place.placeId} review={userReview} isReview={isReview} category={place.category} setShowReview={setShowReview} edit={isReview}/>
                         </div>
                         
                     :
                             <div className="">
                                 <div className="누구리뷰 w-full flex h-10">
-                                    <div className={showMine ? 'bg-lightMain w-[50%] flex justify-center rounded-t-lg items-center' : 'w-[50%] flex justify-center items-center'}>나의리뷰</div>
-                                    <div className={showMine ? ' w-[50%] flex justify-center rounded-t-lg items-center' : 'bg-lightMain w-[50%] flex justify-center items-center'}>너의리뷰</div>
+                                    <div onClick={()=>(setShowMine(true))}  className={showMine ? 'bg-lightMain w-[50%] flex justify-center rounded-t-lg items-center' : 'w-[50%] flex justify-center items-center'}>나의리뷰</div>
+                                    <div onClick={()=>(setShowMine(false))} className={showMine ? ' w-[50%] flex justify-center rounded-t-lg items-center' : 'bg-lightMain w-[50%] flex justify-center items-center'}>너의리뷰</div>
                                 </div>
 
                                 <div className="리뷰내용">
@@ -127,8 +123,8 @@ export function ScheduleDetail(){
                                         {
                                             isReview && userReview?
                                             <>
-                                                <ReviewOurs placeId={placeId}/>
-                                                <ReviewContents Review={userReview} setShowReview={setShowReview} isMine={true}/>
+                                                <ReviewOurs placeId={place.placeId}/>
+                                                {/* <ReviewContents Review={userReview} setShowReview={setShowReview} isMine={true}/> */}
                                             </>
                                             :
                                             <div className="h-40 w-full  w-full flex flex-col justify-end items-center p-4">
@@ -142,8 +138,8 @@ export function ScheduleDetail(){
                                         {
                                             isReview?
                                             <>
-                                                <ReviewOurs placeId={placeId}/>
-                                                <ReviewContents Review={coupleReview}  setShowReview={setShowReview} isMine={false}/>
+                                                <ReviewOurs placeId={place.placeId}/>
+                                                {/* <ReviewContents Review={coupleReview}  setShowReview={setShowReview} isMine={false}/> */}
                                             </>
                                             :
                                             <div className="h-40 w-full  w-full flex flex-col justify-end items-center p-4">
@@ -177,7 +173,7 @@ function ReviewContents(props : {Review:any, setShowReview:Function, isMine:bool
         }
     useEffect(()=>{
         handleStarClick(props.Review.score)
-    })
+    },[])
           //
     return(
         <div className="mb-10">

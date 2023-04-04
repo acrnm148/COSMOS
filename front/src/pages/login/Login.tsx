@@ -17,7 +17,7 @@ export default function Login() {
           간편하게 코스모스를 시작해보세요!
         </p>
         <a
-          href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_LOGIN_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_LOGIN_REDIRECT_URL}&response_type=code`}
+          href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_LOGIN_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_LOGIN_LOCAL}&response_type=code`}
         >
           <button className="h-12 w-5/6 rounded-md flex justify-center m-auto">
             <img

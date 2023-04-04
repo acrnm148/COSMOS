@@ -26,19 +26,3 @@ export const postSchedule = async ({schedule, ac, userSeq}:params) => {
     console.log('일정생성 리턴데이터', data)
     return data
 }
-
-/**
- * PUT : 일정 수정
- * 
-*/
-interface params {
-    schedule : any,
-    ac : string,
-    userSeq :number
-}
-export const putSchedule = async ({schedule, ac, userSeq}:params) => {
-    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq)
-    const {data} = await instance.put('plans', schedule)
-    console.log('일정수정 리턴데이터', data)
-    return data
-}
