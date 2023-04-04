@@ -28,10 +28,10 @@ export default function KakaoLogin(){
   const params = new URLSearchParams(window.location.search);
   let code: any = params.get('code')
   useEffect(() => {
-    cosmosLogin(code)
+    CosmosLogin(code, setIsLogin, setLoginUser)
   })
 
-  function cosmosLogin(code:string){
+  function CosmosLogin(code:string, setIsLogin:Function, setLoginUser:Function){
         axios({
           url : "https://j8e104.p.ssafy.io/api/accounts/auth/login/kakao",
           method: 'GET',
@@ -50,14 +50,22 @@ export default function KakaoLogin(){
             } else{
               // 응답받은 userSeq 저장
               const us = res.data.userSeq
-              setLoginUser({seq:us, isLoggedIn:true, acToken:res.data.accessToken, coupleId:res.data.coupleId})
+              const user = {
+                seq: Number(us),
+                isLoggedIn: true,
+                acToken: res.data.accessToken,
+                coupleId: res.data.coupleId,
+              }
+              setLoginUser(user)
+              // setLoginUser({seq:us, isLoggedIn:true, acToken:res.data.accessToken, coupleId:res.data.coupleId})
               console.log('코스모스 로그인 성공', res)
               setIsLogin(true)
-              OnLoginSuccess(us, res.data.accessToken, true)
+              navigate('/')
             }
           })
           .catch((err:any) => {
             console.log('코스모스 로그인 실패', err)
+            navigate('/')
             // 카카오 로그아웃요청
             }
           )
@@ -69,10 +77,9 @@ export default function KakaoLogin(){
         )
 
 }
-export const OnLoginSuccess = (seq : number, ac: string, login:boolean) =>{
+export const onLoginSuccess = (seq : number, ac: string, login:boolean,coupleId:any, setLoginUser:Function ) =>{
   const JWT_EXPIRRY_TIME = 29 * 60 * 1000 // 29분
     // userState recoil
-    const [LoginUser, setLoginUser] = useRecoilState<LUser>(userState)
     // 로그인 후 29분마다 토큰 재발급요청
     //  TODO : 로그아웃시 clearTimeout 로직 추가
     let autoLogin = setInterval(()=>{
@@ -83,7 +90,7 @@ export const OnLoginSuccess = (seq : number, ac: string, login:boolean) =>{
       })
       .then((res) => {
         console.log(res.data)
-        setLoginUser({seq:seq, isLoggedIn:true, acToken:res.data.accessToken, coupleId:LoginUser.coupleId})
+        setLoginUser({seq:seq, isLoggedIn:true, acToken:res.data.accessToken, coupleId:coupleId})
         return 'refresh acTocken sucess'
       }).catch((err)=>{
         console.log(err)

@@ -10,7 +10,7 @@ import Servey6 from "./Servey6";
 import Servey7 from "./Servey7";
 import Servey8 from "./Servey8";
 import Servey9 from "./Servey9";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { loggedIn, userState } from "../../recoil/states/UserState";
 

@@ -8,6 +8,7 @@ import { getMonthSchedule } from "../../apis/api/schedule";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import axios from "axios";
+import React from "react"
 
 const {
     format,
@@ -87,22 +88,32 @@ export function MonthSchedulePage(){
         .then((res) =>{
             data = res.data
             if(data){
-                data.map((plan: { courses: { name:string, places: { name: any; }[]; date:string}[]; }) =>{
+                data.map((plan: {
+                    planName: any; courses: { name:string, places: { name: any; }[]; date:string}[]; 
+}) =>{
                     console.log('data', data)
                     if (plan.courses.length === 0){return}
-                    const planDate = plan.courses[0].date.slice(-2)
                     let planPlaces: any[] = []
-                    planPlaces.push(plan.courses[0].name)
-                    plan.courses[0].places.map((place: { name: any; }) =>{
-                        planPlaces.push(place.name)
+                    // 0번 = [두개 이상인지, 플랜 이름]
+                    planPlaces.push([(plan.courses.length > 1), plan.planName])
+                    
+                    plan.courses.map((crs)=>{
+                        // 1번 = 코스이름
+                        planPlaces.push(crs.name)
+                        crs.places.map((place: { name: any; }) =>{
+                            // 2~ 번 = 코스에 속한 장소이름
+                            planPlaces.push(place.name)
+                        })
+                        const planDate = crs.date.slice(-2)
+                        // return [planDate, planPlaces]
+                        console.log(new Map( [...schedule, [planDate, planPlaces]]))
+                        setSchedule((prev) => new Map( [...prev,[planDate, planPlaces]]))
                     })
-                    // return [planDate, planPlaces]
-                    console.log(new Map( [...schedule, [planDate, planPlaces]]))
-                    setSchedule((prev) => new Map( [...prev,[planDate, planPlaces]]))
                 })
             }else{
                 setSchedule(new Map())
             }
+            console.log(schedule)
         })
         
     },[month, year])
@@ -159,6 +170,8 @@ export function MonthSchedulePage(){
                                                 schedule.get(format(day, 'dd')).map((scd: string, idx:number)=>{
                                                     if (idx === 0){
                                                         return <div className="bg-lightMain text-white font-bold text-sm m-0.5 w-full rounded-md p-0.5"><p>{scd}</p></div>
+                                                    } else if (idx === 1){
+                                                        return <div className="bg-lightMain2 text-white font-bold text-sm m-0.5 w-full rounded-md p-0.5"><p>{scd}</p></div>
                                                     }
                                                     return <div className="text-sm h-1 m-0.5 w-full text-darkBackground2 whitespace-nowrap bg-lightMain3 rounded-md p-0.5 overflow-hidden"><p></p></div>
                                                 })

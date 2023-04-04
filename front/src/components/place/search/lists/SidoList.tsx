@@ -26,7 +26,7 @@ export default function SidoList() {
 
   return (
     <select
-      className="w-full h-14 m-auto border-[4px] border-lightMain opacity-50 rounded-l-lg outline-none hover:bg-lightMain3"
+      className="w-full h-14 m-auto border-[4px] border-lightMain dark:border-darkMain dark:bg-black dark:text-white rounded-l-lg outline-none hover:bg-lightMain3"
       name="selectSido"
       id="selectSido"
       onChange={handleSidoList}

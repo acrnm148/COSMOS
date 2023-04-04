@@ -37,8 +37,6 @@
   color: black !important;
   font-weight: 700 !important;
 }
-.tagBtn:hover {
-  background-color: #ff8e9e;
-  opacity: 0.3;
-  color: white;
+.darkMode {
+  color: white !important;
 }

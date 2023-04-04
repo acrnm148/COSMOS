@@ -6,7 +6,7 @@ import { useRecoilState } from "recoil";
 import { selectSido } from "../../../recoil/states/RecommendPageState";
 import "../../../css/map.css";
 
-export default function SouthKorea() {
+export default function KoreaMap() {
   const [sido, setSido] = useRecoilState(selectSido);
 
   return (

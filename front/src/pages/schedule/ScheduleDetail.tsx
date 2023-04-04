@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useEffect, useRef, useState, useCallback } from "react"
+import React, { useEffect, useRef, useState, useCallback } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import  "../../css/detailSchedule.css"
 import { ReviewForm, ReviewSet } from "./ScheduleReview"
@@ -7,8 +7,13 @@ import { useRecoilState } from "recoil"
 import { userState } from "../../recoil/states/UserState"
 import { useQuery } from "react-query"
 import { getPlaceCoupleReview } from "../../apis/api/schedule"
+// 별점 이미지
+import { FaStar } from 'react-icons/fa'
+// styled component
+import {Stars} from '../../components/review/StarStyledComponent'
 
 export interface REVIEW {
+    reviewId : number|undefined
     cateQ : string | undefined
     commonQ : string | undefined
     contentOpen : boolean | undefined
@@ -17,6 +22,7 @@ export interface REVIEW {
     photos : string[] | undefined
     score : number,
     createdTime : string
+    placeId : any
 }
 export function ScheduleDetail(){
     const location = useLocation()
@@ -40,9 +46,8 @@ export function ScheduleDetail(){
     const [coupleReview, setCoupleReview] = useState<REVIEW>()
     useEffect(()=>{
         if(data){
-            console.log(data)
             setIsReview(true)
-            data.map((review: { userId: number; score: any; images: any; contents: any; indiReviewCategories: { reviewCategory: any }[]; contentOpen: any; imageOpen: any; createdTime: any }) => {
+            data.map((review: { reviewId:number,userId: number; score: any; images: any; contents: any; categories:{reviewCategoryCode:string}[], indiReviewCategories: { reviewCategory: any }[]; contentOpen: any; imageOpen: any; createdTime: any }) => {
                 if(String(review.userId)===String(loginUser.seq)){
                     
                     setUserReview({
@@ -50,10 +55,12 @@ export function ScheduleDetail(){
                         photos : review.images.map((img: { imageUrl: any }) => img.imageUrl), 
                         content:review.contents, 
                         cateQ :review.indiReviewCategories[0].reviewCategory,
-                        commonQ: review.indiReviewCategories[1]?.reviewCategory,
+                        commonQ: review.categories[0].reviewCategoryCode,
                         contentOpen : review.contentOpen,
                         photoOpen : review.imageOpen,
                         createdTime:review.createdTime,
+                        reviewId : review.reviewId,
+                        placeId : place.placeId
                     })
                 } else {
                     setCoupleReview({
@@ -61,17 +68,20 @@ export function ScheduleDetail(){
                         photos : review.images.map((img: { imageUrl: any }) => img.imageUrl), 
                         content:review.contents, 
                         cateQ :review.indiReviewCategories[0].reviewCategory,
-                        commonQ: review.indiReviewCategories[1]?.reviewCategory,
+                        commonQ: review.categories[0].reviewCategoryCode,
                         contentOpen : review.contentOpen,
                         photoOpen : review.imageOpen,
                         createdTime:review.createdTime,
+                        reviewId : review.reviewId,
+                        placeId : place.placeId
                     })
                 }
+                console.log('userReview, coupleReview',userReview, coupleReview)
             })
         }
+        console.log(isReview)
     },[data])
     
-
     return (
         <div className='bg-lightMain2 mb-5'>
             {!showReview &&
@@ -100,7 +110,7 @@ export function ScheduleDetail(){
                 <div className="min-h-[200px] bg-lightMain4 w-full h-full rounded-lg">
                     {showReview?
                         <div className=" w-full h-full flex flex-col justify-end items-center p-2">
-                            <ReviewForm review={userReview} isReview={isReview} category={place.category} setShowReview={setShowReview}/>
+                            <ReviewForm review={userReview} isReview={isReview} category={place.category} setShowReview={setShowReview} edit={isReview}/>
                         </div>
                         
                     :
@@ -114,7 +124,7 @@ export function ScheduleDetail(){
                                     {showMine ?
                                     <div className="p-2">
                                         {
-                                            isReview?
+                                            isReview && userReview?
                                                 <ReviewContents Review={userReview} setShowReview={setShowReview} isMine={true}/>
                                             :
                                             <div className="h-40 w-full  w-full flex flex-col justify-end items-center p-4">
@@ -148,11 +158,37 @@ export function ScheduleDetail(){
 }
 
 function ReviewContents(props : {Review:any, setShowReview:Function, isMine:boolean}){
+    const [clicked, setClicked] = useState([false, false, false, false, false])
+
+    // 리뷰 표출
+    const handleStarClick = (index:any) => {
+        let clickStates = [...clicked]
+        for (let i = 0; i < 5; i++) {
+            clickStates[i] = i <= index ? true : false
+        }
+        setClicked(clickStates)
+        }
+    useEffect(()=>{
+        handleStarClick(props.Review.score)
+    })
+          //
     return(
         <div className="mb-10">
             <div className="flex justify-between">
                 <p>{props.Review?.content}</p>
-                <p>score : {props.Review.score}</p>
+                <div>
+                    <Stars>
+                            {[0,1,2,3,4].map((el, idx) => {
+                                return (
+                                    <FaStar
+                                    key={idx}
+                                    size="30"
+                                    className={clicked[el] ? 'yellowStar':''}
+                                    />
+                                )
+                                })}    
+                        </Stars>
+                </div>
             </div>
             <div className="w-full h-[1px] bg-lightMain2 mt-1 mb-1"></div>
             <div className="flex mt-1 mb-1">

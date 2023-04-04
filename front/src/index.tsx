@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { RouterProvider } from "react-router-dom";
+import { BrowserRouter, Route, Router, RouterProvider, Routes } from "react-router-dom";
 
 // React Query
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -11,6 +11,7 @@ import { RecoilRoot } from "recoil";
 
 import router from "./routes";
 import Loading from "./components/common/Loading";
+import RequireAuth from "./apis/utils/RequireAuth";
 
 const client = new QueryClient();
 
