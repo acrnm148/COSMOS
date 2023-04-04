@@ -48,56 +48,54 @@ export const getPlacesWithConditions = async (
   sido: string,
   gugun: string,
   text: string,
-  filter: string,
-  limit: number,
-  offset: number
+  filter: string
 ) => {
   // 검색어
   if (sido === "" && gugun === "" && text !== "" && filter === "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/`
     );
     return data;
   }
   // 검색필터
   else if (sido === "" && gugun === "" && text === "" && filter !== "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/gugun/text/filter/${filter}/`
     );
     return data;
   }
   // 검색어, 검색필터
   else if (sido === "" && gugun === "" && text !== "" && filter !== "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/gugun/text/${text}/filter/${filter}/`
     );
     return data;
   }
   // 시/도, 구/군
   else if (sido !== "" && gugun !== "" && text === "" && filter === "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/`
     );
     return data;
   }
   // 시/도, 구/군, 검색어
   else if (sido !== "" && gugun !== "" && text !== "" && filter === "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter/`
     );
     return data;
   }
   // 시/도, 구/군, 검색필터
   else if (sido !== "" && gugun !== "" && text === "" && filter !== "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/filter/${filter}/`
     );
     return data;
   }
   // 시/도, 구/군, 검색어, 검색필터
   else if (sido !== "" && gugun !== "" && text !== "" && filter !== "") {
     const { data } = await defaultInstance.get(
-      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter${filter}/?limit=${limit}&offset=${offset}`
+      `places/search/users/${userSeq}/sido/${sido}/gugun/${gugun}/text/${text}/filter${filter}/`
     );
     return data;
   }
@@ -139,15 +137,73 @@ export const likePlace = async (userSeq: number, placeId: number) => {
   return data;
 };
 
-// POST APIs
 /**
- * @RequestBody {sido, gugun, categories, userSeq}
- * POST : 생성된 코스 가져오기
+ * @param {number} placeId : 장소 ID
+ * GET : 장소별 리뷰 전체 불러오기
  * @returns {}
  */
-export const getDateCourse = async (formData: any) => {
-  const res = await defaultInstance.post("/courses", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+export const getReviewAll = async (
+  placeId: number,
+  limit: number,
+  offset: number
+) => {
+  if (placeId === null) return null;
+  const { data } = await defaultInstance.get(
+    `reviews/places/${placeId}?limit=${limit}&offset=${offset}`
+  );
+  return data;
+};
+
+/**
+ * @param {number} userSeq : 사용자 번호
+ * @param {number} placeId : 장소 ID
+ * @param {number} coupleId : 커플 ID
+ * GET : 장소별 유저 리뷰 불러오기
+ * @returns {}
+ */
+export const getReviewOurs = async (
+  userSeq: number,
+  placeId: number,
+  coupleId: string,
+  limit: number,
+  offset: number
+) => {
+  if (coupleId === "") {
+    // 솔로 유저
+    const { data } = await defaultInstance.get(
+      `reviews/users/${userSeq}/coupleId/places/${placeId}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  } else {
+    // 커플 유저
+    const { data } = await defaultInstance.get(
+      `reviews/users/${userSeq}/coupleId/${coupleId}/places/${placeId}/?limit=${limit}&offset=${offset}`
+    );
+    return data;
+  }
+};
+
+// POST APIs
+/**
+ * @RequestBody JSON
+ * POST : 데이트 코스 생성
+ * @returns {}
+ */
+export const getDateCourse = async (data: any) => {
+  const res = await defaultInstance.post(`/courses`, data, {
+    headers: { "Content-Type": "application/json" },
+  });
+  return res;
+};
+
+// PUT APIs
+/**
+ * @param courseId: 코스 id
+ * PUT : 코스 찜
+ */
+export const likeThisCourse = async (data: any) => {
+  const res = await defaultInstance.put(`/courses`, data, {
+    headers: { "Content-Type": "application/json" },
   });
   return res;
 };

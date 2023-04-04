@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import Modal from "../../common/Modal";
+import Modal from "../../common/ModalSmall";
 import Cinema from "../../../assets/place/cinema.png";
 import Cutlery from "../../../assets/place/cutlery.png";
 import Coffee from "../../../assets/place/coffee-cup.png";
 import Shopping from "../../../assets/place/shopping-cart.png";
 import Gym from "../../../assets/place/gym.png";
 import Suitcase from "../../../assets/place/suitcase.png";
+import DarkCinema from "../../../assets/place/dark/cinema.png";
+import DarkCutlery from "../../../assets/place/dark/cutlery.png";
+import DarkCoffee from "../../../assets/place/dark/coffee-cup.png";
+import DarkShopping from "../../../assets/place/dark/shopping-cart.png";
+import DarkGym from "../../../assets/place/dark/gym.png";
+import DarkSuitcase from "../../../assets/place/dark/suitcase.png";
 import { useRecoilState } from "recoil";
 import { selectCategory } from "../../../recoil/states/SearchPageState";
+import { darkMode } from "../../../recoil/states/UserState";
 
 export default function SearchFilter() {
+  const isDark = useRecoilState(darkMode)[0];
   const [category, setCategory] = useRecoilState(selectCategory);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -43,7 +51,7 @@ export default function SearchFilter() {
     <div className="flex mt-[10px] justify-center">
       <div className="flex flex-row flex-start flex-wrap  gap-1 w-[70vw]">
         {tag0 ? (
-          <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+          <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain rounded-lg text-lightMain dark:opacity-none dark:text-darkMain dark:border-darkMain dark:hover:bg-darkMain dark:hover:text-white">
             <span className="cursor-default ml-1"># 음식</span>
             <span className="mt-[-2px]" onClick={() => setTag0(false)}>
               <CloseIcon fontSize="small" />
@@ -51,7 +59,7 @@ export default function SearchFilter() {
           </button>
         ) : null}
         {tag1 ? (
-          <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+          <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain rounded-lg text-lightMain dark:opacity-none dark:text-darkMain dark:border-darkMain dark:hover:bg-darkMain dark:hover:text-white">
             <span className="cursor-default ml-1"># 카페</span>
             <span className="mt-[-2px]" onClick={() => setTag1(false)}>
               <CloseIcon fontSize="small" />
@@ -59,7 +67,7 @@ export default function SearchFilter() {
           </button>
         ) : null}
         {tag2 ? (
-          <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+          <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain rounded-lg text-lightMain dark:opacity-none dark:text-darkMain dark:border-darkMain dark:hover:bg-darkMain dark:hover:text-white">
             <span className="cursor-default ml-1"># 문화</span>
             <span className="mt-[-2px]" onClick={() => setTag2(false)}>
               <CloseIcon fontSize="small" />
@@ -67,7 +75,7 @@ export default function SearchFilter() {
           </button>
         ) : null}
         {tag3 ? (
-          <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+          <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain rounded-lg text-lightMain dark:opacity-none dark:text-darkMain dark:border-darkMain dark:hover:bg-darkMain dark:hover:text-white">
             <span className="cursor-default ml-1"># 쇼핑</span>
             <span className="mt-[-2px]" onClick={() => setTag3(false)}>
               <CloseIcon fontSize="small" />
@@ -75,7 +83,7 @@ export default function SearchFilter() {
           </button>
         ) : null}
         {tag4 ? (
-          <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+          <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain rounded-lg text-lightMain dark:opacity-none dark:text-darkMain dark:border-darkMain dark:hover:bg-darkMain dark:hover:text-white">
             <span className="cursor-default ml-1"># 관광</span>
             <span className="mt-[-2px]" onClick={() => setTag4(false)}>
               <CloseIcon fontSize="small" />
@@ -83,7 +91,7 @@ export default function SearchFilter() {
           </button>
         ) : null}
         {tag5 ? (
-          <button className="tagBtn flex flex-row w-[75px] h-[30px] border-2 border-lightMain opacity-50 rounded-lg text-lightMain">
+          <button className="flex flex-row w-[75px] h-[30px] border-2 border-lightMain rounded-lg text-lightMain dark:opacity-none dark:text-darkMain dark:border-darkMain dark:hover:bg-darkMain dark:hover:text-white">
             <span className="cursor-default ml-1"># 운동</span>
             <span className="mt-[-2px]" onClick={() => setTag5(false)}>
               <CloseIcon fontSize="small" />
@@ -92,7 +100,7 @@ export default function SearchFilter() {
         ) : null}
       </div>
       <button
-        className="w-[8vw] min-w-[80px] h-[30px] border-2 border-lightMain rounded-lg bg-lightMain text-white text-[1rem]"
+        className="w-[8vw] min-w-[80px] h-[30px] border-2 border-lightMain rounded-lg bg-lightMain text-white text-[1rem] dark:bg-darkMain4 dark:border-darkMain4 dark:hover:bg-darkMain dark:hover:border-darkMain dark:hover:text-white4"
         onClick={openModal}
       >
         검색필터
@@ -103,74 +111,145 @@ export default function SearchFilter() {
         header="장소 태그 선택"
         size="small"
       >
-        <div className="modal-content">
-          <div
-            className={tag0 ? "content-clicked" : ""}
-            onClick={() => setTag0((cur) => !cur)}
-          >
-            <img
-              src={Cutlery}
-              alt=""
-              style={tag0 ? { opacity: 1 } : { opacity: 0.3 }}
-            />
-            <p>음식</p>
+        {isDark ? (
+          <div className="modal-content">
+            <div
+              className={tag0 ? "content-clicked" : ""}
+              onClick={() => setTag0((cur) => !cur)}
+            >
+              <img
+                src={DarkCutlery}
+                alt=""
+                style={tag0 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>음식</p>
+            </div>
+            <div
+              className={tag1 ? "content-clicked" : ""}
+              onClick={() => setTag1((cur) => !cur)}
+            >
+              <img
+                src={DarkCoffee}
+                alt=""
+                style={tag1 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>카페</p>
+            </div>
+            <div
+              className={tag2 ? "content-clicked" : ""}
+              onClick={() => setTag2((cur) => !cur)}
+            >
+              <img
+                src={DarkCinema}
+                alt=""
+                style={tag2 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>문화</p>
+            </div>
+            <div
+              className={tag3 ? "content-clicked" : ""}
+              onClick={() => setTag3((cur) => !cur)}
+            >
+              <img
+                src={DarkShopping}
+                alt=""
+                style={tag3 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>쇼핑</p>
+            </div>
+            <div
+              className={tag4 ? "content-clicked" : ""}
+              onClick={() => setTag4((cur) => !cur)}
+            >
+              <img
+                src={DarkSuitcase}
+                alt=""
+                style={tag4 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>관광</p>
+            </div>
+            <div
+              className={tag5 ? "content-clicked" : ""}
+              onClick={() => setTag5((cur) => !cur)}
+            >
+              <img
+                src={DarkGym}
+                alt=""
+                style={tag5 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>운동</p>
+            </div>
           </div>
-          <div
-            className={tag1 ? "content-clicked" : ""}
-            onClick={() => setTag1((cur) => !cur)}
-          >
-            <img
-              src={Coffee}
-              alt=""
-              style={tag1 ? { opacity: 1 } : { opacity: 0.3 }}
-            />
-            <p>카페</p>
+        ) : (
+          <div className="modal-content">
+            <div
+              className={tag0 ? "content-clicked" : ""}
+              onClick={() => setTag0((cur) => !cur)}
+            >
+              <img
+                src={Cutlery}
+                alt=""
+                style={tag0 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>음식</p>
+            </div>
+            <div
+              className={tag1 ? "content-clicked" : ""}
+              onClick={() => setTag1((cur) => !cur)}
+            >
+              <img
+                src={Coffee}
+                alt=""
+                style={tag1 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>카페</p>
+            </div>
+            <div
+              className={tag2 ? "content-clicked" : ""}
+              onClick={() => setTag2((cur) => !cur)}
+            >
+              <img
+                src={Cinema}
+                alt=""
+                style={tag2 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>문화</p>
+            </div>
+            <div
+              className={tag3 ? "content-clicked" : ""}
+              onClick={() => setTag3((cur) => !cur)}
+            >
+              <img
+                src={Shopping}
+                alt=""
+                style={tag3 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>쇼핑</p>
+            </div>
+            <div
+              className={tag4 ? "content-clicked" : ""}
+              onClick={() => setTag4((cur) => !cur)}
+            >
+              <img
+                src={Suitcase}
+                alt=""
+                style={tag4 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>관광</p>
+            </div>
+            <div
+              className={tag5 ? "content-clicked" : ""}
+              onClick={() => setTag5((cur) => !cur)}
+            >
+              <img
+                src={Gym}
+                alt=""
+                style={tag5 ? { opacity: 1 } : { opacity: 0.3 }}
+              />
+              <p>운동</p>
+            </div>
           </div>
-          <div
-            className={tag2 ? "content-clicked" : ""}
-            onClick={() => setTag2((cur) => !cur)}
-          >
-            <img
-              src={Cinema}
-              alt=""
-              style={tag2 ? { opacity: 1 } : { opacity: 0.3 }}
-            />
-            <p>문화</p>
-          </div>
-          <div
-            className={tag3 ? "content-clicked" : ""}
-            onClick={() => setTag3((cur) => !cur)}
-          >
-            <img
-              src={Shopping}
-              alt=""
-              style={tag3 ? { opacity: 1 } : { opacity: 0.3 }}
-            />
-            <p>쇼핑</p>
-          </div>
-          <div
-            className={tag4 ? "content-clicked" : ""}
-            onClick={() => setTag4((cur) => !cur)}
-          >
-            <img
-              src={Suitcase}
-              alt=""
-              style={tag4 ? { opacity: 1 } : { opacity: 0.3 }}
-            />
-            <p>관광</p>
-          </div>
-          <div
-            className={tag5 ? "content-clicked" : ""}
-            onClick={() => setTag5((cur) => !cur)}
-          >
-            <img
-              src={Gym}
-              alt=""
-              style={tag5 ? { opacity: 1 } : { opacity: 0.3 }}
-            />
-            <p>운동</p>
-          </div>
-        </div>
+        )}
       </Modal>
     </div>
   );
