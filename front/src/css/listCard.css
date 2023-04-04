@@ -13,7 +13,7 @@
 }
 .content-detail {
   width: 90%;
-  height: 10vw;
+  height: 115px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;

@@ -3,8 +3,11 @@ import LikeImg from "../../../../assets/like.png";
 import NoLikeImg from "../../../../assets/no-like.png";
 import Swal from "sweetalert2";
 import { likePlace, dislikePlace } from "../../../../apis/api/place";
+import { useRecoilState } from "recoil";
+import { userState } from "../../../../recoil/states/UserState";
 
 export default function PlaceLike({ like, placeId }: any) {
+  const userSeq = useRecoilState(userState);
   const [isLike, setIsLike] = useState(like);
 
   const handleLikeButton = (e: React.MouseEvent) => {
@@ -27,7 +30,9 @@ export default function PlaceLike({ like, placeId }: any) {
           icon: "success",
         });
 
-    isLike ? dislikePlace(1, placeId) : likePlace(1, placeId);
+    isLike
+      ? dislikePlace(userSeq[0].seq, placeId)
+      : likePlace(userSeq[0].seq, placeId);
     setIsLike((cur: boolean) => !cur);
   };
 
