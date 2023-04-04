@@ -22,6 +22,7 @@ export default function PlaceSearch() {
   const gugunState = useRecoilState(selectGugun);
   const wordState = useRecoilState(completeWord);
   const categoryState = useRecoilState(selectCategory);
+  const [offset, setOffset] = useState(0);
 
   return (
     <div className="w-[90%] text-center pb-24 min-h-screen">
@@ -44,7 +45,7 @@ export default function PlaceSearch() {
         {(sidoState[0].sidoName !== "" && gugunState[0].gugunName !== "") ||
         wordState[0] !== "" ||
         categoryState[0] !== "" ? (
-          <TMap />
+          <TMap offset={offset} />
         ) : (
           <div className="w-full h-[50vh]">
             {isDark ? (
@@ -55,7 +56,7 @@ export default function PlaceSearch() {
           </div>
         )}
       </div>
-      <PlaceList />
+      <PlaceList offset={offset} setOffset={setOffset} />
     </div>
   );
 }
