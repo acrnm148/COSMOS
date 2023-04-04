@@ -24,7 +24,9 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
 
         return queryFactory.select(Projections.constructor(ImageResponseDto.class,
                 qImage.id,
-                qImage.imageUrl
+                qImage.imageUrl,
+                qImage.review.id,
+                qImage.createdTime
                 ))
                 .from(qImage)
                 .where(qImage.createdTime.contains(month.toString()))
@@ -38,7 +40,9 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
 
         return queryFactory.select(Projections.constructor(ImageResponseDto.class,
                 qImage.id,
-                qImage.imageUrl
+                qImage.imageUrl,
+                qImage.review.id,
+                qImage.createdTime
                 ))
                 .from(qImage)
                 .where(qImage.createdTime.contains(day.toString()))
