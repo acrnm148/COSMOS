@@ -88,25 +88,24 @@ export function MonthSchedulePage(){
         .then((res) =>{
             data = res.data
             if(data){
-                data.map((plan: {
-                    planName: any; courses: { name:string, places: { name: any; }[]; date:string}[]; 
-}) =>{
-                    console.log('data', data)
-                    if (plan.courses.length === 0){return}
-                    let planPlaces: any[] = []
-                    // 0번 = [두개 이상인지, 플랜 이름]
-                    planPlaces.push([(plan.courses.length > 1), plan.planName])
+                data.map((plan: {planName: any; courses: { name:string, places: { name: any; }[]; date:string}[]; }) =>{
+                    // if (plan.courses.length === 0){return}
                     
                     plan.courses.map((crs)=>{
+                        let planPlaces: any[] = []
+                        // 0번 = [두개 이상인지, 플랜 이름]
+                        planPlaces.push([(plan.courses.length > 1), plan.planName])
                         // 1번 = 코스이름
                         planPlaces.push(crs.name)
                         crs.places.map((place: { name: any; }) =>{
                             // 2~ 번 = 코스에 속한 장소이름
                             planPlaces.push(place.name)
                         })
+                        // key값 : 일자
                         const planDate = crs.date.slice(-2)
                         // return [planDate, planPlaces]
                         console.log(new Map( [...schedule, [planDate, planPlaces]]))
+                        console.log('schedule',schedule)
                         setSchedule((prev) => new Map( [...prev,[planDate, planPlaces]]))
                     })
                 })
@@ -169,7 +168,7 @@ export function MonthSchedulePage(){
                                             {schedule.has(format(day, 'dd')) &&
                                                 schedule.get(format(day, 'dd')).map((scd: string, idx:number)=>{
                                                     if (idx === 0){
-                                                        return <div className="bg-lightMain text-white font-bold text-sm m-0.5 w-full rounded-md p-0.5"><p>{scd}</p></div>
+                                                        return <div className="bg-lightMain text-white font-bold text-sm m-0.5 w-full rounded-md p-0.5"><p>{scd[1]}</p></div>
                                                     } else if (idx === 1){
                                                         return <div className="bg-lightMain2 text-white font-bold text-sm m-0.5 w-full rounded-md p-0.5"><p>{scd}</p></div>
                                                     }

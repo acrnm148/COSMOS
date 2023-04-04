@@ -11,6 +11,7 @@ import { getPlaceCoupleReview } from "../../apis/api/schedule"
 import { FaStar } from 'react-icons/fa'
 // styled component
 import {Stars} from '../../components/review/StarStyledComponent'
+import ReviewOurs from "../../components/common/ReviewOurs"
 
 export interface REVIEW {
     reviewId : number|undefined
@@ -46,8 +47,8 @@ export function ScheduleDetail(){
     const [coupleReview, setCoupleReview] = useState<REVIEW>()
     useEffect(()=>{
         if(data){
-            setIsReview(true)
             data.map((review: { reviewId:number,userId: number; score: any; images: any; contents: any; categories:{reviewCategoryCode:string}[], indiReviewCategories: { reviewCategory: any }[]; contentOpen: any; imageOpen: any; createdTime: any }) => {
+                setIsReview(true)
                 if(String(review.userId)===String(loginUser.seq)){
                     
                     setUserReview({
@@ -125,7 +126,10 @@ export function ScheduleDetail(){
                                     <div className="p-2">
                                         {
                                             isReview && userReview?
+                                            <>
+                                                <ReviewOurs placeId={placeId}/>
                                                 <ReviewContents Review={userReview} setShowReview={setShowReview} isMine={true}/>
+                                            </>
                                             :
                                             <div className="h-40 w-full  w-full flex flex-col justify-end items-center p-4">
                                                 <p className="text-sm mb-2">일정을 마치셨나요?</p>
@@ -137,7 +141,10 @@ export function ScheduleDetail(){
                                     <div>
                                         {
                                             isReview?
+                                            <>
+                                                <ReviewOurs placeId={placeId}/>
                                                 <ReviewContents Review={coupleReview}  setShowReview={setShowReview} isMine={false}/>
+                                            </>
                                             :
                                             <div className="h-40 w-full  w-full flex flex-col justify-end items-center p-4">
                                                 <p className="text-sm mb-2">일정을 마치셨나요?</p>
