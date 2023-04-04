@@ -1,6 +1,9 @@
 package com.cosmos.back.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.cosmos.back.annotation.EnableMockMvc;
+import com.cosmos.back.auth.jwt.JwtProperties;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.auth.jwt.service.JwtProviderService;
 import org.assertj.core.api.Assertions;
@@ -13,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
+
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,20 +62,29 @@ public class JwtServiceTest {
     }
 
     @Test
-    @DisplayName("accessToken 생성")
+    @DisplayName("refreshToken validation 체크")
     @WithMockUser(username="테스트_최고관리자", roles = {"SUPER"})
     public void validRefreshTokenTest() throws Exception {
         //given
         JwtToken jwtTokenOK = jwtProviderService.createJwtToken(1L, "testId");
-        JwtToken jwtTokenNo = jwtProviderService.createJwtToken(1L, "testId");
+        JwtToken jwtTokenError = jwtProviderService.createJwtToken(1L, "testId");
+        String refreshToken = JWT.create()
+                .withSubject("testId")
+                .withExpiresAt(new Date(System.currentTimeMillis() - 1000))
+                .withClaim("userSeq", 1L)
+                .withClaim("userId", "testId")
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+        jwtTokenError.setRefreshToken(refreshToken);
 
         //when
         String accessTokenOk = jwtProviderService.validRefreshToken(jwtTokenOK.getRefreshToken());
+        String accessTokenError = jwtProviderService.validRefreshToken(jwtTokenError.getRefreshToken());
 
         //then
-        System.out.println("accessTokenOk = " + accessTokenOk);
         assertThat(accessTokenOk).isNotEmpty();
-
+        assertThat(accessTokenError).isNull();
     }
+
+
 
 }
