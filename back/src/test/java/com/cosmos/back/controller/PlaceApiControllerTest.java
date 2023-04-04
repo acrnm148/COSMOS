@@ -328,9 +328,9 @@ class PlaceApiControllerTest {
         //given
         PlaceFilterResponseDto dto = PlaceFilterResponseDto.builder().places(new ArrayList<>()).midLatitude(1.0).midLongitude(1.0).build();
 
-        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt())).thenReturn(dto);
-        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), isNull(), isNull(), anyString(), anyString(), anyInt(), anyInt())).thenReturn(dto);
-        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), anyString(), anyString(), isNull(), isNull(), anyInt(), anyInt())).thenReturn(dto);
+        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), anyString(), anyString(), anyString(), anyString())).thenReturn(dto);
+        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), isNull(), isNull(), anyString(), anyString())).thenReturn(dto);
+        when(placeService.searchPlacesBySidoGugunTextFilter(anyLong(), anyString(), anyString(), isNull(), isNull())).thenReturn(dto);
 
         //when
         MvcResult mvcResult1 = mockMvc.perform(MockMvcRequestBuilders

@@ -195,15 +195,15 @@ class PlaceServiceTest {
         }
 
         when(placeRepository
-                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", "text", "filter", 10, 0))
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", "text", "filter"))
                 .thenReturn(list)
                 .thenReturn(listLatLongEmpty);
         when(placeRepository
-                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "text", "filter", 10, 0))
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "text", "filter"))
                 .thenReturn(list)
                 .thenReturn(listLatLongEmpty);
         when(placeRepository
-                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", null, null, 10, 0))
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", null, null))
                 .thenReturn(list)
                 .thenReturn(listLatLongEmpty);
         when(placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(anyLong(), anyLong()))
@@ -211,12 +211,12 @@ class PlaceServiceTest {
                 .thenReturn(false);
 
         //when
-        PlaceFilterResponseDto placeFilterResponseDto = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto1 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto2 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter", 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto3 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter", 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto4 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null, 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto5 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null, 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter");
+        PlaceFilterResponseDto placeFilterResponseDto1 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter");
+        PlaceFilterResponseDto placeFilterResponseDto2 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter");
+        PlaceFilterResponseDto placeFilterResponseDto3 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter");
+        PlaceFilterResponseDto placeFilterResponseDto4 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null);
+        PlaceFilterResponseDto placeFilterResponseDto5 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null);
 
         //then
         assertEquals(placeFilterResponseDto.getPlaces().size(), 5);

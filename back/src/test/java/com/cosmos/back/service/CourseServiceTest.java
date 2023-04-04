@@ -83,20 +83,20 @@ public class CourseServiceTest {
         assertEquals(course.getId(), foundCourse.getId());
     }
 
-//    @Test
-//    @DisplayName("CourseService chooseOne 메소드 가져온 place List 메소드 크기가 0일 때")
-//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-//    public void chooseOne_place_list_size_0() throws Exception {
-//        User mockUser = User.builder().type1("EAT").type2("EAY").build();
-//        userRepository.save(mockUser);
-//
-//        Place mockPlace = Place.builder().address("서울특별시 강서구").tendency("dfi").type("cafe").build();
-//        placeRepository.save(mockPlace);
-//
-//        Place returnPlace = courseService.chooseOne("cafe", "서울특별시", "강서구", mockUser.getUserSeq());
-//
-//        assertEquals(returnPlace.getId(), mockPlace.getId());
-//    }
+    @Test
+    @DisplayName("CourseService chooseOne 메소드 가져온 place List 메소드 크기가 0일 때")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void chooseOne_place_list_size_0() throws Exception {
+        User mockUser = User.builder().type1("EAT").type2("EAY").build();
+        userRepository.save(mockUser);
+
+        Place mockPlace = Place.builder().address("서울특별시 강서구").tendency("dfi").type("cafe").build();
+        placeRepository.save(mockPlace);
+
+        Place returnPlace = courseService.chooseOne("cafe", "서울특별시", "강서구", mockUser.getUserSeq());
+
+        assertEquals(returnPlace.getId(), mockPlace.getId());
+    }
 
     @Test
     @DisplayName("CourseService selectPlaces 메소드 정상적으로 가져올 때")
@@ -141,45 +141,45 @@ public class CourseServiceTest {
         assertEquals(places2.get(1).getType(), testCategories.get(1));
     }
 
-//    @Test
-//    @DisplayName("CourseService selectPlaces 메소드(2) 유저 타입에 맞는 장소가 없을 때")
-//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-//    public void selectPlaces2() throws Exception {
-//        User mockUser = User.builder().type1("EAT").type2("EAY").build();
-//        userRepository.save(mockUser);
-//
-//        Place mockPlace1 = Place.builder().address("서울특별시 강남구").type("cafe").tendency("spo").thumbNailUrl("나는 썸네일 url 이다").build();
-//        Place mockPlace2 = Place.builder().address("서울특별시 강남구").type("restaurant").tendency("spo").parkingYn("주차 가능한가?").build();
-//        Place mockPlace3 = Place.builder().address("서울특별시 서초구").type("accommodation").tendency("spo").latitude("이건 경도인가 위도인가?").build();
-//        Place mockPlace4 = Place.builder().address("서울특별시 종로구").type("shopping").tendency("spo").img5("나는 img 4인가 img 5인가?").build();
-//        Place mockPlace5 = Place.builder().address("서울특별시 강남구").type("cafe").tendency("dfi").thumbNailUrl("55555").build();
-//
-//        placeRepository.save(mockPlace1);
-//        placeRepository.save(mockPlace2);
-//        placeRepository.save(mockPlace3);
-//        placeRepository.save(mockPlace4);
-//        placeRepository.save(mockPlace5);
-//
-//        List<String> testCategories = new ArrayList<>();
-//        testCategories.add("cafe");
-//        testCategories.add("restaurant");
-//        testCategories.add("cafe");
-//
-//        List<Place> places = courseService.selectPlaces(testCategories, "서울특별시", "강남구", mockUser.getUserSeq());
-//
-//        // 3개를 가져와야 한다.
-//        assertEquals(places.size(), 3);
-//
-//        // testCategories의 type 순서대로 가져와야 한다.
-//        assertEquals(places.get(0).getType(), testCategories.get(0));
-//        assertEquals(places.get(1).getType(), testCategories.get(1));
-//        assertEquals(places.get(2).getType(), testCategories.get(2));
-//
-//        assertEquals(places.get(0).getThumbNailUrl(), mockPlace1.getThumbNailUrl());
-//
-//        // 조건을 모두 만족하는 카페가 없으므로 마지막에는 5번째 mockPlace5를 가져와야한다.
-//        assertEquals(places.get(2).getThumbNailUrl(), "55555");
-//    }
+    @Test
+    @DisplayName("CourseService selectPlaces 메소드(2) 유저 타입에 맞는 장소가 없을 때")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void selectPlaces2() throws Exception {
+        User mockUser = User.builder().type1("EAT").type2("EAY").build();
+        userRepository.save(mockUser);
+
+        Place mockPlace1 = Place.builder().address("서울특별시 강남구").type("cafe").tendency("spo").thumbNailUrl("나는 썸네일 url 이다").build();
+        Place mockPlace2 = Place.builder().address("서울특별시 강남구").type("restaurant").tendency("spo").parkingYn("주차 가능한가?").build();
+        Place mockPlace3 = Place.builder().address("서울특별시 서초구").type("accommodation").tendency("spo").latitude("이건 경도인가 위도인가?").build();
+        Place mockPlace4 = Place.builder().address("서울특별시 종로구").type("shopping").tendency("spo").img5("나는 img 4인가 img 5인가?").build();
+        Place mockPlace5 = Place.builder().address("서울특별시 강남구").type("cafe").tendency("dfi").thumbNailUrl("55555").build();
+
+        placeRepository.save(mockPlace1);
+        placeRepository.save(mockPlace2);
+        placeRepository.save(mockPlace3);
+        placeRepository.save(mockPlace4);
+        placeRepository.save(mockPlace5);
+
+        List<String> testCategories = new ArrayList<>();
+        testCategories.add("cafe");
+        testCategories.add("restaurant");
+        testCategories.add("cafe");
+
+        List<Place> places = courseService.selectPlaces(testCategories, "서울특별시", "강남구", mockUser.getUserSeq());
+
+        // 3개를 가져와야 한다.
+        assertEquals(places.size(), 3);
+
+        // testCategories의 type 순서대로 가져와야 한다.
+        assertEquals(places.get(0).getType(), testCategories.get(0));
+        assertEquals(places.get(1).getType(), testCategories.get(1));
+        assertEquals(places.get(2).getType(), testCategories.get(2));
+
+        assertEquals(places.get(0).getThumbNailUrl(), mockPlace1.getThumbNailUrl());
+
+        // 조건을 모두 만족하는 카페가 없으므로 마지막에는 5번째 mockPlace5를 가져와야한다.
+        assertEquals(places.get(2).getThumbNailUrl(), "55555");
+    }
 
     @Test
     @DisplayName("CourseService saveSimplePlaceDtoList 메소드")
