@@ -21,7 +21,7 @@ export default function RequireAuth(props:any) {
         onLoginSuccess(user.seq, user.acToken, true, user.coupleId, setUser)
         return  <div><Outlet /> </div>
     } else {
-        console.log(user)
+        // console.log(user)
         console.log('there is NO acToken')
         return <div><Navigate to="/login" /></div>
     }  
@@ -34,7 +34,7 @@ function getNewAcToken(LoginUser:any, setLoginUser:Function){// userState recoil
         },
     })
     .then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         setLoginUser({seq:LoginUser.seq, isLoggedIn:true, acToken:res.data.accessToken, coupleId:LoginUser.coupleId})
         return 'refresh acTocken sucess'
     }).catch((err)=>{
