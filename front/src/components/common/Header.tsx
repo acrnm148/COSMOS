@@ -5,6 +5,7 @@ import Logo from "../../assets/header/logo.png";
 import LogoDark from "../../assets/header/logoDark.png";
 import { useRecoilState } from "recoil";
 import { darkMode } from "../../recoil/states/UserState";
+import Alarm from "./Alarm";
 
 export default function Header() {
     const isDark = useRecoilState(darkMode);
@@ -46,20 +47,7 @@ export default function Header() {
                         <img src={Logo} alt="logo" className="h-20" />
                     )}
                 </div>
-                <div className="alertIcon absolute right-8 top-1/2 -translate-y-1/2">
-                    <Badge
-                        badgeContent={4}
-                        sx={isDark ? badgeDarkStyle : badgeStyle}
-                        overlap="circular"
-                    >
-                        <Icon
-                            icon="heroicons-solid:bell"
-                            color="white"
-                            width="35"
-                            height="40"
-                        />
-                    </Badge>
-                </div>{" "}
+                <Alarm />
             </header>
         </div>
     );

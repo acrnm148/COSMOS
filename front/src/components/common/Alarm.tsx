@@ -15,59 +15,59 @@ export default function Alarm() {
     const [isCheck, setIscheck] = useState(false);
     const [show, setShow] = useState(false);
 
-    // useEffect(() => {
-    //     let eventSource = new EventSourcePolyfill(subscribeUrl, {
-    //         headers: {
-    //             "Content-Type": "text/event-stream",
-    //             "Access-Control-Allow-Origin": "",
-    //             AccessToken: `Bearer ${userSeq.acToken}`,
-    //             "Cache-Control": "no-cache",
-    //         },
-    //         // heartbeatTimeout: 60000,
-    //         withCredentials: true,
-    //     });
-    //     eventSource.onerror = function () {
-    //         eventSource.close();
-    //         eventSource = new EventSourcePolyfill(subscribeUrl, {
-    //             headers: {
-    //                 "Content-Type": "text/event-stream",
-    //                 "Access-Control-Allow-Origin": "",
-    //                 AccessToken: `Bearer ${userSeq.acToken}`,
-    //                 "Cache-Control": "no-cache",
-    //             },
-    //             heartbeatTimeout: 6000,
-    //             withCredentials: true,
-    //         });
-    //         eventSource.addEventListener("connect", function (e: any) {
-    //             // setMessage(e.data);
-    //             const data = JSON.parse(e.data);
-    //             console.log("connect: " + data);
-    //         });
-    //         eventSource.addEventListener("sse", function (e: any) {
-    //             const data = JSON.parse(e.data);
-    //             console.log("sse 푸쉬: " + data);
-    //         });
-    //         eventSource.addEventListener("error", function (e: any) {
-    //             console.log("error");
-    //         });
-    //     };
+    useEffect(() => {
+        let eventSource = new EventSourcePolyfill(subscribeUrl, {
+            headers: {
+                "Content-Type": "text/event-stream",
+                "Access-Control-Allow-Origin": "",
+                AccessToken: `Bearer ${userSeq.acToken}`,
+                "Cache-Control": "no-cache",
+            },
+            heartbeatTimeout: 60000,
+            withCredentials: true,
+        });
+        eventSource.onerror = function () {
+            eventSource.close();
+            eventSource = new EventSourcePolyfill(subscribeUrl, {
+                headers: {
+                    "Content-Type": "text/event-stream",
+                    "Access-Control-Allow-Origin": "",
+                    AccessToken: `Bearer ${userSeq.acToken}`,
+                    "Cache-Control": "no-cache",
+                },
+                heartbeatTimeout: 6000,
+                withCredentials: true,
+            });
+            eventSource.addEventListener("connect", function (e: any) {
+                // setMessage(e.data);
+                const data = JSON.parse(e.data);
+                console.log("connect: " + data);
+            });
+            eventSource.addEventListener("sse", function (e: any) {
+                const data = JSON.parse(e.data);
+                console.log("sse 푸쉬: " + data);
+            });
+            eventSource.addEventListener("error", function (e: any) {
+                console.log("error");
+            });
+        };
 
-    //     eventSource.addEventListener("connect", function (e: any) {
-    //         // setMessage(e.data);
-    //         const data = JSON.parse(e.data);
-    //         console.log("connect: " + data);
-    //     });
-    //     eventSource.addEventListener("sse", function (e: any) {
-    //         const data = JSON.parse(e.data);
-    //         console.log("sse 푸쉬: " + data);
-    //     });
-    //     eventSource.addEventListener("error", function (e: any) {
-    //         console.log("error");
-    //     });
-    //     // eventSource.addEventListener("message", function (e: any) {
-    //     //     console.log(e.data);
-    //     // });
-    // }, []);
+        eventSource.addEventListener("connect", function (e: any) {
+            // setMessage(e.data);
+            const data = JSON.parse(e.data);
+            console.log("connect: " + data);
+        });
+        eventSource.addEventListener("sse", function (e: any) {
+            const data = JSON.parse(e.data);
+            console.log("sse 푸쉬: " + data);
+        });
+        eventSource.addEventListener("error", function (e: any) {
+            console.log("error");
+        });
+        // eventSource.addEventListener("message", function (e: any) {
+        //     console.log(e.data);
+        // });
+    }, []);
 
     const { data } = useQuery({
         queryKey: ["getAlarmList", "userSeq"],
