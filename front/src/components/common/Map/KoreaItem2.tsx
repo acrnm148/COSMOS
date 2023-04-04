@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function KoreaItem(props: any) {
+export default function KoreaItem2(props: any) {
   const { title } = props;
   return (
     <path

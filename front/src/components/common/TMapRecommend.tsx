@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import LightMarker from "../../assets/place/light-marker.png";
+import DarkMarker from "../../assets/place/dark/dark-marker.png";
 import { useRecoilState } from "recoil";
 import {
   selectSido,
@@ -12,8 +13,10 @@ import { useQuery } from "react-query";
 import { getDateCourse } from "../../apis/api/place";
 import Loading from "../../components/common/Loading";
 import CourseLike from "./CourseLike";
+import { userState, darkMode } from "../../recoil/states/UserState";
 
 export default function TMapRecommend() {
+  const isDark = useRecoilState(darkMode);
   const sido = useRecoilState(selectSido);
   const gugun = useRecoilState(selectGugun);
   const category = useRecoilState(selectCategory);
@@ -89,12 +92,19 @@ export default function TMapRecommend() {
         }
         mapMarkersState.map((item: any, index: number) => {
           if (item.lat !== null || item.lng !== null) {
-            const marker = new window.Tmapv2.Marker({
-              position: new window.Tmapv2.LatLng(item.lat, item.lng),
-              icon: LightMarker,
-              map: map,
-              title: item.name,
-            });
+            const marker = isDark
+              ? new window.Tmapv2.Marker({
+                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                  icon: DarkMarker,
+                  map: map,
+                  title: item.name,
+                })
+              : new window.Tmapv2.Marker({
+                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                  icon: LightMarker,
+                  map: map,
+                  title: item.name,
+                });
             all.push(item);
             newMarkers.push(marker);
           }
@@ -198,7 +208,7 @@ export default function TMapRecommend() {
 
                 polyline_ = new Tmapv2.Polyline({
                   path: drawInfoArr,
-                  strokeColor: "#FF8E9E",
+                  strokeColor: isDark ? "#9C4395" : "#FF8E9E",
                   strokeWeight: 6,
                   map: map,
                 });

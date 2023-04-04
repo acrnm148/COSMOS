@@ -4,9 +4,9 @@ import SouthKoreaItem from "./KoreaItem";
 import Region from "../../../components/common/Map/Region";
 import { useRecoilState } from "recoil";
 import { selectSido } from "../../../recoil/states/RecommendPageState";
-import "../../../css/map.css";
+import "../../../css/map2.css";
 
-export default function KoreaMap() {
+export default function KoreaMap2() {
   const [sido, setSido] = useRecoilState(selectSido);
 
   return (
