@@ -60,7 +60,6 @@ export default function PlaceList() {
 
   if (isLoading || data === null) return null;
 
-  console.log(data);
   return (
     <>
       <ListCard height={true}>
