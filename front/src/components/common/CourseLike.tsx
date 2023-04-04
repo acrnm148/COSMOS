@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import COSMOS from "../../assets/login/pinkCosmos.png";
 import LikeImg from "../../assets/like.png";
 import NoLikeImg from "../../assets/no-like.png";
+import DarkLikeImg from "../../assets/dark-like.png";
+import DarkNoLikeImg from "../../assets/dark-no-like.png";
 import Swal from "sweetalert2";
 import { likeThisCourse } from "../../apis/api/place";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { darkMode } from "../../recoil/states/UserState";
 
 export default function CourseLike({ tDistance, tTime, tFare, courseId }: any) {
+  const isDark = useRecoilState(darkMode);
   const navigate = useNavigate();
   const [isLike, setIsLike] = useState(false);
   const handleThisCourse = () => {
@@ -60,25 +65,25 @@ export default function CourseLike({ tDistance, tTime, tFare, courseId }: any) {
     setIsLike((cur) => !cur);
   };
   return (
-    <div className="flex flex-row relative bg-lightMain3 justify-center h-14 wb-3">
+    <div className="flex flex-row relative bg-lightMain3 justify-center h-14 wb-3 dark:bg-darkMain">
       <div className="flex flex-row gap-3 h-15 m-auto">
-        <span className="font-bold">{tDistance}a</span>
-        <span className="font-bold">{tTime}a</span>
-        <span className="font-bold">{tFare}a</span>
+        <span className="font-bold dark:text-white">{tDistance}</span>
+        <span className="font-bold dark:text-white">{tTime}</span>
+        <span className="font-bold dark:text-white">{tFare}</span>
       </div>
       <div className="absolute right-2 mt-2">
         {isLike ? (
           <img
             onClick={handleThisCourse}
             className="w-10 h-10 m-auto cursor-pointer"
-            src={LikeImg}
+            src={isDark ? DarkLikeImg : LikeImg}
             alt=""
           />
         ) : (
           <img
             onClick={handleThisCourse}
             className="w-10 h-10 m-auto cursor-pointer"
-            src={NoLikeImg}
+            src={isDark ? DarkNoLikeImg : NoLikeImg}
             alt=""
           />
         )}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { getReviewOurs } from "../../apis/api/place";
 import { useRecoilState } from "recoil";
-import { userState } from "../../recoil/states/UserState";
+import { userState, darkMode } from "../../recoil/states/UserState";
 import StarIcon from "@mui/icons-material/Star";
 
 export interface REVIEW {
@@ -29,6 +29,7 @@ export interface REVIEW {
 }
 
 export default function ReviewOurs({ placeId }: any) {
+  const isDark = useRecoilState(darkMode);
   const LIMIT = 5;
   const [offset, setOffset] = useState(0);
   const userSeq = useRecoilState(userState);
@@ -50,24 +51,35 @@ export default function ReviewOurs({ placeId }: any) {
   return (
     <div>
       {data === "" || data.length === 0 ? (
-        <div className="p-3 font-bold">등록된 리뷰가 존재하지 않습니다.</div>
+        <div className="p-3 font-bold dark:text-white">
+          등록된 리뷰가 존재하지 않습니다.
+        </div>
       ) : (
         data.map((item: REVIEW) => {
           return (
-            <div className="bg-[#f8f8f8] p-3 my-3" key={item.reviewId}>
+            <div
+              className="bg-[#f8f8f8] p-3 my-3 dark:bg-darkBackground2"
+              key={item.reviewId}
+            >
               <div className="flex flex-row gap-5">
-                <div className="text-xl text-lightMain font-bold">
+                <div className="text-xl text-lightMain font-bold dark:text-darkMain">
                   {item.nickname}
                 </div>
                 <div className="flex flex-row">
                   <StarIcon
                     fontSize="small"
-                    sx={{ color: "#FF8E9E", fontSize: "25px" }}
+                    sx={
+                      isDark
+                        ? { color: "#BE6DB7", fontSize: "25px" }
+                        : { color: "#FF8E9E", fontSize: "25px" }
+                    }
                   />
-                  <div className="text-lg font-semibold">{item.score}</div>
+                  <div className="text-lg font-semibold dark:text-white">
+                    {item.score}
+                  </div>
                 </div>
               </div>
-              <div className="text-slate-400 font-medium">
+              <div className="text-slate-400 font-medium dark:text-white dark:opacity-30">
                 {item.createdTime}
               </div>
               <div className="flex flex-row my-[10px] gap-3">
@@ -86,7 +98,7 @@ export default function ReviewOurs({ placeId }: any) {
                 {item.categories?.map((review: any) => {
                   return (
                     <span
-                      className="bg-lightMain font-medium py-1 px-2 rounded-lg text-white"
+                      className="bg-lightMain font-medium py-1 px-2 rounded-lg text-white dark:bg-darkMain2"
                       key={review.id}
                     >
                       {review.reviewCategoryCode}
@@ -96,7 +108,7 @@ export default function ReviewOurs({ placeId }: any) {
                 {item.indiReviewCategories?.map((review: any) => {
                   return (
                     <span
-                      className="bg-lightMain font-medium py-1 px-2 rounded-lg text-white"
+                      className="bg-lightMain font-medium py-1 px-2 rounded-lg text-white dark:bg-darkMain2"
                       key={review.id}
                     >
                       {review.reviewCategory}
@@ -104,7 +116,9 @@ export default function ReviewOurs({ placeId }: any) {
                   );
                 })}
               </div>
-              <div className="font-bold py-3">{item.contents}</div>
+              <div className="font-bold py-3 dark:text-white">
+                {item.contents}
+              </div>
             </div>
           );
         })

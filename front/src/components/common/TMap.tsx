@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import LightMarker from "../../assets/place/light-marker.png";
+import DarkMarker from "../../assets/place/dark/dark-marker.png";
 import { useRecoilState } from "recoil";
 import {
   selectSido,
@@ -9,11 +10,12 @@ import {
   mapCenter,
   mapMarkers,
 } from "../../recoil/states/SearchPageState";
-import { userState } from "../../recoil/states/UserState";
+import { userState, darkMode } from "../../recoil/states/UserState";
 import { useQuery } from "react-query";
 import { getPlacesWithConditions } from "../../apis/api/place";
 
 export default function TMap() {
+  const isDark = useRecoilState(darkMode);
   const userSeq = useRecoilState(userState);
   const sidoState = useRecoilState(selectSido);
   const gugunState = useRecoilState(selectGugun);
@@ -87,12 +89,19 @@ export default function TMap() {
 
         mapMarkersState.map((item: any) => {
           if (item.lat !== null || item.lng !== null) {
-            const marker = new window.Tmapv2.Marker({
-              position: new window.Tmapv2.LatLng(item.lat, item.lng),
-              icon: LightMarker,
-              map: map,
-              title: item.name,
-            });
+            const marker = isDark
+              ? new window.Tmapv2.Marker({
+                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                  icon: DarkMarker,
+                  map: map,
+                  title: item.name,
+                })
+              : new window.Tmapv2.Marker({
+                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                  icon: LightMarker,
+                  map: map,
+                  title: item.name,
+                });
             newMarkers.push(marker);
           }
 
@@ -121,12 +130,19 @@ export default function TMap() {
       if (mapInstance !== undefined) {
         mapMarkersState.map((item: any) => {
           if (item.lat !== null || item.lng !== null) {
-            const marker = new window.Tmapv2.Marker({
-              position: new window.Tmapv2.LatLng(item.lat, item.lng),
-              icon: LightMarker,
-              map: mapInstance,
-              title: item.name,
-            });
+            const marker = isDark
+              ? new window.Tmapv2.Marker({
+                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                  icon: DarkMarker,
+                  map: mapInstance,
+                  title: item.name,
+                })
+              : new window.Tmapv2.Marker({
+                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                  icon: LightMarker,
+                  map: mapInstance,
+                  title: item.name,
+                });
             newMarkers.push(marker);
           }
         });
