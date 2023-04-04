@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { PlaceItem } from "../../components/common/PlaceItem";
 import { ScheduleMonth } from "../../components/common/ScheduleMonth";
@@ -24,17 +24,21 @@ import Modal from "../../components/common/Modal";
 import { DatePicker, MobileDatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DesktopDatePicker } from '@mui/x-date-pickers'
+// import { DesktopDatePicker } from '@mui/x-date-pickers'
+// import DatePicker from "react-datepicker"
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 //alert
 import Swal from "sweetalert2";
 import { getWishCourseList } from "../../apis/api/wish";
 import { lstat } from "fs";
 import dayjs from "dayjs";
+import DatePickerTest from "../../components/schedule/datePickerTest";
 
 // TODO : db를 영어에서 한글로 바꾸거나 받은 데이터 변환
 const PLACECATE = {
-    'cafe' : '카페'
+    'cafe' : '카페',
+    'shopping' : '쇼핑',
 }
 interface Place{
     idx : number,
@@ -56,7 +60,7 @@ interface COURSE {
 }
 export function DaySchedulePage(){
     let location = useLocation();
-    const [scheduleTitle, setScheduleTitle] = useState('파릇파릇파주여행')
+    const [scheduleTitle, setScheduleTitle] = useState<string>()
     const [places, setPlaces] = useState<Place[]>([])
     const [dayClicked, setDayClicked] = useState(String(location.state.day.day.getDate()))
     const [loginUser, setLoginUser] = useRecoilState(userState)
@@ -88,10 +92,15 @@ export function DaySchedulePage(){
     const [showCourse, setShowCourse] = useState<number|undefined>()
 
     useEffect(()=>{
+    // if(data && Object.keys(data).includes('status') && (data.status === '401')){
+    //     GetNewAcToken()
+    //     return
+    // }
      if(data){
+        console.log(data, '찜한코스')
         let temptemp: COURSE[] = []
-        data.map((course:COURSE)=>{
-            let temp = {seq:course.seq, courseId:course.courseId,name:course.name, places:[...course.places]}
+        data.map((course:COURSE, key:number)=>{
+            let temp = {seq:key, courseId:course.courseId,name:course.name, places:[...course.places]}
             temptemp.push(temp)
         })
         setWishPlaces([...temptemp])
@@ -113,20 +122,22 @@ export function DaySchedulePage(){
         const date = yearStr+(month.length === 1?'0'+ month:month)+day
 
         if(dayClicked){
+            if(dayClicked === '-1'){return}
+            setStartDate(new Date(year+'-'+date+'-'+day))
             axios.get(`https://j8e104.p.ssafy.io/api/plans/${coupleId}/day/${date}`)
             .then((res)=>{
-                console.log('res.data, ',res)
                 if(res.data.planName){
                     setScheduleTitle(res.data.planName)
                     setIsPlan(true)
                 } else{
-                    setScheduleTitle('일정 생성하기')
+                    setScheduleTitle("")
                     setIsPlan(false)
                 }
-                if(res.data.courses.length > 0){
+                if(res.data.courses&&(res.data.courses.length > 0)){
                     setIsCourse(true)
                     // 코스 표출
                     console.log('해당일에 일정이 있음', res.data)
+                    setIsPlan(true)
                     // let temp = res.data.coures[0].map(())
                     setPlaces(res.data.courses[0].places.map((place: {
                         placeId: any; name: any; thumbNailUrl: any; type: any; address: any; 
@@ -216,27 +227,20 @@ export function DaySchedulePage(){
         const dt = {
             "coupleId" : loginUser.coupleId,
             "planName" : planName,
-            "startDate" : dateToApiFormat(startDate),
-            "endDate" : dateToApiFormat(endDate),
-            "courseIdAndDateList" : courseIdAndDateList
+            "courseIdAndDateList" : courseIdAndDateList,
+            "startDate" : courseIdAndDateList?.[0].date, 
+            "endDate" : courseIdAndDateList?.[courseIdAndDateList?.length-1].date
         }
+        console.log('dt-------------', dt)
         postPlan.mutate({
             schedule : dt,
             ac : loginUser.acToken,
             userSeq : loginUser.seq
         })
-        // {
-        //     "coupleId": 51106719,
-        //     "planName": "부산 기장 벚꽃여행",
-        //     "startDate": "2023-04-01",
-        //     "endDate": "2023-04-02",
-        //     "courseIdAndDateList" :[
-        //         {
-        //             "courseId" : 88,
-        //             "date" : "2023-03-06"
-        //         }
-        //     ]
-        //   }
+        setIsPlan(true)
+        const temp = dayClicked
+        setDayClicked('-1')
+        setDayClicked(temp)
     }
     
     // const [allDays, setAllDays] = useState<string[]>([])
@@ -279,9 +283,17 @@ export function DaySchedulePage(){
         return Math.abs(diffDate / (1000 * 60 * 60 * 24)); // 밀리세컨 * 초 * 분 * 시 = 일
       }
     const checkStartDate = (newValue: any) =>{
+        const today = new Date()
         if (endDate && (getDateDiff(endDate, newValue) > 7)){
             Toast.fire({
                 title: '일정은 최대 일주일까지 등록할 수 있습니다'
+            })
+            setStartDate(undefined)
+            return
+        }
+        if(today.setDate(today.getDate()-1) > newValue){
+            Toast.fire({
+                title : '지난 날짜의 일정을 생성할 수 없습니다'
             })
             setStartDate(undefined)
             return
@@ -298,9 +310,17 @@ export function DaySchedulePage(){
     }
 
     function checkEndDate(newValue: any) {
+        const today = new Date()
         if (startDate && (getDateDiff(newValue, startDate)) > 7){
             Toast.fire({
                 title: '일정은 최대 일주일까지 등록할 수 있습니다'
+            })
+            setEndDate(undefined)
+            return
+        }
+        if(today > endDate){
+            Toast.fire({
+                title : '지난 날짜의 일정을 생성할 수 없습니다'
             })
             setEndDate(undefined)
             return
@@ -346,15 +366,23 @@ export function DaySchedulePage(){
         setScheduleDaysList(temp)
 
     }
+
+    function alreadyInPlan(courseId :number){
+        let result = false
+        scheduleDaysList?.map(scd => {
+            if(scd.seq === courseId){result = true}
+        })
+        return result
+    }
     return (
         <div className="bg-lightMain2 ">
             <ScheduleMonth year={year.year} month={month}/>
-            <div className="bg-white rounded-t-lg w-full h-full " >
+            <div className="bg-white rounded-t-lg w-full h-full overflow-y-scroll mb-40" >
                 <div className="ml-2 mr-2 flex flex-col items-center content-center h-full">
                     <div className="flex flex-col w-full justify-center md:w-5/6 lg:w-4/6  h-full">
-                        <WeekCalendar setDayClicked={setDayClicked} day={location.state.day} week={location.state.week}/>
+                        <WeekCalendar monTod={String(location.state.day.day.getDate())} setDayClicked={setDayClicked} day={location.state.day} week={location.state.week}/>
                             <div onClick={makeShedules} className="cursor-pointer">
-                                {!showModal && <ScheduleTitle scheduleTitle={scheduleTitle}/>}
+                                {!showModal && scheduleTitle && <ScheduleTitle scheduleTitle={scheduleTitle}/>}
                             </div>
                             {isPlan? 
                                 <div className="h-full overflow-scroll">
@@ -381,33 +409,32 @@ export function DaySchedulePage(){
                                 </div>
                                 :
                                 <div className="h-full max-h-[1000vh]">                                    
-                                    {showModal&&
-                                    <>
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <div className='rounded-lg p-2 border-2 border-solid border-lightMain2 m-2' >
-                                            일정명 : <input onChange={(e)=>setPlanName(e.target.value)} type="text" />
+                                        <div className='mx-2 h-16 flex items-center rounded-lg border-2 border-solid hover:border-lightMain2 ' >
+                                            일정명 : <input className=" mx-2 focus:outline-none" onChange={(e)=>setPlanName(e.target.value)} type="text" />
                                         </div>
-                                        <div className='rounded-lg p-2 border-2 border-solid border-lightMain2 m-2 flex items-center'>
+                                        <div className='rounded-lg p-2 m-2 flex items-center'>
                                             <DesktopDatePicker
                                                 label={"시작일"}
                                                 value={startDate??startDate}
                                                 onChange={(newValue) => {
                                                     checkStartDate(newValue)   
-                                                    
                                                 }}
-                                                // format="dd-MMM-yyyy"
-                                                views={["year", "month", "day"]}       
+                                                
+                                                defaultValue = {startDate??startDate}
+                                                // views={["year", "month", "day"]}
                                                 />
                                             <div>~</div>
                                             <DesktopDatePicker
-                                                label={"종료일"}
-                                                value={endDate??endDate}
+                                                // label={"종료일"}
+                                                // value={endDate??endDate}
                                                 // format={"year-month-day"}
                                                 onChange={(newValue) => {
                                                     checkEndDate(newValue)
                                                 }}
                                                 />
                                         </div>
+                                        
                                         </LocalizationProvider>
                                         <div className="text-sm p-2">시작일 ~ 종료일을 선택하고 날짜별 코스를 선택하세요! </div>
                                         <div className='rounded-lg p-2 border-2 border-solid border-lightMain2 m-2 min-h-[30vh] h-full max-h-[1000vh]'>
@@ -417,7 +444,7 @@ export function DaySchedulePage(){
                                                             // Object.keys(scheduleDaysList).map((day)=>{
                                                             scheduleDaysList.map((d:{day:string, contents:[]|[COURSE]}, key:number)=>{
                                                                 return(
-                                                                    <div className="날짜별코스선택-토글박스 mb-2 border-2 rounded-lg border-solid border-lightMain3 flex flex-col">
+                                                                    <div className="날짜별코스선택-토글박스 mb-2 rounded-lg flex flex-col">
                                                                         <div className="h-16 border-2 rounded-lg flex items-center justify-between">
                                                                             <div className="flex justify-center items-center px-8 h-full rounded-l-lg bg-lightMain3">{d.day.slice(4,6)}월 {d.day.slice(6)}일</div>
                                                                             <div className="text-lightMain font-bold">
@@ -451,11 +478,10 @@ export function DaySchedulePage(){
                                                 </div>
                                             }
                                         </div>
-                                        <div className="min-h-[20vh]" onClick={submitSchedules}>
-                                            <ScheduleTitle scheduleTitle={scheduleTitle}/>
+                                        <div className="min-h-[20vh] cursor-pointer" onClick={submitSchedules}>
+                                            <ScheduleTitle scheduleTitle={"일정 생성하기"}/>
                                         </div>
-                                        </>
-                                    }
+                                        
                                 </div>
                         }
                     </div>
@@ -468,10 +494,14 @@ export function DaySchedulePage(){
                     header="찜한 코스"
                     size="large"
                 >
-                <div className="w-full flex overflow-x-scroll scrollbar-hide">
-                    {wishPlaces&&
+                <div className="w-full flex flex-col overflow-y-scroll scrollbar-hide">
+                    {wishPlaces&& 
                         wishPlaces.map((course, key)=>{
+                            if (alreadyInPlan(course.courseId)) {// wishPlacesd에 있는 것 중 이미 일정에 담긴 코스는 출력x
+                                return
+                            }
                             return(
+                                
                                 <div className="w-full">
                                     <div className="w-full h-[1px] bg-lightMain3 mb-2"></div>
                                     <CourseComponent places={course.places} key={key}/>
@@ -493,7 +523,7 @@ export function DaySchedulePage(){
     )
 }
 
-function ScheduleTitle(props:{scheduleTitle:string}) {
+function ScheduleTitle(props:{scheduleTitle:any}) {
     return(
         <div className="bg-lightMain2 h-10 flex justify-center items-center font-bold text-white rounded-lg">{props.scheduleTitle}</div>
     )

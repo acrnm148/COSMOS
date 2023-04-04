@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useRecoilState } from "recoil";
 import { getPhotos } from "../../apis/api/schedule";
 import { ScheduleMonth } from "../../components/common/ScheduleMonth";
 import { userState } from "../../recoil/states/UserState";
 type REVIEWIMG = {
+    imageId : number
     imageUrl : string
+    reviewId : number
+    createdTime : string
+    createdMonth : string
 }
 export function GalleryPage(){
     // 로그인 유저

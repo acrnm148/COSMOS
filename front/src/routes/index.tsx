@@ -25,16 +25,16 @@ import WishList from "../pages/wish/WishList";
 import PlaceResult from "../pages/place/PlaceResult";
 import SearchLayout from "../layouts/SearchLayout";
 import Logout from "../pages/login/Logout";
-import RequireAuth from "./RequireAuth";
-// import Test from "../pages/place/Test"; // 드래그앤드롭
+import RequireAuth from "../apis/utils/RequireAuth";
 
+// import Test from "../pages/place/Test"; // 드래그앤드롭
 const router = createBrowserRouter([
     {
         path: "/",
         element: <MainLayout />,
         errorElement: <NotFound />,
         children: [
-            { index: true, path: "/", element: <Home /> },
+            
             //로그인
             { path: "login", element: <Login /> },
             { path: "login/oauth", element: <KakaoLogin /> },
@@ -42,17 +42,21 @@ const router = createBrowserRouter([
             { path: "logout", element: <Logout /> },
         ],
     },
-    // mypage
-    // { 
-    //     path: "/mypage",
-    //     element: <RequireAuth />,
-    //     errorElement: <NotFound />,
-    //     children: [{ path: "", 
-    //                 element: <MainLayout />,
-    //                 errorElement: <NotFound />,
-    //                 children: [{ path: "", element: <MyPage />}],
-    //             }]
-    // },
+    // auth
+    // ,ainpage, mypage
+    { 
+        path: "/",
+        element: <RequireAuth />,
+        errorElement: <NotFound />,
+        children: [{ path: "", 
+                    element: <MainLayout />,
+                    errorElement: <NotFound />,
+                    children: [
+                        { index: true, path: "", element: <Home /> },
+                        { path: "mypage", element: <MyPage />}
+                    ],
+                }]
+    },
     // 찜 목록
     {
         path: "/wish",

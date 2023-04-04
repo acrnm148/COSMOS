@@ -15,7 +15,7 @@ export const userState = atom<LUser>({
     seq: -1,
     isLoggedIn: false,
     acToken: "",
-    coupleId: "",
+    coupleId: "0",
   },
   effects_UNSTABLE: [persistAtom],
 });

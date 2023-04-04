@@ -20,6 +20,7 @@ module.exports = {
         lightMain4: "#FFF0F2",
         calendarGray: "#F4F4F4",
         calendarDark: "#B9B9B9",
+        serveyCircle: "#D9D9D9",
       },
       fontFamily: {
         baloo: ["Baloo 2", "cursive"],
