@@ -24,7 +24,7 @@ export default function PlaceSearch() {
   const categoryState = useRecoilState(selectCategory);
 
   return (
-    <div className="w-[90%] text-center pb-24">
+    <div className="w-[90%] text-center pb-24 min-h-screen">
       <div className="flex flex-row justify-center mt-10">
         <div className="basis-1/3 h-14">
           <SidoList />
