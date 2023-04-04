@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DefaultImg from "../../../../assets/login/pinkCosmos.png";
+import DarkDefaultImg from "../../../../assets/login/darkCosmos.png";
 import ListCard from "../../../common/ListCard";
 import PlaceLike from "../items/PlaceLike";
 import PlaceModal from "../items/PlaceModal";
@@ -12,8 +13,11 @@ import {
 } from "../../../../recoil/states/RecommendPageState";
 import { useQuery } from "react-query";
 import { getDateCourse } from "../../../../apis/api/place";
+import { userState, darkMode } from "../../../../recoil/states/UserState";
 
 export default function PlaceList() {
+  const isDark = useRecoilState(darkMode);
+  const user = useRecoilState(userState);
   const sido = useRecoilState(selectSido);
   const gugun = useRecoilState(selectGugun);
   const category = useRecoilState(selectCategory);
@@ -22,6 +26,7 @@ export default function PlaceList() {
     sido: sido[0].sidoName,
     gugun: gugun[0].gugunName,
     categories: category[0],
+    // userSeq: user[0].seq,
     userSeq: 1,
   };
 
@@ -57,7 +62,7 @@ export default function PlaceList() {
           return (
             <div key={items.placeId}>
               <div
-                className="flex flex-row relative card-content"
+                className="flex flex-row relative card-content dark:bg-darkBackground2 dark:hover:bg-[#676767]"
                 onClick={() => {
                   openModal(items.placeId, items.type);
                 }}
@@ -65,21 +70,26 @@ export default function PlaceList() {
                 <div className="flex justify-center my-auto basis-3/12">
                   <img
                     src={
-                      items.thumbNailUrl === null
-                        ? DefaultImg
+                      items.thumbNailUrl ===
+                      "https://cosmoss3.s3.ap-northeast-2.amazonaws.com/dc27450e-9c2c-4ae0-b2d2-d0b106e92288.png"
+                        ? isDark
+                          ? DarkDefaultImg
+                          : items.thumbNailUrl
                         : items.thumbNailUrl
                     }
                     alt=""
-                    className="w-[20vw] h-[15vw] max-w-[200px] max-h-[150px] rounded-lg"
+                    className="w-[15vw] h-[15vw] max-w-[200px] max-h-[150px] rounded-lg"
                   />
                 </div>
                 <div className="flex flex-col column-3 basis-8/12 text-left">
-                  <div className="font-bold text-lg">{items.name}</div>
-                  <div className="font-thin text-slate-400 text-sm">
+                  <div className="font-bold text-lg dark:text-white">
+                    {items.name}
+                  </div>
+                  <div className="font-thin text-slate-400 text-sm dark:text-white dark:opacity-30">
                     {items.address}
                   </div>
                   <p
-                    className="content-detail mb-4"
+                    className="content-detail mb-4 dark:text-white"
                     dangerouslySetInnerHTML={{ __html: items.detail }}
                   ></p>
                 </div>
