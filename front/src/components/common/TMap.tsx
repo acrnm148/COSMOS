@@ -27,7 +27,7 @@ import { useQuery } from "react-query";
 import { getPlacesWithConditions } from "../../apis/api/place";
 import Loading from "./Loading";
 
-export default function TMap() {
+export default function TMap({ offset }: any) {
   const isDark = useRecoilState(darkMode);
   const userSeq = useRecoilState(userState);
   const sidoState = useRecoilState(selectSido);
@@ -50,6 +50,7 @@ export default function TMap() {
       gugunState[0].gugunName,
       wordState[0],
       categoryState[0],
+      offset,
     ],
     queryFn: () =>
       getPlacesWithConditions(
@@ -94,120 +95,122 @@ export default function TMap() {
         const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] =
           [];
 
-        mapMarkersState.map((item: any) => {
+        mapMarkersState.map((item: any, index: number) => {
           if (item.lat !== null || item.lng !== null) {
-            const marker = isDark[0]
-              ? item.type === "restaurant"
+            if (index > offset * 20 && index < offset * 20 + 20) {
+              const marker = isDark[0]
+                ? item.type === "restaurant"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkCutlery,
+                      map: map,
+                      title: item.name,
+                    })
+                  : item.type === "cafe"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkCoffee,
+                      map: map,
+                      title: item.name,
+                    })
+                  : item.type === "culture"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkCinema,
+                      map: map,
+                      title: item.name,
+                    })
+                  : item.type === "accommodation"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkMarker,
+                      map: map,
+                      title: item.name,
+                    })
+                  : item.type === "shopping"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkShopping,
+                      map: map,
+                      title: item.name,
+                    })
+                  : item.type === "tour"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkSuitcase,
+                      map: map,
+                      title: item.name,
+                    })
+                  : item.type === "leisure"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkGym,
+                      map: map,
+                      title: item.name,
+                    })
+                  : new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkMarker,
+                      map: map,
+                      title: item.name,
+                    })
+                : item.type === "restaurant"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkCutlery,
+                    icon: Cutlery,
                     map: map,
                     title: item.name,
                   })
                 : item.type === "cafe"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkCoffee,
+                    icon: Coffee,
                     map: map,
                     title: item.name,
                   })
                 : item.type === "culture"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkCinema,
+                    icon: Cinema,
                     map: map,
                     title: item.name,
                   })
                 : item.type === "accommodation"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkMarker,
+                    icon: LightMarker,
                     map: map,
                     title: item.name,
                   })
                 : item.type === "shopping"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkShopping,
+                    icon: Shopping,
                     map: map,
                     title: item.name,
                   })
                 : item.type === "tour"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkSuitcase,
+                    icon: Suitcase,
                     map: map,
                     title: item.name,
                   })
                 : item.type === "leisure"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkGym,
+                    icon: Gym,
                     map: map,
                     title: item.name,
                   })
                 : new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkMarker,
+                    icon: LightMarker,
                     map: map,
                     title: item.name,
-                  })
-              : item.type === "restaurant"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Cutlery,
-                  map: map,
-                  title: item.name,
-                })
-              : item.type === "cafe"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Coffee,
-                  map: map,
-                  title: item.name,
-                })
-              : item.type === "culture"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Cinema,
-                  map: map,
-                  title: item.name,
-                })
-              : item.type === "accommodation"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: LightMarker,
-                  map: map,
-                  title: item.name,
-                })
-              : item.type === "shopping"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Shopping,
-                  map: map,
-                  title: item.name,
-                })
-              : item.type === "tour"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Suitcase,
-                  map: map,
-                  title: item.name,
-                })
-              : item.type === "leisure"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Gym,
-                  map: map,
-                  title: item.name,
-                })
-              : new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: LightMarker,
-                  map: map,
-                  title: item.name,
-                });
-            newMarkers.push(marker);
+                  });
+              newMarkers.push(marker);
+            }
           }
 
           //   // 웹
@@ -233,120 +236,122 @@ export default function TMap() {
     const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] = [];
     if (window.Tmapv2) {
       if (mapInstance !== undefined) {
-        mapMarkersState.map((item: any) => {
+        mapMarkersState.map((item: any, index: number) => {
           if (item.lat !== null || item.lng !== null) {
-            const marker = isDark[0]
-              ? item.type === "restaurant"
+            if (index > offset * 20 && index < offset * 20 + 20) {
+              const marker = isDark[0]
+                ? item.type === "restaurant"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkCutlery,
+                      map: mapInstance,
+                      title: item.name,
+                    })
+                  : item.type === "cafe"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkCoffee,
+                      map: mapInstance,
+                      title: item.name,
+                    })
+                  : item.type === "culture"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkCinema,
+                      map: mapInstance,
+                      title: item.name,
+                    })
+                  : item.type === "accommodation"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkMarker,
+                      map: mapInstance,
+                      title: item.name,
+                    })
+                  : item.type === "shopping"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkShopping,
+                      map: mapInstance,
+                      title: item.name,
+                    })
+                  : item.type === "tour"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkSuitcase,
+                      map: mapInstance,
+                      title: item.name,
+                    })
+                  : item.type === "leisure"
+                  ? new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkGym,
+                      map: mapInstance,
+                      title: item.name,
+                    })
+                  : new window.Tmapv2.Marker({
+                      position: new window.Tmapv2.LatLng(item.lat, item.lng),
+                      icon: DarkMarker,
+                      map: mapInstance,
+                      title: item.name,
+                    })
+                : item.type === "restaurant"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkCutlery,
+                    icon: Cutlery,
                     map: mapInstance,
                     title: item.name,
                   })
                 : item.type === "cafe"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkCoffee,
+                    icon: Coffee,
                     map: mapInstance,
                     title: item.name,
                   })
                 : item.type === "culture"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkCinema,
+                    icon: Cinema,
                     map: mapInstance,
                     title: item.name,
                   })
                 : item.type === "accommodation"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkMarker,
+                    icon: LightMarker,
                     map: mapInstance,
                     title: item.name,
                   })
                 : item.type === "shopping"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkShopping,
+                    icon: Shopping,
                     map: mapInstance,
                     title: item.name,
                   })
                 : item.type === "tour"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkSuitcase,
+                    icon: Suitcase,
                     map: mapInstance,
                     title: item.name,
                   })
                 : item.type === "leisure"
                 ? new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkGym,
+                    icon: Gym,
                     map: mapInstance,
                     title: item.name,
                   })
                 : new window.Tmapv2.Marker({
                     position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                    icon: DarkMarker,
+                    icon: LightMarker,
                     map: mapInstance,
                     title: item.name,
-                  })
-              : item.type === "restaurant"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Cutlery,
-                  map: mapInstance,
-                  title: item.name,
-                })
-              : item.type === "cafe"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Coffee,
-                  map: mapInstance,
-                  title: item.name,
-                })
-              : item.type === "culture"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Cinema,
-                  map: mapInstance,
-                  title: item.name,
-                })
-              : item.type === "accommodation"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: LightMarker,
-                  map: mapInstance,
-                  title: item.name,
-                })
-              : item.type === "shopping"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Shopping,
-                  map: mapInstance,
-                  title: item.name,
-                })
-              : item.type === "tour"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Suitcase,
-                  map: mapInstance,
-                  title: item.name,
-                })
-              : item.type === "leisure"
-              ? new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: Gym,
-                  map: mapInstance,
-                  title: item.name,
-                })
-              : new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(item.lat, item.lng),
-                  icon: LightMarker,
-                  map: mapInstance,
-                  title: item.name,
-                });
-            newMarkers.push(marker);
+                  });
+              newMarkers.push(marker);
+            }
           }
         });
       }
