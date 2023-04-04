@@ -7,7 +7,7 @@ export interface LUser {
     seq: number;
     isLoggedIn: boolean;
     acToken: string;
-    coupleId: string;
+    coupleId: any;
 }
 export const userState = atom<LUser>({
     key: "userState",

@@ -102,7 +102,7 @@ export default function ServeyPage() {
               <span className="font-baloo text-base">
                 설문을 기반으로 데이트코스를 맞춤 추천해드려요.
               </span>
-              <a href={`https://kauth.kakao.com/oauth/authorize?client_id=097d883a03c0da953d919d990701da5f&redirect_uri=http://localhost:3000/login/oauth&response_type=code&scope=age_range,birthday`}>
+              <a href={`https://kauth.kakao.com/oauth/authorize?client_id=097d883a03c0da953d919d990701da5f&redirect_uri=http://localhost:3000/login/oauth&response_type=code`}>
                 <button
                   onClick={submit}
                   className="w-full flex h-12 border-solid border-2 border-darkMain justify-center p-3 text-center rounded-lg w-full 

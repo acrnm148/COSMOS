@@ -1,3 +1,6 @@
+import { CATE_QA }  from "../../recoil/states/PlaceState"
+import {CATEGORY_QA} from "../../recoil/states/PlaceState"
+import { COMMON_QA } from "../../recoil/states/PlaceState";
 import axios from "axios"
 import React, { useEffect, useRef, useState, useCallback, MouseEvent } from "react"
 import { NavLink, useLocation } from "react-router-dom"
@@ -18,29 +21,6 @@ import { postReview, putReview } from "../../apis/api/review";
 import { userState } from "../../recoil/states/UserState";
 import { useRecoilState } from "recoil";
 
-export function ScheduleReview(){
-    return (
-        <div>
-            일정 상세 리뷰
-        </div>
-    )
-}
-
-interface CATE_QA {
-    [key : string] : string[], '음식' : string[], '카페' : string[], '문화' : string[],'쇼핑' : string[], '관광' : string[], '운동' : string[],'축제' : string[]
-}
-{/* 카테고리별 선택지 */}
-const CATEGORY_QA:CATE_QA = {
-    '음식' : ['음식이 맛있어요', '서비스가 좋아요', '가게만의 메뉴가 있어요', '가성비가 좋아요', '가게가 깨끗해요'],
-    '카페' : ['메뉴가 다양해요', '커피가 맛있어요', '인테리어가 감각적이에요', '테라스가 있어요', '공간이 넓고 쾌적해요'],
-    '문화' : ['이용이 편리해요', '서비스가 좋아요','편의시설이 잘 되어있어요', '컨텐츠가 유익해요',  '공간이 깔끔해요' ],
-    '쇼핑' : ['매장이 다양해요', '서비스가 좋아요','편의시설이 잘 되어있어요', '가성비가 좋아요',  '공간이 깔끔해요' ],
-    '관광' : ['볼거리가 다양해요', '안내가 잘 되어있어요','부대시설이 잘 되어있어요', '풍경맛집이에요',  '사람이 많아요'],
-    '운동' : ['활동시설이 다양해요', '서비스가 친절해요','편의시설이 잘 되어있어요', '가성비가 좋아요',  '시설이 깔끔해요' ],
-    '축제' : ['볼거리가 다양해요', '서비스가 좋아요','편의시설이 잘 되어있어요', '컨텐츠가 유익해요',  '공간이 깔끔해요' ]
-}
-{/* 공통 선택지 */}
-const COMMON_QA = ['접근성이 좋아요', '분위기가 좋아요', '반려동물 동반이 가능해요', '주차 지원이 가능해요', '사진찍기 좋아요']
 
 export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, category:string, setShowReview:Function, edit:boolean}){
     const [loginUser, setLoginUSer] = useRecoilState(userState)
@@ -144,7 +124,7 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
                 })
                 .then((con: { data: any }) => {
                     console.log('이미지주소불러오기 성공', con.data);
-                    setUplodedImg([...uploadedImg, con.data])
+                    setUplodedImg([...uploadedImg, con.data[0]])
                     // setImgUrlS3(con.data);
                 })
                 .catch((err: any) => {
@@ -174,7 +154,7 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
             userSeq: loginUser.seq,
          })
          // 리뷰등록/수정 닫고 장소 상세페이지로 이동
-            props.setShowReview(false)
+            // props.setShowReview(false)
         }
     }, [review])
     // 리뷰 submit
