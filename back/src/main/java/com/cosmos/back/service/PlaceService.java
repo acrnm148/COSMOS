@@ -96,7 +96,6 @@ public class PlaceService {
                     .gugunName(item.getGugunName())
                     .build());
         }
-        System.out.println("gugunDtoList = 캭" + gugunDtoList);
         return gugunDtoList;
     }
 

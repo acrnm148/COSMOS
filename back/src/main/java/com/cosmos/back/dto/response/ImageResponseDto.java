@@ -14,4 +14,5 @@ public class ImageResponseDto {
     private String imageUrl;
     private Long reviewId;
     private String createdTime;
+    private Long placeId;
 }
