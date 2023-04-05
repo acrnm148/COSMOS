@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @EnableMockMvc
 public class SseRepositoryTest {
 
-<<<<<<< HEAD
     @Autowired
     private NotificationRepository notificationRepository;
 
@@ -91,7 +90,6 @@ public class SseRepositoryTest {
         assertThat(result).isEqualTo(5);
 
     }
-=======
 //    @Autowired
 //    private NotificationRepository notificationRepository;
 //
@@ -152,6 +150,5 @@ public class SseRepositoryTest {
 //        assertThat(result).isEqualTo(5);
 //
 //    }
->>>>>>> 5e8dba5067aceae45e0bd1afcfaaf510c88764b2
 
 }
