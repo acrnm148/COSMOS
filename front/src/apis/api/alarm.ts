@@ -7,7 +7,11 @@ import { AxiosAuthApi, defaultInstance } from "../utils";
  * GET : 알림 리스트 데이터를 가져온다.
  * @returns [] : 알림 리스트
  */
-export const getAlarmList = async (userSeq: number) => {
+interface alarmListParam {
+    userSeq: number;
+    click: boolean;
+}
+export const getAlarmList = async ({ userSeq, click }: alarmListParam) => {
     const { data } = await defaultInstance.get(`noti/list/${userSeq}`);
     return data;
 };

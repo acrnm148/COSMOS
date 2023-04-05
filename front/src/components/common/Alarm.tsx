@@ -16,7 +16,7 @@ export default function Alarm() {
     let subscribeUrl =
         process.env.REACT_APP_API_URL + `/noti/subscribe/${userSeq.seq}`;
     const [message, setMessage] = useState();
-    const [isCheck, setIscheck] = useState(false);
+    const [click, setClick] = useState(false);
     const [show, setShow] = useState(false);
 
     useEffect(() => {
@@ -45,7 +45,28 @@ export default function Alarm() {
             eventSource.addEventListener("connect", function (e: any) {
                 // console.log("connect: " + e.data);
             });
-            eventSource.addEventListener("sse", function (e: any) {
+            // 커플 연결 매칭
+            eventSource.addEventListener("makeCouple", function (e: any) {
+                console.log(e.data);
+            });
+            // 커플 연결 끊김
+            eventSource.addEventListener("removeCouple", function (e: any) {
+                console.log(e.data);
+            });
+            // 일정 등록 알림
+            eventSource.addEventListener("makePlan", function (e: any) {
+                console.log(e.data);
+            });
+            // 찜하기 알림 (상대방이 찜한 경우 알림)
+            eventSource.addEventListener("makeWish", function (e: any) {
+                console.log(e.data);
+            });
+            // 상대방 리뷰 등록 알림
+            eventSource.addEventListener("makeReview", function (e: any) {
+                console.log(e.data);
+            });
+            // 리뷰 요청 알림 (일정 종료 후)
+            eventSource.addEventListener("requestReview", function (e: any) {
                 console.log(e.data);
             });
             eventSource.addEventListener("error", function (e: any) {
@@ -56,7 +77,28 @@ export default function Alarm() {
         eventSource.addEventListener("connect", function (e: any) {
             // console.log("connect: " + e.data);
         });
-        eventSource.addEventListener("sse", function (e: any) {
+        // 커플 연결 매칭
+        eventSource.addEventListener("makeCouple", function (e: any) {
+            console.log(e.data);
+        });
+        // 커플 연결 끊김
+        eventSource.addEventListener("removeCouple", function (e: any) {
+            console.log(e.data);
+        });
+        // 일정 등록 알림
+        eventSource.addEventListener("makePlan", function (e: any) {
+            console.log(e.data);
+        });
+        // 찜하기 알림 (상대방이 찜한 경우 알림)
+        eventSource.addEventListener("makeWish", function (e: any) {
+            console.log(e.data);
+        });
+        // 상대방 리뷰 등록 알림
+        eventSource.addEventListener("makeReview", function (e: any) {
+            console.log(e.data);
+        });
+        // 리뷰 요청 알림 (일정 종료 후)
+        eventSource.addEventListener("requestReview", function (e: any) {
             console.log(e.data);
         });
         eventSource.addEventListener("error", function (e: any) {
@@ -72,8 +114,8 @@ export default function Alarm() {
     const res = useQueries([
         {
             // list
-            queryKey: ["getAlarmList", "userSeq"],
-            queryFn: () => getAlarmList(userSeq.seq),
+            queryKey: ["getAlarmList", "userSeq", "click"],
+            queryFn: () => getAlarmList({ userSeq: userSeq.seq, click: click }),
         },
         {
             // 안 읽은 알림 개수
@@ -110,6 +152,7 @@ export default function Alarm() {
                 overlap="circular"
                 onClick={() => {
                     setShow(!show);
+                    setClick(!click);
                 }}
             >
                 <Icon
@@ -117,9 +160,6 @@ export default function Alarm() {
                     color="white"
                     width="35"
                     height="40"
-                    onClick={() => {
-                        setIscheck(false);
-                    }}
                 />
             </Badge>
 
