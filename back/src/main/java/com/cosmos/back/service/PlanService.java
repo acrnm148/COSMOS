@@ -5,10 +5,12 @@ import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.model.Course;
 import com.cosmos.back.model.CoursePlace;
 import com.cosmos.back.model.Plan;
+import com.cosmos.back.model.User;
 import com.cosmos.back.repository.course.CoursePlaceRepository;
 import com.cosmos.back.repository.course.CourseRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.plan.PlanRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +28,11 @@ import static java.time.LocalDateTime.now;
 public class PlanService {
 
     private final PlaceRepository placeRepository;
+    private final UserRepository userRepository;
     private final PlanRepository planRepository;
     private final CourseRepository courseRepository;
     private final CoursePlaceRepository coursePlaceRepository;
+    private final NotificationService notificationService;
 
     /**
      * 커플 일정 생성
@@ -62,6 +66,13 @@ public class PlanService {
         planRepository.save(plan);
 
         System.out.println("커플 일정 생성 완료");
+        // 알림 전송
+        if (dto.getCoupleId() != 0 && dto.getCoupleId() != null) {
+            List<User> couple = userRepository.findByCoupleId(dto.getCoupleId());
+            notificationService.send("makePlan", couple.get(0).getUserSeq(), "일정이 등록되었습니다.");
+            notificationService.send("makePlan", couple.get(1).getUserSeq(), "일정이 등록되었습니다.");
+        }
+
         return plan;
     }
 
@@ -95,7 +106,14 @@ public class PlanService {
         plan.setEndDate(dto.getEndDate());
         plan.setUpdateTime(now());
         planRepository.save(plan);
-        System.out.println("커플 일정 생성 완료");
+        System.out.println("커플 일정 수정 완료");
+
+        // 알림 전송
+        if (dto.getCoupleId() != 0 && dto.getCoupleId() != null) {
+            List<User> couple = userRepository.findByCoupleId(dto.getCoupleId());
+            notificationService.send("updatePlan", couple.get(0).getUserSeq(), "일정이 수정되었습니다.");
+            notificationService.send("updatePlan", couple.get(1).getUserSeq(), "일정이 수정되었습니다.");
+        }
         return plan;
     }
 
@@ -106,6 +124,13 @@ public class PlanService {
         Plan plan = planRepository.findByIdAndCoupleId(planId, coupleId);
         System.out.println("커플 일정 삭제 완료, id:"+planId);
         planRepository.delete(plan);
+
+        // 알림 전송
+        if (coupleId != 0 && coupleId != null) {
+            List<User> couple = userRepository.findByCoupleId(coupleId);
+            notificationService.send("deletePlan", couple.get(0).getUserSeq(), "일정이 삭제되었습니다.");
+            notificationService.send("deletePlan", couple.get(1).getUserSeq(), "일정이 삭제되었습니다.");
+        }
     }
 
     /**
