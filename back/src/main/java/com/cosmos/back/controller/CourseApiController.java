@@ -42,7 +42,7 @@ public class CourseApiController {
     }
 
     @Operation(summary = "코스 찜", description = "코스 찜")
-    @PutMapping("/courses")
+    @PutMapping("/courses/users/{userSeq}")
     public ResponseEntity<Long> likeCourse(@RequestBody CourseNameRequestDto dto) {
         Map<String, String> map = courseService.likeCourse(dto.getCourseId(), dto.getName());
 

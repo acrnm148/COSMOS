@@ -41,6 +41,9 @@ public class Course {
     @Column(name = "wish")
     private Boolean wish; // 찜
 
+    @Column(name = "couple_id")
+    private Long coupleId; // 커플 아이디
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_seq")
     @JsonIgnore
