@@ -91,7 +91,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         return executeReviewImages;
     }
 
-    // 장소별로 유저, 커플아이디를 이용해 리뷰 모두 불러오기
+    // 장소별로 유저 Seq를 이용해 리뷰 모두 불러오기
     @Override
     public List<Review> findReviewInPlaceUserCoupleQueryDsl(Long userSeq, Long placeId, Integer limit, Integer offset) {
         QReview qReview = QReview.review;

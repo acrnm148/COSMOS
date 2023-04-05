@@ -56,6 +56,7 @@ class PlaceRepositoryTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
+
     @Test
     @DisplayName("PlaceRepository 쇼핑상세정보가져오기")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
@@ -199,10 +200,10 @@ class PlaceRepositoryTest {
         reviewPlaceRepository.save(reviewPlaceFestival);
 
         //when
-        List<PlaceSearchListResponseDto> test1 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", "갈비", "restaurant", 10, 0);
-        List<PlaceSearchListResponseDto> test2 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "해운대구", "축제", "festival", 10, 0);
-        List<PlaceSearchListResponseDto> test3 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "갈비", "restaurant", 10, 0);
-        List<PlaceSearchListResponseDto> test4 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", null, null, 10, 0);
+        List<PlaceSearchListResponseDto> test1 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", "갈비", "restaurant");
+        List<PlaceSearchListResponseDto> test2 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "해운대구", "축제", "festival");
+        List<PlaceSearchListResponseDto> test3 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "갈비", "restaurant");
+        List<PlaceSearchListResponseDto> test4 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", null, null);
 
         //then
         assertEquals(test1.get(0).getPlaceId(), place.getId());
@@ -292,4 +293,73 @@ class PlaceRepositoryTest {
         assertEquals(result.getPlaceId(), place.getId());
 
     }
+
+    @Test
+    @DisplayName("SimplePlaceDto courseId를 통해 내용 가져오기")
+    @WithMockUser(username = "테스트_최고관리자", roles={"SUPER"})
+    public void findSimplePlaceDtoByCourseIdQueryDslTest() throws Exception{
+        //given
+        User user = User.builder().coupleId(1L).build();
+        userRepository.save(user);
+        Place place = Place.builder().name("placeTest").build();
+        placeRepository.save(place);
+        Course course = Course.builder().coursePlaces(new ArrayList<>()).user(user).build();
+        courseRepository.save(course);
+        CoursePlace coursePlace = CoursePlace.builder().place(place).course(course).build();
+        coursePlaceRepository.save(coursePlace);
+
+        //when
+        List<SimplePlaceDto> result = placeRepository.findSimplePlaceDtoByCourseIdQueryDsl(course.getId());
+
+        //then
+        assertEquals(result.get(0).getPlaceId(), place.getId());
+
+    }
+
+    @Test
+    @DisplayName("유저가 찜한 장소 삭제")
+    @WithMockUser(username = "테스트_최고관리자", roles={"SUPER"})
+    public void deleteUserPlaceQueryDslTest() throws Exception {
+        //given
+        User user = User.builder().coupleId(1L).build();
+        userRepository.save(user);
+        Place place = Place.builder().name("placeTest").build();
+        placeRepository.save(place);
+        UserPlace userPlace = UserPlace.builder().place(place).user(user).build();
+        userPlaceRepository.save(userPlace);
+
+        //when
+        Long result = userPlaceRepository.deleteUserPlaceQueryDsl(place.getId(), user.getUserSeq());
+
+        //then
+        assertThat(result).isEqualTo(1L);
+
+    }
+
+    @Test
+    @DisplayName("유저가 찜한 장소 찾기")
+    @WithMockUser(username = "테스트_최고관리자", roles={"SUPER"})
+    public void findLikePlacesTest() throws Exception {
+        //given
+        User user = User.builder().reviews(new ArrayList<>()).coupleId(1L).build();
+        userRepository.save(user);
+        Place place = Place.builder().name("placeTest").build();
+        placeRepository.save(place);
+        UserPlace userPlace = UserPlace.builder().place(place).user(user).build();
+        userPlaceRepository.save(userPlace);
+        Review review = Review.builder().user(user).score(5).build();
+        reviewRepository.save(review);
+        ReviewPlace reviewPlace = ReviewPlace.builder().place(place).review(review).build();
+        reviewPlaceRepository.save(reviewPlace);
+
+        //when
+        List<PlaceListResponseDto> result = userPlaceRepository.findLikePlaces(user.getUserSeq(), 10, 0);
+
+        //then
+        assertThat(result.size()).isEqualTo(1);
+
+
+    }
+
 }
+

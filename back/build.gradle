@@ -54,7 +54,8 @@ jacocoTestCoverageVerification {
                     '*.dto*',
                     '*.KakaoProfile*',
                     '*.KakaoToken*',
-                    '*.KakaoService'
+                    '*.KakaoService',
+                    '*.Util*',
             ] + Qdomains // 제외할 Qdomains 패턴 추가
         }
     }
@@ -87,7 +88,8 @@ jacocoTestReport {
                             '**/dto*',
                             '**.KakaoProfile*',
                             '**.KakaoToken*',
-                            '**.KakaoService'
+                            '**.KakaoService',
+                            '**/util*',
                     ] + Qdomains)
                 })
         )

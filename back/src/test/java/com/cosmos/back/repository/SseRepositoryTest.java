@@ -3,10 +3,8 @@ package com.cosmos.back.repository;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.config.TestConfig;
 import com.cosmos.back.model.Notification;
-import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.model.User;
 import com.cosmos.back.repository.noti.EmitterRepository;
-import com.cosmos.back.repository.noti.EmitterRepositoryImpl;
 import com.cosmos.back.repository.noti.NotificationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @EnableMockMvc
 public class SseRepositoryTest {
 
+<<<<<<< HEAD
     @Autowired
     private NotificationRepository notificationRepository;
 
@@ -62,7 +61,7 @@ public class SseRepositoryTest {
         //given
         User user = User.builder().userSeq(1L).build();
         for(int i = 0; i < 5; i++) {
-            Notification notification = Notification.builder().notificationType(NotificationType.ACCEPT).isRead(false).receiver(user).build();
+            Notification notification = Notification.builder().event("test").isRead(false).receiver(user).build();
             notificationRepository.save(notification);
         }
 
@@ -81,7 +80,7 @@ public class SseRepositoryTest {
         //given
         User user = User.builder().userSeq(1L).build();
         for(int i = 0; i < 5; i++) {
-            Notification notification = Notification.builder().notificationType(NotificationType.ACCEPT).isRead(false).receiver(user).build();
+            Notification notification = Notification.builder().event("test").isRead(false).receiver(user).build();
             notificationRepository.save(notification);
         }
 
@@ -92,5 +91,67 @@ public class SseRepositoryTest {
         assertThat(result).isEqualTo(5);
 
     }
+=======
+//    @Autowired
+//    private NotificationRepository notificationRepository;
+//
+//    @Autowired
+//    private EmitterRepository emitterRepository;
+//
+//    @Test
+//    @DisplayName("emiter 저장")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void saveTest() throws Exception {
+//        //given
+//        Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+//        String emitterId = "emitterId";
+//        SseEmitter sseEmitter = new SseEmitter();
+//
+//        //when
+//        SseEmitter result = emitterRepository.save(emitterId, sseEmitter);
+//
+//        //then
+//        assertEquals(result, sseEmitter);
+//
+//    }
+//
+//    @Test
+//    @DisplayName("유저가 받은 알림 리스트")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void findAllByUserSeqTest() throws Exception {
+//        //given
+//        User user = User.builder().userSeq(1L).build();
+//        for(int i = 0; i < 5; i++) {
+//            Notification notification = Notification.builder().notificationType(NotificationType.ACCEPT).isRead(false).receiver(user).build();
+//            notificationRepository.save(notification);
+//        }
+//
+//        //when
+//        List<Notification> result = notificationRepository.findAllByUserSeq(1L);
+//
+//        //then
+//        assertThat(result.size()).isEqualTo(5);
+//
+//    }
+//
+//    @Test
+//    @DisplayName("안읽은 알림 개수")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void countUnReadNotificationsTest() throws Exception {
+//        //given
+//        User user = User.builder().userSeq(1L).build();
+//        for(int i = 0; i < 5; i++) {
+//            Notification notification = Notification.builder().notificationType(NotificationType.ACCEPT).isRead(false).receiver(user).build();
+//            notificationRepository.save(notification);
+//        }
+//
+//        //when
+//        Long result = notificationRepository.countUnReadNotifications(1L);
+//
+//        //then
+//        assertThat(result).isEqualTo(5);
+//
+//    }
+>>>>>>> 5e8dba5067aceae45e0bd1afcfaaf510c88764b2
 
 }

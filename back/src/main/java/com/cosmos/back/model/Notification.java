@@ -1,5 +1,6 @@
 package com.cosmos.back.model;
 
+import com.cosmos.back.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Generated
 public class Notification {
 
     @Id
@@ -19,14 +21,10 @@ public class Notification {
     @Column(name = "notification_id")
     private Long id;
 
-    private String content; //내용
+    private String event; //내용
 
     @Column(nullable = false)
     private Boolean isRead; //읽음여부
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private NotificationType notificationType; //알림 타입
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,18 +32,17 @@ public class Notification {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver; //알림받는 사람
 
-    private String url;
+    private String content;
 
     public void read() {
         isRead = true;
     }
 
     @Builder
-    public Notification(User receiver, NotificationType notificationType, String content, String url, Boolean isRead) throws Exception {
+    public Notification(String event, User receiver, Boolean isRead, String content) throws Exception {
         this.receiver = receiver;
-        this.notificationType = notificationType;
-        this.content = content;
-        this.url = url;
+        this.event = event;
         this.isRead = isRead;
+        this.content= content;
     }
 }

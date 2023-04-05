@@ -379,7 +379,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
 
     // 시/도, 구/군, 검색어, 검색필터를 통한 장소 검색
     @Override
-    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter) {
         QPlace qPlace = QPlace.place;
         QReview qReview = QReview.review;
         QFestival qFestival = QFestival.festival;
@@ -421,8 +421,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         .on(qPlace.id.eq(qFestival.id))
                         .where(builder)
                         .groupBy(qPlace.id)
-                        .limit(limit)
-                        .offset(offset)
                         .fetch();
             } else {
                 builder.and(qPlace.type.contains(filter));
@@ -447,8 +445,6 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .fetchJoin()
                 .where(builder)
                 .groupBy(qPlace.id)
-                .limit(limit)
-                .offset(offset)
                 .fetch();
     }
 

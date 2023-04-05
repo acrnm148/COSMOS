@@ -14,5 +14,5 @@ public interface ImageRepositoryCustom {
     public List<ImageResponseDto> findDayImage(Long coupleId, Long day);
 
     // QueryDsl로 전체 이미지 가져오기
-    public List<Image> findAllByCoupleId(Long coupleId, Integer limit, Integer offset);
+    public List<ImageResponseDto> findAllByCoupleId(Long coupleId, Integer limit, Integer offset);
 }

@@ -47,6 +47,7 @@ public class CourseApiControllerTest {
     @SpyBean
     private JwtService jwtService;
 
+
     @Test
     @DisplayName("CourseApiController 코스 생성(추천 알고리즘)")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
@@ -367,4 +368,5 @@ public class CourseApiControllerTest {
 
         Assertions.assertThat(response).contains("1995");
     }
+
 }

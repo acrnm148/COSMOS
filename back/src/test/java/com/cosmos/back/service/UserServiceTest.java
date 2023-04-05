@@ -3,14 +3,11 @@ package com.cosmos.back.service;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.user.UserProfileDto;
 import com.cosmos.back.dto.user.UserUpdateDto;
-import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.model.User;
 import com.cosmos.back.repository.user.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -102,9 +99,11 @@ public class UserServiceTest {
         //given
         User user = User.builder()
                 .userSeq(1L)
+                .coupleId(0L)
                 .build();
         User coupleUser = User.builder()
                 .userSeq(2L)
+                .coupleId(0L)
                 .build();
         User coupleUser2 = null;
         User user3 = User.builder()
@@ -122,7 +121,7 @@ public class UserServiceTest {
         when(userRepository.findByUserSeq(4L)).thenReturn(user3);
         when(userRepository.findByUserSeq(5L)).thenReturn(coupleUser3);
 
-        doNothing().when(notificationService).send(anyLong(), any(NotificationType.class), anyString(),anyString());
+        doNothing().when(notificationService).send(anyString(), anyLong(), anyString());
 
         //when
         Long code = userService.acceptCouple(1L,2L, 123123L);

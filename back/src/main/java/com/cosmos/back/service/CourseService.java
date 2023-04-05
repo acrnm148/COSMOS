@@ -1,5 +1,6 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.dto.SimplePlaceDto;
 import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
@@ -41,6 +42,7 @@ public class CourseService {
 
     // 코스 생성(추천 알고리즘)
     @Transactional
+    @Generated
     public CourseResponseDto createCourse(CourseRequestDto dto) throws JsonProcessingException {
         // 1. 데이트 코스 생성 후 저장
         Course course = saveCourse(dto.getUserSeq());
@@ -394,6 +396,20 @@ public class CourseService {
 
             places.add(place);
         }
+
+        int count = 0;
+        double midLatitude = 0.0;
+        double midLongitude = 0.0;
+        for (SimplePlaceDto place : places) {
+            if (place.getLatitude() != null && place.getLongitude() != null) {
+                midLatitude += Double.parseDouble(place.getLatitude());
+                midLongitude += Double.parseDouble(place.getLongitude());
+                count++;
+            }
+        }
+
+        courseResponseDto.setMidLatitude(midLatitude / count);
+        courseResponseDto.setMidLatitude(midLongitude / count);
 
         courseResponseDto.setPlaces(places);
 

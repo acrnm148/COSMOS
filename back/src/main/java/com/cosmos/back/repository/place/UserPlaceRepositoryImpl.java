@@ -19,6 +19,7 @@ public class UserPlaceRepositoryImpl implements UserPlaceRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
+    // 유저가 찜한 장소 좋아요 취소
     @Override
     public Long deleteUserPlaceQueryDsl (Long placeId, Long userSeq) {
         QUserPlace qUserPlace = QUserPlace.userPlace;
@@ -31,6 +32,7 @@ public class UserPlaceRepositoryImpl implements UserPlaceRepositoryCustom{
         return execute;
     }
 
+    // 찜한 장소 찾기
     @Override
     public List<PlaceListResponseDto> findLikePlaces(Long userSeq, Integer limit, Integer offset) {
         QUserPlace qUserPlace = QUserPlace.userPlace;
