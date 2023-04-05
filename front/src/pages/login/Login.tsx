@@ -17,9 +17,8 @@ export default function Login() {
           간편하게 코스모스를 시작해보세요!
         </p>
         <a
-        // /login/oauth
-        // /api/login/oauth2/
-          href={`https://kauth.kakao.com/oauth/authorize?client_id=097d883a03c0da953d919d990701da5f&redirect_uri=https://j8e104.p.ssafy.io/api/login/oauth2/code/kakao&response_type=code`}
+        // https://j8e104.p.ssafy.io/login/oauth2
+          href={`https://kauth.kakao.com/oauth/authorize?client_id=097d883a03c0da953d919d990701da5f&redirect_uri=https://j8e104.p.ssafy.io/login/oauth2&response_type=code`}
         >
           <button className="h-12 w-5/6 rounded-md flex justify-center m-auto">
             <img
