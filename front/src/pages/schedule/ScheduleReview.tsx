@@ -22,13 +22,12 @@ import { userState } from "../../recoil/states/UserState";
 import { useRecoilState } from "recoil";
 
 
-export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, category:string, setShowReview:Function, edit:boolean}){
+export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined, isReview:boolean, category:string, setShowReview:Function, edit:boolean}){
     const [loginUser, setLoginUSer] = useRecoilState(userState)
     const inputRef = useRef<HTMLInputElement | null>(null);
     const uploadImgBtn = useCallback(() =>{
         inputRef.current?.click()
     },[])
-    console.log('review',props.category)
     // 리뷰 정보
     const [cateQ, setCateQ] = useState<string | undefined>()
     const [commonQ, setCommonQ] = useState<string | undefined>()
@@ -38,7 +37,7 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
     const [photos, setPhotos] = useState<string[] | undefined>()
     const [score, setScore] = useState<number>()
     const reviewId = props.review?.reviewId
-    const placeId = props.review?.placeId
+    const placeId = props.placeId
 
     const [clicked, setClicked] = useState([false, false, false, false, false])
 
@@ -154,13 +153,14 @@ export function ReviewForm(props:{review:REVIEW|undefined, isReview:boolean, cat
             userSeq: loginUser.seq,
          })
          // 리뷰등록/수정 닫고 장소 상세페이지로 이동
-            // props.setShowReview(false)
+         props.setShowReview(false)
         }
+        console.log('review',review)
     }, [review])
     // 리뷰 submit
     function submit(){
         setSubmit(true)
-        // 리뷰 수정/ 등록
+        // 리뷰 수정/ 등록 창
 
         setReview({
             "placeId" : placeId,
