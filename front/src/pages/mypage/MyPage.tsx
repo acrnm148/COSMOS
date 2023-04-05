@@ -170,8 +170,8 @@ interface Place{
   return (
     <div className="">
       <div className="flex w-screen items-center content-center ">
-        <div className="w-full flex m-auto flex-col justify-center items-center md:w-5/6 lg:w-3/6 overflow-y-scroll mb-[100px] overflow-x-hidden">
-          <div className="profile justify-center items-end flex mt-5 mb-2 h-20">
+        <div className="w-full flex m-auto flex-col justify-center items-center  md:w-5/6 lg:w-3/6 overflow-y-scroll mb-[100px] overflow-x-hidden">
+          <div className="profile justify-center items-end flex mt-5 mb-2 h-20 mt-10 " >
               {userInfo?.coupleYn === 'Y' ?
               <>
               <div className={"rounded-full w-[14vw] h-[14vw] hover:w-[15vw] hover:h-[15vw] max-w-[950px]"}>
