@@ -6,14 +6,11 @@ import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.request.NotificationRequestDto;
 import com.cosmos.back.dto.response.NotificationDto;
-import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.service.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.ArrayList;
@@ -143,9 +139,9 @@ public class SseControllerTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void sendNotificationsTest() throws Exception {
         //given
-        NotificationRequestDto dto = NotificationRequestDto.builder().userSeq(1L).content("contentTest").url("urlTest").build();
+        NotificationRequestDto dto = NotificationRequestDto.builder().userSeq(1L).build();
 
-        doNothing().when(notificationService).send(dto.getUserSeq(), NotificationType.MESSAGE, dto.getContent(), dto.getUrl());
+        doNothing().when(notificationService).send(dto.getEvent(), dto.getUserSeq(), dto.getContent());
         String content = objectMapper.writeValueAsString(dto);
 
         //when
@@ -154,7 +150,7 @@ public class SseControllerTest {
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
 
-        verify(notificationService, times(1)).send(dto.getUserSeq(), NotificationType.MESSAGE, dto.getContent(), dto.getUrl());
+        verify(notificationService, times(1)).send(dto.getEvent(), dto.getUserSeq(), dto.getContent());
         assertEquals(mvcResult.getResponse().getContentAsString(), "전송 완료");
     }
 

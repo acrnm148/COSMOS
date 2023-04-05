@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.ArrayList;
@@ -184,14 +185,136 @@ class ReviewRepositoryImplTest {
     }
 
     @Test
+    @DisplayName("ReviewRepositoryImpl 장소별로 유저 Seq를 이용해 리뷰 모두 불러오기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void findReviewInPlaceUserCoupleQueryDsl() {
+        User user = User.builder().userName("mock user").reviews(new ArrayList<>()).build();
+        userRepository.save(user);
+
+        Review review1 = Review.createReview(user, "mock contents", 5, "20230404", "mock nickname1", true, true);
+        Review review2 = Review.createReview(user, "mock contents", 4, "20230404", "mock nickname2", true, false);
+
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+
+        Image image1 = Image.createImage("image url 1", 1L, review1);
+        Image image2 = Image.createImage("image url 2", 1L, review2);
+
+        imageRepository.save(image1);
+        imageRepository.save(image2);
+
+
+        Place place = Place.builder().reviewPlaces(new ArrayList<>()).build();
+        placeRepository.save(place);
+
+        ReviewPlace reviewPlace1 = ReviewPlace.createReviewPlace(review1, place);
+        ReviewPlace reviewPlace2 = ReviewPlace.createReviewPlace(review2, place);
+
+        reviewPlaceRepository.save(reviewPlace1);
+        reviewPlaceRepository.save(reviewPlace2);
+
+        List<Review> reviews = reviewRepository.findReviewInPlaceUserCoupleQueryDsl(user.getUserSeq(), place.getId(), 10, 0);
+
+        assertThat(reviews.size()).isEqualTo(2);
+        assertThat(reviews.get(0).getId()).isEqualTo(review1.getId());
+        assertThat(reviews.get(1).getId()).isEqualTo(review2.getId());
     }
 
     @Test
+    @DisplayName("ReviewRepositoryImpl 장소 ID로 모든 리뷰 불러오기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void findReviewInPlaceQueryDsl() {
+        User user = User.builder().userName("mock user").reviews(new ArrayList<>()).build();
+        userRepository.save(user);
+
+        Review review1 = Review.createReview(user, "mock contents", 5, "20230404", "mock nickname1", true, true);
+        Review review2 = Review.createReview(user, "mock contents", 4, "20230404", "mock nickname2", true, false);
+
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+
+        Image image1 = Image.createImage("image url 1", 1L, review1);
+        Image image2 = Image.createImage("image url 2", 1L, review2);
+
+        imageRepository.save(image1);
+        imageRepository.save(image2);
+
+
+        Place place = Place.builder().reviewPlaces(new ArrayList<>()).build();
+        placeRepository.save(place);
+
+        ReviewPlace reviewPlace1 = ReviewPlace.createReviewPlace(review1, place);
+        ReviewPlace reviewPlace2 = ReviewPlace.createReviewPlace(review2, place);
+
+        reviewPlaceRepository.save(reviewPlace1);
+        reviewPlaceRepository.save(reviewPlace2);
+
+        ReviewCategory reviewCategory1 = ReviewCategory.createReviewCategory("뷰가 좋아요", review1);
+        ReviewCategory reviewCategory2 = ReviewCategory.createReviewCategory("맛이 좋아요", review2);
+
+        reviewCategoryRepository.save(reviewCategory1);
+        reviewCategoryRepository.save(reviewCategory2);
+
+        IndiReviewCategory indiReviewCategory1 = IndiReviewCategory.createIndiReviewCategory("사랑", review1);
+        IndiReviewCategory indiReviewCategory2 = IndiReviewCategory.createIndiReviewCategory("우정", review2);
+
+        indiReviewCategoryRepository.save(indiReviewCategory1);
+        indiReviewCategoryRepository.save(indiReviewCategory2);
+
+        List<Review> reviews = reviewRepository.findReviewInPlaceQueryDsl(place.getId(), 10, 0);
+
+        assertThat(reviews.size()).isEqualTo(2);
+        assertThat(reviews.get(0).getId()).isEqualTo(review1.getId());
+        assertThat(reviews.get(1).getId()).isEqualTo(review2.getId());
+        assertThat(reviews.get(0).getReviewCategories().get(0).getReviewCategoryCode()).isEqualTo("뷰가 좋아요");
+        assertThat(reviews.get(0).getIndiReviewCategories().get(0).getReviewCategory()).isEqualTo("사랑");
     }
 
     @Test
+    @DisplayName("ReviewRepositoryImpl 유저 ID로 내 리뷰 모두 불러오기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void findReviewInUserQueryDsl() {
+        User user = User.builder().userName("mock user").reviews(new ArrayList<>()).build();
+        userRepository.save(user);
+
+        Review review1 = Review.createReview(user, "mock contents", 5, "20230404", "mock nickname1", true, true);
+        Review review2 = Review.createReview(user, "mock contents", 4, "20230404", "mock nickname2", true, false);
+
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+
+        Image image1 = Image.createImage("image url 1", 1L, review1);
+        Image image2 = Image.createImage("image url 2", 1L, review2);
+
+        imageRepository.save(image1);
+        imageRepository.save(image2);
+
+
+        Place place = Place.builder().reviewPlaces(new ArrayList<>()).build();
+        placeRepository.save(place);
+
+        ReviewPlace reviewPlace1 = ReviewPlace.createReviewPlace(review1, place);
+        ReviewPlace reviewPlace2 = ReviewPlace.createReviewPlace(review2, place);
+
+        reviewPlaceRepository.save(reviewPlace1);
+        reviewPlaceRepository.save(reviewPlace2);
+
+        ReviewCategory reviewCategory1 = ReviewCategory.createReviewCategory("뷰가 좋아요", review1);
+        ReviewCategory reviewCategory2 = ReviewCategory.createReviewCategory("맛이 좋아요", review2);
+
+        reviewCategoryRepository.save(reviewCategory1);
+        reviewCategoryRepository.save(reviewCategory2);
+
+        IndiReviewCategory indiReviewCategory1 = IndiReviewCategory.createIndiReviewCategory("사랑", review1);
+        IndiReviewCategory indiReviewCategory2 = IndiReviewCategory.createIndiReviewCategory("우정", review2);
+
+        indiReviewCategoryRepository.save(indiReviewCategory1);
+        indiReviewCategoryRepository.save(indiReviewCategory2);
+
+        List<Review> reviews = reviewRepository.findReviewInUserQueryDsl(user.getUserSeq(), 10, 0);
+
+        assertThat(reviews.size()).isEqualTo(2);
+        assertThat(reviews.get(0).getUser().getUserSeq()).isEqualTo(user.getUserSeq());
+        assertThat(reviews.get(1).getUser().getUserSeq()).isEqualTo(user.getUserSeq());
     }
 }

@@ -42,9 +42,12 @@ public class CourseApiController {
     }
 
     @Operation(summary = "코스 찜", description = "코스 찜")
-    @PutMapping("/courses")
+    @PutMapping("/courses/users/{userSeq}")
     public ResponseEntity<Long> likeCourse(@RequestBody CourseNameRequestDto dto) {
         Map<String, String> map = courseService.likeCourse(dto.getCourseId(), dto.getName());
+
+        // 알림 전송
+        //notificationService.send("makeWish", user.getCoupleUserSeq(), coupleUserName+"님이 장소 "+ place.getName() +"을(를) 찜하셨습니다.");
 
         return new ResponseEntity<>(Long.parseLong(map.get("courseId")), HttpStatus.OK);
     }
@@ -71,7 +74,6 @@ public class CourseApiController {
         }
 
         List<CourseResponseDto> courses = courseService.listLikeCourse(userSeq);
-
 
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
