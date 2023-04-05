@@ -16,6 +16,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -34,7 +36,7 @@ public class KakaoService {
     // deploy
 //    private final String redirect_uri = "https://j8e104.p.ssafy.io/api/login/oauth2/code/kakao";
     // front test
-    private final String redirect_uri = "http://localhost:3000/login/oauth";
+    private final String redirect_uri = "https://j8e104.p.ssafy.io/login/oauth2"; //"http://localhost:3000/login/oauth";
     private final String accessTokenUri = "https://kauth.kakao.com/oauth/token";
     private final String UserInfoUri = "https://kapi.kakao.com/v2/user/me";
 
@@ -49,7 +51,7 @@ public class KakaoService {
         params.add("redirect_uri", redirect_uri);
         params.add("code", code);
         params.add("client_secret", client_secret);
-        params.add("scope", "age_range,birthday");
+        //params.add("scope", "age_range,birthday");
 
         //request
         WebClient wc = WebClient.create(accessTokenUri);
@@ -118,6 +120,7 @@ public class KakaoService {
 
         //처음이용자 강제 회원가입
         if(user ==null) {
+            /*
             //연령대 저장
             String newAgeRange = "";
             String oldAgeRange = profile.getKakao_account().getAge_range();
@@ -134,17 +137,23 @@ public class KakaoService {
                 case "80~89": newAgeRange += "80"; break;
                 case "90~": newAgeRange += "90"; break;
             }
+*/
+            System.out.println("profileID:"+profile.getId());
+            if (profile == null) return null;
+            if (profile.getKakao_account().profile == null) {
+                System.out.println("kakao_account의 profile이 없습니다.");
+                return null;
+            }
 
             user = User.builder()
                     .userId(profile.getId())
-                    //.userName(profile.getKakao_account().getProfile().getName()) //대부분 name 설정 X
                     .userName(profile.getKakao_account().getProfile().getNickname())
-                    //.phoneNumber(profile.getKakao_account().getPhone_number()) //접근권한 X,직접 입력 해야함
                     .profileImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
-                    .ageRange(newAgeRange)
-                    .birthday(profile.getKakao_account().getBirthday())
+                    //.ageRange(newAgeRange)
+                    //.birthday(profile.getKakao_account().getBirthday())
                     .email(profile.getKakao_account().getEmail())
                     .coupleYn("N")
+                    .coupleId(0L)
                     .role("USER") //일단 유저로 넣음.
                     .createTime(LocalDateTime.now())
                     .build();

@@ -2,7 +2,6 @@ package com.cosmos.back.service;
 
 import com.cosmos.back.dto.response.NotificationDto;
 import com.cosmos.back.model.Notification;
-import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.model.User;
 import com.cosmos.back.repository.noti.EmitterRepository;
 import com.cosmos.back.repository.noti.NotificationRepository;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -28,14 +26,13 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
     private final UserRepository userRepository;
-    private static final AtomicLong counter = new AtomicLong();
 
     /**
      * 알림 구독
      */
     public SseEmitter subscribe(Long userSeq, String lastEventId) {
         String emitterId = makeTimeIncludeId(userSeq);
-        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(timeout));
+        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(-1L));
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 
@@ -49,16 +46,6 @@ public class NotificationService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //sendNotification(emitter, eventId, emitterId, "sse [userSeq=" + userSeq + "]");
-
-        /*
-        // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
-        if (lastEventId!=null | !lastEventId.isEmpty()) {
-            Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByUserSeq(String.valueOf(userSeq));
-            eventCaches.entrySet().stream()
-                    .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
-                    .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
-        }*/
 
         System.out.println("SSE connected:" + emitter);
         return emitter;
@@ -67,10 +54,10 @@ public class NotificationService {
     /**
      * 알림 전송
      */
-    public void send(Long userSeq, NotificationType notificationType, String content, String url) {
+    public void send(String event, Long userSeq, String content) {
         User receiver = userRepository.findByUserSeq(userSeq);
         if (receiver != null) {
-            Notification notification = createNotification(receiver, notificationType, content, url);
+            Notification notification = createNotification(event, receiver, content);
 
             // 알림 db에 저장 - SSE는 새로고침하면 이전 알림을 볼 수 없어서 추가
             notificationRepository.save(notification);
@@ -85,11 +72,10 @@ public class NotificationService {
                         // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
                         emitterRepository.saveEventCache(key, notification);
                         // 데이터 전송
-                        sendNotification(emitter, eventId, key, notification);
+                        sendNotification(event, emitter, eventId, key, notification);
                     }
             );
         }
-        //System.out.println("개수:"+counter.incrementAndGet());
     }
 
     /**
@@ -143,10 +129,10 @@ public class NotificationService {
     /**
      * 알림 전송
      */
-    private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
+    private void sendNotification(String event, SseEmitter emitter, String eventId, String emitterId, Object data) {
         try {
             emitter.send(SseEmitter.event()
-                    .name("sse")
+                    .name(event)
                     .id(eventId)
                     .data(data));
         } catch (IOException exception) {
@@ -155,14 +141,14 @@ public class NotificationService {
         }
     }
 
-    private Notification createNotification(User receiver, NotificationType notificationType, String content, String url) {
+    private Notification createNotification(String event, User receiver, String content) {
         try {
             return Notification.builder()
+                    .event(event)
                     .receiver(receiver)
-                    .notificationType(notificationType)
-                    .content(content)
-                    .url(url)
+                    .isClicked(false)
                     .isRead(false)
+                    .content(content)
                     .build();
         } catch (Exception e) {
             throw new RuntimeException(e);

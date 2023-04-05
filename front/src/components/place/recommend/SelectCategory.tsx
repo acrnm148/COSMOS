@@ -9,7 +9,7 @@ import "../../../css/placeSearch.css";
 import { darkMode } from "../../../recoil/states/UserState";
 
 export default function SelecctCategory() {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const navigate = useNavigate();
   const [category, setCategory] = useRecoilState(selectCategory);
   const categoryRef = useRef<HTMLDivElement>(null);
@@ -54,13 +54,13 @@ export default function SelecctCategory() {
       title: "카테고리 선택 완료!",
       text: "코스 추천 페이지로 이동합니다.",
       icon: "success",
-      color: isDark ? "white" : "black",
+      color: isDark[0] ? "white" : "black",
       showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
       confirmButtonColor: isDark ? "#BE6DB7" : "#FF8E9E", // confrim 버튼 색깔 지정
       cancelButtonColor: "#A3A3A3", // cancel 버튼 색깔 지정
       confirmButtonText: "승인", // confirm 버튼 텍스트 지정
       cancelButtonText: "취소", // cancel 버튼 텍스트 지정
-      background: isDark ? "#585858" : "#FFFFFF",
+      background: isDark[0] ? "#585858" : "#FFFFFF",
       reverseButtons: false, // 버튼 순서 거꾸로
     }).then((result) => {
       // 만약 Promise리턴을 받으면,

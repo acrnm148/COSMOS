@@ -46,7 +46,7 @@ export default function ReviewOurs({ placeId }: any) {
       ),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <div>

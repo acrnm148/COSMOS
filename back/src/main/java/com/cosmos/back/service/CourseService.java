@@ -1,24 +1,32 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.dto.SimplePlaceDto;
-import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
+import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
-import com.cosmos.back.dto.request.CourseRequestDto;
 import com.cosmos.back.model.*;
 import com.cosmos.back.model.place.*;
 import com.cosmos.back.repository.course.CoursePlaceRepository;
 import com.cosmos.back.repository.course.CourseRepository;
 import com.cosmos.back.repository.place.PlaceRepository;
+import com.cosmos.back.repository.review.ReviewRepository;
+import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import reactor.util.LinkedMultiValueMap;
+import reactor.util.MultiValueMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,24 +37,98 @@ public class CourseService {
     private final PlaceRepository placeRepository;
     private final CourseRepository courseRepository;
     private final CoursePlaceRepository coursePlaceRepository;
+    private final ReviewRepository reviewRepository;
+    private final ObjectMapper objectMapper;
 
-    // 코스 생성
+    // 코스 생성(추천 알고리즘)
     @Transactional
-    public CourseResponseDto createCourse(CourseRequestDto dto) {
+    @Generated
+    public CourseResponseDto createCourse(CourseRequestDto dto) throws JsonProcessingException {
         // 1. 데이트 코스 생성 후 저장
         Course course = saveCourse(dto.getUserSeq());
 
-        // 2. 카테고리별 장소 가져오기
-        List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun());
+        // Review 개수 파악
+        List<Review> reviews = reviewRepository.findReviewByUserSeq(dto.getUserSeq());
 
-        // 3. return 해줄 CourseResponseDto 생성 후 courseId 넣기
-        CourseResponseDto courseResponseDto = new CourseResponseDto();
-        courseResponseDto.setCourseId(course.getId());
+        // 20개 이하이면 컨텐츠 기반으로 리뷰 작성
+        if (reviews.size() < 20) {
+            // 2. 카테고리별 장소 가져오기
+            List<Place> places = selectPlaces(dto.getCategories(), dto.getSido(), dto.getGugun(), dto.getUserSeq());
 
-        // 4. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
-        List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
+            // 3. return 해줄 CourseResponseDto 생성 후 courseId 넣기
+            CourseResponseDto courseResponseDto = new CourseResponseDto();
+            courseResponseDto.setCourseId(course.getId());
 
-        return courseResponseDto;
+            // 4. CourseResponseDto에 midLatitude와 midLongitude 넣기
+            saveMidLatitudeAndMidLongitude(courseResponseDto, places);
+
+            // 5. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+            List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
+
+            return courseResponseDto;
+        } else {
+            // Django로 협업 필터링을 통한 알고리즘 장소 추천 받기
+            // RestTemplate 객체 생성
+            RestTemplate restTemplate = new RestTemplate();
+
+            // HttpHeader를 setting하기
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+            // Body Setting
+            CourseRequestDto body = new CourseRequestDto();
+            body.setCategories(dto.getCategories());
+            body.setSido(dto.getSido());
+            body.setGugun(dto.getGugun());
+
+            // HttpEntity 생성
+            HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
+
+            // API 호출
+            String url = "http://j8e104.p.ssafy.io:8000/django/CF/algorithm/userSeq/" + dto.getUserSeq() + "/";
+            ResponseEntity<String> responseData = restTemplate.postForEntity(url, requestMessage, String.class);
+            List list = new Gson().fromJson(responseData.getBody(), List.class);
+
+            // 연관 Place 찾아서 List로 만들어주기
+            List<Place> places = new ArrayList<>();
+            for (Object placeObject: list) {
+                String value = String.valueOf(placeObject);
+                Long placeId = Long.valueOf(value.substring(0, value.length() - 2));
+                Place place = placeRepository.findById(placeId).orElseThrow(() -> new NoSuchElementException("no such data"));
+                places.add(place);
+            }
+
+            // 3. return 해줄 CourseResponseDto 생성 후 courseId 넣기
+            CourseResponseDto courseResponseDto = new CourseResponseDto();
+            courseResponseDto.setCourseId(course.getId());
+
+            // 4. CourseResponseDto에 midLatitude와 midLongitude 넣기
+            saveMidLatitudeAndMidLongitude(courseResponseDto, places);
+
+            // 5. CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
+            List<Long> coursePlaceIds = saveSimplePlaceDtoList(course, courseResponseDto, places);
+
+            return courseResponseDto;
+        }
+    }
+
+    // 코스 생성(사용자 생성)
+    @Transactional
+    public Long createCourseByUser(Long userSeq, CouserUesrRequestDto dto) {
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        Course course = Course.createCourseByUser(user, dto.getName());
+        course.setWish(true);
+
+        courseRepository.save(course);
+
+        int orders = 1;
+        for (Long placeId : dto.getPlaceIds()) {
+            Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+            CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, orders++);
+            coursePlaceRepository.save(coursePlace);
+        }
+
+        return course.getId();
     }
 
     // 데이트 코스 생성 후 저장
@@ -61,14 +143,61 @@ public class CourseService {
     }
 
     // 카테고리별 장소 가져오기
-    public List<Place> selectPlaces (List<String> categories, String sido, String gugun) {
+    public List<Place> selectPlaces (List<String> categories, String sido, String gugun, Long userSeq) {
         List<Place> places = new ArrayList<>();
+        List<Long> placeIds = new ArrayList<>();
 
         for (String category : categories) {
-            places.add(chooseOne(category, sido, gugun));
+            boolean isOverlapped = false;
+
+            int count = 0;
+            outer: while(true) {
+                isOverlapped = false;
+                Place place = chooseOne(category, sido, gugun, userSeq);
+                if (count > 3 && placeIds.contains(place.getId())) {
+                    while (true) {
+                        place = chooseOneWithInAll(category, sido, gugun);
+                        if (!placeIds.contains(place.getId())) {
+                            places.add(place);
+                            placeIds.add(place.getId());
+                            break outer;
+                        }
+                    }
+                }
+
+                if (placeIds.contains(place.getId())) {
+                    isOverlapped = true;
+                }
+
+                if (!isOverlapped) {
+                    places.add(place);
+                    placeIds.add(place.getId());
+                    count = 0;
+                    break;
+                }
+
+                count++;
+            }
         }
 
         return places;
+    }
+
+    public void saveMidLatitudeAndMidLongitude(CourseResponseDto courseResponseDto, List<Place> places) {
+        Double sumLatitude = 0.0;
+        Double sumLongitude = 0.0;
+        int count = 0;
+
+        for (Place place : places) {
+            if (place.getLatitude() != null && place.getLongitude() != null) {
+                sumLatitude += Double.parseDouble(place.getLatitude());
+                sumLongitude += Double.parseDouble(place.getLongitude());
+                count++;
+            }
+        }
+
+        courseResponseDto.setMidLatitude(sumLatitude / count);
+        courseResponseDto.setMidLongitude(sumLongitude / count);
     }
 
     // CourseResponseDto 안의 List<SimplePlaceDto> 값 채우기
@@ -84,13 +213,14 @@ public class CourseService {
             SimplePlaceDto placeDto = new SimplePlaceDto();
 
             placeDto.setPlaceId(place.getId());
-            placeDto.setPlaceName(place.getName());
+            placeDto.setName(place.getName());
             placeDto.setLatitude(place.getLatitude());
             placeDto.setLongitude(place.getLongitude());
             placeDto.setThumbNailUrl(place.getThumbNailUrl());
             placeDto.setAddress(place.getAddress());
-            placeDto.setOverview(place.getDetail());
+            placeDto.setDetail(place.getDetail());
             placeDto.setOrders(orders++);
+            placeDto.setType(place.getType());
 
             Double score = placeRepository.findScoreByPlaceIdQueryDsl(place.getId());
             placeDto.setScore(score);
@@ -104,21 +234,99 @@ public class CourseService {
         return coursePlaceIds;
     }
 
-    public Place chooseOne(String type, String sido, String gugun) {
+    public Place chooseOneWithInAll(String type, String sido, String gugun) {
         List<Place> places = placeRepository.findAllByTypeAndSidoAndGugun(type, sido, gugun);
 
+        Integer size = places.size();
+
+        Integer randomNum = (int) (Math.random() * size);
+
+        return places.get(randomNum);
+    }
+
+    public Place chooseOne(String type, String sido, String gugun, Long userSeq) {
+        User user = userRepository.findByUserSeq(userSeq);
+
+        String type1 = user.getType1();
+        String type2 = user.getType2();
+
+        // EAT -> spo
+
+        String typeTransformed1 = "";
+        String typeTransformed2 = "";
+
+        for (int i = 0; i < type1.length(); i++) {
+            if (type1.charAt(i) == 'E') {
+                typeTransformed1 += 's';
+            } else if (type1.charAt(i) == 'A') {
+                typeTransformed1 += 'p';
+            } else if (type1.charAt(i) == 'T') {
+                typeTransformed1 += 'o';
+            } else if (type1.charAt(i) == 'J') {
+                typeTransformed1 += 'd';
+            } else if (type1.charAt(i) == 'O') {
+                typeTransformed1 += 'f';
+            } else if (type1.charAt(i) == 'Y') {
+                typeTransformed1 += 'i';
+            }
+        }
+
+        for (int i = 0; i < type2.length(); i++) {
+            if (type2.charAt(i) == 'E') {
+                typeTransformed2 += 's';
+            } else if (type2.charAt(i) == 'A') {
+                typeTransformed2 += 'p';
+            } else if (type2.charAt(i) == 'T') {
+                typeTransformed2 += 'o';
+            } else if (type2.charAt(i) == 'J') {
+                typeTransformed2 += 'd';
+            } else if (type2.charAt(i) == 'O') {
+                typeTransformed2 += 'f';
+            } else if (type2.charAt(i) == 'Y') {
+                typeTransformed2 += 'i';
+            }
+        }
+
+        List<Place> places1 = placeRepository.findAllByTypeAndSidoAndGugunT(type, sido, gugun, typeTransformed1);
+        List<Place> places2 = placeRepository.findAllByTypeAndSidoAndGugunT(type, sido, gugun, typeTransformed2);
+
+        List<Place> places = new ArrayList<>();
+
+        for (int i = 0; i < places1.size(); i++) {
+            places.add(places1.get(i));
+        }
+
+        for (int i = 0; i < places2.size(); i++) {
+            places.add(places2.get(i));
+        }
+
+        Integer size = places.size();
+
+        if (size == 0) {
+            places = placeRepository.findAllByTypeAndSidoAndGugun(type, sido, gugun);
+            size = places.size();
+        }
+
+        Integer randomNum = (int) (Math.random() * size);
+
         // 빅데이터 알고리즘
-        return places.get(0);
+        return places.get(randomNum);
     }
 
     // 코스 찜
     @Transactional
-    public Long likeCourse(Long courseId) {
+    public Map<String, String> likeCourse(Long courseId, String name) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
         course.setWish(true);
+        course.setName(name);
 
-        return course.getId();
+        Map<String, String> map = new HashMap<>();
+        map.put("courseId", Long.toString(course.getId()));
+        map.put("wish", Boolean.toString(course.getWish()));
+        map.put("name", name);
+
+        return map;
     }
 
     // 코스 삭제
@@ -189,64 +397,65 @@ public class CourseService {
             places.add(place);
         }
 
+        int count = 0;
+        double midLatitude = 0.0;
+        double midLongitude = 0.0;
+        for (SimplePlaceDto place : places) {
+            if (place.getLatitude() != null && place.getLongitude() != null) {
+                midLatitude += Double.parseDouble(place.getLatitude());
+                midLongitude += Double.parseDouble(place.getLongitude());
+                count++;
+            }
+        }
+
+        courseResponseDto.setMidLatitude(midLatitude / count);
+        courseResponseDto.setMidLongitude(midLongitude / count);
+
         courseResponseDto.setPlaces(places);
 
         return courseResponseDto;
     }
 
-    // 코스 내용 수정
+    // 코스 수정
     @Transactional
-    public Long updateCourseContents (Long courseId, CourseUpdateContentsRequestDto dto) {
+    public Long updateCourse (Long courseId, CourseUpdateRequstDto dto) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
+
         course.setName(dto.getName());
-        courseRepository.save(course);
-        return course.getId();
-    }
 
-    // 코스 수정(추가)
-    @Transactional
-    public void updateCourseAdd (Long courseId, CourseUpdateAddDelRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        int size = course.getCoursePlaces().size();
-        CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, ++size);
-        coursePlaceRepository.save(coursePlace);
-    }
+        List<CoursePlace> coursePlaces = coursePlaceRepository.findAllByCourseId(courseId);
 
-    // 코스 수정(삭제)
-    @Transactional
-    public void updateCourseDelete (Long courseId, CourseUpdateAddDelRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        List<CoursePlace> coursePlaces = course.getCoursePlaces();
+        boolean[] coursePlacesArray = new boolean[coursePlaces.size()];
+        boolean[] dtoPlacesArray = new boolean[dto.getPlaceIds().size()];
 
-        int order = 1;
-        for (CoursePlace cp: coursePlaces) {
-            if (cp.getPlace().getId().equals(dto.getPlaceId())) {
-                courseRepository.deleteCoursePlaceQueryDSL(courseId, cp);
-            } else {
-                cp.setOrders(order++);
-                coursePlaceRepository.save(cp);
+        for (int i = 0; i < coursePlacesArray.length; i++) {
+            for (int j = 0; j < dtoPlacesArray.length; j++) {
+                if (coursePlaces.get(i).getId().equals(dto.getPlaceIds().get(j))) {
+                    coursePlacesArray[i] = true;
+                    dtoPlacesArray[j] = true;
+                    break;
+                }
             }
         }
-    }
 
-    // 코스 수정(순서)
-    @Transactional
-    public void updateCourseOrders (Long courseId, CourseUpdateOrdersRequestDto dto) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        List<CoursePlace> coursePlaces = course.getCoursePlaces();
-
-        HashMap<Long, CoursePlace> map = new HashMap<>();
-
-        for (CoursePlace cp : coursePlaces) {
-            map.put(cp.getPlace().getId(), cp);
+        for (int i = 0; i < coursePlacesArray.length; i++) {
+            if (!coursePlacesArray[i]) {
+                coursePlaceRepository.deleteById(coursePlaces.get(i).getId());
+            }
         }
 
         int orders = 1;
-        for (Long placeId: dto.getPlaces()) {
-            CoursePlace coursePlace = map.get(placeId);
-            coursePlace.setOrders(orders++);
-            coursePlaceRepository.save(coursePlace);
+        for (int j = 0; j < dtoPlacesArray.length; j++) {
+            if (dtoPlacesArray[j]) {
+                CoursePlace coursePlace = coursePlaceRepository.findByCourseIdAndPlaceId(courseId, dto.getPlaceIds().get(j));
+                coursePlace.setOrders(orders++);
+            } else {
+                Place place = placeRepository.findById(dto.getPlaceIds().get(j)).orElseThrow(() -> new IllegalArgumentException("no such data"));
+                CoursePlace coursePlace = CoursePlace.createCoursePlace(course, place, orders++);
+                coursePlaceRepository.save(coursePlace);
+            }
         }
+
+        return course.getId();
     }
 }

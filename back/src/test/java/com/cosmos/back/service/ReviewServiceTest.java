@@ -6,82 +6,96 @@ import com.cosmos.back.model.Review;
 import com.cosmos.back.model.User;
 import com.cosmos.back.model.place.Place;
 import com.cosmos.back.repository.place.PlaceRepository;
-import com.cosmos.back.repository.review.ReviewCategoryRepository;
 import com.cosmos.back.repository.review.ReviewRepository;
-import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
 import com.cosmos.back.repository.user.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @EnableMockMvc
 @SpringBootTest
+@Transactional
 class ReviewServiceTest {
+
+    @SpyBean
+    private UserRepository userRepository;
+
+    @SpyBean
+    private PlaceRepository placeRepository;
+
+    @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Test
+    @DisplayName("CourseService createReview 메소드")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    void createReview() {
+//        User user = User.builder().coupleId(1L).build();
+//        userRepository.save(user);
 //
-//    @Autowired
-//    private ReviewService reviewService;
+//        Place place = Place.builder().type("cafe").address("서울특별시 강남구").tendency("spo").build();
+//        placeRepository.save(place);
 //
-//    @Autowired
-//    private ObjectMapper objectMapper;
+//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+//        when(placeRepository.findById(anyLong())).thenReturn(Optional.of(place));
 //
-//    @MockBean
-//    private ReviewRepository reviewRepository;
+//        List<String> categories = new ArrayList<>();
+//        categories.add("뷰가 좋아요");
 //
-//    @MockBean
-//    private UserRepository userRepository;
+//        List<String> indiCategories = new ArrayList<>();
+//        indiCategories.add("우정");
 //
-//    @MockBean
-//    private PlaceRepository placeRepository;
+//        List<String> imageUrls = new ArrayList<>();
+//        imageUrls.add("image url1");
+//        imageUrls.add("image url2");
 //
-//    @MockBean
-//    private ReviewPlaceRepository reviewPlaceRepository;
+//        ReviewRequestDto reviewRequestDto = ReviewRequestDto.builder().placeId(place.getId()).categories(categories).indiCategories(indiCategories).imageUrls(imageUrls).score(5).contents("리뷰 내용입니다.").contentsOpen(true).imageOpen(true).build();
 //
-//    @MockBean
-//    private ReviewCategoryRepository reviewCategoryRepository;
+//        Long id = reviewService.createReview(reviewRequestDto, user.getUserSeq());
 //
-//    @Test
-//    @DisplayName("ReviewService 리뷰생성")
-//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-//    // service가 repository를 잘 호출 하는지, 알맞는 Response를 반환하는지 확인
-//    public void 리뷰생성() throws Exception {
-//        // 반환값이 넣어준 review의 id와 같은지
+//        Review review = reviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
 //
-//        // Review mock Dto
-//        ReviewRequestDto mockDto = ReviewRequestDto.builder().contents("가세요").build();
-//        Review mockReview = Review.builder().contents("가지 마세요").build();
-//
-//        // User mock Dto
-//        User mockUser = User.builder().userSeq(1L).build();
-//
-//
-//        // Place mock Dto
-//        Place mockPlace = Place.builder().id(1L).build();
-//
-//        // ReviewPlace mock Dto
-//
-//
-//        // ReviewCategory mock Dto
-//
-//
-//
-//        when(reviewRepository.save(any())).thenReturn(mockReview);
-//
-//
-//        Long id = reviewService.createReview(mockDto, mockDto.getUserSeq());
-//
-//        assertEquals(mockReview.getContents(), "가지 마세요");
-//    }
+//        assertEquals();
+    }
+
+    @Test
+    void deleteReview() {
+    }
+
+    @Test
+    void findReviewsInPlaceUserCouple() {
+    }
+
+    @Test
+    void findReviewsInPlace() {
+    }
+
+    @Test
+    void findReviewsInUser() {
+    }
+
+    @Test
+    void changeReview() {
+    }
+
+    @Test
+    void findReviewNickName() {
+    }
 }

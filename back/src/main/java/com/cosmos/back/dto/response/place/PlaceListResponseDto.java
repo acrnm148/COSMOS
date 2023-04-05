@@ -18,4 +18,5 @@ public class PlaceListResponseDto implements Serializable {
     private Double score;
     private String thumbNailUrl;
     private String detail;
+    private String type;
 }

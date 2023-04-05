@@ -1,9 +1,9 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.user.UserProfileDto;
 import com.cosmos.back.dto.user.UserUpdateDto;
-import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.model.User;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -41,27 +46,41 @@ public class UserService {
         try {
             User user = userRepository.findByUserSeq(userSeq);
 
+            Long coupleDay = null;
+            if (user.getCoupleSuccessDate() != null) {
+                String coupleSuccessDate = user.getCoupleSuccessDate();
+                LocalDate date = LocalDate.parse(coupleSuccessDate, DateTimeFormatter.ISO_DATE);
+                LocalDate nowDate = LocalDate.now();
+                coupleDay = ChronoUnit.DAYS.between(date, nowDate) + 1;
+                System.out.println("며칠차:"+ coupleDay);
+            }
+            System.out.println("user:"+user);
+
             UserProfileDto userProfileDto = UserProfileDto.builder()
                     .userSeq(user.getUserSeq())
                     .userId(user.getUserId())
                     .userName(user.getUserName())
-                    .phoneNumber(user.getPhoneNumber())
+                    //.phoneNumber(user.getPhoneNumber())
                     .profileImgUrl(user.getProfileImgUrl())
                     .coupleYn(user.getCoupleYn())
-                    .ageRange(user.getAgeRange())
+                    //.ageRange(user.getAgeRange())
                     .email(user.getEmail())
-                    .birthday(user.getBirthday())
+                    //.birthday(user.getBirthday())
                     .role("USER")
                     .type1(user.getType1())
                     .type2(user.getType2())
                     .coupleId(user.getCoupleId())
                     .coupleUserId(user.getCoupleId())
                     .createTime(LocalDateTime.now())
+                    .coupleProfileImgUrl(user.getCoupleProfileImgUrl())
+                    .coupleSuccessDate(user.getCoupleSuccessDate())
+                    .coupleDay(coupleDay)
                     .build();
 
             System.out.println("유저 프로필 : "+userProfileDto);
             return userProfileDto;
         }catch (Exception e) {
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -73,12 +92,6 @@ public class UserService {
     public User updateUserInfo(UserUpdateDto dto) {
         User user = userRepository.findByUserSeq(dto.getUserSeq());
         user.setPhoneNumber(dto.getPhoneNumber());
-        if (dto.getCoupleYn() != null) {
-            user.setCoupleYn(dto.getCoupleYn());
-            if (dto.getCoupleYn() == "N") {
-                user.setCoupleId(dto.getCoupleId());
-            }
-        }
         userRepository.save(user);
         return user;
     }
@@ -86,22 +99,12 @@ public class UserService {
     /**
      * Redis를 이용한 로그아웃
      */
+    @Generated
     @Transactional
     public void logout(Long userSeq) {
         String redisUserSeq = userSeq.toString();
         redisTemplate.delete(redisUserSeq); //redis에서 refresh 토큰 삭제
         System.out.println("로그아웃 완료, refresh토큰 삭제: "+userSeq);
-    }
-
-    /**
-     * 중복 유저 체크
-     */
-    public boolean validateDuplicated(String userid) {
-        if (userRepository.findByUserId(userid) != null) { //중복되면 true
-            System.out.println("유형 저장");
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -119,15 +122,26 @@ public class UserService {
             System.out.println("커플유저가 존재하지 않습니다.");
             return null;
         }
-        if (!(user.getCoupleId()==null && coupleUser.getCoupleId()==null)) {
+        System.out.println("id : ["+user.getCoupleId()+"] ["+user.getCoupleId()+"]");
+        if (!(user.getCoupleId()==0 && coupleUser.getCoupleId()==0)) {
             System.out.println("이미 커플인 유저입니다.");
             return null;
         }
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String nowDate = format.format(date);
+        System.out.println("현재날짜:["+nowDate+"]");
 
         user.setCoupleId(code);
-        coupleUser.setCoupleId(code);
         user.setCoupleYn("Y");
+        user.setCoupleUserSeq(coupleUserSeq);
+        user.setCoupleProfileImgUrl(coupleUser.getProfileImgUrl());
+        user.setCoupleSuccessDate(nowDate);
+        coupleUser.setCoupleId(code);
         coupleUser.setCoupleYn("Y");
+        coupleUser.setCoupleUserSeq(userSeq);
+        coupleUser.setCoupleProfileImgUrl(user.getProfileImgUrl());
+        coupleUser.setCoupleSuccessDate(nowDate);
         userRepository.save(user);
         userRepository.save(coupleUser);
 
@@ -136,7 +150,8 @@ public class UserService {
         System.out.println("커플 연결 수락, 커플아이디:"+code);
 
         // 알림 전송
-        notificationService.send(userSeq, NotificationType.MESSAGE, "커플 요청이 수락되었습니다.", "");
+        notificationService.send("makeCouple", userSeq, "커플이 매칭되었습니다.");
+        notificationService.send("makeCouple", coupleUserSeq, "커플이 매칭되었습니다.");
 
         return code;
     }
@@ -147,13 +162,27 @@ public class UserService {
     @Transactional
     public void disconnectCouple(Long coupleId) {
         List<User> couple = userRepository.findByCoupleId(coupleId);
+        if (couple.size()==0) {
+            System.out.println(coupleId+"에 해당하는 커플이 없습니다.");
+            return;
+        }
         couple.get(0).setCoupleYn("N");
+        couple.get(0).setCoupleProfileImgUrl(null);
+        couple.get(0).setCoupleId(0L);
+        couple.get(0).setCoupleUserSeq(null);
+        couple.get(0).setCoupleSuccessDate(null);
         couple.get(1).setCoupleYn("N");
-        couple.get(0).setCoupleId(null);
-        couple.get(1).setCoupleId(null);
+        couple.get(1).setCoupleProfileImgUrl(null);
+        couple.get(1).setCoupleId(0L);
+        couple.get(1).setCoupleUserSeq(null);
+        couple.get(1).setCoupleSuccessDate(null);
         userRepository.save(couple.get(0));
         userRepository.save(couple.get(1));
         System.out.println("커플 연결이 끊어졌습니다.");
+
+        // 알림 전송
+        notificationService.send("removeCouple", couple.get(0).getUserSeq(), "커플 연결이 끊어졌습니다.");
+        notificationService.send("removeCouple", couple.get(1).getUserSeq(), "커플 연결이 끊어졌습니다.");
     }
 
     /**
@@ -171,10 +200,12 @@ public class UserService {
     /**
      * 커플아이디 난수 생성
      */
+    @Generated
     public Long makeCoupleId() {
         Random random = new Random(); // 랜덤 객체 생성
         Long coupleId = Long.valueOf(random.nextInt(1000000000));//10자리 미만의 난수 반환
         System.out.println("생성된 커플아이디: " +coupleId);
+
         return coupleId;
     }
 }

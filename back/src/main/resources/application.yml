@@ -1,6 +1,8 @@
+
 server:
   port: 8081
-
+file:
+  path:
 spring:
   output:
     ansi:
@@ -52,6 +54,10 @@ spring:
         order_inserts: true
         order_updates: true
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 cloud:
   aws:

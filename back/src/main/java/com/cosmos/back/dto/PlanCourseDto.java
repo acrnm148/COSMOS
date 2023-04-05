@@ -1,8 +1,11 @@
 package com.cosmos.back.dto;
 
+import com.cosmos.back.model.CoursePlace;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +22,6 @@ public class PlanCourseDto {
     private Long id;
     private String name;
     private String date;
-    private String subCategory;
+    //private String subCategory;
     private Integer orders;
 }

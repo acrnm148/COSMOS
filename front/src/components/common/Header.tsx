@@ -41,7 +41,7 @@ export default function Header() {
       <div className="logo text-center m-auto h-16"> */}
             <header className="w-screen max-w-[950px] m-auto fixed top-0 z-50 left-0 inset-x-0 bg-lightMain2 h-20 dark:bg-darkMain2">
                 <div className="logo absolute left-3 bottom-0 ">
-                    {isDark ? (
+                    {isDark[0] ? (
                         <img src={LogoDark} alt="logo" className="h-20" />
                     ) : (
                         <img src={Logo} alt="logo" className="h-20" />

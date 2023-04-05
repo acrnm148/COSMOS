@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react"
 
 const DAYS:string[] = ['일', '월', '화', '수', '목', '금', '토', '일', '월', '화', '수', '목', '금', '토']
-export function WeekCalendar(props:{day:any, week:any, setDayClicked:Function, monTod:string}){
+export function WeekCalendar(props:{day:any, week:any, setDayClicked:Function}){
     // 오늘 날짜 기준으로 일주일 표출
     let date = props.day.day.toLocaleDateString()
 
     const today = new Date().getDate() // 오늘 몇일
-    const month = props.day.day.getMonth()
-    const dayday = DAYS[props.day.day.getDay()] // 오늘 무슨요일
+    const [dayday, setDayday] = useState(DAYS[props.day.day.getDay()]) // 오늘 무슨요일
 
     let dayIdx = DAYS.indexOf(dayday) -1 // 요일 인덱스 시작
     
@@ -40,7 +39,7 @@ export function WeekCalendar(props:{day:any, week:any, setDayClicked:Function, m
                                 props.setDayClicked(day)
                             }} 
                             className=" flex flex-col justify-center content-center items-center" key={key}>
-                            <div className="text-sm font-semibold">
+                            <div className="text-sm font-semibold max-w-12">
                                 { DAYS[++dayIdx]}
                             </div>
                             <div 

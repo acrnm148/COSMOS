@@ -1,5 +1,6 @@
 package com.cosmos.back.controller;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.dto.user.UserProfileDto;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 @Tag(name = "user", description = "유저 API")
@@ -36,6 +38,7 @@ public class UserApiController {
 
     @Operation(summary = "서버 테스트", description = "서버 테스트")
     @GetMapping("/home")
+    @Generated
     public String home() {
         return "jenkins Test";
     }
@@ -63,7 +66,6 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
 
     /**
      * 회원 정보 수정
@@ -100,13 +102,15 @@ public class UserApiController {
     @Operation(summary = "로그아웃", description = "로그아웃")
     @GetMapping("/accounts/logout/{userSeq}")
     public ResponseEntity<?> logout(@PathVariable("userSeq")Long userSeq, @RequestHeader("Authorization") String token) {
-
         //userSeq 일치, access토큰 유효 여부 체크
         token = token.substring(7);
         JwtState state = jwtService.checkUserSeqWithAccess(userSeq, token);
+        System.out.println("state = " + state);
         if (state.equals(JwtState.MISMATCH_USER)) { //userSeq 불일치
+            System.out.println("state = " + state);
             return ResponseEntity.ok().body(jwtService.mismatchUserResponse());
         } else if (state.equals(JwtState.EXPIRED_ACCESS)) { //access 만료
+            System.out.println("state = " + state);
             return ResponseEntity.ok().body(jwtService.requiredRefreshTokenResponse());
         }
 
@@ -122,25 +126,29 @@ public class UserApiController {
     @GetMapping("/accounts/auth/login/kakao")
     public Map<String,String> KakaoLogin(@RequestParam("code") String code,
                                          HttpServletRequest request) {
-
-        //String redirect_uri = String.valueOf(request.getRequestURL());
-        //System.out.println("redirect_url:"+redirect_uri);
-
         //access 토큰 받기
         KakaoToken oauthToken = kakaoService.getAccessToken(code);
         //사용자 정보받기 및 회원가입
         User saveUser = kakaoService.saveUser(oauthToken.getAccess_token());
+        if (saveUser == null) {
+                Map<String, String> map = new HashMap<>();
+                map.put("code", "444");
+                map.put("message", "카카오 프로필 정보가 없습니다.");
+                return map;
+        }
+
         //jwt토큰 Redis에 저장
         JwtToken jwtTokenDTO = jwtService.getJwtToken(saveUser.getUserSeq());
-
         //로그인 시 SSE 연결
         notificationService.subscribe(saveUser.getUserSeq(), null);
 
         return jwtService.successLoginResponse(jwtTokenDTO, saveUser.getUserSeq(), saveUser.getCoupleId());
     }
+
     //직접 인가 코드 받기
     @GetMapping("/login/oauth2/code/kakao")
     @Operation(summary = "kakao 코드 발급", description = "kakao 코드 발급")
+    @Generated
     public String KakaoCode(@RequestParam("code") String code) {
         return code;
     }
@@ -162,7 +170,7 @@ public class UserApiController {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 
-        token = token.substring(7);
+        //token = token.substring(7);
         JwtToken jwtToken = jwtService.validRefreshToken(userSeq);
         Map<String, String> jsonResponse = jwtService.recreateTokenResponse(jwtToken);
 
@@ -199,7 +207,7 @@ public class UserApiController {
     /**
      * 사용자 유형 등록
      */
-    @Operation(summary = "사용자 유형 등록", description = "사용자 유형 등록")
+    @Operation(summary = "사용자 유형 등록", description = "사용자 유형 등록, 파라미터로 Long userSeq / String type1 / String type2 총 3개를 받습니다.")
     @PostMapping("/couples/type")
     public ResponseEntity<Long> saveTypes(@RequestBody Map<String, Object> map) {
         Long userSeq = Long.valueOf((Integer) map.get("userSeq"));

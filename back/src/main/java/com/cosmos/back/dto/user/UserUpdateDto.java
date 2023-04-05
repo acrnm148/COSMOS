@@ -14,4 +14,5 @@ public class UserUpdateDto {
     private String phoneNumber;
     private String coupleYn;
     private Long coupleId;
+    private Long coupleUserSeq;
 }

@@ -1,5 +1,6 @@
 package com.cosmos.back.dto.response.review;
 
+import com.cosmos.back.model.Image;
 import com.cosmos.back.model.IndiReviewCategory;
 import com.cosmos.back.model.ReviewCategory;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class ReviewResponseDto {
     private Long userId;
     private String nickname;
     private String createdTime;
-    private String img1;
-    private String img2;
-    private String img3;
+    private List<Image> images;
+    private Boolean contentsOpen;
+    private Boolean imageOpen;
 }

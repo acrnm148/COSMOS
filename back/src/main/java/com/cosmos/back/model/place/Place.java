@@ -19,7 +19,7 @@ import static javax.persistence.GenerationType.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "place")
+@Table(name = "place", indexes = @Index(name = "type", columnList = "type"))
 @DiscriminatorColumn(name = "dtype")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Getter
@@ -60,6 +60,7 @@ public class Place {
 
     private String type; // 타입
 
+    private String tendency; // 장소 선호도
 
     // 장소 - (유저 - 장소)
     @OneToMany(mappedBy = "place")

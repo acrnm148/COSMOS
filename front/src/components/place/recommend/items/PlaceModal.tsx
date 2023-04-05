@@ -26,11 +26,11 @@ import ReviewAll from "../../../common/ReviewAll";
 import ReviewOurs from "../../../common/ReviewOurs";
 
 export default function PlaceModal({ modalOpen, closeModal }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const userSeq = useRecoilState(userState);
   const detail = useRecoilState(placeDetail);
   const [items, setItems] = useState(detail[0]);
-  const [review, setReview] = useState(false);
+  const [review, setReview] = useState(true);
 
   const settings = {
     dots: true,
@@ -50,7 +50,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
     queryFn: () => getPlaceDetail(userSeq[0].seq, items.placeId, items.type),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <Modal open={modalOpen} close={closeModal} header="장소 상세" size="large">
@@ -151,7 +151,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
             <div className="flex flex-row mb-2 gap-5">
               <div title="상세">
                 <ArticleOutlinedIcon
-                  sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                  sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                 />
               </div>
               <div className="flex flex-col dark:text-white">
@@ -161,7 +161,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
             <div className="flex flex-row mb-2 gap-5">
               <div title="연락처">
                 <LocalPhoneIcon
-                  sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                  sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                 />
               </div>
               <div className="flex flex-col">
@@ -171,11 +171,11 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
             <div className="flex flex-row mb-2 gap-5">
               <div title="주차 가능 여부">
                 <DirectionsCarIcon
-                  sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                  sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                 />
               </div>
               <div className="flex flex-col dark:text-white">
-                <div>{data.parkingYn}</div>
+                <div dangerouslySetInnerHTML={{ __html: data.parkingYn }}></div>
               </div>
             </div>
             {items.type === "tour" ? (
@@ -183,21 +183,23 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5 dark:text-white">
                   <div title="반려동물 출입 가능 여부">
                     <PetsIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col dark:text-white">
-                    <div>{data.petYn}</div>
+                    <div dangerouslySetInnerHTML={{ __html: data.petYn }}></div>
                   </div>
                 </div>
                 <div className="flex flex-row mb-2 gap-5 dark:text-white">
                   <div title="프로그램 정보">
                     <TourIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col dark:text-white">
-                    <div>{data.program}</div>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: data.program }}
+                    ></div>
                   </div>
                 </div>
               </>
@@ -206,7 +208,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5 dark:text-white">
                   <div title="시작/종료일">
                     <CalendarMonthIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -217,11 +219,11 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5 dark:text-white">
                   <div title="이용요금">
                     <PaidIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col dark:text-white">
-                    <div>{data.price}</div>
+                    <div dangerouslySetInnerHTML={{ __html: data.price }}></div>
                   </div>
                 </div>
               </>
@@ -230,7 +232,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5 dark:text-white">
                   <div title="체크인/체크아웃 시간">
                     <AccessTimeIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -241,7 +243,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="환불 규정">
                     <PaidIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -254,7 +256,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="영업시간">
                     <AccessTimeIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -265,7 +267,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="대표메뉴">
                     <RestaurantMenuIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -280,7 +282,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="영업시간">
                     <AccessTimeIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -291,7 +293,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="대표메뉴">
                     <RestaurantMenuIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -305,7 +307,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
               <div className="flex flex-row mb-2 gap-5">
                 <div title="영업시간">
                   <AccessTimeIcon
-                    sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                    sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                   />
                 </div>
                 <div className="flex flex-col">
@@ -318,7 +320,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="영업시간">
                     <AccessTimeIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -329,11 +331,14 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="반려동물 출입 가능 여부">
                     <PetsIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
-                    <div className="dark:text-white">{data.petYn}</div>
+                    <div
+                      className="dark:text-white"
+                      dangerouslySetInnerHTML={{ __html: data.petYn }}
+                    ></div>
                   </div>
                 </div>
               </>
@@ -342,7 +347,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="휴무일">
                     <AccessTimeIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -352,11 +357,14 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 <div className="flex flex-row mb-2 gap-5">
                   <div title="반려동물 출입 가능 여부">
                     <PetsIcon
-                      sx={isDark ? { color: "#9C4395" } : { color: "disabled" }}
+                      sx={isDark ? { color: "#9C4395" } : { color: "#FF8E9E" }}
                     />
                   </div>
                   <div className="flex flex-col">
-                    <div className="dark:text-white">{data.petYn}</div>
+                    <div
+                      className="dark:text-white"
+                      dangerouslySetInnerHTML={{ __html: data.petYn }}
+                    ></div>
                   </div>
                 </div>
               </>
@@ -368,8 +376,8 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
               <button
                 className={
                   review
-                    ? "font-bold text-sm text-slate-300"
-                    : "font-bold text-sm dark:text-darkMain"
+                    ? "font-bold text-sm text-lightMain dark:text-darkMain"
+                    : "font-bold text-sm text-lightMain3 dark:text-darkMain"
                 }
                 onClick={() => setReview((cur) => !cur)}
               >
@@ -378,8 +386,8 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
               <button
                 className={
                   !review
-                    ? "font-bold text-sm text-slate-300"
-                    : "font-bold text-sm dark:text-darkMain"
+                    ? "font-bold text-sm text-lightMain dark:text-darkMain"
+                    : "font-bold text-sm text-lightMain3 dark:text-darkMain"
                 }
                 onClick={() => setReview((cur) => !cur)}
               >

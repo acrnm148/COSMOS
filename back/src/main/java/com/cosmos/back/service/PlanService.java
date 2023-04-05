@@ -1,17 +1,24 @@
 package com.cosmos.back.service;
 
-import com.cosmos.back.dto.PlanDto;
-import com.cosmos.back.dto.PlanCourseDto;
+import com.cosmos.back.dto.*;
+import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.model.Course;
+import com.cosmos.back.model.CoursePlace;
 import com.cosmos.back.model.Plan;
+import com.cosmos.back.model.User;
+import com.cosmos.back.repository.course.CoursePlaceRepository;
 import com.cosmos.back.repository.course.CourseRepository;
+import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.plan.PlanRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.time.LocalDateTime.now;
 
@@ -20,14 +27,17 @@ import static java.time.LocalDateTime.now;
 @Transactional
 public class PlanService {
 
+    private final PlaceRepository placeRepository;
+    private final UserRepository userRepository;
     private final PlanRepository planRepository;
     private final CourseRepository courseRepository;
+    private final CoursePlaceRepository coursePlaceRepository;
+    private final NotificationService notificationService;
 
     /**
      * 커플 일정 생성
      */
     public Plan createPlan(PlanDto dto) {
-
         Plan plan = Plan.builder()
                 .coupleId(dto.getCoupleId())
                 .planName(dto.getPlanName())
@@ -36,14 +46,19 @@ public class PlanService {
                 //.courses(newCourses)
                 .createTime(now())
                 .build();
-
         List<Course> newCourses = new ArrayList<> ();
-        List<Long> ids = dto.getCourseIds();
+        List<CourseIdAndDate> courseIdAndDateList = dto.getCourseIdAndDateList();
+        int len = courseIdAndDateList.size();
+
         int order = 1;
-        for (Long id : ids) {
+        for (int i=0; i<len; i++) {
+            Long id = courseIdAndDateList.get(i).getCourseId();
+            String date = courseIdAndDateList.get(i).getDate();
+
             Course course = courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
             course.setOrders(order++);
             course.setPlan(plan);
+            course.setDate(date);
             newCourses.add(course);
         }
 
@@ -51,6 +66,13 @@ public class PlanService {
         planRepository.save(plan);
 
         System.out.println("커플 일정 생성 완료");
+        // 알림 전송
+        if (dto.getCoupleId() != 0 && dto.getCoupleId() != null) {
+            List<User> couple = userRepository.findByCoupleId(dto.getCoupleId());
+            notificationService.send("makePlan", couple.get(0).getUserSeq(), "일정이 등록되었습니다.");
+            notificationService.send("makePlan", couple.get(1).getUserSeq(), "일정이 등록되었습니다.");
+        }
+
         return plan;
     }
 
@@ -68,11 +90,13 @@ public class PlanService {
      */
     public Plan updatePlan(PlanDto dto) {
         Plan plan = planRepository.findByIdAndCoupleId(dto.getPlanId(), dto.getCoupleId());
-        System.out.println("courses: "+dto.getCourses());
 
-        List<Long> courseIds = dto.getCourseIds();
+        //List<Long> courseIds = dto.getCourseIds();
+        List<CourseIdAndDate> courseIdAndDateList = dto.getCourseIdAndDateList();
+        int len = courseIdAndDateList.size();
         List<Course> courses = new ArrayList<> ();
-        for (Long id: courseIds) {
+        for (int i=0; i<len; i++) {
+            Long id = courseIdAndDateList.get(i).getCourseId();
             Course course = courseRepository.findById(id).orElseThrow(()->new IllegalArgumentException("no such data"));
             courses.add(course);
         }
@@ -82,7 +106,14 @@ public class PlanService {
         plan.setEndDate(dto.getEndDate());
         plan.setUpdateTime(now());
         planRepository.save(plan);
-        System.out.println("커플 일정 생성 완료");
+        System.out.println("커플 일정 수정 완료");
+
+        // 알림 전송
+        if (dto.getCoupleId() != 0 && dto.getCoupleId() != null) {
+            List<User> couple = userRepository.findByCoupleId(dto.getCoupleId());
+            notificationService.send("updatePlan", couple.get(0).getUserSeq(), "일정이 수정되었습니다.");
+            notificationService.send("updatePlan", couple.get(1).getUserSeq(), "일정이 수정되었습니다.");
+        }
         return plan;
     }
 
@@ -92,15 +123,23 @@ public class PlanService {
     public void deletePlan(Long coupleId, Long planId) {
         Plan plan = planRepository.findByIdAndCoupleId(planId, coupleId);
         System.out.println("커플 일정 삭제 완료, id:"+planId);
-        planRepository.save(plan);
+        planRepository.delete(plan);
+
+        // 알림 전송
+        if (coupleId != 0 && coupleId != null) {
+            List<User> couple = userRepository.findByCoupleId(coupleId);
+            notificationService.send("deletePlan", couple.get(0).getUserSeq(), "일정이 삭제되었습니다.");
+            notificationService.send("deletePlan", couple.get(1).getUserSeq(), "일정이 삭제되었습니다.");
+        }
     }
 
     /**
      * 커플 일정 월별 조회 month
      */
-    public PlanDto getPlanListByMonth(Long coupleId, String date) {
+    public List<PlanDto> getPlanListByMonth(Long coupleId, String date) {
+        System.out.println("일정 월별 조회");
         String year = date.substring(0,4);
-        String month = date.substring(5,7);
+        String month = date.substring(4,6);
 
         String YearMonthNow = year+"-"+month;
 
@@ -113,17 +152,41 @@ public class PlanService {
             newYear += year;
             Integer tmp = Integer.parseInt(month)+1;
             if (tmp < 10)
-            newMonth += "0"+tmp;
+                newMonth += "0"+tmp;
         }
         String YearMonthNext = newYear+"-"+newMonth;
+        
+        System.out.println(YearMonthNow+"~"+YearMonthNext+" 일정 조회");
 
         List<PlanCourseDto> plansByMonth= planRepository.findByCoupleIdAndMonthQueryDsl(coupleId, YearMonthNext,YearMonthNow);
-        List<Course> courses = new ArrayList<> ();
+        List<SimpleCourseDto> courses = new ArrayList<> ();
         PlanDto result = new PlanDto();
+        List<PlanDto> resultList = new ArrayList<>();
         Long lastPlanId = 0L;
-        for (PlanCourseDto planCourse : plansByMonth) {
-            if (!(lastPlanId.equals(planCourse.getPlanId()))) {
-                lastPlanId = planCourse.getPlanId();
+        int len = plansByMonth.size();
+
+        System.out.println("len:"+len);
+        System.out.println("plansByMonth:"+plansByMonth);
+
+        for (int i=0; i<len; i++) {
+            PlanCourseDto planCourse = plansByMonth.get(i);
+            System.out.println(planCourse);
+
+            if (planCourse.getId() != null) {
+                List<SimplePlaceDto> places = placeRepository.findSimplePlaceDtoByCourseIdQueryDsl(planCourse.getId());
+
+                courses.add(SimpleCourseDto.builder()
+                        .id(planCourse.getId())
+                        .name(planCourse.getName())
+                        .date(planCourse.getDate())
+                        .orders(planCourse.getOrders())
+                        .places(places)
+                        .build());
+            }
+
+            if (i!=len-1 && !(plansByMonth.get(i).getPlanId().equals(plansByMonth.get(i+1).getPlanId()))) {
+
+                result = new PlanDto();
                 result.setPlanId(planCourse.getPlanId());
                 result.setCoupleId(planCourse.getCoupleId());
                 result.setPlanName(planCourse.getPlanName());
@@ -131,39 +194,59 @@ public class PlanService {
                 result.setEndDate(planCourse.getEndDate());
                 result.setCreateTime(planCourse.getCreateTime());
                 result.setUpdateTime(planCourse.getUpdateTime());
+                System.out.println(result);
+
+                result.setCourses(courses);
+                resultList.add(result);
+                courses = new ArrayList<> ();
+                lastPlanId = planCourse.getPlanId();
             }
-            if (planCourse.getId() != null) {
-                courses.add(Course.builder()
-                        .id(planCourse.getId())
-                        .name(planCourse.getName())
-                        .date(planCourse.getDate())
-                        .orders(planCourse.getOrders())
-                        .build());
+            else if (i==len-1) {
+                if (plansByMonth.get(i).getPlanId().equals(lastPlanId)) {
+                    result.setCourses(courses);
+                    resultList.add(result);
+                }
+                else {
+                    result = new PlanDto();
+                    result.setPlanId(planCourse.getPlanId());
+                    result.setCoupleId(planCourse.getCoupleId());
+                    result.setPlanName(planCourse.getPlanName());
+                    result.setStartDate(planCourse.getStartDate());
+                    result.setEndDate(planCourse.getEndDate());
+                    result.setCreateTime(planCourse.getCreateTime());
+                    result.setUpdateTime(planCourse.getUpdateTime());
+                    System.out.println(result);
+
+                    result.setCourses(courses);
+                    resultList.add(result);
+                }
             }
         }
-        result.setCourses(courses);
 
         if (result.getPlanId() == null) {
             return null;
         }
-        return result;
+        return resultList;
     }
 
     /**
      * 커플 일정 일별 조회 day
      */
     public PlanDto getPlanListByDay(Long coupleId, String date) {
+        System.out.println("일정 일별 조회");
         String year = date.substring(0,4);
-        String month = date.substring(5,7);
-        String day = date.substring(8,10);
+        String month = date.substring(4,6);
+        String day = date.substring(6,8);
 
         String YearMonthDay = year+"-"+month+"-"+day;
 
         List<PlanCourseDto> plansByDay = planRepository.findByCoupleIdAndDayQueryDsl(coupleId, YearMonthDay);
-        List<Course> courses = new ArrayList<> ();
+        List<SimpleCourseDto> courses = new ArrayList<> ();
         PlanDto result = new PlanDto();
         Long lastPlanId = 0L;
         for (PlanCourseDto planCourse : plansByDay) {
+            System.out.println(planCourse);
+
             if (!(lastPlanId.equals(planCourse.getPlanId()))) {
                 lastPlanId = planCourse.getPlanId();
                 result.setPlanId(planCourse.getPlanId());
@@ -175,14 +258,18 @@ public class PlanService {
                 result.setUpdateTime(planCourse.getUpdateTime());
             }
             if (planCourse.getId() != null) {
-                courses.add(Course.builder()
+                List<SimplePlaceDto> places = placeRepository.findSimplePlaceDtoByCourseIdQueryDsl(planCourse.getId());
+
+                courses.add(SimpleCourseDto.builder()
                         .id(planCourse.getId())
                         .name(planCourse.getName())
                         .date(planCourse.getDate())
                         .orders(planCourse.getOrders())
+                        .places(places)
                         .build());
             }
         }
+        System.out.println(courses);
         result.setCourses(courses);
         if (result.getPlanId() == null) {
             return null;

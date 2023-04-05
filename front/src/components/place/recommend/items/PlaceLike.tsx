@@ -9,7 +9,7 @@ import { useRecoilState } from "recoil";
 import { userState, darkMode } from "../../../../recoil/states/UserState";
 
 export default function PlaceLike({ like, placeId }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const userSeq = useRecoilState(userState);
   const [isLike, setIsLike] = useState(like);
 

@@ -20,6 +20,8 @@ public class CourseResponseDto {
     private Long courseId;
     private List<SimplePlaceDto> places = new ArrayList<>();
     private Integer orders;
+    private Double midLatitude;
+    private Double midLongitude;
 
     public CourseResponseDto (String name, String date, Long courseId, Integer orders) {
         this.name = name;

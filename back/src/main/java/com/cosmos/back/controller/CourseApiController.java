@@ -2,12 +2,10 @@ package com.cosmos.back.controller;
 
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.service.JwtService;
-import com.cosmos.back.dto.request.CourseRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateAddDelRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateContentsRequestDto;
-import com.cosmos.back.dto.request.CourseUpdateOrdersRequestDto;
+import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
 import com.cosmos.back.service.CourseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "course", description = "코스 API")
 @RestController
@@ -26,20 +25,31 @@ public class CourseApiController {
     private final CourseService courseService;
     private final JwtService jwtService;
 
-    @Operation(summary = "코스 생성", description = "코스 생성")
+    @Operation(summary = "코스 생성(추천 알고리즘)", description = "코스 생성")
     @PostMapping("/courses")
-    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) {
+    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto dto) throws JsonProcessingException {
         CourseResponseDto courseResponseDto = courseService.createCourse(dto);
 
         return new ResponseEntity<>(courseResponseDto, HttpStatus.OK);
     }
 
-    @Operation(summary = "코스 찜", description = "코스 찜")
-    @PutMapping("/courses/{courseId}")
-    public ResponseEntity<Long> likeCourse(@PathVariable Long courseId) {
-        Long id = courseService.likeCourse(courseId);
+    @Operation(summary = "코스 생성(사용자 생성)", description = "코스 생성")
+    @PostMapping("/courses/users/{userSeq}")
+    public ResponseEntity<Long> createCourseByUser(@PathVariable Long userSeq, @RequestBody CouserUesrRequestDto dto) {
+        Long courseId = courseService.createCourseByUser(userSeq, dto);
 
-        return new ResponseEntity<>(id, HttpStatus.OK);
+        return new ResponseEntity<>(courseId, HttpStatus.OK);
+    }
+
+    @Operation(summary = "코스 찜", description = "코스 찜")
+    @PutMapping("/courses")
+    public ResponseEntity<Long> likeCourse(@RequestBody CourseNameRequestDto dto) {
+        Map<String, String> map = courseService.likeCourse(dto.getCourseId(), dto.getName());
+
+        // 알림 전송
+        //notificationService.send("makeWish", user.getCoupleUserSeq(), coupleUserName+"님이 장소 "+ place.getName() +"을(를) 찜하셨습니다.");
+
+        return new ResponseEntity<>(Long.parseLong(map.get("courseId")), HttpStatus.OK);
     }
 
     @Operation(summary = "코스 찜 삭제", description = "코스 찜 삭제")
@@ -65,7 +75,6 @@ public class CourseApiController {
 
         List<CourseResponseDto> courses = courseService.listLikeCourse(userSeq);
 
-
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
@@ -88,32 +97,11 @@ public class CourseApiController {
         return new ResponseEntity<>(courseResponseDto , HttpStatus.OK);
     }
 
-    @Operation(summary = "코스 내용 수정", description = "코스 내용 중 name과 subCategory만 수정")
-    @PutMapping("/courses/{courseId}/contents")
-    public ResponseEntity<Long> updateCourseContents(@PathVariable Long courseId, @RequestBody CourseUpdateContentsRequestDto dto) {
-        Long resultCourseId = courseService.updateCourseContents(courseId, dto);
-        return new ResponseEntity<>(resultCourseId, HttpStatus.OK);
-    }
+    @Operation(summary = "코스 수정(찜한 코스 커스텀)", description = "코스 전체 수정")
+    @PutMapping("/courses/{courseId}/coursechange")
+    public ResponseEntity<Long> updateCourseFinal(@PathVariable Long courseId, @RequestBody CourseUpdateRequstDto courseUpdateRequstDto) {
+        Long id = courseService.updateCourse(courseId, courseUpdateRequstDto);
 
-
-    @Operation(summary = "코스 수정(추가)", description = "코스 장소 추가(코스에 포함된 장소들 중에서 마지막에 추가된다)")
-    @PutMapping("/courses/{courseId}/add")
-    public ResponseEntity<?> updateCourseAdd(@PathVariable Long courseId, @RequestBody CourseUpdateAddDelRequestDto dto) {
-        courseService.updateCourseAdd(courseId, dto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Operation(summary = "코스 수정(삭제)", description = "코스 장소 삭제")
-    @PutMapping("/courses/{courseId}/delete")
-    public ResponseEntity<?> updateCourseDelete(@PathVariable Long courseId, @RequestBody CourseUpdateAddDelRequestDto dto) {
-        courseService.updateCourseDelete(courseId, dto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Operation(summary = "코스 수정(순서)", description = "코스 장소 순서 변경")
-    @PutMapping("/courses/{courseId}/orders")
-    public ResponseEntity<?> updateCourseOrders(@PathVariable Long courseId, @RequestBody CourseUpdateOrdersRequestDto dto) {
-        courseService.updateCourseOrders(courseId, dto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }

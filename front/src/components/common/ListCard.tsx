@@ -6,7 +6,7 @@ import { useRecoilState } from "recoil";
 import { darkMode } from "../../recoil/states/UserState";
 
 export default function ListCard({ children, height }: any | boolean) {
-    const isDark = useRecoilState(darkMode);
+    const isDark = useRecoilState(darkMode)[0];
     const [up, setUp] = useState(false);
     const handleDropBtn = () => {
         setUp((cur) => !cur);

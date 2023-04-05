@@ -1,6 +1,7 @@
 package com.cosmos.back.repository.user;
 
 import com.cosmos.back.model.User;
+import com.cosmos.back.repository.review.ReviewRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

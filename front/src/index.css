@@ -16,7 +16,7 @@ body {
 }
 ::-webkit-scrollbar-thumb {
   height: 30%; /* 스크롤바 길이 */
-  background: #ff8e9e; /* 스크롤바 색상 */
+  background: #d5d5d5; /* 스크롤바 색상 */
   border-radius: 10px;
 }
 ::-webkit-scrollbar-track {

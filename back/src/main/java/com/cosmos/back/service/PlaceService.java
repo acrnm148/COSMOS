@@ -21,10 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +33,21 @@ public class PlaceService {
     private final UserPlaceRepository userPlaceRepository;
     private final SidoRepository sidoRepository;
     private final GugunRepository gugunRepository;
-    private final PlanRepository planRepository;
+    private final NotificationService notificationService;
+
+    // 찜한 장소 조회하기
+    public List<PlaceListResponseDto> findLikePlaces (Long userSeq, Integer limit, Integer offset) {
+        List<PlaceListResponseDto> dto = userPlaceRepository.findLikePlaces(userSeq, limit, offset);
+        return dto;
+    }
 
 
     // 장소 찜하기
     @Transactional
     public Map<String, Long> likePlace (Long placeId, Long userSeq) {
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new IllegalArgumentException("no such data"));
-        User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data"));
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new NoSuchElementException("no such data"));
+        User user = userRepository.findById(userSeq).orElseThrow(() -> new NoSuchElementException("no such data"));
+        String coupleUserName = userRepository.findByUserSeq(user.getCoupleUserSeq()).getUserName();
 
         UserPlace userPlace = UserPlace.createUserPlace(user, place);
 
@@ -52,6 +56,9 @@ public class PlaceService {
         Map<String, Long> map = new HashMap<>();
         map.put("user", user.getUserSeq());
         map.put("place", place.getId());
+
+        // 알림 전송
+        notificationService.send("makeWish", user.getCoupleUserSeq(), coupleUserName+"님이 장소 "+ place.getName() +"을(를) 찜하셨습니다.");
 
         return map;
     }
@@ -84,8 +91,8 @@ public class PlaceService {
 
 
     // 구군 리스트 받아오기
-    @RedisCached(key = "listGugun", expire = 7200)
-    public List<GugunDto> listGugun (@RedisCachedKeyParam(key = "code") Integer code) {
+    //@RedisCached(key = "listGugun", expire = 7200)
+    public List<GugunDto> listGugun (Integer code){ //(@RedisCachedKeyParam(key = "code") Integer code) {
         List<Gugun> gugunList = gugunRepository.findBysidoCode(code);
         List<GugunDto> gugunDtoList = new ArrayList<>();
         for (Gugun item : gugunList) {
@@ -94,12 +101,11 @@ public class PlaceService {
                     .gugunName(item.getGugunName())
                     .build());
         }
-        System.out.println("gugunDtoList = 캭" + gugunDtoList);
         return gugunDtoList;
     }
 
     // 장소 검색(시/도, 구/군, 검색어, 검색필터)
-    public PlaceFilterResponseDto searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+    public PlaceFilterResponseDto searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter) {
         PlaceFilterResponseDto result = new PlaceFilterResponseDto();
         List<PlaceSearchListResponseDto> places = new ArrayList<>();
         Double LatitudeCenter = 0.0;
@@ -114,7 +120,7 @@ public class PlaceService {
         if (filter != null) {
             String[] filters = filter.split(" ");
             for (String f : filters) {
-                List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, f, limit, offset);
+                List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, f);
                 for (PlaceSearchListResponseDto dto : list) {
                     boolean execute = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(dto.getPlaceId(), userSeq);
                     dto.setLike(execute);
@@ -132,7 +138,7 @@ public class PlaceService {
 
             }
         } else {
-            List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, filter, limit, offset);
+            List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, filter);
             for (PlaceSearchListResponseDto dto : list) {
                 boolean execute = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(dto.getPlaceId(), userSeq);
                 dto.setLike(execute);

@@ -24,16 +24,17 @@ public class KakaoProfile {
         public Profile profile;
         public Boolean has_email;
         public Boolean has_birthday;
-        public Boolean has_age_range;
         public Boolean email_needs_agreement;
-        public Boolean name_needs_agreement;
+        //연령, 생일 선택동의
+        public Boolean has_age_range;
         public Boolean age_range_needs_agreement;
         public Boolean birthday_needs_agreement;
         public Boolean phone_number_needs_agreement;
+
         public Boolean is_email_valid;
         public Boolean is_email_verified;
         public String email;
-        public String name;
+        //연령, 생일 선택동의
         public String age_range;
         public String birthday;
         public String phone_number;

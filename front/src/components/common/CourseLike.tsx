@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import COSMOS from "../../assets/login/pinkCosmos.png";
+import DCOSMOS from "../../assets/login/darkCosmos.png";
 import LikeImg from "../../assets/like.png";
 import NoLikeImg from "../../assets/no-like.png";
 import DarkLikeImg from "../../assets/dark-like.png";
@@ -11,7 +12,7 @@ import { useRecoilState } from "recoil";
 import { darkMode } from "../../recoil/states/UserState";
 
 export default function CourseLike({ tDistance, tTime, tFare, courseId }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const navigate = useNavigate();
   const [isLike, setIsLike] = useState(false);
   const handleThisCourse = () => {
@@ -30,7 +31,9 @@ export default function CourseLike({ tDistance, tTime, tFare, courseId }: any) {
       : Swal.fire({
           title: "코스 찜 완료!",
           text: "마이페이지에서 코스를 수정할 수 있어요. 이동하시겠습니까?",
-          imageUrl: COSMOS,
+          background: isDark[0] ? "#585858" : "#FFFFFF",
+          color: isDark[0] ? "white" : "black",
+          imageUrl: isDark[0] ? DCOSMOS : COSMOS,
           imageWidth: 200,
           imageHeight: 200,
           imageAlt: "Custom image",
@@ -50,15 +53,15 @@ export default function CourseLike({ tDistance, tTime, tFare, courseId }: any) {
             return <div key={title}></div>;
           },
           showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
-          cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+          confirmButtonColor: isDark[0] ? "#BE6DB7" : "#FF8E9E",
+          cancelButtonColor: "#A3A3A3", // cancel 버튼 색깔 지정
           confirmButtonText: "확인", // confirm 버튼 텍스트 지정
           cancelButtonText: "취소", // cancel 버튼 텍스트 지정
         }).then((result) => {
           // 만약 Promise리턴을 받으면,
           if (result.isConfirmed) {
             // 만약 모달창에서 confirm 버튼을 눌렀다면 마이페이지 찜한 코스로 이동
-            navigate(`wish/course/${courseId}/detail`);
+            navigate(`/wish/course/${courseId}/detail`);
           }
         });
 

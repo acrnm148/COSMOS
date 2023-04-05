@@ -50,7 +50,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
     queryFn: () => getPlaceDetail(userSeq[0].seq, items.placeId, items.type),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <Modal open={modalOpen} close={closeModal} header="장소 상세" size="large">
@@ -165,7 +165,10 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 />
               </div>
               <div className="flex flex-col">
-                <div>{data.phoneNumber}</div>
+                <div
+                  className="dark:text-white"
+                  dangerouslySetInnerHTML={{ __html: data.phoneNumber }}
+                ></div>
               </div>
             </div>
             <div className="flex flex-row mb-2 gap-5">
@@ -175,7 +178,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                 />
               </div>
               <div className="flex flex-col dark:text-white">
-                <div>{data.parkingYn}</div>
+                <div dangerouslySetInnerHTML={{ __html: data.parkingYn }}></div>
               </div>
             </div>
             {items.type === "tour" ? (
@@ -187,7 +190,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                     />
                   </div>
                   <div className="flex flex-col dark:text-white">
-                    <div>{data.petYn}</div>
+                    <div dangerouslySetInnerHTML={{ __html: data.petYn }}></div>
                   </div>
                 </div>
                 <div className="flex flex-row mb-2 gap-5 dark:text-white">
@@ -197,7 +200,9 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                     />
                   </div>
                   <div className="flex flex-col dark:text-white">
-                    <div>{data.program}</div>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: data.program }}
+                    ></div>
                   </div>
                 </div>
               </>
@@ -221,7 +226,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                     />
                   </div>
                   <div className="flex flex-col dark:text-white">
-                    <div>{data.price}</div>
+                    <div dangerouslySetInnerHTML={{ __html: data.price }}></div>
                   </div>
                 </div>
               </>
@@ -245,7 +250,10 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <div className="dark:text-white">{data.refund}</div>
+                    <div
+                      className="dark:text-white"
+                      dangerouslySetInnerHTML={{ __html: data.refund }}
+                    ></div>
                   </div>
                 </div>
               </>
@@ -333,7 +341,10 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <div className="dark:text-white">{data.petYn}</div>
+                    <div
+                      className="dark:text-white"
+                      dangerouslySetInnerHTML={{ __html: data.petYn }}
+                    ></div>
                   </div>
                 </div>
               </>
@@ -356,7 +367,10 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <div className="dark:text-white">{data.petYn}</div>
+                    <div
+                      className="dark:text-white"
+                      dangerouslySetInnerHTML={{ __html: data.petYn }}
+                    ></div>
                   </div>
                 </div>
               </>

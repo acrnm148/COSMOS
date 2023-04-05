@@ -27,10 +27,9 @@ public class ReviewApiController {
 
     // 리뷰 생성하기(완료)
     @Operation(summary = "리뷰 등록", description = "리뷰를 등록함, 헤더에 토큰 필요")
-    @PostMapping("/reviews")
-    public ResponseEntity<Long> createReview(@RequestPart ReviewRequestDto dto,
-                                             @RequestPart("file") List<MultipartFile> multipartFile) {
-        Long reviewId = reviewService.createReview(dto, dto.getUserSeq(), multipartFile);
+    @PostMapping("/reviews/users/{userSeq}")
+    public ResponseEntity<Long> createReview(@PathVariable Long userSeq, @RequestBody ReviewRequestDto dto) {
+        Long reviewId = reviewService.createReview(dto, userSeq);
 
         return new ResponseEntity<>(reviewId, HttpStatus.OK);
     }
@@ -38,10 +37,10 @@ public class ReviewApiController {
     // 리뷰 삭제하기(완료)
     @Operation(summary = "리뷰 삭제", description = "리뷰를 삭제함, 헤더에 토큰 필요")
     @DeleteMapping("/reviews/{reviewId}/users/{userSeq}")
-    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, @PathVariable Long userSeq) {
-        reviewService.deleteReview(reviewId, userSeq);
+    public ResponseEntity<Long> deleteReview(@PathVariable Long reviewId, @PathVariable Long userSeq) {
+        Long id = reviewService.deleteReview(reviewId, userSeq);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     // 장소별로 유저, 커플 유저의 리뷰 모두 불러오기
@@ -49,9 +48,9 @@ public class ReviewApiController {
     @GetMapping(value = {"/reviews/users/{userSeq}/coupleId/{coupleId}/places/{placeId}",
             "/reviews/users/{userSeq}/coupleId/places/{placeId}"
     })
-    public ResponseEntity<List> findReviewInPlaceAndUser(@PathVariable Long userSeq, @PathVariable(required = false) Long coupleId, @PathVariable Long placeId) {
+    public ResponseEntity<List> findReviewInPlaceAndUser(@PathVariable Long userSeq, @PathVariable(required = false) Long coupleId, @PathVariable Long placeId, @RequestParam("limit") Integer limit, @RequestParam("offset") Integer offset) {
         if (coupleId == null) {coupleId = null;} // 커플 아이디가 없을 경우
-        List<ReviewResponseDto> list = reviewService.findReviewsInPlaceUserCouple(userSeq, coupleId, placeId);
+        List<ReviewResponseDto> list = reviewService.findReviewsInPlaceUserCouple(userSeq, coupleId, placeId, limit, offset);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -59,8 +58,8 @@ public class ReviewApiController {
     // 장소별 리뷰 모두 불러오기(완료)
     @Operation(summary = "장소별 리뷰 모두 불러오기", description = "장소별로 리뷰를 모두 불러온다, placeId만 입력")
     @GetMapping("/reviews/places/{placeId}")
-    public ResponseEntity<List> findReviewsInPlace(@PathVariable Long placeId) {
-        List<ReviewResponseDto> reviewsInPlace = reviewService.findReviewsInPlace(placeId);
+    public ResponseEntity<List> findReviewsInPlace(@PathVariable Long placeId, @RequestParam("limit") Integer limit, @RequestParam("offset") Integer offset) {
+        List<ReviewResponseDto> reviewsInPlace = reviewService.findReviewsInPlace(placeId, limit, offset);
         if (reviewsInPlace.size() > 0) {
             return new ResponseEntity<>(reviewsInPlace, HttpStatus.OK);
         } else {
@@ -71,16 +70,16 @@ public class ReviewApiController {
     // 내 리뷰 모두 불러오기
     @Operation(summary = "내 리뷰 모두 불러오기", description = "내가 쓴 리뷰를 모두 불러온다")
     @GetMapping("/reviews/users/{userSeq}")
-    public ResponseEntity<List> findReviwesInUser(@PathVariable Long userSeq) {
-        List<ReviewUserResponseDto> reviewsInUser = reviewService.findReviewsInUser(userSeq);
+    public ResponseEntity<List> findReviwesInUser(@PathVariable Long userSeq, @RequestParam("limit") Integer limit, @RequestParam("offset") Integer offset) {
+        List<ReviewUserResponseDto> reviewsInUser = reviewService.findReviewsInUser(userSeq, limit, offset);
         return new ResponseEntity<>(reviewsInUser, HttpStatus.OK);
     }
 
     // 리뷰 수정
     @Operation(summary = "내 리뷰 수정하기", description = "내가 쓴 리뷰를 수정한다")
-    @PutMapping("/reviews/{reviewId}")
-    public ResponseEntity<Long> changeReview(@PathVariable Long reviewId, @RequestBody ReviewRequestDto dto) {
-        Long id = reviewService.changeReview(reviewId, dto, dto.getUserSeq());
+    @PutMapping("/reviews/{reviewId}/users/{userSeq}")
+    public ResponseEntity<Long> changeReview(@PathVariable Long reviewId, @PathVariable Long userSeq, @RequestBody ReviewRequestDto dto) {
+        Long id = reviewService.changeReview(reviewId, dto, userSeq);
 
         return new ResponseEntity<>(id, HttpStatus.OK);
     }

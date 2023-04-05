@@ -26,6 +26,13 @@ public class PlaceApiController {
 
     private final PlaceService placeService;
 
+    @Operation(summary = "찜한 장소 보기", description = "찜한 장소 조회")
+    @GetMapping("/places/users/{userSeq}")
+    public ResponseEntity<List> findLikePlaces(@PathVariable Long userSeq, @RequestParam Integer limit, @RequestParam Integer offset) {
+        List<PlaceListResponseDto> likePlaces = placeService.findLikePlaces(userSeq, limit, offset);
+        return new ResponseEntity<>(likePlaces, HttpStatus.OK);
+    }
+
     @Operation(summary = "장소 찜하기", description = "장소를 찜 함")
     @GetMapping("/places/{placeId}/users/{userSeq}")
     public ResponseEntity<Long> likePlace(@PathVariable Long placeId, @PathVariable Long userSeq) {
@@ -147,13 +154,9 @@ public class PlaceApiController {
             "/places/search/users/{userSeq}/sido/gugun/text/{text}/filter/",
             "/places/search/users/{userSeq}/sido/gugun/text/filter/{filter}"
     })
-    public ResponseEntity<PlaceFilterResponseDto> searchPlace(@PathVariable Long userSeq, @PathVariable(required = false) String sido, @PathVariable(required = false) String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter, @RequestParam Integer limit, @RequestParam Integer offset) {
-//        if (sido == null) {sido = null;}
-//        if (gugun == null) {gugun = null;}
-//        if (text == null) {text = null;}
-//        if (filter == null) {filter = null;}
+    public ResponseEntity<PlaceFilterResponseDto> searchPlace(@PathVariable Long userSeq, @PathVariable(required = false) String sido, @PathVariable(required = false) String gugun, @PathVariable(required = false) String text, @PathVariable(required = false) String filter) {
 
-        PlaceFilterResponseDto dto = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter, limit, offset);
+        PlaceFilterResponseDto dto = placeService.searchPlacesBySidoGugunTextFilter(userSeq, sido, gugun, text, filter);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
