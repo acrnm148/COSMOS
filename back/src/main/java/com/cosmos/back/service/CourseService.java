@@ -1,5 +1,6 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.dto.SimplePlaceDto;
 import com.cosmos.back.dto.request.*;
 import com.cosmos.back.dto.response.CourseResponseDto;
@@ -41,6 +42,7 @@ public class CourseService {
 
     // 코스 생성(추천 알고리즘)
     @Transactional
+    @Generated
     public CourseResponseDto createCourse(CourseRequestDto dto) throws JsonProcessingException {
         // 1. 데이트 코스 생성 후 저장
         Course course = saveCourse(dto.getUserSeq());

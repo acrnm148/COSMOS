@@ -33,7 +33,7 @@ public interface PlaceRepositoryCustom {
     public CultureResponseDto findCultureByPlaceIdQueryDsl(Long placeId);
 
     // QueryDsl로 장소 리스트 가져오기(시/도, 구/군, 검색어, 검색필터) with Pagination
-    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset);
+    public List<PlaceSearchListResponseDto> findPlaceListBySidoGugunTextFilterQueryDsl(Long userSeq, String sido, String gugun, String text, String filter);
 
     // QueryDsl로 장소 검색 자동 완성 (Limit = 10)
     public List<AutoCompleteResponseDto> findPlaceListByNameAutoCompleteQueryDsl(String searchWord);

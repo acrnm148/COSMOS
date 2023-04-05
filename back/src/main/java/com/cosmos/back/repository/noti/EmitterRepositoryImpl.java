@@ -1,5 +1,6 @@
 package com.cosmos.back.repository.noti;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

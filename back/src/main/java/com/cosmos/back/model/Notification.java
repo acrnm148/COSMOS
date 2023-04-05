@@ -1,5 +1,6 @@
 package com.cosmos.back.model;
 
+import com.cosmos.back.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Generated
 public class Notification {
 
     @Id

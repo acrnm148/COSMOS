@@ -96,12 +96,11 @@ public class PlaceService {
                     .gugunName(item.getGugunName())
                     .build());
         }
-        System.out.println("gugunDtoList = 캭" + gugunDtoList);
         return gugunDtoList;
     }
 
     // 장소 검색(시/도, 구/군, 검색어, 검색필터)
-    public PlaceFilterResponseDto searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter, Integer limit, Integer offset) {
+    public PlaceFilterResponseDto searchPlacesBySidoGugunTextFilter (Long userSeq, String sido, String gugun, String text, String filter) {
         PlaceFilterResponseDto result = new PlaceFilterResponseDto();
         List<PlaceSearchListResponseDto> places = new ArrayList<>();
         Double LatitudeCenter = 0.0;
@@ -116,7 +115,7 @@ public class PlaceService {
         if (filter != null) {
             String[] filters = filter.split(" ");
             for (String f : filters) {
-                List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, f, limit, offset);
+                List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, f);
                 for (PlaceSearchListResponseDto dto : list) {
                     boolean execute = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(dto.getPlaceId(), userSeq);
                     dto.setLike(execute);
@@ -134,7 +133,7 @@ public class PlaceService {
 
             }
         } else {
-            List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, filter, limit, offset);
+            List<PlaceSearchListResponseDto> list = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(userSeq, sido, gugun, text, filter);
             for (PlaceSearchListResponseDto dto : list) {
                 boolean execute = placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(dto.getPlaceId(), userSeq);
                 dto.setLike(execute);

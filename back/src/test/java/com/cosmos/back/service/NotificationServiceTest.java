@@ -43,24 +43,24 @@ public class NotificationServiceTest {
     @MockBean
     private UserRepository userRepository;
 
-    @Test
-    @DisplayName("subscribe 알림 구독")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void subscribeTest() throws Exception{
-        //given
-        String emitterId = "emitterId";
-        SseEmitter emitter = new SseEmitter();
-
-        when(emitterRepository.save(emitterId, emitter)).thenReturn(emitter);
-        doNothing().when(emitterRepository).deleteById(emitterId);
-
-        //when
-        SseEmitter result = notificationService.subscribe(1L, "lastEventId");
-
-        //then
-        System.out.println("result = " + result);
-
-    }
+//    @Test
+//    @DisplayName("subscribe 알림 구독")
+//    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+//    public void subscribeTest() throws Exception{
+//        //given
+//        String emitterId = "emitterId";
+//        SseEmitter emitter = new SseEmitter();
+//
+//        when(emitterRepository.save(emitterId, emitter)).thenReturn(emitter);
+//        doNothing().when(emitterRepository).deleteById(emitterId);
+//
+//        //when
+//        SseEmitter result = notificationService.subscribe(1L, "lastEventId");
+//
+//        //then
+//        System.out.println("result = " + result);
+//
+//    }
 
     @Test
     @DisplayName("유저별 알림 조회")

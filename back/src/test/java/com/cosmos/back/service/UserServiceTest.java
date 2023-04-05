@@ -99,9 +99,11 @@ public class UserServiceTest {
         //given
         User user = User.builder()
                 .userSeq(1L)
+                .coupleId(0L)
                 .build();
         User coupleUser = User.builder()
                 .userSeq(2L)
+                .coupleId(0L)
                 .build();
         User coupleUser2 = null;
         User user3 = User.builder()
