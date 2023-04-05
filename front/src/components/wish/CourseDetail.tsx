@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import TMapResult from "../common/TMapResult";
+import TMapWish from "../common/TMapWish";
 import ListCard from "../common/ListCard";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
@@ -24,31 +25,6 @@ interface Place {
 
 export default function CourseDetail(props: { courseId: any }) {
     const navigate = useNavigate();
-
-    const state = {
-        center: {
-            lat: 37.566481622437934,
-            lng: 126.98502302169841,
-        },
-    };
-    const marker = [
-        {
-            placeId: 0,
-            lat: 37.566481622437934,
-            lng: 126.98502302169841,
-        },
-        {
-            placeId: 1,
-            lat: 37.567481622437934,
-            lng: 126.98602302169841,
-        },
-        {
-            placeId: 2,
-            lat: 37.567381622437934,
-            lng: 126.98502302169841,
-        },
-    ];
-
     const [places, setPlaces] = useState<Place[]>([]);
     const [userSeq, setUserSeq] = useRecoilState(userState);
 
@@ -89,18 +65,22 @@ export default function CourseDetail(props: { courseId: any }) {
 
     return (
         <div>
-            <div className="text-center w-full max-w-[950px] overflow-y-scroll">
-                <TMapResult state={state} marker={marker} className="fixed" />
+            <div className="text-center w-full max-w-[950px]">
+                <TMapWish courseId={props.courseId} />
 
-                <ListCard height={false}>
-                    <div className="mb-5 text-lg font-bold text-left pb-3 mx-5 border-b border-slate-400">
-                        {data?.name}
-                    </div>
+                <div className="">
+                    <ListCard height={false}>
+                        <div className="mb-5 text-lg font-bold text-left pb-3 mx-5 border-b border-slate-400">
+                            {data?.name}
+                        </div>
 
-                    {places?.map((p: Place) => (
-                        <Item key={p.placeId} item={p}></Item>
-                    ))}
-                </ListCard>
+                        <div className="cardList">
+                            {places?.map((p: Place) => (
+                                <Item key={p.placeId} item={p}></Item>
+                            ))}
+                        </div>
+                    </ListCard>
+                </div>
             </div>
 
             <div className="btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]">
@@ -182,7 +162,7 @@ function Item(props: { item: Place }) {
             </div>
             <div className="col-md-4 mb-4 ml-4 mr-4 p-3 bg-calendarGray rounded-lg">
                 <img
-                    className="float-left w-24 h-28 mr-4 rounded-md"
+                    className="float-left w-24 h-[100px] mr-4 mt-1 rounded-md"
                     src={props.item.thumbNailUrl}
                     alt="img"
                 />
@@ -190,6 +170,7 @@ function Item(props: { item: Place }) {
                     <div className="font-bold mb-2">{props.item.name}</div>
                     <div className="mb-2 text-sm text-gray-500">{address}</div>
                     <div className="text-sm">{detail}</div>
+                    {!detail && <div className="h-9"></div>}
                 </div>
             </div>
         </div>
