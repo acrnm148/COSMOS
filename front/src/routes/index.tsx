@@ -16,7 +16,6 @@ import PlaceRecommend from "../pages/place/PlaceRecommend";
 import MyPage from "../pages/mypage/MyPage";
 import { MonthSchedulePage } from "../pages/schedule/MonthSchedulePage";
 import { DaySchedulePage } from "../pages/schedule/DaySchedulePage";
-import { CreateSchedulePage } from "../pages/schedule/CreateSchedulePage";
 import { ScheduleDetail } from "../pages/schedule/ScheduleDetail";
 import { GalleryPage } from "../pages/schedule/GalleryPage";
 import ScheduleLayout from "../layouts/ScheduleLayout";
@@ -54,19 +53,19 @@ const router = createBrowserRouter([
                         { path: "mypage", element: <MyPage />}, // 마이페이지
                         { path: "logout", element: <Logout /> }, // 로그아웃
                         // 찜 목록
-                        { path: "/wish", element: <WishList /> },
-                        { path: "/wish/course/:wishId", element: <WishList /> },
-                        { path: "/wish/course/:courseId/detail", element: <WishList /> },
-                        { path: "/wish/course/:editId/edit", element: <WishList /> },
-                        { path: "/wish/:makeCourse", element: <WishList /> },
+                        { path: "wish", element: <WishList /> },
+                        { path: "wish/course/:wishId", element: <WishList /> },
+                        { path: "wish/course/:courseId/detail", element: <WishList /> },
+                        { path: "wish/course/:editId/edit", element: <WishList /> },
+                        { path: "wish/:makeCourse", element: <WishList /> },
                         // 장소 검색 & 빅데이터 추천
-                        { path: "/place/recommend", element: <PlaceRecommend /> },
-                        { path: "/place/result", element: <PlaceResult /> },
+                        { path: "place/recommend", element: <PlaceRecommend /> },
+                        { path: "place/result", element: <PlaceResult /> },
                         // 일정관리
-                        { path: "/schedule/month", element: <MonthSchedulePage /> },
-                        { path: "/schedule/day", element: <DaySchedulePage /> },
-                        { path: "/schedule/detail", element: <ScheduleDetail /> },
-                        { path: "/schedule/gallery", element: <GalleryPage /> },
+                        { path: "schedule/month", element: <MonthSchedulePage /> },
+                        { path: "schedule/day", element: <DaySchedulePage /> },
+                        { path: "schedule/detail", element: <ScheduleDetail /> },
+                        { path: "schedule/gallery", element: <GalleryPage /> },
                     ],
                 }]
     },
@@ -94,6 +93,23 @@ const router = createBrowserRouter([
             { path: "result/:cate/:cateNum", element: <ServeyResult /> },
         ],
     },
+    //일정관리
+    {
+        path: "/schedule",
+        element: <RequireAuth />,
+        errorElement: <NotFound />,
+        children: [{
+            path: "",
+            element: <ScheduleLayout />,
+            errorElement: <NotFound />,
+            children: [
+                { path: "month", element: <MonthSchedulePage /> },
+                { path: "day", element: <DaySchedulePage /> },
+                { path: "detail", element: <ScheduleDetail /> },
+                { path: "gallery", element: <GalleryPage /> },
+            ]
+         }]
+    },
     // 찜 목록
     // {
     //     path: "/wish",
@@ -117,18 +133,7 @@ const router = createBrowserRouter([
     //         { path: "result", element: <PlaceResult /> },
     //     ],
     // },
-    // 일정관리
-    // {
-    //     path: "/schedule",
-    //     element: <ScheduleLayout />,
-    //     errorElement: <NotFound />,
-    //     children: [
-    //         { path: "month", element: <MonthSchedulePage /> },
-    //         { path: "day", element: <DaySchedulePage /> },
-    //         { path: "detail", element: <ScheduleDetail /> },
-    //         { path: "gallery", element: <GalleryPage /> },
-    //     ],
-    // },
+
 ]);
 
 export default router;

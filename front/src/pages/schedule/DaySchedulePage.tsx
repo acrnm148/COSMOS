@@ -13,7 +13,7 @@ import 파주출판단지 from "../../assets/schedule/파주출판단지.png"
 import 녹두 from "../../assets/schedule/녹두.png"
 import 베지앙 from "../../assets/schedule/베지앙.png"
 
-import { getDayCourse, postSchedule } from "../../apis/api/course";
+import { getDayCourse, postSchedule, putSchedule } from "../../apis/api/course";
 import { userState } from "../../recoil/states/UserState";
 import { useRecoilState } from "recoil";
 import { Iron } from "@mui/icons-material";
@@ -212,11 +212,12 @@ export function DaySchedulePage(){
     const dateToApiFormat = (date:Date) => dayjs(date).format("YYYY-MM-DD")
 
     const postPlan = useMutation(postSchedule)
+    const putPlan = useMutation(putSchedule)
     const [scheduleDaysList, setScheduleDaysList] = useState<{day:string, contents:[]|[COURSE], seq:any}[]>()
     function submitSchedules(){
-
+        
         Toast2.fire({
-            title : "일정을 생성하시겠습니까?"
+            title : isEditing ? "일정을 수정하시겠습니까?" :"일정을 생성하시겠습니까?"
         }).then((result)=>{
             if (result.isConfirmed) {
                 let courseIdAndDateList = (scheduleDaysList?.map((sd)=>({
@@ -232,11 +233,19 @@ export function DaySchedulePage(){
                     "endDate" : courseIdAndDateList?.[courseIdAndDateList?.length-1].date
                 }
                 console.log('dt-------------', dt)
-                postPlan.mutate({
-                    schedule : dt,
-                    ac : loginUser.acToken,
-                    userSeq : loginUser.seq
-                })
+                if(isEditing){
+                    putPlan.mutate({
+                        schedule : dt,
+                        ac : loginUser.acToken,
+                        userSeq : loginUser.seq
+                    })
+                } else{
+                    postPlan.mutate({
+                        schedule : dt,
+                        ac : loginUser.acToken,
+                        userSeq : loginUser.seq
+                    })
+                }
                 setIsPlan(true)
                 const temp = dayClicked
                 setDayClicked('-1')
@@ -388,29 +397,23 @@ export function DaySchedulePage(){
             setEndDate(new Date(res.data.endDate))
             return res.data.courses
         }).then((res)=>{
-            // 기존 플랜의 코스 개수만큼 반복하면서 setCoureOnDate호출
-        //     res.map((course: { id: number; }, key: number)=>{
-        //         setScheduleDaysList([...scheduleDaysList, 
-        //             {seq : course.id, 
-        //             day: (course.date.slice(5,7) + '월' + course.date.slice(8,10) + '일')
-        //             contents : course.places.map((p)=>{
-                        
-        //             })
-        //         }])
-        //                 // export interface COURSE {
-        //                 //     courseId: any;
-        //                 //     seq:number, name:string, places:Object[]
-        //                 // }
-        //     })
-            
-        // }).then(()=>{
+            console.log('resres', res)
+            const editSche = res.map((cor: { id: any; date: string; coursePlaces: { map: () => any; }; }, key: any) => ({
+                seq : cor.id,
+                day: (cor.date.slice(5,7)+ '월' + cor.date.slice(8,10) + '일'),
+                contents : []
+            }))
+            setScheduleDaysList(editSche)
+            // console.log('editSche',editSche)
+            // setScheduleDaysList(res.map((cor: { id: any; date: string; coursePlaces: { map: () => any; }; }, key: any) => ({
+            //         seq : cor.id,
+            //         day: (cor.date.slice(5,7)+ '월' + cor.date.slice(8,10) + '일'),
+            //         contents : []
+            // })))
             // places
             setIsPlan(false)
             setEditing(true)
         })
-
- 
-        // setEditSchedule()
     }
 
     // startDate를 문자열로 리턴하는 함수
@@ -422,14 +425,14 @@ export function DaySchedulePage(){
         return (year.year+'. '+month+'. '+(dayClicked.length==1? '0'+dayClicked : dayClicked))
     }
     return (
-        <div className=" ">
+        <div className="w-full">
             <ScheduleMonth year={year.year} month={month}/>
             <div className="bg-white rounded-t-lg w-full h-full overflow-y-scroll mb-40" >
                 <div className="ml-2 mr-2 flex flex-col items-center content-center h-full">
                     <div className="flex flex-col w-full justify-center md:w-5/6 lg:w-4/6  h-full">
                         <WeekCalendar setDayClicked={setDayClicked} day={location.state.day} week={location.state.week}/>
                             <div onClick={makeShedules} className="cursor-pointer">
-                                {!showModal && scheduleTitle && <ScheduleTitle scheduleTitle={scheduleTitle}/>}
+                                {!showModal && scheduleTitle && !isEditing && <ScheduleTitle scheduleTitle={scheduleTitle}/>}
                             </div>
                             {isPlan? 
                                 <div className="h-full overflow-scroll">
@@ -463,7 +466,7 @@ export function DaySchedulePage(){
                                 ///////////////////////////////////////////// 일정생성/수정 START /////////////////////////////////////////////
                                 <div className="h-full max-h-[1000vh]">                                    
                                         <div className='mx-2 h-16 flex items-center rounded-lg border-2 border-solid hover:border-lightMain2 ' >
-                                            일정명 : <input className=" mx-2 focus:outline-none" onChange={(e)=>setPlanName(e.target.value)} type="text" />
+                                            일정명 : <input className=" mx-2 focus:outline-none" onChange={(e)=>setPlanName(e.target.value)} type="text" placeholder={scheduleTitle?scheduleTitle:''} />
                                         </div>
                                         <div className='bg-lightMain3 rounded-lg p-2 m-2 flex items-center'>
                                             <DatePickerTest checkDate={null} defaultDate={makeStartDateFormat()} isDate={true}/>
@@ -488,7 +491,9 @@ export function DaySchedulePage(){
                                                                                         return <div onClick={()=>{
                                                                                             (showCourse === key ? setShowCourse(undefined) : setShowCourse(key))
                                                                                         }
-                                                                                        }>{ee.name}</div>
+                                                                                        //TODO :: COURSE에 이름추가
+                                                                                    }>{ee.name}</div>
+                                                                                        // }>{isEditing?d.name :ee.name}</div>
                                                                                     })
                                                                                 }
                                                                             </div>
@@ -513,10 +518,10 @@ export function DaySchedulePage(){
                                                 </div>
                                             }
                                         </div>
-                                        <div className="min-h-[20vh] cursor-pointer" onClick={submitSchedules}>
-                                            <ScheduleTitle scheduleTitle={"일정 만들기"}/>
+                     
+                                        <div className="min-h-[20vh] cursor-pointer" onClick={() => submitSchedules()}>
+                                            <ScheduleTitle scheduleTitle={isEditing ? "일정 수정하기" : "일정 만들기"}/>
                                         </div>
-                                        
                                 </div>
                                 ///////////////////////////////////////////// 일정생성/수정 END /////////////////////////////////////////////
                         }

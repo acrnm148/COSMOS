@@ -2,9 +2,11 @@ package com.cosmos.back.service;
 
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.dto.request.ReviewRequestDto;
+import com.cosmos.back.model.Review;
 import com.cosmos.back.model.User;
 import com.cosmos.back.model.place.Place;
 import com.cosmos.back.repository.place.PlaceRepository;
+import com.cosmos.back.repository.review.ReviewRepository;
 import com.cosmos.back.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,9 @@ class ReviewServiceTest {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private ReviewRepository reviewRepository;
+
     @Test
     @DisplayName("CourseService createReview 메소드")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
@@ -65,7 +70,9 @@ class ReviewServiceTest {
 //
 //        Long id = reviewService.createReview(reviewRequestDto, user.getUserSeq());
 //
+//        Review review = reviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("no such data"));
 //
+//        assertEquals();
     }
 
     @Test

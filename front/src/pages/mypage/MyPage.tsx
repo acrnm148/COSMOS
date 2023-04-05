@@ -75,6 +75,8 @@ interface Place{
             })
 
           }
+          console.log('data in mypage', data)
+          console.log('userInfo', userInfo)
         },[data])
 
     // 찜한코스

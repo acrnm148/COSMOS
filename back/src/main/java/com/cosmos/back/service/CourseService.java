@@ -409,7 +409,7 @@ public class CourseService {
         }
 
         courseResponseDto.setMidLatitude(midLatitude / count);
-        courseResponseDto.setMidLatitude(midLongitude / count);
+        courseResponseDto.setMidLongitude(midLongitude / count);
 
         courseResponseDto.setPlaces(places);
 
