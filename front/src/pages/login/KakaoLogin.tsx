@@ -68,7 +68,7 @@ export default function KakaoLogin() {
                     };
                     setLoginUser(user);
                     // setLoginUser({seq:us, isLoggedIn:true, acToken:res.data.accessToken, coupleId:res.data.coupleId})
-                    console.log("코스모스 로그인 성공", res);
+                    // console.log("코스모스 로그인 성공", res);
                     setIsLogin(true);
 
                     if (user.coupleId != 0) {
@@ -79,8 +79,8 @@ export default function KakaoLogin() {
                 }
             })
             .catch((err: any) => {
-                console.log("코스모스 로그인 실패", err);
-                // navigate("/");
+                // console.log("코스모스 로그인 실패", err);
+                navigate("/login");
                 // 카카오 로그아웃요청
             });
     }
@@ -105,7 +105,7 @@ export const onLoginSuccess = (
                 },
             })
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 setLoginUser({
                     seq: seq,
                     isLoggedIn: true,
@@ -115,7 +115,7 @@ export const onLoginSuccess = (
                 return "refresh acTocken sucess";
             })
             .catch((err) => {
-                console.log(err);
+                // console.log(err);
                 return "refresh acTocken error";
             });
     }, JWT_EXPIRRY_TIME);

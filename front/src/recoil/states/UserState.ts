@@ -9,6 +9,17 @@ export interface LUser {
     acToken: string;
     coupleId: any;
 }
+// export const userState = atom<LUser>({
+//     key: "userState",
+//     default: {
+//         seq: -1,
+//         isLoggedIn: false,
+//         acToken: "",
+//         coupleId: "0",
+//     },
+//     effects_UNSTABLE: [persistAtom],
+// });
+//임시 데이터
 export const userState = atom<LUser>({
     key: "userState",
     default: {
@@ -23,6 +34,7 @@ export const userState = atom<LUser>({
 export const loggedIn = atom({
     key: "loggedIn",
     default: false,
+    // default : true
 });
 
 export const darkMode = atom({

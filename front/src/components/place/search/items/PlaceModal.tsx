@@ -406,7 +406,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
               </div>
             ) : (
               <div className="mt-2 mb-5">
-                <ReviewOurs placeId={data.placeId} />
+                <ReviewOurs placeId={data.placeId}  sol={!true}/>
               </div>
             )}
           </div>

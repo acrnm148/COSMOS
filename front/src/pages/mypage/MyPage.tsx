@@ -168,10 +168,10 @@ interface Place{
   }
   const th = 3
   return (
-    <div className="">
-      <div className="flex w-screen items-center content-center ">
-        <div className="w-full flex m-auto flex-col justify-center items-center  md:w-5/6 lg:w-3/6 overflow-y-scroll mb-[100px] overflow-x-hidden">
-          <div className="profile justify-center items-end flex mt-5 mb-2 h-20 mt-10 " >
+    <div className="h-full w-screen">
+      <div className="flex items-center content-center mx-4">
+        <div className="w-full flex m-auto flex-col justify-center items-center  md:w-5/6 lg:w-3/6 overflow-x-hidden mb-[10vh]">
+          <div className="profile justify-center items-end flex mt-5 mb-2 mt-2 " >
               {userInfo?.coupleYn === 'Y' ?
               <>
               <div className={"rounded-full w-[14vw] h-[14vw] hover:w-[15vw] hover:h-[15vw] max-w-[950px]"}>
@@ -187,8 +187,8 @@ interface Place{
                 </div>
               </>
               :
-              <div className={"rounded-lg  w-[28vw] h-[28vw] hover:w-[30vw] hover:h-[30vw] max-w-[950px]"}>
-                <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-lg" alt="" />
+              <div className={"rounded-full  w-[24vw] h-[24vw] hover:w-[26vw] hover:h-[26vw] max-w-[950px] mb-2"}>
+                <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
               </div>
               }
               </div>
@@ -224,11 +224,11 @@ interface Place{
           >
             로그아웃
           </div> */}
-          <div className="recent w-full m-4 mb-8 min-h-48">
+          <div className="recent w-full m-4 mb-8 min-h-36">
             <div className={isDark?'text-darkMain2':'text-lightMain2' + `ml-4 mr-4 font-bold`}>
               최근 찜 내역
             </div>
-            <div className="recentItem flex justify-around h-48">
+            <div className="recentItem flex justify-around h-36">
 
               {wishPlaces?.map((item) => {
                 return (
