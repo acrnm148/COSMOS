@@ -29,6 +29,7 @@ import { userState, darkMode } from "../../recoil/states/UserState";
 
 export default function TMapRecommend() {
   const isDark = useRecoilState(darkMode)[0];
+  const user = useRecoilState(userState);
   const sido = useRecoilState(selectSido);
   const gugun = useRecoilState(selectGugun);
   const category = useRecoilState(selectCategory);
@@ -39,7 +40,7 @@ export default function TMapRecommend() {
     sido: sido[0].sidoName,
     gugun: gugun[0].gugunName,
     categories: category[0],
-    userSeq: 1,
+    userSeq: user[0].seq,
   };
 
   const [item, setItem] = useState(JSON.stringify(tmp));
@@ -53,7 +54,7 @@ export default function TMapRecommend() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getDateCourse", item],
-    queryFn: () => getDateCourse(item),
+    queryFn: () => getDateCourse(item, user[0].seq),
   });
 
   useEffect(() => {
@@ -264,7 +265,6 @@ export default function TMapRecommend() {
           async: false,
           data: param,
           success: function (response) {
-            console.log(response);
             var resultData = response.properties;
             var resultFeatures = response.features;
 
