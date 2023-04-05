@@ -90,6 +90,7 @@ public class SseRepositoryTest {
         assertThat(result).isEqualTo(5);
 
     }
+
 //    @Autowired
 //    private NotificationRepository notificationRepository;
 //
@@ -150,5 +151,4 @@ public class SseRepositoryTest {
 //        assertThat(result).isEqualTo(5);
 //
 //    }
-
 }
