@@ -127,9 +127,10 @@ export default function CourseEdit(props: { courseId: any }) {
     return (
         <div>
             <div className="text-center w-full max-w-[950px]">
-                <TMapResult state={state} marker={marker} className="fixed" />
+                {/* <TMapResult state={state} marker={marker} className="fixed" /> */}
+
                 {places && (
-                    <ListCard height={false}>
+                    <div className="mb-16">
                         <div className="mb-1 text-lg font-bold text-left pb-3 mx-5">
                             {res[0].data?.name}
                         </div>
@@ -155,7 +156,7 @@ export default function CourseEdit(props: { courseId: any }) {
                                 handleOrders={handleOrders}
                             ></Item>
                         ))}
-                    </ListCard>
+                    </div>
                 )}
             </div>
 

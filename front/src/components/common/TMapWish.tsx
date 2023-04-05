@@ -250,12 +250,16 @@ export default function TMapRecommend(props: { courseId: any }) {
 
     return (
         <>
-            <CourseLike
-                tDistance={tDistance}
-                tTime={tTime}
-                tFare={tFare}
-                courseId={data.courseId}
-            />
+            <div className="flex flex-row relative bg-lightMain3 justify-center h-14 wb-3 dark:bg-darkMain">
+                <div className="flex flex-row gap-3 h-15 m-auto">
+                    <span className="font-bold dark:text-white">
+                        {tDistance}
+                    </span>
+                    <span className="font-bold dark:text-white">{tTime}</span>
+                    <span className="font-bold dark:text-white">{tFare}</span>
+                </div>
+            </div>
+
             <div className="w-full h-[50vh]" id="TMAP" ref={mapRef}></div>
         </>
     );
