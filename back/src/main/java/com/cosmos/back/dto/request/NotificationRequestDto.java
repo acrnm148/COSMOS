@@ -13,4 +13,5 @@ public class NotificationRequestDto {
     private String event;
     private Long userSeq;
     private String content;
+    private Boolean isClicked;
 }
