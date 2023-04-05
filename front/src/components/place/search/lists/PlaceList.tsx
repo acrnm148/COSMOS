@@ -65,7 +65,7 @@ export default function PlaceList({ offset, setOffset }: any) {
     <>
       <ListCard height={true}>
         {data.places.map((items: any, index: number) => {
-          if (index > offset * 20 && index < offset * 20 + 20) {
+          if (index >= offset * 20 && index < offset * 20 + 20) {
             return (
               <div key={items.placeId}>
                 <div
