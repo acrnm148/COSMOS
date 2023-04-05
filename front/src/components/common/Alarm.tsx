@@ -9,6 +9,7 @@ import {
 } from "../../apis/api/alarm";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 export default function Alarm() {
     const [userSeq, setUserSeq] = useRecoilState(userState);
