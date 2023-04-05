@@ -37,6 +37,7 @@ export default function TMapResult({ state, marker }: any) {
               ),
               icon: LightMarker,
               map: map,
+              title: "이름",
             });
 
             // 웹

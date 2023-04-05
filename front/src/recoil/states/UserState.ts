@@ -7,7 +7,7 @@ export interface LUser {
     seq: number;
     isLoggedIn: boolean;
     acToken: string;
-    coupleId: string;
+    coupleId: any;
 }
 export const userState = atom<LUser>({
     key: "userState",
@@ -15,7 +15,18 @@ export const userState = atom<LUser>({
         seq: -1,
         isLoggedIn: false,
         acToken: "",
-        coupleId: "",
+        coupleId: "0",
     },
+    effects_UNSTABLE: [persistAtom],
+});
+
+export const loggedIn = atom({
+    key: "loggedIn",
+    default: false,
+});
+
+export const darkMode = atom({
+    key: "darkMode",
+    default: true,
     effects_UNSTABLE: [persistAtom],
 });

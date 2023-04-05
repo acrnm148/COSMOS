@@ -10,15 +10,15 @@ export default function Modal(props: any) {
         <section
           className={size === "small" ? "max-w-[450px]" : "max-w-[800px]"}
         >
-          <header>
+          <header className="dark:bg-darkMain2">
             {header}
             <button className="close" onClick={close}>
               &times;
             </button>
           </header>
-          <main>{props.children}</main>
-          <footer>
-            <button className="close" onClick={close}>
+          <main className="dark:bg-darkBackground">{props.children}</main>
+          <footer className="dark:bg-darkBackground">
+            <button className="close dark:bg-darkMain2" onClick={close}>
               {size === "small" ? "확인" : "닫기"}
             </button>
           </footer>

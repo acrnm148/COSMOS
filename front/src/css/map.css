@@ -1,16 +1,16 @@
 .map-wrapper svg {
   margin: auto;
 }
-.land {
+.land1 {
   fill: #ffb5c0;
   stroke: white;
   stroke-width: 1px;
   cursor: pointer;
 }
-.land.click {
+.land1.click {
   fill: #ff8e9e;
 }
-.land:hover {
+.land1:hover {
   fill: #ff8e9e;
 }
 .sido {

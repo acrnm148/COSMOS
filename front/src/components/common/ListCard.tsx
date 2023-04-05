@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import "../../css/listCard.css";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { useRecoilState } from "recoil";
+import { darkMode } from "../../recoil/states/UserState";
 
 export default function ListCard({ children, height }: any | boolean) {
+  const isDark = useRecoilState(darkMode)[0];
   const [up, setUp] = useState(false);
   const handleDropBtn = () => {
     setUp((cur) => !cur);
@@ -20,7 +23,7 @@ export default function ListCard({ children, height }: any | boolean) {
   return (
     <div
       className={
-        "card mb-[80px] z-[100000] bg-white relative overflow-auto" +
+        "card mb-[80px] z-[100000] bg-white relative overflow-auto dark:bg-darkBackground" +
         (height ? " h-[70vh]" : "")
       }
       id="listBox"
@@ -28,14 +31,14 @@ export default function ListCard({ children, height }: any | boolean) {
       {up ? (
         <ArrowDropDownIcon
           fontSize="large"
-          color="disabled"
+          color={isDark ? "secondary" : "disabled"}
           onClick={handleDropBtn}
           className="cursor-pointer"
         />
       ) : (
         <ArrowDropUpIcon
           fontSize="large"
-          color="disabled"
+          color={isDark ? "secondary" : "disabled"}
           onClick={handleDropBtn}
           className="cursor-pointer"
         />

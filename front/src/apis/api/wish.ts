@@ -6,11 +6,27 @@ import { AxiosAuthApi, defaultInstance } from "../utils";
 /**
  * @param {number} userSeq : 유저 seq
  * GET : 찜한 코스 리스트 데이터를 가져온다.
- * @returns [] : 찜한 코스 리스트`
+ * @returns [] : 찜한 코스 리스트
  */
 export const getWishCourseList = async (userSeq: number, ac: string | null) => {
-    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac);
+    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq);
     const { data } = await instance.get(`courses/users/${userSeq}`);
+    return data;
+};
+
+/**
+ * @param {number} courseId : 코스 id
+ * @param {number} userSeq : 유저 seq
+ * GET : 코스 상세보기를 가져온다.
+ * @returns : courseId, name, date, places
+ */
+export const getCourseDetail = async (
+    courseId: number,
+    userSeq: number,
+    ac: string | null
+) => {
+    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq);
+    const { data } = await instance.get(`courses/${courseId}/users/${userSeq}`);
     return data;
 };
 
@@ -53,6 +69,55 @@ interface params {
 export const deleteWishPlace = async ({ placeId, userSeq }: params) => {
     const { data } = await defaultInstance.delete(
         `places/${placeId}/users/${userSeq}`
+    );
+    return data;
+};
+
+// POST APIs
+// 찜한 장소로 코스 생성
+/**
+ * @param {number} userSeq : 유저 seq
+ * POST : 찜한 장소들로 코스를 생성한다.
+ */
+interface makeParams {
+    userSeq: number;
+    placeIds: number[];
+    name: string;
+}
+export const wishMakeCourse = async ({
+    userSeq,
+    placeIds,
+    name,
+}: makeParams) => {
+    const { data } = await defaultInstance.post(`/courses/users/${userSeq}`, {
+        name: name,
+        placeIds: placeIds,
+    });
+    return data;
+};
+
+// PUT APIs
+// 찜한 코스 수정 (사용자 커스텀)
+/**
+ * @param {number} courseId : 코스 id
+ * PUT : 찜한 코스를 수정한다. (장소, 순서 변경)
+ */
+interface courseEditParams {
+    courseId: number;
+    placeIds: number[];
+    name: string;
+}
+export const wishCourseEdit = async ({
+    courseId,
+    name,
+    placeIds,
+}: courseEditParams) => {
+    const { data } = await defaultInstance.put(
+        `courses/${courseId}/coursechange`,
+        {
+            name: name,
+            placeIds: placeIds,
+        }
     );
     return data;
 };

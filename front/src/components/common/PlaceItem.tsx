@@ -13,12 +13,12 @@ export function PlaceItem(props:{place:Place}){
     })
     return (
         <div className="flex w-full h-40 bg-calendarGray mt-2 rounded-lg justify-between p-2">
-            <div className='h-full bg-calendarDark rounded-lg overflow-hidden'>
-                <img src={plc.imgUrl} alt="" />
+            <div className='h-full w-40 bg-calendarDark rounded-lg overflow-hidden'>
+                <img className="h-full w-full" src={plc.imgUrl} alt="" />
             </div>
             <div className="flex flex-col w-4/6">
-                <div className="w-4/6 flex justify-start ml-2">
-                    <div>{plc.location}</div>
+                <div className="flex justify-start ml-2 text-sm">
+                    <div className="">{plc.location}</div>
                     <p className="ml-1 mr-1">|</p>
                     <div>{plc.category}</div>
                 </div>

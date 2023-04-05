@@ -19,7 +19,6 @@ export default function GugunList() {
     const selected = { gugunCode: code, gugunName: name };
     setGugun(selected);
   };
-
   // 구/군 리스트 얻어옴
   const { data, isLoading } = useQuery({
     queryKey: ["getGugunList", sido],
@@ -30,7 +29,7 @@ export default function GugunList() {
 
   return (
     <select
-      className="w-40 h-10 m-auto border-[4px] border-lightMain opacity-50 rounded-lg outline-none focus:bg-lightMain3"
+      className="w-40 h-10 m-auto border-[4px] border-lightMain rounded-lg outline-none focus:bg-lightMain3 dark:bg-darkBackground dark:text-white dark:border-darkMain3"
       name="selectSido"
       id="selectSido"
       onChange={handleGugunList}
