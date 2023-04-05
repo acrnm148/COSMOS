@@ -11,6 +11,12 @@ type REVIEWIMG = {
     createdTime : string
     createdMonth : string
 }
+type IMAGE = {
+    imageUrl : string,
+    createdTime : string,
+    imageId : number,
+    reviewId : number
+}
 export function GalleryPage(){
     // 로그인 유저
     const [loginUser, setLoginUser] = useRecoilState(userState)
@@ -27,8 +33,12 @@ export function GalleryPage(){
     useEffect(()=>{
         if(data){
             console.log('사진있삼~', data)
-            setPhotos(data.map((d: { imageUrl: any; }) => ({
-                imageUrl : d.imageUrl
+            setPhotos(data.map((d:IMAGE) => ({
+                imageUrl : d.imageUrl,
+                createdTime : d.createdTime,
+                imageId : d.imageId, 
+                reviewId : d.reviewId,
+                createdMonth : d.createdTime.slice(4,6)
             })))
         }
     },[data])
