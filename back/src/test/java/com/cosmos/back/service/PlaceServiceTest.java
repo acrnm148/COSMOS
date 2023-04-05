@@ -72,6 +72,30 @@ class PlaceServiceTest {
     }
 
     @Test
+    @DisplayName("장소 찜하기")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
+    public void likePlace() throws Exception {
+        //given
+        Place place = Place.builder().id(1L).userPlaces(new ArrayList<>()).build();
+        User user = User.builder().userSeq(1L).userPlaces(new ArrayList<>()).build();
+
+        Place placeNull = Place.builder().build();
+        User userNull = User.builder().build();
+
+        when(placeRepository.findById(1L)).thenReturn(Optional.of(place));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userPlaceRepository.save(any(UserPlace.class))).thenReturn(null);
+
+        //when
+        Map<String, Long> result = placeService.likePlace(1L, 1L);
+
+        //then
+        assertThat(result.get("user")).isEqualTo(user.getUserSeq());
+        assertThat(result.get("place")).isEqualTo(place.getId());
+
+    }
+
+    @Test
     @DisplayName("장소 삭제하기")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void deleteeLikePlaceTest() throws Exception {
