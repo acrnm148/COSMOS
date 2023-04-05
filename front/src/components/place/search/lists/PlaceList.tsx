@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DarkDefaultImg from "../../../../assets/login/darkCosmos.png";
 import ListCard from "../../../common/ListCard";
 import PlaceLike from "../items/PlaceLike";
@@ -28,6 +28,9 @@ export default function PlaceList({ offset, setOffset }: any) {
   const [detail, setDetail] = useRecoilState(placeDetail);
   const [modalOpen, setModalOpen] = useState(false);
 
+  useEffect(() => {
+    setOffset(0);
+  }, [sidoState[0].sidoCode, gugunState[0].gugunCode]);
   const openModal = (placeId: number, type: string) => {
     setDetail({ placeId: placeId, type: type });
     setModalOpen(true);
@@ -57,12 +60,12 @@ export default function PlaceList({ offset, setOffset }: any) {
   });
 
   if (isLoading || data === null) return null;
-  console.log(data.places.length - offset * 20);
+
   return (
     <>
       <ListCard height={true}>
         {data.places.map((items: any, index: number) => {
-          if (index > offset * 20 && index < offset * 20 + 20) {
+          if (index >= offset * 20 && index < offset * 20 + 20) {
             return (
               <div key={items.placeId}>
                 <div
