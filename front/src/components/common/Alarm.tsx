@@ -145,7 +145,7 @@ export default function Alarm() {
         },
     };
     return (
-        <div className="alertIcon absolute right-8 top-1/2 -translate-y-1/2">
+        <div className="alertIcon absolute right-8 top-1/2 -translate-y-1/2 cursor-pointer">
             <Badge
                 badgeContent={res[1].data}
                 sx={badgeStyle}

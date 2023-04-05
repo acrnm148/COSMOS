@@ -83,7 +83,7 @@ export default function CourseDetail(props: { courseId: any }) {
                 </div>
             </div>
 
-            <div className="btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]">
+            <div className="cursor-pointer btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]">
                 <div className="float-left w-1/3 m-auto">
                     <Icon
                         icon="material-symbols:share-outline"

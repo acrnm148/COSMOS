@@ -21,30 +21,6 @@ interface Place {
 }
 
 export default function WishMakeCourse() {
-    const state = {
-        center: {
-            lat: 37.566481622437934,
-            lng: 126.98502302169841,
-        },
-    };
-    const marker = [
-        {
-            placeId: 0,
-            lat: 37.566481622437934,
-            lng: 126.98502302169841,
-        },
-        {
-            placeId: 1,
-            lat: 37.567481622437934,
-            lng: 126.98602302169841,
-        },
-        {
-            placeId: 2,
-            lat: 37.567381622437934,
-            lng: 126.98502302169841,
-        },
-    ];
-
     const [userSeq, setUserSeq] = useRecoilState(userState);
     const [list, setList] = useState<Place[]>();
 
@@ -109,7 +85,7 @@ export default function WishMakeCourse() {
             </div>
 
             <div
-                className="w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                className="cursor-pointer w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
                 onClick={() => {
                     (async () => {
                         const { value: getName } = await Swal.fire({
@@ -161,14 +137,14 @@ function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
                 <div className="text-left mt-2">
                     <div className="font-bold mb-2 text-sm">{name}</div>
                     <div className="mb-2 text-sm text-gray-500">{address}</div>
-                    <div className="text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
+                    <div className="cursor-pointer text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
                         유사 장소 추천
                     </div>
                 </div>
 
                 {props.orders.includes(props.item.placeId) ? (
                     <div
-                        className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        className="cursor-pointer idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl"
                         onClick={() => {
                             props.handleOrders(props.item.placeId);
                         }}
@@ -177,7 +153,7 @@ function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
                     </div>
                 ) : (
                     <div
-                        className="idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        className="cursor-pointer idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"
                         onClick={() => {
                             props.handleOrders(props.item.placeId);
                         }}

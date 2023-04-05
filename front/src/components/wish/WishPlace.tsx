@@ -52,7 +52,7 @@ export default function WishPlace() {
                 </div>
 
                 <div
-                    className="w-full h-12 bg-lightMain2 text-white font-bold text-center text-xl pt-2.5 mt-3 rounded-full"
+                    className="cursor-pointer w-full h-12 bg-lightMain2 text-white font-bold text-center text-xl pt-2.5 mt-3 rounded-full"
                     onClick={() => {
                         navigate(`/wish/makeCourse`);
                     }}
@@ -102,7 +102,7 @@ function Item(props: { item: Place; userSeq: number }) {
 
     return (
         <div className="col-md-4 mb-4 p-3 h-40 bg-calendarGray rounded-lg">
-            <div className="heart mb-2 float-right">
+            <div className="cursor-pointer heart mb-2 float-right">
                 <Icon
                     icon="mdi:cards-heart"
                     color="#ff8e9e"

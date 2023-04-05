@@ -91,7 +91,7 @@ function Item(props: { item: Course }) {
     return (
         <div className="mb-5">
             <div
-                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg"
+                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg cursor-pointer"
                 onClick={() => {
                     navigate(`/wish/course/${props.item.courseId}/detail`);
                 }}
@@ -123,7 +123,7 @@ function Item(props: { item: Course }) {
                     })}
                 </div>
             </div>
-            <div className="btns w-full h-12 bg-lightMain3 rounded-b-lg text-center flex">
+            <div className="cursor-pointer btns w-full h-12 bg-lightMain3 rounded-b-lg text-center flex">
                 <div className="float-left w-1/3 m-auto">
                     <Icon
                         icon="material-symbols:share-outline"
