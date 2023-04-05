@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.cosmos.back.repository;
 
 import com.cosmos.back.annotation.EnableMockMvc;
