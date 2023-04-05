@@ -108,11 +108,11 @@ public class ImageServiceTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void findTotalImageTest() throws Exception{
         //given
-        List<Image> list = new ArrayList<>();
+        List<ImageResponseDto> list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Review review = Review.builder().id((long) i).build();
-            Image image = Image.builder().id((long) i).imageUrl("imgUrl").createdTime("20230403").review(review).build();
-            image.setId((long) i);
+            ImageResponseDto image = ImageResponseDto.builder().imageId((long) i).imageUrl("imgUrl").createdTime("20230403").reviewId(review.getId()).build();
+            image.setImageId((long) i);
             list.add(image);
         }
 
