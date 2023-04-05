@@ -12,7 +12,7 @@ export default function WishList() {
     const navigate = useNavigate();
 
     return (
-        <div>
+        <div className="overflow-hidden">
             <div className="menu w-full h-16 bg-white flex items-center">
                 <div
                     className={

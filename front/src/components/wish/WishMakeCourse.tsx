@@ -92,13 +92,11 @@ export default function WishMakeCourse() {
     return (
         <div>
             <div className="text-center w-full max-w-[950px]">
-                <TMapResult state={state} marker={marker} className="fixed" />
+                <div className="my-5 font-bold">
+                    계획할 장소를 순서대로 눌러주세요!
+                </div>
 
-                <ListCard height={false}>
-                    <div className="mb-5 font-bold">
-                        계획할 장소를 순서대로 눌러주세요!
-                    </div>
-
+                <div className="mt-3 h-[470px] overflow-y-auto">
                     {list?.map((a: Place) => (
                         <Item
                             key={a.placeId}
@@ -107,7 +105,7 @@ export default function WishMakeCourse() {
                             handleOrders={handleOrders}
                         ></Item>
                     ))}
-                </ListCard>
+                </div>
             </div>
 
             <div
