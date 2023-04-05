@@ -1,4 +1,3 @@
-import { m } from "framer-motion";
 import { defaultInstance } from "../utils";
 
 // GET APIs
