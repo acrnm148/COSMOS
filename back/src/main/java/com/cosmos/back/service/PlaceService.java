@@ -47,7 +47,8 @@ public class PlaceService {
     public Map<String, Long> likePlace (Long placeId, Long userSeq) {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new NoSuchElementException("no such data"));
         User user = userRepository.findById(userSeq).orElseThrow(() -> new NoSuchElementException("no such data"));
-        String coupleUserName = userRepository.findByUserSeq(user.getCoupleUserSeq()).getUserName();
+        User coupleUser = userRepository.findByUserSeq(user.getCoupleUserSeq());
+        String coupleUserName = coupleUser.getUserName();
 
         UserPlace userPlace = UserPlace.createUserPlace(user, place);
 

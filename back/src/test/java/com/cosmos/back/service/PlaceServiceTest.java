@@ -55,6 +55,9 @@ class PlaceServiceTest {
     @MockBean
     private UserPlaceRepository userPlaceRepository;
 
+    @MockBean
+    private NotificationService notificationService;
+
     @Autowired
     private PlaceService placeService;
     @Autowired
@@ -77,14 +80,15 @@ class PlaceServiceTest {
     public void likePlace() throws Exception {
         //given
         Place place = Place.builder().id(1L).userPlaces(new ArrayList<>()).build();
-        User user = User.builder().userSeq(1L).userPlaces(new ArrayList<>()).build();
-
-        Place placeNull = Place.builder().build();
-        User userNull = User.builder().build();
+        User user = User.builder().userSeq(1L).coupleUserSeq(1L).userName("test").userPlaces(new ArrayList<>()).build();
 
         when(placeRepository.findById(1L)).thenReturn(Optional.of(place));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findByUserSeq(user.getCoupleUserSeq())).thenReturn(user);
         when(userPlaceRepository.save(any(UserPlace.class))).thenReturn(null);
+
+        doNothing().when(notificationService).send(anyString(), anyLong(), anyString());
+
 
         //when
         Map<String, Long> result = placeService.likePlace(1L, 1L);
