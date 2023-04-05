@@ -200,10 +200,10 @@ class PlaceRepositoryTest {
         reviewPlaceRepository.save(reviewPlaceFestival);
 
         //when
-        List<PlaceSearchListResponseDto> test1 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", "갈비", "restaurant", 10, 0);
-        List<PlaceSearchListResponseDto> test2 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "해운대구", "축제", "festival", 10, 0);
-        List<PlaceSearchListResponseDto> test3 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "갈비", "restaurant", 10, 0);
-        List<PlaceSearchListResponseDto> test4 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", null, null, 10, 0);
+        List<PlaceSearchListResponseDto> test1 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", "갈비", "restaurant");
+        List<PlaceSearchListResponseDto> test2 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "해운대구", "축제", "festival");
+        List<PlaceSearchListResponseDto> test3 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "갈비", "restaurant");
+        List<PlaceSearchListResponseDto> test4 = placeRepository.findPlaceListBySidoGugunTextFilterQueryDsl(1L, "부산광역시", "강서구", null, null);
 
         //then
         assertEquals(test1.get(0).getPlaceId(), place.getId());
@@ -362,3 +362,4 @@ class PlaceRepositoryTest {
     }
 
 }
+

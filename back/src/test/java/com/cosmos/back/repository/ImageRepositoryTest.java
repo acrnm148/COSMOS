@@ -5,9 +5,14 @@ import com.cosmos.back.config.TestConfig;
 import com.cosmos.back.dto.response.ImageResponseDto;
 import com.cosmos.back.model.Image;
 import com.cosmos.back.model.Review;
+import com.cosmos.back.model.ReviewPlace;
 import com.cosmos.back.model.User;
+import com.cosmos.back.model.place.Place;
 import com.cosmos.back.repository.image.ImageRepository;
+import com.cosmos.back.repository.place.PlaceRepository;
 import com.cosmos.back.repository.review.ReviewRepository;
+import com.cosmos.back.repository.reviewplace.ReviewPlaceRepository;
+import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.service.ImageService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -34,17 +39,47 @@ public class ImageRepositoryTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private PlaceRepository placeRepository;
+
+    @Autowired
+    private ReviewPlaceRepository reviewPlaceRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     @DisplayName("ImageRepository 월별 상세 정보 받아오기")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void findMonthImageTest() throws Exception {
+
         //given
-        Image image = Image.builder().id(1L).coupleId(1L).imageUrl("imageUrl").createdTime("20220404").build();
+        User user = User.builder().reviews(new ArrayList<>()).coupleId(1L).build();
+        userRepository.save(user);
+
+        Place place = Place.builder().reviewPlaces(new ArrayList<>()).build();
+        placeRepository.save(place);
+
+        Review review = Review.builder()
+                .user(user)
+                .reviewPlaces(new ArrayList<>())
+                .reviewImages(new ArrayList<>())
+                .build();
+        reviewRepository.save(review);
+
+        ReviewPlace reviewPlace = ReviewPlace.builder().place(place).review(review).build();
+        reviewPlaceRepository.save(reviewPlace);
+
+        Image image = Image.builder()
+                .coupleId(user.getCoupleId())
+                .review(review)
+                .imageUrl("imageUrl")
+                .createdTime("20230404").build();
         imageRepository.save(image);
 
         //when
-        List<ImageResponseDto> result = imageRepository.findMonthImage(1L, 202204L);
-
+        List<ImageResponseDto> result = imageRepository.findMonthImage(user.getCoupleId(), 202304L);
+        System.out.println("result = " + result);
         //then
         assertThat(result.get(0).getImageUrl()).isEqualTo(image.getImageUrl());
 
@@ -55,11 +90,31 @@ public class ImageRepositoryTest {
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     public void findDayImageTest() throws Exception {
         //given
-        Image image = Image.builder().coupleId(1L).imageUrl("imageUrl").createdTime("20230404").build();
+        User user = User.builder().reviews(new ArrayList<>()).coupleId(1L).build();
+        userRepository.save(user);
+
+        Place place = Place.builder().reviewPlaces(new ArrayList<>()).build();
+        placeRepository.save(place);
+
+        Review review = Review.builder()
+                .user(user)
+                .reviewPlaces(new ArrayList<>())
+                .reviewImages(new ArrayList<>())
+                .build();
+        reviewRepository.save(review);
+
+        ReviewPlace reviewPlace = ReviewPlace.builder().place(place).review(review).build();
+        reviewPlaceRepository.save(reviewPlace);
+
+        Image image = Image.builder()
+                .coupleId(user.getCoupleId())
+                .review(review)
+                .imageUrl("imageUrl")
+                .createdTime("20230404").build();
         imageRepository.save(image);
 
         //when
-        List<ImageResponseDto> result = imageRepository.findMonthImage(1L, 20230404L);
+        List<ImageResponseDto> result = imageRepository.findDayImage(user.getCoupleId(), 20230404L);
 
         //then
         assertThat(result.get(0).getImageUrl()).isEqualTo(image.getImageUrl());
@@ -72,20 +127,30 @@ public class ImageRepositoryTest {
     public void findAllByCoupleIdTest() throws Exception {
         //given
         User user = User.builder().reviews(new ArrayList<>()).coupleId(1L).build();
+        userRepository.save(user);
+
+        Place place = Place.builder().reviewPlaces(new ArrayList<>()).build();
+        placeRepository.save(place);
+
         Review review = Review.builder()
                 .user(user)
+                .reviewPlaces(new ArrayList<>())
                 .reviewImages(new ArrayList<>())
-                .id(1L).build();
+                .build();
         reviewRepository.save(review);
+
+        ReviewPlace reviewPlace = ReviewPlace.builder().place(place).review(review).build();
+        reviewPlaceRepository.save(reviewPlace);
+
         Image image = Image.builder()
-                .coupleId(1L)
+                .coupleId(user.getCoupleId())
                 .review(review)
                 .imageUrl("imageUrl")
                 .createdTime("20230404").build();
         imageRepository.save(image);
 
         //when
-        List<Image> result = imageRepository.findAllByCoupleId(1L, 10, 0);
+        List<ImageResponseDto> result = imageRepository.findAllByCoupleId(user.getCoupleId(), 10, 0);
 
         //then
         assertThat(result.get(0).getImageUrl()).isEqualTo(image.getImageUrl());

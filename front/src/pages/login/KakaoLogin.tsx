@@ -84,7 +84,7 @@ export default function KakaoLogin() {
                 // 카카오 로그아웃요청
             });
     }
-    return <div> </div>;
+    return <div></div>;
 }
 export const onLoginSuccess = (
     seq: number,

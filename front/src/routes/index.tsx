@@ -35,7 +35,8 @@ const router = createBrowserRouter([
             
             //로그인
             { path: "login", element: <Login /> },
-            { path: "login/oauth", element: <KakaoLogin /> },
+            { path: "login/oauth2", element: <KakaoLogin /> },
+            // https://j8e104.p.ssafy.io/login/oauth2
         ],
     },
     // auth
@@ -52,14 +53,19 @@ const router = createBrowserRouter([
                         { path: "mypage", element: <MyPage />}, // 마이페이지
                         { path: "logout", element: <Logout /> }, // 로그아웃
                         // 찜 목록
-                        { path: "/wish", element: <WishList /> },
-                        { path: "/wish/course/:wishId", element: <WishList /> },
-                        { path: "/wish/course/:courseId/detail", element: <WishList /> },
-                        { path: "/wish/course/:editId/edit", element: <WishList /> },
-                        { path: "/wish/:makeCourse", element: <WishList /> },
+                        { path: "wish", element: <WishList /> },
+                        { path: "wish/course/:wishId", element: <WishList /> },
+                        { path: "wish/course/:courseId/detail", element: <WishList /> },
+                        { path: "wish/course/:editId/edit", element: <WishList /> },
+                        { path: "wish/:makeCourse", element: <WishList /> },
                         // 장소 검색 & 빅데이터 추천
-                        { path: "/place/recommend", element: <PlaceRecommend /> },
-                        { path: "/place/result", element: <PlaceResult /> },
+                        { path: "place/recommend", element: <PlaceRecommend /> },
+                        { path: "place/result", element: <PlaceResult /> },
+                        // 일정관리
+                        { path: "schedule/month", element: <MonthSchedulePage /> },
+                        { path: "schedule/day", element: <DaySchedulePage /> },
+                        { path: "schedule/detail", element: <ScheduleDetail /> },
+                        { path: "schedule/gallery", element: <GalleryPage /> },
                     ],
                 }]
     },

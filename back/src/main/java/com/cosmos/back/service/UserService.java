@@ -4,7 +4,6 @@ import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.user.UserProfileDto;
 import com.cosmos.back.dto.user.UserUpdateDto;
-import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.repository.user.UserRepository;
 import com.cosmos.back.model.User;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -152,8 +150,9 @@ public class UserService {
         System.out.println("커플 연결 수락, 커플아이디:"+code);
 
         // 알림 전송
-        notificationService.send(userSeq, NotificationType.MESSAGE, "커플 요청이 수락되었습니다.", "");
-        //notificationService.subscribe(userSeq,"");
+        notificationService.send("makeCouple", userSeq, "커플이 매칭되었습니다.");
+        notificationService.send("makeCouple", coupleUserSeq, "커플 연결이 끊어졌습니다.");
+
         return code;
     }
 
