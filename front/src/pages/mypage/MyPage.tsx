@@ -2,7 +2,7 @@ import axios from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
-import { LUser, userState } from "../../recoil/states/UserState"
+import { LUser, darkMode, userState } from "../../recoil/states/UserState"
 import { getUserInfo  } from "../../apis/api/user"
 import { useQuery } from "react-query"
 import { UserDispatch } from "../../layouts/MainLayout"
@@ -45,7 +45,8 @@ interface Place{
     const [userInfo, setUserInfo] = useState<USERINFORMATION|null>(null)
     const [coupleInfo, setCoupleInfo] = useState<USERINFORMATION>()
     const navigate = useNavigate();
-    // console.log(LoginUser)
+    const [isDark, setIsDark] = useRecoilState(darkMode)
+    console.log(isDark)
     
         const {data} =  useQuery({
             queryKey: ["getUserInfo"],
@@ -75,6 +76,8 @@ interface Place{
             })
 
           }
+          console.log('data in mypage', data)
+          console.log('userInfo', userInfo)
         },[data])
 
     // 찜한코스
@@ -198,13 +201,14 @@ interface Place{
                   <p><span>{dateCate[userInfo?.type1  as keyof typeof dateCate][0]}</span>형 코스모스</p>
                 </div>
               </div>
-              <div className={`h-24 bg-lightMain2 flex justify-center items-center`}>
+              <div className={`h-28 flex justify-center items-center`+ isDark?'bg-darkMain h-20':'bg-lightMain2'}>
                 <div className="h-full w-full flex flex-col justify-center text-white items-center">
                 2순위 
                 <p><span>{dateCate[userInfo?.type2  as keyof typeof dateCate][0]}</span>형 코스모스</p>
                 </div>
               </div>
-              <div className="h-20 w-full border-solid border-2 border-lightMain4  flex justify-center items-center hover:bg-lightMain3 hover:text-lg">
+              <div className={isDark?'text-white h-20 w-full border-solid border-2 border-darkMain4  flex justify-center items-center hover:bg-darkMain3 hover:text-lg':
+               "h-20 w-full border-solid border-2 border-lightMain4  flex justify-center items-center hover:bg-lightMain3 hover:text-lg"}>
                 <NavLink to="/servey" >취향설문 다시하기</NavLink>
               </div>
             </div>
@@ -221,7 +225,7 @@ interface Place{
             로그아웃
           </div> */}
           <div className="recent w-full m-4 mb-8 min-h-48">
-            <div className="ml-4 mr-4 text-lightMain2 font-bold">
+            <div className={isDark?'text-darkMain2':'text-lightMain2' + `ml-4 mr-4 font-bold`}>
               최근 찜 내역
             </div>
             <div className="recentItem flex justify-around h-48">
@@ -232,7 +236,7 @@ interface Place{
                     <div className="m-2 hover:h-[12.5vh] bg-lightMain4 h-[12vh] rounded-md md:h-10rem overflow-hidden">
                       <img className="h-full w-full" src={item.thumbNailUrl} alt="" />
                     </div>
-                    <div className="m-2 text-sm font-bold">{item.name}</div>
+                    <div className={isDark?"text-white m-2 text-sm font-bold" : "m-2 text-sm font-bold"}>{item.name}</div>
                   </div>
                 );
               })}
@@ -241,7 +245,9 @@ interface Place{
           </div>            
           <div
             onClick={logout} 
-            className="mt-2 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center hover:bg-lightMain3"
+            className={isDark?"hover:bg-darkMain3 mt-2 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center hover:bg-lightMain3"
+                      :"mt-2 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center hover:bg-lightMain3"
+          }
             >로그아웃
             </div>
           <div

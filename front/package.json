@@ -70,6 +70,7 @@
   "devDependencies": {
     "@iconify/react": "^4.1.0",
     "@types/event-source-polyfill": "^1.0.1",
+    "@types/jquery": "^3.5.16",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/react-datepicker": "^4.10.0",
     "@types/styled-components": "^5.1.26",

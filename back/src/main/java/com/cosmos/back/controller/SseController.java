@@ -4,14 +4,11 @@ import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.service.JwtService;
 import com.cosmos.back.dto.request.NotificationRequestDto;
 import com.cosmos.back.dto.response.NotificationDto;
-import com.cosmos.back.dto.user.UserProfileDto;
-import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -67,7 +64,7 @@ public class SseController {
     @Operation(summary = "알림 전송 테스트", description = "알림 전송 테스트")
     @PostMapping(value = "/noti/sendTest")
     public ResponseEntity<?> sendNotifications(@RequestBody NotificationRequestDto dto) {
-        notificationService.send(dto.getUserSeq(), NotificationType.MESSAGE,dto.getContent(), dto.getUrl());
+        notificationService.send(dto.getEvent(), dto.getUserSeq(), dto.getContent());
         return ResponseEntity.ok().body("전송 완료");
     }
 

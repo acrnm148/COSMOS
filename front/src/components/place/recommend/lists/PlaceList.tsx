@@ -27,7 +27,7 @@ export default function PlaceList() {
     gugun: gugun[0].gugunName,
     categories: category[0],
     // userSeq: user[0].seq,
-    userSeq: 1,
+    userSeq: user[0].seq,
   };
 
   const [item, setItem] = useState(JSON.stringify(tmp));
@@ -50,7 +50,7 @@ export default function PlaceList() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getDateCourse", item],
-    queryFn: () => getDateCourse(item),
+    queryFn: () => getDateCourse(item, user[0].seq),
   });
 
   if (isLoading || data === undefined) return null;

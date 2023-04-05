@@ -43,7 +43,8 @@ import { Place } from "../../recoil/states/PlaceState"
 //                         {idx:2,name:'녹두', imgUrl:녹두, category:'음식', location:"경기도", date:'2023년 2월 28일'}
 // ]
 export interface COURSE {
-    courseId: any;
+    courseId: any,
+    planName: string,
     seq:number, name:string, places:Object[]
 }
 // interface EditSchedule {
@@ -94,7 +95,7 @@ export function DaySchedulePage(){
         console.log(data, '찜한코스')
         let temptemp: COURSE[] = []
         data.map((course:COURSE, key:number)=>{
-            let temp = {seq:key, courseId:course.courseId,name:course.name, places:[...course.places]}
+            let temp = {seq:key, planName : course.planName, courseId:course.courseId,name:course.name, places:[...course.places]}
             temptemp.push(temp)
         })
         setWishPlaces([...temptemp])
@@ -134,6 +135,7 @@ export function DaySchedulePage(){
                     setIsCourse(true)
                     // 코스 표출
                     console.log('해당일에 일정이 있음', res.data)
+                    setEndDate(new Date(res.data.endDate))
                     setIsPlan(true)
                     // let temp = res.data.coures[0].map(())
                     setPlaces(res.data.courses[0].places.map((place: {
@@ -213,7 +215,7 @@ export function DaySchedulePage(){
 
     const postPlan = useMutation(postSchedule)
     const putPlan = useMutation(putSchedule)
-    const [scheduleDaysList, setScheduleDaysList] = useState<{day:string, contents:[]|[COURSE], seq:any}[]>()
+    const [scheduleDaysList, setScheduleDaysList] = useState<{day:string, contents:[]|[COURSE], seq:any, name:string}[]>()
     function submitSchedules(){
         
         Toast2.fire({
@@ -249,7 +251,8 @@ export function DaySchedulePage(){
                 setIsPlan(true)
                 const temp = dayClicked
                 setDayClicked('-1')
-                setDayClicked(temp)  
+                setDayClicked(temp) 
+                setEditing(false)
             }
             })
         
@@ -259,6 +262,7 @@ export function DaySchedulePage(){
     let allDays: any[] = []
     useEffect(()=>{
         if(!startDate || !endDate){return}
+        if(isPlan && !isEditing){return}
         // startDate와 EndDate가 새로 설정될때마다 날짜 리스트를 새로 만들기
         const sd = startDate
         const ed = endDate
@@ -272,14 +276,15 @@ export function DaySchedulePage(){
             sd.setDate(sd.getDate() + 1)
         }
     
-        let temp:{day:string, contents:[], seq:any}[]
+        let temp:{day:string, contents:[], seq:any, name:string}[]
 
         temp = allDays.map((day:string)=>({
             seq : undefined,
             day : day,
-            contents : []
+            contents : [],
+            name : ''
         }))
-        console.log('temp', temp)
+        // console.log('temp', temp)
         
         setScheduleDaysList(temp)
         
@@ -368,11 +373,12 @@ export function DaySchedulePage(){
 
     function setCourseOnDate(idx : number, courseId:number){
         setShowWishModal(false)
-        let temp:{day:string, contents:[]|[COURSE], seq:any}[] | undefined
+        let temp:{day:string, contents:[]|[COURSE], seq:any, name:string}[] | undefined
         temp = scheduleDaysList?.map((scd)=>({
             seq : (scd.day === selectedDate)?courseId:scd.seq,
             day : scd.day,
-            contents : (scd.day === selectedDate)?[wishPlaces[idx]]:scd.contents
+            contents : (scd.day === selectedDate)?[wishPlaces[idx]]:scd.contents,
+            name : scd.name
         }))
         
         setScheduleDaysList(temp)
@@ -397,22 +403,17 @@ export function DaySchedulePage(){
             setEndDate(new Date(res.data.endDate))
             return res.data.courses
         }).then((res)=>{
-            console.log('resres', res)
-            const editSche = res.map((cor: { id: any; date: string; coursePlaces: { map: () => any; }; }, key: any) => ({
+            const editSche = res.map((cor: { id: any; name:string, date: string; coursePlaces: { map: () => any; }; }, key: any) => ({
                 seq : cor.id,
                 day: (cor.date.slice(5,7)+ '월' + cor.date.slice(8,10) + '일'),
-                contents : []
+                contents : [],
+                name : cor.name
             }))
-            setScheduleDaysList(editSche)
             // console.log('editSche',editSche)
-            // setScheduleDaysList(res.map((cor: { id: any; date: string; coursePlaces: { map: () => any; }; }, key: any) => ({
-            //         seq : cor.id,
-            //         day: (cor.date.slice(5,7)+ '월' + cor.date.slice(8,10) + '일'),
-            //         contents : []
-            // })))
-            // places
-            setIsPlan(false)
-            setEditing(true)
+            setScheduleDaysList([...editSche])
+
+                setIsPlan(false)
+            // setEditing(true)
         })
     }
 
@@ -472,30 +473,37 @@ export function DaySchedulePage(){
                                             <DatePickerTest checkDate={null} defaultDate={makeStartDateFormat()} isDate={true}/>
                                             <div>-</div>
                                             
-                                            <DatePickerTest checkDate={checkEndDate} defaultDate={null} isDate={false}/>
+                                            <DatePickerTest checkDate={checkEndDate} defaultDate={(isEditing&&endDate)? String(endDate.getMonth()+1) + '월' + String(endDate.getDate()) + '일':undefined} isDate={false}/>
                                         </div>
                                         
-                                        <div className="text-sm p-2">시작일 ~ 종료일을 선택하고 날짜별 코스를 선택하세요! </div>
+                                        <div className="text-sm p-2"> 시작일 ~ 종료일을 선택하고 날짜별 코스를 선택하세요! </div>
                                         <div className='rounded-lg p-2 border-2 border-solid border-lightMain2 m-2 min-h-[30vh] h-full max-h-[1000vh]'>
                                             {(startDate && endDate)&&
                                                 <div>
                                                     {scheduleDaysList&&
-                                                            scheduleDaysList.map((d:{day:string, contents:[]|[COURSE]}, key:number)=>{
+                                                            scheduleDaysList.map((d:{
+                                                                name: string;day:string, contents:[]|[COURSE]}, key:number)=>{
+                                                                    console.log('scheduleDaysList.len~~~~~~~~~~~~~', scheduleDaysList)
                                                                 return(
                                                                     <div className="날짜별코스선택-토글박스 mb-2 rounded-lg flex flex-col">
                                                                         <div className="h-16 border-2 rounded-lg flex items-center justify-between">
                                                                             <div className="flex justify-center items-center px-8 h-full rounded-l-lg bg-lightMain3">{d.day.slice(4,6)}월 {d.day.slice(6)}일</div>
                                                                             <div className="text-lightMain font-bold">
-                                                                                {d.contents&&
+                                                                                {d.contents.length !== 0&&
                                                                                     d.contents.map((ee)=>{
                                                                                         return <div onClick={()=>{
                                                                                             (showCourse === key ? setShowCourse(undefined) : setShowCourse(key))
                                                                                         }
-                                                                                        //TODO :: COURSE에 이름추가
                                                                                     }>{ee.name}</div>
-                                                                                        // }>{isEditing?d.name :ee.name}</div>
                                                                                     })
+                                                                                    
+                                                                                    
                                                                                 }
+                                                                                {d.name&&
+                                                                                
+                                                                                    <div>{d.name}</div>
+                                                                                }
+                                                                                <div className="코스이름">{d.name}</div>
                                                                             </div>
                                                                             <div onClick={()=>getWishCourse(d.day)} className="px-8 bg-lightMain3 h-full flex items-center justify-center cursor-pointer">코스선택</div>
                                                                         </div>
