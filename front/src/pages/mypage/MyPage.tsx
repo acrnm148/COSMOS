@@ -45,7 +45,7 @@ interface Place{
     const [userInfo, setUserInfo] = useState<USERINFORMATION|null>(null)
     const [coupleInfo, setCoupleInfo] = useState<USERINFORMATION>()
     const navigate = useNavigate();
-    console.log(LoginUser)
+    // console.log(LoginUser)
     
         const {data} =  useQuery({
             queryKey: ["getUserInfo"],
@@ -75,6 +75,8 @@ interface Place{
             })
 
           }
+          console.log('data in mypage', data)
+          console.log('userInfo', userInfo)
         },[data])
 
     // 찜한코스
@@ -122,7 +124,7 @@ interface Place{
             }
           }
               ).then((res)=>{
-                console.log(res)
+                // console.log(res)
                 setLoginUser({...user,acToken:'',seq:0, isLoggedIn:false, coupleId:"" })
               }
               ).catch((err)=>{
