@@ -26,6 +26,9 @@ public class Notification {
     @Column(nullable = false)
     private Boolean isRead; //읽음여부
 
+    @Column(nullable = false)
+    private Boolean isClicked; //클릭여부
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")
@@ -39,10 +42,11 @@ public class Notification {
     }
 
     @Builder
-    public Notification(String event, User receiver, Boolean isRead, String content) throws Exception {
+    public Notification(String event, User receiver, Boolean isRead, Boolean isClicked, String content) throws Exception {
         this.receiver = receiver;
         this.event = event;
         this.isRead = isRead;
+        this.isClicked = isClicked;
         this.content= content;
     }
 }

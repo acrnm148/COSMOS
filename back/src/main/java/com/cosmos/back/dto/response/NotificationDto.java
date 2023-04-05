@@ -15,8 +15,9 @@ public class NotificationDto {
     private String event;
     private Long id;
     private String content;
+    private Boolean isRead;
 
     public static NotificationDto create(Notification notification) {
-        return new NotificationDto(notification.getEvent(), notification.getId(), notification.getContent());
+        return new NotificationDto(notification.getEvent(), notification.getId(), notification.getContent(), notification.getIsRead());
     }
 }
