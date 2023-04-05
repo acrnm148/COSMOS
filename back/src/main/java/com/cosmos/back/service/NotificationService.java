@@ -54,7 +54,7 @@ public class NotificationService {
     /**
      * 알림 전송
      */
-    public void send(String event, Long userSeq, String content, Boolean isClicked) {
+    public void send(String event, Long userSeq, String content) {
         User receiver = userRepository.findByUserSeq(userSeq);
         if (receiver != null) {
             Notification notification = createNotification(event, receiver, content);
@@ -146,6 +146,7 @@ public class NotificationService {
             return Notification.builder()
                     .event(event)
                     .receiver(receiver)
+                    .isClicked(false)
                     .isRead(false)
                     .content(content)
                     .build();
