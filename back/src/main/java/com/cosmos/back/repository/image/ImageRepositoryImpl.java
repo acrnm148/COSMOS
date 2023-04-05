@@ -22,15 +22,24 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
     @Override
     public List<ImageResponseDto> findMonthImage(Long coupleId, Long month) {
         QImage qImage = QImage.image;
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+
 
         return queryFactory.select(Projections.constructor(ImageResponseDto.class,
-                qImage.id,
-                qImage.imageUrl,
-                qImage.review.id,
-                qImage.createdTime
+                        qImage.id,
+                        qImage.imageUrl,
+                        qReview.id,
+                        qImage.createdTime,
+                        qReviewPlace.place.id
                 ))
                 .from(qImage)
-                .where(qImage.createdTime.contains(month.toString()))
+                .leftJoin(qReview)
+                .on(qImage.review.id.eq(qReview.id))
+                .fetchJoin()
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.review.id.eq(qReview.id))
+                .where(qImage.coupleId.eq(coupleId))
                 .fetch();
     }
 
@@ -38,15 +47,24 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
     @Override
     public List<ImageResponseDto> findDayImage(Long coupleId, Long day) {
         QImage qImage = QImage.image;
+        QReview qReview = QReview.review;
+        QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
+
 
         return queryFactory.select(Projections.constructor(ImageResponseDto.class,
-                qImage.id,
-                qImage.imageUrl,
-                qImage.review.id,
-                qImage.createdTime
+                        qImage.id,
+                        qImage.imageUrl,
+                        qReview.id,
+                        qImage.createdTime,
+                        qReviewPlace.place.id
                 ))
                 .from(qImage)
-                .where(qImage.createdTime.contains(day.toString()))
+                .leftJoin(qReview)
+                .on(qImage.review.id.eq(qReview.id))
+                .fetchJoin()
+                .leftJoin(qReviewPlace)
+                .on(qReviewPlace.review.id.eq(qReview.id))
+                .where(qImage.coupleId.eq(coupleId))
                 .fetch();
     }
 
@@ -56,16 +74,7 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
         QReview qReview = QReview.review;
         QReviewPlace qReviewPlace = QReviewPlace.reviewPlace;
 
-//        return queryFactory.selectFrom(qImage)
-//                .leftJoin(qReview)
-//                .on(qImage.review.id.eq(qReview.id))
-//                .fetchJoin()
-//                .leftJoin(qReviewPlace)
-//                .on(qReviewPlace.review.id.eq(qReview.id))
-//                .where(qImage.coupleId.eq(coupleId))
-//                .limit(limit)
-//                .offset(offset)
-//                .fetch();
+
         return queryFactory.select(Projections.constructor(ImageResponseDto.class,
                 qImage.id,
                 qImage.imageUrl,
@@ -82,7 +91,6 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
                 .where(qImage.coupleId.eq(coupleId))
                 .limit(limit)
                 .offset(offset)
-                .fetch()
-                ;
+                .fetch();
     }
 }
