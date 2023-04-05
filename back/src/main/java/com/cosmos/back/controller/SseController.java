@@ -64,7 +64,7 @@ public class SseController {
     @Operation(summary = "알림 전송 테스트", description = "알림 전송 테스트")
     @PostMapping(value = "/noti/sendTest")
     public ResponseEntity<?> sendNotifications(@RequestBody NotificationRequestDto dto) {
-        notificationService.send(dto.getEvent(), dto.getUserSeq(), dto.getContent(), dto.getIsClicked());
+        notificationService.send(dto.getEvent(), dto.getUserSeq(), dto.getContent());
         return ResponseEntity.ok().body("전송 완료");
     }
 
