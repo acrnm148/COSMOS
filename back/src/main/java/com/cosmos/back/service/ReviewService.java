@@ -37,6 +37,7 @@ public class ReviewService {
     private final ReviewNounRepository reviewNounRepository;
     private final S3Service s3Service;
     private final ImageRepository imageRepository;
+    private final NotificationService notificationService;
 
     //리뷰 쓰기
     @Transactional
@@ -76,6 +77,11 @@ public class ReviewService {
                 IndiReviewCategory indiReviewCategory = IndiReviewCategory.createIndiReviewCategory(category, review);
                 indiReviewCategoryRepository.save(indiReviewCategory);
             }
+        }
+
+        // 알림 전송
+        if (user.getCoupleUserSeq() != null && user.getCoupleUserSeq() != 0) {
+            notificationService.send("makeReview", user.getCoupleUserSeq(), user.getUserName() + "님이 리뷰를 등록하셨습니다. ");
         }
 
         return new_review.getId();
