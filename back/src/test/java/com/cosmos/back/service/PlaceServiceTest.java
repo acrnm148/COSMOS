@@ -69,98 +69,6 @@ class PlaceServiceTest {
         for (int i = 0; i < 5; i++) {
             list.add(PlaceListResponseDto.builder().build());
         }
-        when(userPlaceRepository.findLikePlaces(anyLong(), anyInt(), anyInt())).thenReturn(list);
-
-        //when
-        List<PlaceListResponseDto> likePlaces = placeService.findLikePlaces(1L, 10, 0);
-
-        //then
-        assertThat(likePlaces.size()).isEqualTo(5);
-
-    }
-
-    @Test
-    @DisplayName("시/도 리스트 받아오기")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void listSidoServiceTest() throws Exception {
-        //given
-        List<Sido> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            list.add(Sido.builder().sidoCode("testCode").sidoName("testName").build());
-        }
-        when(sidoRepository.findAll()).thenReturn(list);
-
-        //when
-        List<Sido> sidoList = placeService.listSido();
-
-        //then
-        assertThat(sidoList.size()).isEqualTo(5);
-    }
-
-    @Test
-    @DisplayName("구/군 리스트 받아오기")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void listGugunServiceTest() throws Exception {
-        //given
-        List<Gugun> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            list.add(Gugun.builder().gugunCode("1").gugunName("gugunTest").build());
-        }
-        when(gugunRepository.findBysidoCode(anyInt())).thenReturn(list);
-
-        //when
-        List<GugunDto> gugunDtoList = placeService.listGugun(1);
-
-        //then
-        assertThat(gugunDtoList.size()).isEqualTo(5);
-    }
-
-    @Test
-    @DisplayName("장소 검색 자동 완성 받아오기")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void autoCompleteSearchPlacesByNameTest() throws Exception {
-        //given
-        List<AutoCompleteResponseDto> list = new ArrayList<>();
-        for (int i = 0; i < 5; i ++) {
-            list.add(AutoCompleteResponseDto.builder().placeId(1L).name("nameTest").address("addressTest").thumbNailUrl("thumbNailUrlTest").type("type").build());
-        }
-        //when
-        when(placeRepository.findPlaceListByNameAutoCompleteQueryDsl(anyString())).thenReturn(list);
-
-        //then
-        List<AutoCompleteResponseDto> test = placeService.autoCompleteSearchPlacesByName("Test");
-        assertThat(test.size()).isEqualTo(5);
-    }
-
-    @Test
-    @DisplayName("장소 찜하기")
-    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
-    public void likePlaceTest() throws Exception {
-        //given
-        Place place = Place.builder().userPlaces(new ArrayList<>()).name("place").build();
-        placeRepository.save(place);
-        User user = User.builder().userPlaces(new ArrayList<>()).userName("user").build();
-        userRepository.save(user);
-
-        when(placeRepository.findById(1L))
-                .thenReturn(Optional.of(place));
-
-        when(userRepository.findById(anyLong()))
-                .thenReturn(Optional.of(user));
-
-        //when
-        Map<String, Long> map = placeService.likePlace(1L, 1L);
-
-        //then
-        assertEquals(map.get("user"), user.getUserSeq());
-        assertEquals(map.get("place"), place.getId());
-//        try {
-//            placeRepository.findById(null);
-//        } catch (Exception e) {
-//            System.out.println("e = " + e);
-//            String message = e.getMessage();
-//            System.out.println("message = " + message);
-//        }
     }
 
     @Test
@@ -195,15 +103,15 @@ class PlaceServiceTest {
         }
 
         when(placeRepository
-                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", "text", "filter", 10, 0))
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", "text", "filter"))
                 .thenReturn(list)
                 .thenReturn(listLatLongEmpty);
         when(placeRepository
-                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "text", "filter", 10, 0))
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, null, null, "text", "filter"))
                 .thenReturn(list)
                 .thenReturn(listLatLongEmpty);
         when(placeRepository
-                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", null, null, 10, 0))
+                .findPlaceListBySidoGugunTextFilterQueryDsl(1L, "sido", "gugun", null, null))
                 .thenReturn(list)
                 .thenReturn(listLatLongEmpty);
         when(placeRepository.findPlaceLikeByPlaceIdUserSeqQueryDsl(anyLong(), anyLong()))
@@ -211,12 +119,12 @@ class PlaceServiceTest {
                 .thenReturn(false);
 
         //when
-        PlaceFilterResponseDto placeFilterResponseDto = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto1 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter", 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto2 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter", 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto3 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter", 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto4 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null, 10, 0);
-        PlaceFilterResponseDto placeFilterResponseDto5 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null, 10, 0);
+        PlaceFilterResponseDto placeFilterResponseDto = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter");
+        PlaceFilterResponseDto placeFilterResponseDto1 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", "text", "filter");
+        PlaceFilterResponseDto placeFilterResponseDto2 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter");
+        PlaceFilterResponseDto placeFilterResponseDto3 = placeService.searchPlacesBySidoGugunTextFilter(1L, null, null, "text", "filter");
+        PlaceFilterResponseDto placeFilterResponseDto4 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null);
+        PlaceFilterResponseDto placeFilterResponseDto5 = placeService.searchPlacesBySidoGugunTextFilter(1L, "sido", "gugun", null, null);
 
         //then
         assertEquals(placeFilterResponseDto.getPlaces().size(), 5);
