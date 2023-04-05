@@ -397,6 +397,20 @@ public class CourseService {
             places.add(place);
         }
 
+        int count = 0;
+        double midLatitude = 0.0;
+        double midLongitude = 0.0;
+        for (SimplePlaceDto place : places) {
+            if (place.getLatitude() != null && place.getLongitude() != null) {
+                midLatitude += Double.parseDouble(place.getLatitude());
+                midLongitude += Double.parseDouble(place.getLongitude());
+                count++;
+            }
+        }
+
+        courseResponseDto.setMidLatitude(midLatitude / count);
+        courseResponseDto.setMidLatitude(midLongitude / count);
+
         courseResponseDto.setPlaces(places);
 
         return courseResponseDto;
