@@ -3,10 +3,8 @@ package com.cosmos.back.repository;
 import com.cosmos.back.annotation.EnableMockMvc;
 import com.cosmos.back.config.TestConfig;
 import com.cosmos.back.model.Notification;
-import com.cosmos.back.model.NotificationType;
 import com.cosmos.back.model.User;
 import com.cosmos.back.repository.noti.EmitterRepository;
-import com.cosmos.back.repository.noti.EmitterRepositoryImpl;
 import com.cosmos.back.repository.noti.NotificationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +60,7 @@ public class SseRepositoryTest {
         //given
         User user = User.builder().userSeq(1L).build();
         for(int i = 0; i < 5; i++) {
-            Notification notification = Notification.builder().notificationType(NotificationType.ACCEPT).isRead(false).receiver(user).build();
+            Notification notification = Notification.builder().event("test").isRead(false).receiver(user).build();
             notificationRepository.save(notification);
         }
 
@@ -81,7 +79,7 @@ public class SseRepositoryTest {
         //given
         User user = User.builder().userSeq(1L).build();
         for(int i = 0; i < 5; i++) {
-            Notification notification = Notification.builder().notificationType(NotificationType.ACCEPT).isRead(false).receiver(user).build();
+            Notification notification = Notification.builder().event("test").isRead(false).receiver(user).build();
             notificationRepository.save(notification);
         }
 
