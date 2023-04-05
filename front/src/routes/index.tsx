@@ -36,7 +36,7 @@ const router = createBrowserRouter([
             
             //로그인
             { path: "login", element: <Login /> },
-            { path: "login/oauth", element: <KakaoLogin /> },
+            { path: "api/login/oauth2", element: <KakaoLogin /> },
         ],
     },
     // auth
