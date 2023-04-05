@@ -146,6 +146,7 @@ public class NotificationService {
             return Notification.builder()
                     .event(event)
                     .receiver(receiver)
+                    .isClicked(false)
                     .isRead(false)
                     .content(content)
                     .build();
