@@ -50,7 +50,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
     queryFn: () => getPlaceDetail(userSeq[0].seq, items.placeId, items.type),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <Modal open={modalOpen} close={closeModal} header="장소 상세" size="large">

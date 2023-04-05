@@ -27,7 +27,7 @@ export default function SidoList() {
     queryFn: () => getSidoList(),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <select
