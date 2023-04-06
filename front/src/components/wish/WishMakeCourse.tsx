@@ -7,6 +7,7 @@ import { useQuery, useMutation } from "react-query";
 import { getWishPlaceList, wishMakeCourse } from "../../apis/api/wish";
 import Swal from "sweetalert2";
 import { darkMode } from "../../recoil/states/UserState";
+import { useNavigate } from "react-router";
 
 interface Place {
     placeId: number;
@@ -25,6 +26,7 @@ export default function WishMakeCourse() {
     const isDark = useRecoilState(darkMode)[0];
     const [userSeq, setUserSeq] = useRecoilState(userState);
     const [list, setList] = useState<Place[]>();
+    const navigate = useNavigate();
 
     // api
     const { data } = useQuery({
@@ -39,6 +41,7 @@ export default function WishMakeCourse() {
                 icon: "success",
                 confirmButtonColor: "#FF8E9E",
             });
+            navigate("/wish");
         },
         onError: () => {
             Swal.fire({
