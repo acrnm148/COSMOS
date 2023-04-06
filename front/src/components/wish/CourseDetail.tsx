@@ -127,8 +127,8 @@ export default function CourseDetail(props: { courseId: any }) {
             <div
                 className={
                     isDark
-                        ? "cursor-pointer btns w-full h-12 bg-darkMain3 text-center flex fixed bottom-20 z-[100001]"
-                        : "cursor-pointer btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]"
+                        ? "fixed max-w-[950px] cursor-pointer btns w-full h-12 bg-darkMain3 text-center flex bottom-20 z-[100001]"
+                        : "fixed max-w-[950px] cursor-pointer btns w-full h-12 bg-lightMain3 text-center flex bottom-20 z-[100001]"
                 }
             >
                 <div className="float-left w-1/3 m-auto" onClick={shareKakao}>

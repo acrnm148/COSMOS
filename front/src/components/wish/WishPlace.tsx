@@ -43,7 +43,7 @@ export default function WishPlace() {
                     {list?.length}
                 </div>
 
-                <div className="mt-4 h-[480px] overflow-y-auto">
+                <div className="mt-4 h-[56vh] overflow-y-auto">
                     {list?.map((p: Place) => (
                         <Item
                             key={p.placeId}

@@ -119,23 +119,25 @@ export default function CourseEdit(props: { courseId: any }) {
                             계획할 장소를 순서대로 눌러주세요!
                         </div>
 
-                        {places?.map((a: Place) => (
-                            <Item
-                                key={a.placeId}
-                                item={a}
-                                orders={orders}
-                                handleOrders={handleOrders}
-                            ></Item>
-                        ))}
+                        <div className="h-[48vh] overflow-y-auto">
+                            {places?.map((a: Place) => (
+                                <Item
+                                    key={a.placeId}
+                                    item={a}
+                                    orders={orders}
+                                    handleOrders={handleOrders}
+                                ></Item>
+                            ))}
 
-                        {wishPlaces?.map((a: Place) => (
-                            <Item
-                                key={a.placeId}
-                                item={a}
-                                orders={orders}
-                                handleOrders={handleOrders}
-                            ></Item>
-                        ))}
+                            {wishPlaces?.map((a: Place) => (
+                                <Item
+                                    key={a.placeId}
+                                    item={a}
+                                    orders={orders}
+                                    handleOrders={handleOrders}
+                                ></Item>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
@@ -143,8 +145,8 @@ export default function CourseEdit(props: { courseId: any }) {
             <div
                 className={
                     isDark
-                        ? "cursor-pointer w-full h-16 pt-4 text-center bg-darkMain fixed bottom-20 z-[100001] text-white text-xl font-bold"
-                        : "cursor-pointer w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                        ? "max-w-[950px] cursor-pointer w-full h-16 pt-4 text-center bg-darkMain fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                        : "max-w-[950px] cursor-pointer w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
                 }
                 onClick={() => {
                     (async () => {
