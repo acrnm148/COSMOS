@@ -42,7 +42,11 @@ export default function Servey4() {
               key={key}
               onClick={() => submit9(key)}
               className={
-                "flex justify-center w-40 h-40 p-5 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg break-normal hover:bg-opacity-75  border-solid border-2 border-darkMain4"
+                (key===1?`bg-[url('https://user-images.githubusercontent.com/87971876/230256832-07aa0f43-88d2-4fd1-a8b9-6c0bfc0c3811.png')]`
+                : (key===2?`bg-[url('https://user-images.githubusercontent.com/87971876/230256840-72145775-3d07-477b-9295-6fa9c89eb341.png')]`
+                  : (key===3?`bg-[url('https://user-images.githubusercontent.com/87971876/230256843-d51ca33a-ff24-4978-8f41-9094fc595e58.png')]`
+                    : `bg-[url('https://user-images.githubusercontent.com/87971876/230256847-ad673e13-a212-4750-80b0-6a6418fc994e.png')]`)))
+                +"  hover:w-[47%] bg-cover bg-center bg-no-repeat bg-opacity-20 flex justify-center w-[46%] h-40 p-5 content-center text-centerpt-10 pb-10 rounded-lg break-normal border-solid border-2 border-darkMain4"
               }
             >
               <div className="text-white">{item}</div>
