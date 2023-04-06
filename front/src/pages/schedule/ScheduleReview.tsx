@@ -3,7 +3,7 @@ import {CATEGORY_QA} from "../../recoil/states/PlaceState"
 import { COMMON_QA } from "../../recoil/states/PlaceState";
 import axios from "axios"
 import React, { useEffect, useRef, useState, useCallback, MouseEvent } from "react"
-import { NavLink, useLocation } from "react-router-dom"
+import { Navigate, NavLink, useLocation, useNavigate } from "react-router-dom"
 //alert
 import Swal from "sweetalert2";
 
@@ -18,9 +18,8 @@ import {Stars} from '../../components/review/StarStyledComponent'
 import { REVIEW } from "./ScheduleDetail";
 import { useMutation } from "react-query";
 import { postReview, putReview } from "../../apis/api/review";
-import { userState } from "../../recoil/states/UserState";
+import { darkMode, userState } from "../../recoil/states/UserState";
 import { useRecoilState } from "recoil";
-
 
 export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined, isReview:boolean, category:string, setShowReview:Function, edit:boolean}){
     const [loginUser, setLoginUSer] = useRecoilState(userState)
@@ -38,6 +37,7 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
     const [score, setScore] = useState<number>()
     const reviewId = props.review?.reviewId
     const placeId = props.placeId
+    const [planId, setPlanId] = useState<number>()
 
     const [clicked, setClicked] = useState([false, false, false, false, false])
 
@@ -47,7 +47,8 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
     const makeReview = useMutation(postReview)
     const [submitB, setSubmit] = useState<boolean>(false)
     const [review, setReview] = useState<Object>()
-
+    
+    const [isDark,x] = useRecoilState<boolean>(darkMode)
     // 리뷰 수정시 정보 입력
     useEffect(()=> {
         if(props.review){
@@ -60,6 +61,7 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
             rvw.photos && setUplodedImg(rvw.photos)
             setScore(rvw.score)
             handleStarClick(rvw.score)
+            setPlanId(rvw.planId)
         }
     },[props.review])
     
@@ -133,7 +135,7 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
             getImgUrl();
         }
     };
-
+    const navigate = useNavigate()
     useEffect(()=>{
         if(review && submitB){
             // console.log('props.edit',props.edit)
@@ -154,6 +156,7 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
          })
          // 리뷰등록/수정 닫고 장소 상세페이지로 이동
          props.setShowReview(false)
+         navigate(-1)
         }
         console.log('review',review)
     }, [review])
@@ -201,7 +204,59 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
                 setUplodedImg(uploadedImg.filter((img,id) => id !== idx));
             }
         })
+        console.log('UplodedImg',uploadedImg)
     }
+
+    const IOSSwitch = muiStyle((props: SwitchProps) => (
+        <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+      ))(({ theme }) => ({
+        width: 42,
+        height: 26,
+        padding: 0,
+        '& .MuiSwitch-switchBase': {
+          padding: 0,
+          margin: 2,
+          transitionDuration: '300ms',
+          '&.Mui-checked': {
+            transform: 'translateX(16px)',
+            color: '#fff',
+            '& + .MuiSwitch-track': {
+              backgroundColor: isDark?'#BE6DB7':"#FF8E9E",
+              opacity: 1,
+              border: 0,
+            },
+            '&.Mui-disabled + .MuiSwitch-track': {
+              opacity: 0.5,
+            },
+          },
+          '&.Mui-focusVisible .MuiSwitch-thumb': {
+            color: isDark?'#BE6DB7':"#FF8E9E",
+            border: '6px solid #fff',
+          },
+          '&.Mui-disabled .MuiSwitch-thumb': {
+            color:
+              theme.palette.mode === 'light'
+                ? theme.palette.grey[100]
+                : theme.palette.grey[600],
+          },
+          '&.Mui-disabled + .MuiSwitch-track': {
+            opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
+          },
+        },
+        '& .MuiSwitch-thumb': {
+          boxSizing: 'border-box',
+          width: 22,
+          height: 22,
+        },
+        '& .MuiSwitch-track': {
+          borderRadius: 26 / 2,
+          backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
+          opacity: 1,
+          transition: theme.transitions.create(['background-color'], {
+            duration: 500,
+          }),
+        },
+      }));
     return(
         <div className="w-full">
             {/* 카테고리별 선택지 */}
@@ -210,13 +265,13 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
                     CATEGORY_QA[props.category as keyof CATE_QA]&&CATEGORY_QA[props.category as keyof CATE_QA].map((ask:string, i:number)=>{
                         if (i === 2){
                             return(<div onClick={() => setCateQ(ask)}  className={`cursor-pointer col-span-2 rounded-lg flex justify-center items-center text-xs h-8 mx-1 my-0.5 mw-s"
-                                            ${cateQ === ask ? "bg-lightMain font-white" : "bg-white"}`}
+                                            ${cateQ === ask ? (isDark?"bg-darkMain font white" : "bg-lightMain font-white ") : "bg-white"}`}
                             >{ask}</div>)
                             
                         } else{
                             return(
                                 <div onClick={() => setCateQ(ask)} className={`cursor-pointer rounded-lg flex justify-center items-center text-xs h-8 mx-1 my-0.5 mw-s"
-                                             ${cateQ === ask ? "bg-lightMain font-white" : "bg-white"}`}
+                                             ${cateQ === ask ? (isDark?"bg-darkMain font white" : "bg-lightMain font-white ") : "bg-white"}`}
                             >{ask}</div>
                             )
                         }
@@ -230,13 +285,13 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
                     COMMON_QA.map((ask, i)=>{
                         if (i === 2){
                             return(<div onClick={() => setCommonQ(ask)} className={`cursor-pointer col-span-2 rounded-lg flex justify-center items-center text-xs h-8 mx-1 my-0.5 mw-s"
-                                            ${commonQ === ask ? "bg-lightMain font-white" : "bg-white"}`} 
+                                            ${commonQ === ask ? (isDark?"bg-darkMain font white" : "bg-lightMain font-white ") : "bg-white"}`} 
                             >{ask}</div>)
                             
                         } else{
                             return(
                                 <div onClick={() => setCommonQ(ask)} className={`cursor-pointer rounded-lg flex justify-center items-center text-xs h-8 mx-1 my-0.5 mw-s"
-                                            ${commonQ === ask ? "bg-lightMain font-white" : "bg-white"}`}
+                                            ${commonQ === ask ?  (isDark?"bg-darkMain font white" : "bg-lightMain font-white ")  : "bg-white"}`}
                                 >{ask}</div>
                             )
                         }
@@ -247,13 +302,13 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
             
             {/* 리뷰 */}
             <div className="w-full bg-white rounded-lg mb-5 text-xs p-2 flex flex-col items-center">
-                <div className="flex flex-col items-center w-full border-2 border-solid border-lightMain rounded-lg">
+                <div className={(isDark?"border-darkMain ":"border-lightMain ") +"flex flex-col items-center w-full border-2 border-solid rounded-lg"}>
                     {/* 텍스트 */}
 
                     <div className="flex w-full justify-between">
                         <div className="min-w-[80px] text-white"></div>
                         <p className="text-serveyCircle p-2">리뷰</p>
-                        <div className="flex text-lightMain2 items-center">
+                        <div className={(isDark?"text-darkMain2 ": "text-lightMain2 " ) + "flex items-center"}>
                             <div onClick={()=>setContentOpen(!contentOpen)}><IOSSwitch sx={{ m: 1 }}  checked={contentOpen} /></div>
                             <p className="min-w-[40px]">{contentOpen?'공개':'비공개'}</p>
                         </div>
@@ -267,12 +322,12 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
                     <div className="flex w-full justify-between">
                         <div className="min-w-[80px] text-white"></div>
                         <p className="text-serveyCircle p-2">사진</p>
-                        <div className="flex text-lightMain2 items-center">
+                        <div className={(isDark?"text-darkMain2 ": "text-lightMain2 " ) + "flex items-center"}>
                             <div onClick={()=>setPhotoOpen(!photoOpen)}><IOSSwitch sx={{ m: 1 }} checked={photoOpen} /></div>
                             <p className="min-w-[40px]">{photoOpen?'공개':'비공개'}</p>
                         </div>
                     </div>
-                    <div className="w-full h-40 bg-lightMain cursor-pointer rounded-md flex justify-left items-center p-2" onClick={uploadImgBtn}>
+                    <div className={(isDark?"bg-darkMain ": " bg-lightMain ") + " w-full h-40 cursor-pointer rounded-md flex justify-left items-center p-2"} onClick={uploadImgBtn}>
                         {uploadedImg &&
                             uploadedImg.map((image:string, idx:number)=>{
                                 return(
@@ -322,64 +377,15 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
     )
 }
 export function ReviewSet(props:{edit:boolean}){
+    const [isDark,x] = useRecoilState(darkMode)
     return(
         props.edit?
-        <div className="cursor-pointer bg-white w-full h-10 text-sm rounded-lg text-lightMain flex justify-center items-center">
+        <div className={(isDark?"bg-darkMain text-white ":"bg-white text-lightMain ") + "cursor-pointer w-full h-10 text-sm rounded-lg flex justify-center items-center"}>
             리뷰수정하기
         </div>
         :
-        <div className="cursor-pointer bg-white w-full h-10 text-sm rounded-lg text-lightMain flex justify-center items-center">
+        <div className={(isDark?"bg-darkMain text-white ":"bg-white text-lightMain ") + "cursor-pointer w-full h-10 text-sm rounded-lg flex justify-center items-center"}>
             리뷰남기기
         </div>
     )
 }
-const IOSSwitch = muiStyle((props: SwitchProps) => (
-    <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-  ))(({ theme }) => ({
-    width: 42,
-    height: 26,
-    padding: 0,
-    '& .MuiSwitch-switchBase': {
-      padding: 0,
-      margin: 2,
-      transitionDuration: '300ms',
-      '&.Mui-checked': {
-        transform: 'translateX(16px)',
-        color: '#fff',
-        '& + .MuiSwitch-track': {
-          backgroundColor: theme.palette.mode === 'dark' ? '#FF8E9E' : '#FF8E9E',
-          opacity: 1,
-          border: 0,
-        },
-        '&.Mui-disabled + .MuiSwitch-track': {
-          opacity: 0.5,
-        },
-      },
-      '&.Mui-focusVisible .MuiSwitch-thumb': {
-        color: '#FF8E9E',
-        border: '6px solid #fff',
-      },
-      '&.Mui-disabled .MuiSwitch-thumb': {
-        color:
-          theme.palette.mode === 'light'
-            ? theme.palette.grey[100]
-            : theme.palette.grey[600],
-      },
-      '&.Mui-disabled + .MuiSwitch-track': {
-        opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
-      },
-    },
-    '& .MuiSwitch-thumb': {
-      boxSizing: 'border-box',
-      width: 22,
-      height: 22,
-    },
-    '& .MuiSwitch-track': {
-      borderRadius: 26 / 2,
-      backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
-      opacity: 1,
-      transition: theme.transitions.create(['background-color'], {
-        duration: 500,
-      }),
-    },
-  }));

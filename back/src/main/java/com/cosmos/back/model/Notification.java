@@ -42,7 +42,7 @@ public class Notification {
     }
 
     @Builder
-    public Notification(String event, User receiver, Boolean isRead, Boolean isClicked, String content) throws Exception {
+    public Notification(String event, User receiver, String content, Boolean isRead, Boolean isClicked) throws Exception {
         this.receiver = receiver;
         this.event = event;
         this.isRead = isRead;

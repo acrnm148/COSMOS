@@ -37,22 +37,23 @@ export default function Servey4() {
       </h1>
       <div className="flex flex-wrap w-full grid-rows-2 gap-2 justify-center">
         {[
-          ["호텔 라운지에서 보는", "도시 야경"],
-          ["공원에서 자전거타며", "강변야경"],
-          ["캠핑장에서 올려다보는", "밤하늘"],
-          ["집에서 유튜브로 보는", "VR 야경"],
+          ["호텔 라운지에서 보는", "도시 야경", '🌃'],
+          ["공원에서 자전거타며", "강변야경",'🚲'],
+          ["캠핑장에서 올려다보는", "밤하늘", '🏕'],
+          ["집에서 유튜브로 보는", "VR 야경", '🤖'],
         ].map((item, key) => {
           return (
             <div
               key={key}
               onClick={() => submit6(key)}
               className={
-                "flex w-40 justify-center p-5 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg break-normal hover:bg-opacity-75  border-solid border-2 border-darkMain4"
+                "flex w-[46%] hover:w-[47%] justify-center p-5 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg break-normal hover:bg-opacity-75  border-solid border-2 border-darkMain4"
               }
             >
               <div className="">
                 <p className="text-sm text-white">{item[0]}</p>
                 <p className="text-white">{item[1]}</p>
+                <p className="text-lg">{item[2]}</p>
               </div>
             </div>
           );

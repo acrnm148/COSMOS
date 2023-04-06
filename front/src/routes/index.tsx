@@ -61,11 +61,6 @@ const router = createBrowserRouter([
                         // 장소 검색 & 빅데이터 추천
                         { path: "place/recommend", element: <PlaceRecommend /> },
                         { path: "place/result", element: <PlaceResult /> },
-                        // 일정관리
-                        { path: "schedule/month", element: <MonthSchedulePage /> },
-                        { path: "schedule/day", element: <DaySchedulePage /> },
-                        { path: "schedule/detail", element: <ScheduleDetail /> },
-                        { path: "schedule/gallery", element: <GalleryPage /> },
                     ],
                 }]
     },

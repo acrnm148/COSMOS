@@ -1,6 +1,8 @@
 import { serveyChoice, serveyPage } from "../../recoil/states/ServeyPageState";
 import { useRecoilState } from "recoil";
 import { useState } from "react";
+import 뚜벅이 from "../../assets/servey/ser뚜벅.png"
+import 부릉이 from "../../assets/servey/ser부릉.png"
 
 export default function Servey2() {
   const [serveyCho, setServeyCho] = useRecoilState(serveyChoice);
@@ -42,10 +44,11 @@ export default function Servey2() {
               key={key}
               onClick={() => submit2(key)}
               className={
-                "flex justify-center w-40 h-72 p-5 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg break-normal hover:bg-opacity-75  border-solid border-2 border-darkMain4"
+                 "flex w-[47%] hover:w-[48%]  flex-col justify-center w-40 h-72 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg break-normal hover:bg-opacity-75  border-solid border-2 border-darkMain4"
               }
             >
               <div className="text-white">{item}</div>
+              <img src={(item==="뚜벅이"?뚜벅이:부릉이)} alt="" />
             </div>
           );
         })}

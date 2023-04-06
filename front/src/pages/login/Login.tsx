@@ -18,7 +18,10 @@ export default function Login() {
         </p>
         <a
         // https://j8e104.p.ssafy.io/login/oauth2
-          href={`https://kauth.kakao.com/oauth/authorize?client_id=097d883a03c0da953d919d990701da5f&redirect_uri=https://j8e104.p.ssafy.io/login/oauth2&response_type=code`}
+          // href={`https://kauth.kakao.com/oauth/authorize?client_id=097d883a03c0da953d919d990701da5f&redirect_uri=https://j8e104.p.ssafy.io/login/oauth2&response_type=code`}
+          // href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_LOGIN_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_LOGIN_LOCAL}&response_type=code`}
+        // href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_LOGIN_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_LOGIN_REDIRECT_URL}&response_type=code`}
+        href="https://kauth.kakao.com/oauth/authorize?client_id=097d883a03c0da953d919d990701da5f&redirect_uri=https://j8e104.p.ssafy.io/login/oauth2&response_type=code"
         >
           <button className="h-12 w-5/6 rounded-md flex justify-center m-auto">
             <img
