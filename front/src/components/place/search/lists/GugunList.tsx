@@ -29,11 +29,11 @@ export default function GugunList() {
     queryFn: () => getGugunList(sido[0].sidoCode),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <select
-      className="w-full h-14 m-auto border-[4px] border-lightMain opacity-50 rounded-r-lg outline-none focus:bg-lightMain3"
+      className="w-full h-14 m-auto border-[4px] border-lightMain dark:border-darkMain dark:bg-black dark:text-white rounded-r-lg outline-none focus:bg-lightMain3"
       name="selectSido"
       id="selectSido"
       onChange={handleGugunList}

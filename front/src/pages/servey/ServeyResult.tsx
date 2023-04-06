@@ -1,5 +1,5 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { useContext, useEffect, useState, } from "react";
+import React, { useContext, useEffect, useState, } from "react";
 import { useParams } from "react-router";
 
 import "../../css/serveyResult.css"
@@ -135,16 +135,16 @@ export default function ServeyPage(){
                 description:'너도 데이트 유형 테스트하고 나랑 데이트가자!',
                 imageUrl: bgPng[cate as keyof typeof backgroundImage],
                 link:{
-                    webUrl:`http://localhost:3000/`,
-                    mobileWebUrl:'http://localhost:3000/',
+                    webUrl:`https://j8e104.p.ssafy.io/`,
+                    mobileWebUrl:'https://j8e104.p.ssafy.io/',
                 },
             },
             buttons:[
                 {
                     title:'데이트 취향설문하기',
                     link:{
-                        webUrl:`http://localhost:3000/servey/${coupleId}/${user.seq}`,
-                        mobileWebUrl : `http://localhost:3000/servey/${coupleId}/${user.seq}`,
+                        webUrl:`https://j8e104.p.ssafy.io/servey/${coupleId}/${user.seq}`,
+                        mobileWebUrl : `https://j8e104.p.ssafy.io/servey/${coupleId}/${user.seq}`,
                     }
                 }
             ]
@@ -221,6 +221,9 @@ export default function ServeyPage(){
                                 >
                                     카카오톡 공유하기
                                 </button>
+                                <p className="mt-4 cursor-pointer w-full h-10 flex h-12 justify-center p-3 text-center rounded-lg w-full bg-darkMain5 text-darkBackground2 ">
+                                            <NavLink to="/mypage" >마이페이지로</NavLink>
+                                </p>
                             </div>
                         }
                         

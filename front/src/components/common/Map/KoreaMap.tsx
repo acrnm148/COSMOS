@@ -6,7 +6,8 @@ import { useRecoilState } from "recoil";
 import { selectSido } from "../../../recoil/states/RecommendPageState";
 import "../../../css/map.css";
 
-export default function SouthKorea() {
+export default function KoreaMap() {
+  console.log("LIGHT");
   const [sido, setSido] = useRecoilState(selectSido);
 
   return (
@@ -26,7 +27,9 @@ export default function SouthKorea() {
                   setSido({ sidoCode: item.sidoCode, sidoName: item.name });
                 }}
                 key={item.sidoCode}
-                className={sido.sidoName === item.name ? "land click" : "land"}
+                className={
+                  sido.sidoName === item.name ? "land1 click" : "land1"
+                }
                 title={item.name}
                 d={item.d}
               />

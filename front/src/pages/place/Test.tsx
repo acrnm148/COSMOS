@@ -8,6 +8,6 @@ export default function Test() {
   //   queryKey: ["getSidoList"],
   //   queryFn: () => getSidoList(),
   // });
-  // if (isLoading) return null;
+  // if (isLoading || data === undefined) return null;
   // return <TestList items={data} />;
 }
