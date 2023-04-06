@@ -1,7 +1,6 @@
 import { atom, RecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
-const JWT_EXPIRY_TIME = 24 * 3600 * 1000; // 만료 시간 (24시간 밀리 초로 표현)
 const { persistAtom } = recoilPersist();
 export interface LUser {
   seq: number;
@@ -9,29 +8,13 @@ export interface LUser {
   acToken: string;
   coupleId: any;
 }
-// export const userState = atom<LUser>({
-//     key: "userState",
-//     default: {
-//         seq: -1,
-//         isLoggedIn: false,
-//         acToken: "",
-//         coupleId: "0",
-//     },
-//     effects_UNSTABLE: [persistAtom],
-// });
-//임시 데이터
 export const userState = atom<LUser>({
   key: "userState",
   default: {
-    seq: 1,
-    isLoggedIn: true,
-    acToken:
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyNzI3ODc5MzkyIiwiZXhwIjoxNjgwNzc3OTc1LCJ1c2VySWQiOiIyNzI3ODc5MzkyIiwidXNlclNlcSI6MTl9.0NsZx4x_9_ufvOGDt58jXMfNtDp2SJRJFzSUa6q-0meMiyfIcmZPjAOi8Gh9dTx6teLurDOwShXC1IfbxEFmNg",
+    seq: -1,
+    isLoggedIn: false,
+    acToken: "",
     coupleId: "0",
-    // seq: -1,
-    // isLoggedIn: false,
-    // acToken: "",
-    // coupleId: "0",
   },
   effects_UNSTABLE: [persistAtom],
 });

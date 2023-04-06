@@ -23,6 +23,13 @@ interface Place {
     longitude: string; // 경도
 }
 
+// 기존 윈도우에 없는 객체에 접근할 때 에러 발생
+// 임의로 값이 있다고 정의해주는 부분
+// const Kakao = (window as any).Kakao;
+declare const window: typeof globalThis & {
+    Kakao: any;
+};
+
 export default function CourseDetail(props: { courseId: any }) {
     const isDark = useRecoilState(darkMode)[0];
     const navigate = useNavigate();
@@ -64,6 +71,39 @@ export default function CourseDetail(props: { courseId: any }) {
         setPlaces(data?.places);
     }, [data]);
 
+    // 카카오톡 공유하기
+    useEffect(() => {
+        // 카카오 sdk 찾도록 초기화
+        if (!window.Kakao.isInitialized()) {
+            window.Kakao.init(process.env.REACT_APP_KAKAO_SHARE_JS_MYE);
+        }
+    }, []);
+
+    const shareKakao = () => {
+        window.Kakao.Link.sendDefault({
+            objectType: "feed",
+            content: {
+                title: "나랑 데이트가자!",
+
+                description: `이번 여행 '${data.name}' 코스 어때?`,
+                imageUrl: places[0].thumbNailUrl,
+                link: {
+                    webUrl: `https://j8e104.p.ssafy.io/`,
+                    mobileWebUrl: "https://j8e104.p.ssafy.io/",
+                },
+            },
+            buttons: [
+                {
+                    title: "코스 보러가기",
+                    link: {
+                        webUrl: `https://j8e104.p.ssafy.io/wish/course/${data.courseId}/detail/`,
+                        mobileWebUrl: `https://j8e104.p.ssafy.io/wish/course/${data.courseId}/detail/`,
+                    },
+                },
+            ],
+        });
+    };
+
     return (
         <div>
             <div className="text-center w-full max-w-[950px]">
@@ -91,7 +131,7 @@ export default function CourseDetail(props: { courseId: any }) {
                         : "cursor-pointer btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]"
                 }
             >
-                <div className="float-left w-1/3 m-auto">
+                <div className="float-left w-1/3 m-auto" onClick={shareKakao}>
                     <Icon
                         icon="material-symbols:share-outline"
                         width="20"
