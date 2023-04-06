@@ -245,16 +245,19 @@ interface Place{
           </div>            
           <div
             onClick={logout} 
-            className={isDark?"hover:bg-darkMain3 mt-2 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center hover:bg-lightMain3"
+            className={isDark?"hover:bg-darkMain3 mt-2 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center"
                       :"mt-2 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center hover:bg-lightMain3"
           }
             >로그아웃
             </div>
-          <div
-            onClick={deleteCouple} 
-            className="mt-2 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center hover:bg-darkMain2"
-            > 커플 끊기
-          </div>
+          {
+            !isDark&&
+            <div
+              onClick={deleteCouple} 
+              className="mt-2 w-full cursor-pointer text-xl text-calendarDark bg-calendarGray px-8 py-4 h-16 rounded-lg flex justify-center hover:bg-darkMain2"
+              > 커플 끊기
+            </div>
+          }
           </div>
         </div>
         </div>
