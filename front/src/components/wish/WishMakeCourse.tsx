@@ -6,6 +6,7 @@ import { userState } from "../../recoil/states/UserState";
 import { useQuery, useMutation } from "react-query";
 import { getWishPlaceList, wishMakeCourse } from "../../apis/api/wish";
 import Swal from "sweetalert2";
+import { darkMode } from "../../recoil/states/UserState";
 
 interface Place {
     placeId: number;
@@ -21,30 +22,7 @@ interface Place {
 }
 
 export default function WishMakeCourse() {
-    const state = {
-        center: {
-            lat: 37.566481622437934,
-            lng: 126.98502302169841,
-        },
-    };
-    const marker = [
-        {
-            placeId: 0,
-            lat: 37.566481622437934,
-            lng: 126.98502302169841,
-        },
-        {
-            placeId: 1,
-            lat: 37.567481622437934,
-            lng: 126.98602302169841,
-        },
-        {
-            placeId: 2,
-            lat: 37.567381622437934,
-            lng: 126.98502302169841,
-        },
-    ];
-
+    const isDark = useRecoilState(darkMode)[0];
     const [userSeq, setUserSeq] = useRecoilState(userState);
     const [list, setList] = useState<Place[]>();
 
@@ -109,7 +87,11 @@ export default function WishMakeCourse() {
             </div>
 
             <div
-                className="w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                className={
+                    isDark
+                        ? "cursor-pointer w-full h-16 pt-4 text-center bg-darkMain fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                        : "cursor-pointer w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                }
                 onClick={() => {
                     (async () => {
                         const { value: getName } = await Swal.fire({
@@ -117,7 +99,7 @@ export default function WishMakeCourse() {
                             input: "text",
                             inputPlaceholder: "코스 이름",
                             confirmButtonText: "확인",
-                            confirmButtonColor: "#FF8E9E",
+                            confirmButtonColor: isDark ? "#BE6DB7" : "#FF8E9E",
                             showCancelButton: true,
                             cancelButtonText: "취소",
                             cancelButtonColor: "#B9B9B9",
@@ -141,6 +123,7 @@ export default function WishMakeCourse() {
 }
 
 function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
+    const isDark = useRecoilState(darkMode)[0];
     let name =
         props.item.name.length > 8
             ? props.item.name.slice(0, 8).concat("...")
@@ -152,7 +135,13 @@ function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
 
     return (
         <div>
-            <div className="col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-calendarGray rounded-lg flex">
+            <div
+                className={
+                    isDark
+                        ? "col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-darkBackground2 rounded-lg flex"
+                        : "col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-calendarGray rounded-lg flex"
+                }
+            >
                 <img
                     className="w-24 h-24 rounded-md mr-4 mt-1"
                     src={props.item.thumbNailUrl}
@@ -160,15 +149,28 @@ function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
                 />
                 <div className="text-left mt-2">
                     <div className="font-bold mb-2 text-sm">{name}</div>
-                    <div className="mb-2 text-sm text-gray-500">{address}</div>
-                    <div className="text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
-                        유사 장소 추천
+                    <div
+                        className={
+                            isDark
+                                ? "mb-2 text-sm text-slate-300"
+                                : "mb-2 text-sm text-gray-500"
+                        }
+                    >
+                        {address}
                     </div>
+                    {/* <div className="cursor-pointer text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
+                        유사 장소 추천
+                    </div> */}
+                    <div className=""></div>
                 </div>
 
                 {props.orders.includes(props.item.placeId) ? (
                     <div
-                        className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        className={
+                            isDark
+                                ? "cursor-pointer idx mt-7 ml-10 pt-1.5 bg-darkMain text-white w-12 h-12 rounded-full text-2xl"
+                                : "cursor-pointer idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        }
                         onClick={() => {
                             props.handleOrders(props.item.placeId);
                         }}
@@ -177,7 +179,11 @@ function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
                     </div>
                 ) : (
                     <div
-                        className="idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        className={
+                            isDark
+                                ? "cursor-pointer idx mt-7 ml-10 pt-1.5 bg-white border-2 border-darkMain text-white w-12 h-12 rounded-full text-2xl"
+                                : "cursor-pointer idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        }
                         onClick={() => {
                             props.handleOrders(props.item.placeId);
                         }}

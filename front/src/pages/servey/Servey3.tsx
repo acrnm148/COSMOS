@@ -36,17 +36,18 @@ export default function Servey3() {
         3. 더 가고싶은 데이트장소?
       </h1>
       <ul className="flex flex-wrap w-full grid-rows-2 gap-2 justify-center">
-        {["공원피크닉", "미술전시회", "불꽃축제", "밤새영화보기"].map(
+        {[["공원피크닉",'🌳'], ["미술전시회",'🎨'], ["불꽃축제",'🎇'], ["밤새영화보기",'🍿']].map(
           (item, key) => {
             return (
               <div
                 key={key}
                 onClick={() => submit3(key)}
                 className={
-                  "flex justify-center w-40 h-40 p-5 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg break-normal hover:bg-opacity-75  border-solid border-2 border-darkMain4"
+                  "flex w-[46%] hover:w-[47%] flex-col justify-center w-40 h-40 p-5 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg break-normal hover:bg-opacity-75  border-solid border-2 border-darkMain4"
                 }
               >
-                <div className="text-white">{item}</div>
+                <div className="text-white">{item[0]}</div>
+                <div className="text-white text-2xl">{item[1]}</div>
               </div>
             );
           }

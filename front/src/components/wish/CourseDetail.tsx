@@ -5,7 +5,7 @@ import ListCard from "../common/ListCard";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { userState } from "../../recoil/states/UserState";
+import { darkMode, userState } from "../../recoil/states/UserState";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { deleteWishCourse, getCourseDetail } from "../../apis/api/wish";
 import Swal from "sweetalert2";
@@ -24,6 +24,7 @@ interface Place {
 }
 
 export default function CourseDetail(props: { courseId: any }) {
+    const isDark = useRecoilState(darkMode)[0];
     const navigate = useNavigate();
     const [places, setPlaces] = useState<Place[]>([]);
     const [userSeq, setUserSeq] = useRecoilState(userState);
@@ -83,7 +84,13 @@ export default function CourseDetail(props: { courseId: any }) {
                 </div>
             </div>
 
-            <div className="btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]">
+            <div
+                className={
+                    isDark
+                        ? "cursor-pointer btns w-full h-12 bg-darkMain3 text-center flex fixed bottom-20 z-[100001]"
+                        : "cursor-pointer btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]"
+                }
+            >
                 <div className="float-left w-1/3 m-auto">
                     <Icon
                         icon="material-symbols:share-outline"
@@ -116,7 +123,7 @@ export default function CourseDetail(props: { courseId: any }) {
                             icon: "question",
 
                             showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-                            confirmButtonColor: "#FF8E9E", // confrim 버튼 색깔 지정
+                            confirmButtonColor: isDark ? "#BE6DB7" : "#FF8E9E", // confrim 버튼 색깔 지정
                             cancelButtonColor: "#B9B9B9", // cancel 버튼 색깔 지정
                             confirmButtonText: "확인", // confirm 버튼 텍스트 지정
                             cancelButtonText: "취소", // cancel 버튼 텍스트 지정
@@ -145,6 +152,7 @@ export default function CourseDetail(props: { courseId: any }) {
 }
 
 function Item(props: { item: Place }) {
+    const isDark = useRecoilState(darkMode)[0];
     let address =
         props.item.address.length > 15
             ? props.item.address.slice(0, 15).concat("...")
@@ -157,10 +165,22 @@ function Item(props: { item: Place }) {
 
     return (
         <div>
-            <div className="idx absolute left-3 pt-1 bg-lightMain text-white w-10 h-10 rounded-full text-xl font-bold">
+            <div
+                className={
+                    isDark
+                        ? "idx absolute left-3 pt-1 bg-darkMain text-white w-10 h-10 rounded-full text-xl font-bold"
+                        : "idx absolute left-3 pt-1 bg-lightMain text-white w-10 h-10 rounded-full text-xl font-bold"
+                }
+            >
                 {props.item.orders}
             </div>
-            <div className="col-md-4 mb-4 ml-4 mr-4 p-3 bg-calendarGray rounded-lg">
+            <div
+                className={
+                    isDark
+                        ? "col-md-4 mb-4 ml-4 mr-4 p-3 bg-darkBackground2 rounded-lg"
+                        : "col-md-4 mb-4 ml-4 mr-4 p-3 bg-calendarGray rounded-lg"
+                }
+            >
                 <img
                     className="float-left w-24 h-[100px] mr-4 mt-1 rounded-md"
                     src={props.item.thumbNailUrl}
@@ -168,7 +188,15 @@ function Item(props: { item: Place }) {
                 />
                 <div className="text-left mt-2 mb-2">
                     <div className="font-bold mb-2">{props.item.name}</div>
-                    <div className="mb-2 text-sm text-gray-500">{address}</div>
+                    <div
+                        className={
+                            isDark
+                                ? "mb-2 text-sm text-slate-300"
+                                : "mb-2 text-sm text-gray-500"
+                        }
+                    >
+                        {address}
+                    </div>
                     <div className="text-sm">{detail}</div>
                     {!detail && <div className="h-9"></div>}
                 </div>
