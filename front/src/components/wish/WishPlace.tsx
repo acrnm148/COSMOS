@@ -73,15 +73,6 @@ export default function WishPlace() {
 function Item(props: { item: Place; userSeq: number }) {
     const isDark = useRecoilState(darkMode)[0];
 
-    let address =
-        props.item.address.length > 16
-            ? props.item.address.slice(0, 16).concat("...")
-            : props.item.address;
-    let detail =
-        props.item.detail.length > 30
-            ? props.item.detail.slice(0, 30).concat("...")
-            : props.item.detail;
-
     const Toast = Swal.mixin({
         toast: true, // 토스트 형식
         position: "bottom-end", // 알림 위치
@@ -108,12 +99,17 @@ function Item(props: { item: Place; userSeq: number }) {
         },
     });
 
+    let detail =
+        props.item.detail.length > 45
+            ? props.item.detail.slice(0, 45).concat("...")
+            : props.item.detail;
+
     return (
         <div
             className={
                 isDark
-                    ? "col-md-4 mb-4 p-3 h-40 rounded-lg bg-darkBackground2"
-                    : "col-md-4 mb-4 p-3 h-40 rounded-lg bg-calendarGray"
+                    ? "col-md-4 mb-4 p-3 rounded-lg bg-darkBackground2"
+                    : "col-md-4 mb-4 p-3 rounded-lg bg-calendarGray"
             }
         >
             <div className="cursor-pointer heart mb-2 float-right">
@@ -191,9 +187,17 @@ function Item(props: { item: Place; userSeq: number }) {
                         : "mb-2 text-sm text-gray-500"
                 }
             >
-                {address}
+                {props.item.address}
             </div>
-            <div className="text-sm">{detail}</div>
+
+            {props.item.detail === "" ? (
+                <div
+                    className="h-12
+                "
+                ></div>
+            ) : (
+                <div className="text-sm py-3">{detail}</div>
+            )}
         </div>
     );
 }

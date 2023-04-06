@@ -193,15 +193,6 @@ export default function CourseDetail(props: { courseId: any }) {
 
 function Item(props: { item: Place }) {
     const isDark = useRecoilState(darkMode)[0];
-    let address =
-        props.item.address.length > 15
-            ? props.item.address.slice(0, 15).concat("...")
-            : props.item.address;
-
-    let detail =
-        props.item.detail.length > 33
-            ? props.item.detail.slice(0, 33).concat("...")
-            : props.item.detail;
 
     return (
         <div>
@@ -235,10 +226,10 @@ function Item(props: { item: Place }) {
                                 : "mb-2 text-sm text-gray-500"
                         }
                     >
-                        {address}
+                        {props.item.address}
                     </div>
-                    <div className="text-sm">{detail}</div>
-                    {!detail && <div className="h-9"></div>}
+                    <div className="text-sm">{props.item.detail}</div>
+                    {!props.item.detail && <div className="h-9"></div>}
                 </div>
             </div>
         </div>

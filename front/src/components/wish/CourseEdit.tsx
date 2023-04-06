@@ -180,14 +180,6 @@ export default function CourseEdit(props: { courseId: any }) {
 
 function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
     const isDark = useRecoilState(darkMode)[0];
-    let name =
-        props.item.name.length > 7
-            ? props.item.name.slice(0, 7).concat("...")
-            : props.item.name;
-    let address =
-        props.item.address.length > 8
-            ? props.item.address.slice(0, 8).concat("...")
-            : props.item.address;
 
     return (
         <div>
@@ -198,25 +190,27 @@ function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
                         : "col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-calendarGray rounded-lg flex"
                 }
             >
-                <img
-                    className="w-24 h-24 rounded-md mr-4 mt-1"
-                    src={props.item.thumbNailUrl}
-                    alt="img"
-                />
-                <div className="text-left mt-2">
-                    <div className="font-bold mb-2">{name}</div>
-                    <div
-                        className={
-                            isDark
-                                ? "mb-2 text-sm text-slate-200"
-                                : "mb-2 text-sm text-gray-500"
-                        }
-                    >
-                        {address}
-                    </div>
-                    {/* <div className="cursor-pointer text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
+                <div className="w-10/12">
+                    <img
+                        className="float-left w-24 h-24 rounded-md mr-4 mt-1"
+                        src={props.item.thumbNailUrl}
+                        alt="img"
+                    />
+                    <div className="text-left mt-2">
+                        <div className="font-bold mb-2">{props.item.name}</div>
+                        <div
+                            className={
+                                isDark
+                                    ? "mb-2 text-sm text-slate-200"
+                                    : "mb-2 text-sm text-gray-500"
+                            }
+                        >
+                            {props.item.address}
+                        </div>
+                        {/* <div className="cursor-pointer text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
                         유사 장소 추천
                     </div> */}
+                    </div>
                 </div>
 
                 {props.orders.includes(props.item.placeId) ? (
