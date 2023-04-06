@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { darkMode } from "../../recoil/states/UserState";
 
 interface Course {
     courseId: number;
@@ -61,6 +62,7 @@ export default function WishCourse() {
 }
 
 function Item(props: { item: Course }) {
+    const isDark = useRecoilState(darkMode)[0];
     const navigate = useNavigate();
     const Toast = Swal.mixin({
         toast: true, // 토스트 형식
@@ -91,7 +93,11 @@ function Item(props: { item: Course }) {
     return (
         <div className="mb-5">
             <div
-                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg cursor-pointer"
+                className={
+                    isDark
+                        ? "col-md-4 p-3 h-48 bg-darkBackground2 rounded-t-lg cursor-pointer"
+                        : "col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg cursor-pointer"
+                }
                 onClick={() => {
                     navigate(`/wish/course/${props.item.courseId}/detail`);
                 }}
@@ -123,7 +129,13 @@ function Item(props: { item: Course }) {
                     })}
                 </div>
             </div>
-            <div className="cursor-pointer btns w-full h-12 bg-lightMain3 rounded-b-lg text-center flex">
+            <div
+                className={
+                    isDark
+                        ? "cursor-pointer btns w-full h-12 bg-darkMain3 rounded-b-lg text-center flex"
+                        : "cursor-pointer btns w-full h-12 bg-lightMain3 rounded-b-lg text-center flex"
+                }
+            >
                 <div className="float-left w-1/3 m-auto">
                     <Icon
                         icon="material-symbols:share-outline"
