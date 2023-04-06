@@ -79,17 +79,17 @@ export function GalleryPage(){
                         }
                     })
                 }
-            <div className={(isDark? "bg-darkBackground text-white ":"bg-white") + " rounded-lg w-full flex min-h-screen overflow-y-scroll flex-wrap px-2" }>
+            <div className={(isDark? "bg-darkBackground text-white ":"bg-white") + " rounded-lg w-full flex min-h-screen overflow-y-scroll flex-wrap px-2 mb-20 overflow-x-hidden" }>
                 {photos?.length&&
                 setDateTags?
                     setDateTags.map((tgs)=>{
                         return(<div className="">
                             <div className="w-screen h-10 p-2 font-bold font-lg">{tgs.slice(0,4)+'년 '+tgs.slice(4,6)+'월'}</div>
-                            <div className="flex">
+                            <div className="flex flex-wrap">
                             {
                                 photos.map((p:REVIEWIMG)=>{
                                     if(tgs === p.createdMonth)
-                                    return( <div className={`max-w-[43%] rounded-md h-full overflow-hidden`}>
+                                    return( <div className={`max-w-[43%] rounded-md h-full overflow-hidden m-2`}>
                                         <img src={p.imageUrl}></img>
                                     </div>)
                                 })

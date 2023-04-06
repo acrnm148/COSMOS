@@ -21,7 +21,6 @@ import { postReview, putReview } from "../../apis/api/review";
 import { darkMode, userState } from "../../recoil/states/UserState";
 import { useRecoilState } from "recoil";
 
-
 export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined, isReview:boolean, category:string, setShowReview:Function, edit:boolean}){
     const [loginUser, setLoginUSer] = useRecoilState(userState)
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -38,6 +37,7 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
     const [score, setScore] = useState<number>()
     const reviewId = props.review?.reviewId
     const placeId = props.placeId
+    const [planId, setPlanId] = useState<number>()
 
     const [clicked, setClicked] = useState([false, false, false, false, false])
 
@@ -61,6 +61,7 @@ export function ReviewForm(props:{placeId:number|string,review:REVIEW|undefined,
             rvw.photos && setUplodedImg(rvw.photos)
             setScore(rvw.score)
             handleStarClick(rvw.score)
+            setPlanId(rvw.planId)
         }
     },[props.review])
     
