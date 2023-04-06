@@ -13,16 +13,10 @@ export default function DatePickerTest (props:{checkDate:Function|null, defaultD
             props.checkDate(d)
         }
         setEndDate(d)
-        checkDefaultDate()
     }
  
-    function checkDefaultDate(){
-        console.log('props.defaultDate', props.defaultDate)
-        console.log(props.defaultDate?true:false)
-        console.log('endDate', endDate)
-    }
     return(
-        <>
+        <div className="flex justify-center items-center w-full">
         <DatePicker 
                 selected = {endDate}
                 onChange = {(d:any) => {
@@ -35,9 +29,9 @@ export default function DatePickerTest (props:{checkDate:Function|null, defaultD
                 locale={ko}
                 disabled={props.isDate}
                 dateFormat="yyyy년 MM월 dd일"
-                className={(isDark?"bg-darkMain5 " :"bg-lightMain3 ") +  "outline-none cursor-pointer text-[15px] w-full flex justify-center"}
+                className={(isDark?"bg-darkMain5 " :"bg-lightMain3 ") +  "align-center outline-none cursor-pointer text-[15px] w-full flex justify-center text-center"}
                 />
 
-        </>
+        </div>
     )
 }

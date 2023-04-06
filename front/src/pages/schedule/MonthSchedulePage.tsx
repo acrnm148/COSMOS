@@ -86,7 +86,7 @@ export function MonthSchedulePage(){
     useEffect(()=>{
         const day = (year + (month.length === 2 ? month : '0' + month))
         let data:any
-        axios.get(`https://j8e104.p.ssafy.io/api/plans/${loginUser.coupleId}/month/${day}`)
+        axios.get(`https://j8e104.p.ssafy.io/api/plans/${loginUser.coupleId?loginUser.coupleId:"0"}/month/${day}`)
         .then((res) =>{
             data = res.data
             if(data){
@@ -144,10 +144,10 @@ export function MonthSchedulePage(){
     //     console.log('선택된 일', day)
     // }
     return (
-        <div className="w-screen">
+        <div className="w-full">
            <div className={(isDark?
                             "bg-darkMain2 h-20 flex "
-                            :"bg-lightMain2 h-20 flex items-center justify-between p-5 text-xl font-bold text-white cursor-pointer") + "items-center justify-between p-5 text-xl font-bold text-white cursor-pointer"}>
+                            :"bg-lightMain2 h-20 flex items-center justify-between p-5 text-xl font-bold text-white cursor-pointer ") + "items-center justify-between p-5 text-xl font-bold text-white cursor-pointer"}>
                 <p>{year}년 {month}월</p> 
                 <img src={galleryIcon} />
             </div>

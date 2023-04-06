@@ -1,16 +1,23 @@
 import axios from "axios"
 import { Navigate, Outlet } from "react-router-dom"
 import { useRecoilState } from "recoil"
-import { loggedIn, userState } from "../../recoil/states/UserState"
+import { darkMode, loggedIn, userState } from "../../recoil/states/UserState"
 import { onLoginSuccess } from "../../pages/login/KakaoLogin"
 import React, { useEffect, useState } from "react"
 
 
 export default function RequireAuth(props:any) {
+
     const [user, setUser] = useRecoilState(userState)
     const[ acChecked, setAcChecked] = useRecoilState(loggedIn)
+    const [isDark, setDarkMode] = useRecoilState(darkMode)
     // console.log(user)
     // console.log(user.acToken , user.seq,acChecked)
+    useEffect(()=>{
+        if(user.coupleId !== "0"){
+            setDarkMode(false)
+        } 
+    },[acChecked])
     useEffect(()=>{
         if(!acChecked){
             getNewAcToken(user, setUser)
