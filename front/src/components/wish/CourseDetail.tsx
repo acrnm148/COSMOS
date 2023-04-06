@@ -127,8 +127,8 @@ export default function CourseDetail(props: { courseId: any }) {
             <div
                 className={
                     isDark
-                        ? "cursor-pointer btns w-full h-12 bg-darkMain3 text-center flex fixed bottom-20 z-[100001]"
-                        : "cursor-pointer btns w-full h-12 bg-lightMain3 text-center flex fixed bottom-20 z-[100001]"
+                        ? "fixed max-w-[950px] cursor-pointer btns w-full h-12 bg-darkMain3 text-center flex bottom-20 z-[100001]"
+                        : "fixed max-w-[950px] cursor-pointer btns w-full h-12 bg-lightMain3 text-center flex bottom-20 z-[100001]"
                 }
             >
                 <div className="float-left w-1/3 m-auto" onClick={shareKakao}>
@@ -193,15 +193,6 @@ export default function CourseDetail(props: { courseId: any }) {
 
 function Item(props: { item: Place }) {
     const isDark = useRecoilState(darkMode)[0];
-    let address =
-        props.item.address.length > 15
-            ? props.item.address.slice(0, 15).concat("...")
-            : props.item.address;
-
-    let detail =
-        props.item.detail.length > 33
-            ? props.item.detail.slice(0, 33).concat("...")
-            : props.item.detail;
 
     return (
         <div>
@@ -235,10 +226,10 @@ function Item(props: { item: Place }) {
                                 : "mb-2 text-sm text-gray-500"
                         }
                     >
-                        {address}
+                        {props.item.address}
                     </div>
-                    <div className="text-sm">{detail}</div>
-                    {!detail && <div className="h-9"></div>}
+                    <div className="text-sm">{props.item.detail}</div>
+                    {!props.item.detail && <div className="h-9"></div>}
                 </div>
             </div>
         </div>
