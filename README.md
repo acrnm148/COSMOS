@@ -56,41 +56,49 @@ badge](https://img.shields.io/badge/mockito-FFDBE0?style=for-the-badge&logo=mock
 ## 📱 페이지 기능 소개
 ##### 1. SNS 간편 로그인
 - 카카오 연동
+  
 ![로그인](https://user-images.githubusercontent.com/81145399/230314221-5fef052e-9fdf-4e3f-aa7d-b253346ae572.gif)
 ##### 2. 데이트 성향 질문
 - 사용자 성향 파악 -> 맞춤 데이트코스 추천
+  
 ![설문조사](https://user-images.githubusercontent.com/81145399/230314314-334885bd-0509-4863-9c9a-d08235a8f2b6.gif)
 
 ##### 3. 커플 연결 & 해제
 - 설문 공유 -> 커플 연결
 - 마이페이지 -> 커플 연결 해제
+  
 - ![커플매칭](https://user-images.githubusercontent.com/81145399/230314365-fda6a924-548a-4405-94a7-bccef49ad098.gif)
 
 ##### 4. 데이트 코스 추천
 - 빅데이터 추천 알고리즘 기반 데이트코스 추천
 - 코스 최적경로 안내
-- ![코스추천1](https://user-images.githubusercontent.com/81145399/230316065-870f3879-0b29-4c20-860a-2a5be97fd88e.gif)
+  
+![코스추천1](https://user-images.githubusercontent.com/81145399/230316065-870f3879-0b29-4c20-860a-2a5be97fd88e.gif)
 
 ##### 5. 일정 관리 & 공유
 - 커플끼리 일정 등록/수정/삭제 및 공유
-- ![일정등록](https://user-images.githubusercontent.com/81145399/230320711-f7f90967-ad26-474e-afe8-9a6e46c274f9.gif)
+  
+![일정등록](https://user-images.githubusercontent.com/81145399/230320711-f7f90967-ad26-474e-afe8-9a6e46c274f9.gif)
 
 ##### 6. 사진첩
 - 리뷰 작성 시 업로드된 사진 자동 업로드
 
 ##### 7. 장소 & 코스 찜
 - 장소 검색 or 코스 추천 후 해당 장소나 코스 찜 설정
-- ![일정공유](https://user-images.githubusercontent.com/81145399/230317043-1a8fd0db-53a5-4974-843c-d5eb28ce3277.gif)
+  
+![일정공유](https://user-images.githubusercontent.com/81145399/230317043-1a8fd0db-53a5-4974-843c-d5eb28ce3277.gif)
 
 ##### 8.코스 커스텀
 - 찜 목록을 통해 코스 커스텀
 - Drag&Drop을 통해 장소 순서 변경
-- ![코스수정](https://user-images.githubusercontent.com/81145399/230319364-d16bda51-9df9-427e-b279-bfb7930b9127.gif)
+  
+![코스수정](https://user-images.githubusercontent.com/81145399/230319364-d16bda51-9df9-427e-b279-bfb7930b9127.gif)
 
 ##### 9. 리뷰
 - 장소 리뷰 등록/수정/삭제
 
 ##### 10. 실시간 알림
 - 커플 연결 / 일정 / 리뷰 관련 실시간 알림
-- ![커플연결](https://user-images.githubusercontent.com/81145399/230314551-913a2614-a926-470d-a3d4-0bab09afc681.gif)
+  
+![커플연결](https://user-images.githubusercontent.com/81145399/230314551-913a2614-a926-470d-a3d4-0bab09afc681.gif)
 
