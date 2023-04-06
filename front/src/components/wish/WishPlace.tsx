@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { darkMode } from "../../recoil/states/UserState";
 
 /* eslint-disable jsx-a11y/alt-text */
 interface Place {
@@ -19,6 +20,7 @@ interface Place {
 }
 
 export default function WishPlace() {
+    const isDark = useRecoilState(darkMode)[0];
     const navigate = useNavigate();
     const userSeq = useRecoilState(userState);
     const [list, setList] = useState<Place[]>();
@@ -52,7 +54,11 @@ export default function WishPlace() {
                 </div>
 
                 <div
-                    className="w-full h-12 bg-lightMain2 text-white font-bold text-center text-xl pt-2.5 mt-3 rounded-full"
+                    className={
+                        isDark
+                            ? "cursor-pointer w-full h-12 bg-darkMain text-white font-bold text-center text-xl pt-2.5 mt-3 rounded-full"
+                            : "cursor-pointer w-full h-12 bg-lightMain2 text-white font-bold text-center text-xl pt-2.5 mt-3 rounded-full"
+                    }
                     onClick={() => {
                         navigate(`/wish/makeCourse`);
                     }}
@@ -65,6 +71,8 @@ export default function WishPlace() {
 }
 
 function Item(props: { item: Place; userSeq: number }) {
+    const isDark = useRecoilState(darkMode)[0];
+
     let address =
         props.item.address.length > 16
             ? props.item.address.slice(0, 16).concat("...")
@@ -101,11 +109,17 @@ function Item(props: { item: Place; userSeq: number }) {
     });
 
     return (
-        <div className="col-md-4 mb-4 p-3 h-40 bg-calendarGray rounded-lg">
-            <div className="heart mb-2 float-right">
+        <div
+            className={
+                isDark
+                    ? "col-md-4 mb-4 p-3 h-40 rounded-lg bg-darkBackground2"
+                    : "col-md-4 mb-4 p-3 h-40 rounded-lg bg-calendarGray"
+            }
+        >
+            <div className="cursor-pointer heart mb-2 float-right">
                 <Icon
                     icon="mdi:cards-heart"
-                    color="#ff8e9e"
+                    color={isDark ? "#BE6DB7" : "#FF8E9E"}
                     width="28"
                     height="28"
                     onClick={() => {
@@ -114,7 +128,7 @@ function Item(props: { item: Place; userSeq: number }) {
                             icon: "question",
 
                             showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-                            confirmButtonColor: "#FF8E9E", // confrim 버튼 색깔 지정
+                            confirmButtonColor: isDark ? "#BE6DB7" : "#FF8E9E", // confrim 버튼 색깔 지정
                             cancelButtonColor: "#B9B9B9", // cancel 버튼 색깔 지정
                             confirmButtonText: "승인", // confirm 버튼 텍스트 지정
                             cancelButtonText: "취소", // cancel 버튼 텍스트 지정
@@ -146,14 +160,6 @@ function Item(props: { item: Place; userSeq: number }) {
                         });
                     }}
                 />
-                {/* {!props.item.heart && (
-                    <Icon
-                        icon="mdi:cards-heart-outline"
-                        color="#ff8e9e"
-                        width="28"
-                        height="28"
-                    />
-                )} */}
             </div>
 
             <div className="font-bold mb-2">{props.item.name}</div>
@@ -164,45 +170,30 @@ function Item(props: { item: Place; userSeq: number }) {
             />
 
             <div className="star ml-2 mb-1">
-                <Star fontSize="small" sx={{ color: "#FF8E9E" }} />
-                <p className="inline-block text-sm ml-1 text-lightMain">
+                <Star
+                    fontSize="small"
+                    sx={{ color: isDark ? "#BE6DB7" : "#FF8E9E" }}
+                />
+                <p
+                    className={
+                        isDark
+                            ? "inline-block text-sm ml-1 text-darkMain"
+                            : "inline-block text-sm ml-1 text-lightMain"
+                    }
+                >
                     {props.item.score}
                 </p>
             </div>
-            <div className="mb-2 text-sm text-gray-500">{address}</div>
+            <div
+                className={
+                    isDark
+                        ? "mb-2 text-sm text-slate-300"
+                        : "mb-2 text-sm text-gray-500"
+                }
+            >
+                {address}
+            </div>
             <div className="text-sm">{detail}</div>
         </div>
     );
 }
-
-/*
-
-let list2: Place[] = [
-        {
-            id: 0,
-            title: "사발",
-            address: "서울 종로구 사직로8길 34 경희궁의아침 3단지 사발 142호",
-            content:
-                "서울 광화문에 위치한 사발은 새로운 스타일의 퓨전국수, 덮밥, 국밥을 정성스롭고 아름답게 대접합니다.",
-            star: 4.5,
-            heart: true,
-        },
-        {
-            id: 1,
-            title: "후라토식당 경복궁 본점",
-            address: "서울 종로구 자하문로7길 11",
-            content: "숙성사시미 전문 캐쥬얼 스시야",
-            star: 3.5,
-            heart: true,
-        },
-        {
-            id: 2,
-            title: "해운대 우시야",
-            address: "부산 해운대구 우동1로38번길 2",
-            content: "부산 소고기 오마카세 수요미식회에도 나온 맛있는 소고기",
-            star: 5.0,
-            heart: true,
-        },
-    ];
-
-*/
