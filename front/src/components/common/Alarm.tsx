@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { Badge } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useReducer } from "react";
 import { useQuery, useQueries, useQueryClient, useMutation } from "react-query";
 import {
     getAlarmList,
@@ -8,17 +8,36 @@ import {
     deleteAlarm,
 } from "../../apis/api/alarm";
 import { useRecoilState } from "recoil";
-import { userState } from "../../recoil/states/UserState";
+import { darkMode, userState } from "../../recoil/states/UserState";
 import { EventSourcePolyfill } from "event-source-polyfill";
 
 export default function Alarm() {
+    const isDark = useRecoilState(darkMode)[0];
     const [userSeq, setUserSeq] = useRecoilState(userState);
     let subscribeUrl =
         process.env.REACT_APP_API_URL + `/noti/subscribe/${userSeq.seq}`;
     const [message, setMessage] = useState();
     const [click, setClick] = useState(false);
-    const [show, setShow] = useState(false);
+    const [isShow, setShow] = useState(false);
+    const [any, forceUpdate] = useReducer((num) => num + 1, 0);
+    function handleChange() {
+        forceUpdate();
+    }
 
+    // 모달 닫기
+    const el = React.useRef() as React.MutableRefObject<HTMLDivElement>;
+    const handleCloseModal = (e: any) => {
+        if (isShow && (!el.current || !el.current.contains(e.target)))
+            setShow(false);
+    };
+    useEffect(() => {
+        window.addEventListener("click", handleCloseModal);
+        return () => {
+            window.removeEventListener("click", handleCloseModal);
+        };
+    }, []);
+
+    // sse : eventSource
     useEffect(() => {
         let eventSource = new EventSourcePolyfill(subscribeUrl, {
             headers: {
@@ -110,12 +129,18 @@ export default function Alarm() {
         };
     }, []);
 
+    useEffect(() => {
+        // console.log(click);
+    }, [click]);
+
     // api
+    const queryClient = useQueryClient();
     const res = useQueries([
         {
             // list
             queryKey: ["getAlarmList", "userSeq", "click"],
-            queryFn: () => getAlarmList({ userSeq: userSeq.seq, click: click }),
+            queryFn: () =>
+                getAlarmList({ userSeq: userSeq.seq, clicked: click ? 1 : 0 }),
         },
         {
             // 안 읽은 알림 개수
@@ -124,7 +149,9 @@ export default function Alarm() {
         },
     ]);
 
-    const queryClient = useQueryClient();
+    queryClient.setQueryData(`getClick`, click); //데이터 수정시 사용
+    queryClient.invalidateQueries(`getClick`);
+
     const mutation = useMutation(deleteAlarm, {
         onSuccess: (data) => {
             queryClient.invalidateQueries();
@@ -136,23 +163,29 @@ export default function Alarm() {
 
     const badgeStyle = {
         "& .MuiBadge-badge": {
-            color: "white",
-            backgroundColor: "#FF8E9E",
+            color: "black",
+            backgroundColor: isDark ? "#E4C3E1" : "#FF8E9E",
             borderRadius: "50%",
             fontSize: "17px",
             width: "24px",
             height: "24px",
         },
     };
+
     return (
-        <div className="alertIcon absolute right-8 top-1/2 -translate-y-1/2 cursor-pointer">
+        <div
+            ref={el}
+            className="alertIcon absolute right-8 top-1/2 -translate-y-1/2 cursor-pointer"
+        >
             <Badge
                 badgeContent={res[1].data}
                 sx={badgeStyle}
                 overlap="circular"
                 onClick={() => {
-                    setShow(!show);
-                    setClick(!click);
+                    !isShow && setClick((click) => false);
+                    isShow && setClick((click) => true);
+                    isShow && handleChange();
+                    setShow(!isShow);
                 }}
             >
                 <Icon
@@ -163,15 +196,23 @@ export default function Alarm() {
                 />
             </Badge>
 
-            {show && (
-                <div className="p-5 absolute w-[340px] h-[550px] bg-white right-0 top-11 rounded-lg border border-calendarDark">
+            {isShow && (
+                <div className="p-5 absolute w-[340px] h-[550px] bg-white right-0 top-11 rounded-lg border border-calendarDark overflow-y-auto">
                     <div className="text-xl border-b border-gray-500 pb-3">
                         알림
+                        <div className="float-right text-base font-">
+                            전체 삭제
+                        </div>
                     </div>
+
                     {res[0].data?.map((item: any) => (
                         <div
                             key={item.id}
-                            className="py-4 px-2 text-base font-normal border-b border-gray-300"
+                            className={
+                                item.isRead
+                                    ? "py-4 px-2 text-base font-normal border-b border-gray-300 text-slate-400"
+                                    : "py-4 px-2 text-base font-normal border-b border-gray-300"
+                            }
                         >
                             {item.content}
 
