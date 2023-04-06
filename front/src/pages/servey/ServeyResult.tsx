@@ -143,8 +143,8 @@ export default function ServeyPage(){
                 {
                     title:'데이트 취향설문하기',
                     link:{
-                        webUrl:`https://j8e104.p.ssafy.io/${coupleId}/${user.seq}`,
-                        mobileWebUrl : `https://j8e104.p.ssafy.io/${coupleId}/${user.seq}`,
+                        webUrl:`https://j8e104.p.ssafy.io/servey/${coupleId}/${user.seq}`,
+                        mobileWebUrl : `https://j8e104.p.ssafy.io/servey/${coupleId}/${user.seq}`,
                     }
                 }
             ]
