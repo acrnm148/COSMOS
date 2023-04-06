@@ -44,15 +44,13 @@ export default function MemoryComponent() {
     }
   }, [data]);
 
-  if (data === undefined) return null;
-
   return (
     <div className="pt-10 w-full">
       <div className="title text-xl font-bold dark:text-white">
         {isDark ? "나의 추억" : "우리의 추억"}
       </div>
       <div className="list bg-lightMain4 w-full h-44 mt-2 p-4 rounded-2xl drop-shadow-lg flex overflow-x-scroll scrollbar-hide dark:bg-darkMain3">
-        {data.length <= 0 ? null : (
+        {data.length <= 0 || data === undefined ? null : (
           <>
             <img
               className="item w-[135px] h-[135px] bg-neutral-300 my-auto mr-5 flex-none rounded-lg text-center leading-[135px] text-lg font-semibold "
