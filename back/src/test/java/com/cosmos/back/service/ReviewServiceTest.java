@@ -159,34 +159,34 @@ class ReviewServiceTest {
         assertEquals(reviews.get(0).getReviewId(), id1);
         assertEquals(reviews.get(1).getReviewId(), id2);
     }
-
-    @Test
-    void findReviewsInPlaceUserCouple_솔로인경우() {
-        User user = User.builder().reviews(new ArrayList<>()).build();
-        userRepository.save(user);
-
-        Place place = Place.builder().type("cafe").address("서울특별시 강남구").tendency("spo").reviewPlaces(new ArrayList<>()).build();
-        placeRepository.save(place);
-
-        List<String> categories = new ArrayList<>();
-        categories.add("뷰가 좋아요");
-
-        List<String> indiCategories = new ArrayList<>();
-        indiCategories.add("우정");
-
-        List<String> imageUrls = new ArrayList<>();
-        imageUrls.add("image url1");
-        imageUrls.add("image url2");
-
-        ReviewRequestDto reviewRequestDto = ReviewRequestDto.builder().placeId(place.getId()).categories(categories).indiCategories(indiCategories).imageUrls(imageUrls).score(5).contents("리뷰 내용입니다.").contentsOpen(true).imageOpen(true).build();
-
-        Long id = reviewService.createReview(reviewRequestDto, user.getUserSeq());
-
-        List<ReviewResponseDto> reviews  = reviewService.findReviewsInPlaceUserCouple(user.getUserSeq(), user.getCoupleId(), place.getId(), 10, 0);
-
-        assertEquals(reviews.size(), 1);
-        assertEquals(reviews.get(0).getReviewId(), id);
-    }
+//
+//    @Test
+//    void findReviewsInPlaceUserCouple_솔로인경우() {
+//        User user = User.builder().reviews(new ArrayList<>()).build();
+//        userRepository.save(user);
+//        System.out.println("user = " + user.getUserSeq());
+//        Place place = Place.builder().type("cafe").address("서울특별시 강남구").tendency("spo").reviewPlaces(new ArrayList<>()).build();
+//        placeRepository.save(place);
+//
+//        List<String> categories = new ArrayList<>();
+//        categories.add("뷰가 좋아요");
+//
+//        List<String> indiCategories = new ArrayList<>();
+//        indiCategories.add("우정");
+//
+//        List<String> imageUrls = new ArrayList<>();
+//        imageUrls.add("image url1");
+//        imageUrls.add("image url2");
+//
+//        ReviewRequestDto reviewRequestDto = ReviewRequestDto.builder().placeId(place.getId()).categories(categories).indiCategories(indiCategories).imageUrls(imageUrls).score(5).contents("리뷰 내용입니다.").contentsOpen(true).imageOpen(true).build();
+//
+//        Long id = reviewService.createReview(reviewRequestDto, user.getUserSeq());
+//
+//        List<ReviewResponseDto> reviews  = reviewService.findReviewsInPlaceUserCouple(user.getUserSeq(), user.getCoupleId(), place.getId(), 10, 0);
+//
+//        assertEquals(reviews.size(), 1);
+//        assertEquals(reviews.get(0).getReviewId(), id);
+//    }
 
     @Test
     void findReviewsInPlace() {

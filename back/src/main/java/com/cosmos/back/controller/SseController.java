@@ -39,9 +39,9 @@ public class SseController {
     }
 
     @Operation(summary = "알림 조회", description = "알림 조회")
-    @GetMapping(value = "/noti/list/{userSeq}")
-    public ResponseEntity<?> findAllNotifications(@PathVariable("userSeq") Long userSeq) {
-        List<NotificationDto> notifications = notificationService.findAllNotifications(userSeq);
+    @GetMapping(value = "/noti/list/{userSeq}/clicked/{clicked}")
+    public ResponseEntity<?> findAllNotifications(@PathVariable("userSeq") Long userSeq, @PathVariable("clicked") Long clicked) {
+        List<NotificationDto> notifications = notificationService.findAllNotifications(userSeq, clicked);
         return ResponseEntity.ok().body(notifications);
     }
 
