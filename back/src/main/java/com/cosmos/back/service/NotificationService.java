@@ -1,5 +1,6 @@
 package com.cosmos.back.service;
 
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.dto.response.NotificationDto;
 import com.cosmos.back.model.Notification;
 import com.cosmos.back.model.User;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Generated
 public class NotificationService {
 
     @Value("${spring.sse.time}")
@@ -82,10 +84,12 @@ public class NotificationService {
      * 유저별 알림 조회
      */
     @Transactional
-    public List<NotificationDto> findAllNotifications(Long userSeq) {
+    public List<NotificationDto> findAllNotifications(Long userSeq, Long clicked) {
         List<Notification> notifications = notificationRepository.findAllByUserSeq(userSeq);
-        notifications.stream()
-                .forEach(notification -> notification.read());
+        if (clicked == 1) {
+            notifications.stream()
+                    .forEach(notification -> notification.read());
+        }
         return notifications.stream()
                 .map(NotificationDto::create)
                 .collect(Collectors.toList());

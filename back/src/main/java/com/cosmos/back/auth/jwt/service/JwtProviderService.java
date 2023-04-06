@@ -82,14 +82,14 @@ public class JwtProviderService {
         return null;
     }
 
-    /**
-     * access 토큰의 만료시간
-     */
-    public Long getExpiration(String accessToken) {
-        Date expiration = Jwts.parserBuilder().setSigningKey(JwtProperties.SECRET.getBytes())
-                .build().parseClaimsJws(accessToken).getBody().getExpiration();
-        long now = new Date().getTime();
-        return expiration.getTime() - now;
-    }
+//    /**
+//     * access 토큰의 만료시간
+//     */
+//    public Long getExpiration(String accessToken) {
+//        Date expiration = Jwts.parserBuilder().setSigningKey(JwtProperties.SECRET.getBytes())
+//                .build().parseClaimsJws(accessToken).getBody().getExpiration();
+//        long now = new Date().getTime();
+//        return expiration.getTime() - now;
+//    }
 
 }

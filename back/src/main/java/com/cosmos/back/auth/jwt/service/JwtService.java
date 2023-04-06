@@ -3,6 +3,7 @@ package com.cosmos.back.auth.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cosmos.back.annotation.Generated;
 import com.cosmos.back.auth.jwt.JwtState;
 import com.cosmos.back.auth.jwt.JwtToken;
 import com.cosmos.back.model.User;
@@ -49,7 +50,6 @@ public class JwtService {
 
             //access, refresh 토큰 생성
             JwtToken jwtToken = jwtProviderService.createJwtToken(user.getUserSeq(), user.getUserId());
-
             //Redis에 refresh 토큰 저장
             loginValue.set(redisUserSeq, jwtToken.getRefreshToken()); // redis set 명령어. (2543509554, exkdjf.kdsj.aflkd) 이런 형태로 저장
 
@@ -158,6 +158,7 @@ public class JwtService {
      * accesstoken 복호화해서 유저 시퀀스 추출
      */
     @Transactional
+    @Generated
     public Long getUserSeq(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
         Long userSeq = decodedJWT.getClaim("userSeq").asLong();
@@ -168,6 +169,7 @@ public class JwtService {
      * accesstoken 복호화해서 유저 아이디 추출
      */
     @Transactional
+    @Generated
     public String getUserId(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
         String userId = decodedJWT.getClaim("userId").asString();
@@ -178,6 +180,7 @@ public class JwtService {
      * json response
      */
     //로그인 성공
+    @Generated
     public Map<String , String> successLoginResponse(JwtToken jwtToken, Long userSeq, Long coupleId) {
         if (coupleId == null) coupleId = 0L;
         Map<String, String> map = new LinkedHashMap<>();
@@ -191,6 +194,7 @@ public class JwtService {
     }
 
     //인증 요구 json response (jwt 토큰이 필요한 요구)
+    @Generated
     public Map<String, String> requiredJwtTokenResponse() {
         Map<String ,String> map = new LinkedHashMap<>();
         map.put("status", "401");
@@ -199,6 +203,7 @@ public class JwtService {
     }
 
     //accessToken이 만료된 경우의 reponse
+    @Generated
     public Map<String, String> requiredRefreshTokenResponse() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("status", "401");
@@ -207,6 +212,7 @@ public class JwtService {
     }
 
     //refresh 토큰 재발급 response
+    @Generated
     public Map<String, String> recreateTokenResponse(JwtToken jwtToken) {
         Map<String ,String > map = new LinkedHashMap<>();
         map.put("status", "200");
@@ -217,6 +223,7 @@ public class JwtService {
     }
 
     //userSeq와 토큰의 userSeq 불일치
+    @Generated
     public Map<String, String> mismatchUserResponse() {
         Map<String ,String > map = new LinkedHashMap<>();
         map.put("status", "401");
