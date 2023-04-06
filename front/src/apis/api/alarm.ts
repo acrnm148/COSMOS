@@ -30,10 +30,12 @@ export const getUnReadAlarm = async (userSeq: number) => {
 };
 
 // DELETE APIs
+
+// 알림 개별 삭제
 /**
  * @param {number} userSeq : 유저 seq
  * @param {number} notiId : 알람 id
- * DELETE : 찜한 코스를 찜 목록에서 삭제한다.
+ * DELETE : 알림을 개별 삭제한다.
  */
 interface alarmParam {
     userSeq: number;
@@ -43,5 +45,20 @@ interface alarmParam {
 export const deleteAlarm = async ({ userSeq, notiId, ac }: alarmParam) => {
     const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq);
     const { data } = await instance.delete(`noti/del/${userSeq}/${notiId}`);
+    return data;
+};
+
+// 알림 전체 삭제
+/**
+ * @param {number} userSeq : 유저 seq
+ * DELETE : 알림을 전체 삭제한다.
+ */
+interface delAllParam {
+    userSeq: number;
+    ac: string | null;
+}
+export const deleteAll = async ({ userSeq, ac }: delAllParam) => {
+    const instance = AxiosAuthApi(process.env.REACT_APP_API_URL, ac, userSeq);
+    const { data } = await instance.delete(`noti/delAll/${userSeq}`);
     return data;
 };
