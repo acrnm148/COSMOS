@@ -26,7 +26,7 @@ import ReviewAll from "../../../common/ReviewAll";
 import ReviewOurs from "../../../common/ReviewOurs";
 
 export default function PlaceModal({ modalOpen, closeModal }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const userSeq = useRecoilState(userState);
   const detail = useRecoilState(placeDetail);
   const [items, setItems] = useState(detail[0]);
@@ -406,7 +406,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
               </div>
             ) : (
               <div className="mt-2 mb-5">
-                <ReviewOurs placeId={data.placeId}  sol={!true}/>
+                <ReviewOurs placeId={data.placeId} sol={!true} />
               </div>
             )}
           </div>
