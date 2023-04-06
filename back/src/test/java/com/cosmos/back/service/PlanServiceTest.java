@@ -62,6 +62,9 @@ public class PlanServiceTest {
     @SpyBean
     private UserRepository userRepository;
 
+    @MockBean
+    private NotificationService notificationService;
+
     @Test
     @DisplayName("커플 일정 생성")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
@@ -87,14 +90,23 @@ public class PlanServiceTest {
         PlanDto planDto = PlanDto.builder().plan(plan).build();
         planDto.setCourseIdAndDateList(courseIdAndDates);
 
+        List<User> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            User user = User.builder().userSeq((long) i).coupleId(1L).build();
+            list.add(user);
+        }
+
         when(courseRepository.findById(anyLong())).thenReturn(Optional.of(course));
         when(planRepository.save(any(Plan.class))).thenReturn(plan);
+        when(userRepository.findByCoupleId(1L)).thenReturn(list);
+        doNothing().when(notificationService).send(anyString(), anyLong(), anyString());
 
         //when
         Plan result = planService.createPlan(planDto);
 
         //then
         assertThat(result.getPlanName()).isEqualTo(plan.getPlanName());
+        verify(notificationService, times(2)).send(anyString(), anyLong(), anyString());
     }
 
     @Test
@@ -140,17 +152,27 @@ public class PlanServiceTest {
         PlanDto planDto = PlanDto.builder().plan(inputPlan).build();
         planDto.setCourseIdAndDateList(inputCourseIdAndDatesList);
 
+        List<User> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            User user = User.builder().userSeq((long) i).coupleId(1L).build();
+            list.add(user);
+        }
+
         // 오류 발생 course
 
         when(planRepository.findByIdAndCoupleId(anyLong(), anyLong())).thenReturn(plan);
         when(courseRepository.findById(1L)).thenReturn(Optional.of(inputCourse));
         when(planRepository.save(any(Plan.class))).thenReturn(inputPlan);
+        when(userRepository.findByCoupleId(1L)).thenReturn(list);
+        doNothing().when(notificationService).send(anyString(), anyLong(), anyString());
+
 
         //when
         Plan result = planService.updatePlan(planDto);
 
         //then
         assertEquals(result.getPlanName(), inputPlan.getPlanName());
+        verify(notificationService, times(2)).send(anyString(), anyLong(), anyString());
 
     }
 
@@ -160,9 +182,16 @@ public class PlanServiceTest {
     public void deletePlanTest() throws Exception{
         //given
         Plan plan = Plan.builder().planName("planTest").build();
+        List<User> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            User user = User.builder().userSeq((long) i).coupleId(1L).build();
+            list.add(user);
+        }
 
         when(planRepository.findByIdAndCoupleId(anyLong(), anyLong())).thenReturn(plan);
         doNothing().when(planRepository).delete(any(Plan.class));
+        when(userRepository.findByCoupleId(1L)).thenReturn(list);
+        doNothing().when(notificationService).send(anyString(), anyLong(), anyString());
 
         //when
         planService.deletePlan(1L, 1L);
@@ -170,6 +199,7 @@ public class PlanServiceTest {
         //then
         verify(planRepository, times(1)).delete(any(Plan.class));
         verify(planRepository, times(1)).findByIdAndCoupleId(anyLong(), anyLong());
+        verify(notificationService, times(2)).send(anyString(), anyLong(), anyString());
     }
 
     @Test
