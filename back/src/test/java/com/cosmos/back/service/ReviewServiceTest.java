@@ -1,6 +1,7 @@
 package com.cosmos.back.service;
 
 import com.cosmos.back.annotation.EnableMockMvc;
+import com.cosmos.back.config.RedisDB;
 import com.cosmos.back.dto.request.ReviewRequestDto;
 import com.cosmos.back.dto.response.review.ReviewResponseDto;
 import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
@@ -64,6 +65,9 @@ class ReviewServiceTest {
     @Autowired
     private IndiReviewCategoryRepository indiReviewCategoryRepository;
 
+    @SpyBean
+    private RedisDB redisDB;
+
     @Test
     @DisplayName("CourseService createReview 메소드")
     @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
@@ -98,6 +102,8 @@ class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("CourseService deleteReview 메소드")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void deleteReview() {
         User user = User.builder().coupleId(1L).reviews(new ArrayList<>()).build();
         userRepository.save(user);
@@ -129,6 +135,8 @@ class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("CourseService findReviewsInPlaceUserCouple_커플인경우 메소드")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void findReviewsInPlaceUserCouple_커플인경우() {
         User user1 = User.builder().coupleId(1L).reviews(new ArrayList<>()).build();
         User user2 = User.builder().coupleId(1L).reviews(new ArrayList<>()).build();
@@ -161,6 +169,8 @@ class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("CourseService findReviewsInPlaceUserCouple_솔로인경우 메소드")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void findReviewsInPlaceUserCouple_솔로인경우() {
         User user = User.builder().reviews(new ArrayList<>()).build();
         userRepository.save(user);
@@ -189,6 +199,8 @@ class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("CourseService findReviewsInPlace 메소드")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void findReviewsInPlace() {
         User user1 = User.builder().reviews(new ArrayList<>()).build();
         User user2 = User.builder().reviews(new ArrayList<>()).build();
@@ -221,6 +233,8 @@ class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("CourseService findReviewsInUser 메소드")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void findReviewsInUser() {
         User user = User.builder().reviews(new ArrayList<>()).build();
         userRepository.save(user);
@@ -254,6 +268,8 @@ class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("CourseService changeReview 메소드")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void changeReview() {
         reset();
         doNothing().when(s3Service).deleteFile(anyString());
@@ -297,6 +313,8 @@ class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("CourseService findReviewNickName 메소드")
+    @WithMockUser(username = "테스트_최고관리자", roles = {"SUPER"})
     void findReviewNickName() {
         Adjective adjective = Adjective.builder().contents("mock adjective").build();
         List<Adjective> adjectives = new ArrayList<>();
