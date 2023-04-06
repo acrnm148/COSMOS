@@ -39,5 +39,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     @Query("delete from Notification n " +
             "where n.receiver.userSeq = :userSeq")
-    void deleteByReceiver(Long userSeq);
+    void deleteByReceiver(@Param("userSeq") Long userSeq);
 }
