@@ -10,9 +10,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   redis:
-    host: j8e104.p.ssafy.io
+    host: localhost
     port: 6379
-    password: cosmos104
+    password:
   sse:
     time: 3600000
   datasource:
