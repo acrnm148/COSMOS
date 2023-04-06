@@ -4,6 +4,7 @@ import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
 import com.cosmos.back.model.ReviewCategory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import redis.clients.jedis.Jedis;
 
@@ -22,6 +23,7 @@ public class RedisDB {
 
     private Jedis jedis;
 
+    @Autowired
     private ObjectMapper objectMapper;
 
     private static Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -39,7 +41,8 @@ public class RedisDB {
         try {
             jedis.connect();
             String s = jedis.get(name);
-            return gson.fromJson(s, tClass);
+//            return gson.fromJson(s, tClass);
+            return objectMapper.readValue(s, tClass);
         } catch (Throwable t) {
             t.printStackTrace();
         } finally {
@@ -49,41 +52,14 @@ public class RedisDB {
     }
 
 
-//    public class AutoAdapter implements JsonSerializer<ReviewUserResponseDto> {
-//        @Override
-//        public JsonElement serialize(ReviewUserResponseDto dto, Type type, JsonSerializationContext jsc) {
-//            JsonObject jsonObject = new JsonObject();
-//            jsonObject.addProperty("reviewId", dto.getReviewId());
-////            jsonObject.addProperty("categories", dto.getCategories().);
-////            jsonObject.addProperty("indiReviewCategories", dto.getIndiReviewCategories().toString());
-//            jsonObject.addProperty("score", dto.getScore());
-//            jsonObject.addProperty("contents", dto.getContents());
-//            jsonObject.addProperty("placeId", dto.getPlaceId());
-//            jsonObject.addProperty("nickName", dto.getNickName());
-//            jsonObject.addProperty("createdTime", dto.getCreatedTime());
-////            jsonObject.addProperty("images", dto.getImages().toString());
-//            jsonObject.addProperty("contentsOpen", dto.getContentsOpen());
-//            jsonObject.addProperty("imageOpen", dto.getImageOpen());
-//            return jsonObject;
-//        }
-//    }
-
     public <T> void set(String key, Object value, Class<T> tClass) {
         try {
             jedis.connect();
-//            System.out.println("value = " + value);
-//            String text = objectMapper.writeValueAsString(value);
-//            System.out.println("text = " + text);
 
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.setFieldNamingStrategy(new CustomNamingConfig());
-//            gsonBuilder.registerTypeAdapter(ReviewUserResponseDto.class, new AutoAdapter());
-            Gson gson = gsonBuilder.serializeNulls().create();
-            System.out.println("value = " + value);
-            System.out.println("tClass = " + tClass);
-            System.out.println("gson = " + gson);
-            System.out.println("gson.toString() = " + gson.toString());
-            jedis.set(key, gson.toJson(value, tClass));
+            String Value = objectMapper.writeValueAsString(value);
+            System.out.println("Value = " + Value);
+            System.out.println("Value = " + Value.toString());
+            jedis.set(key, Value);
 
         } catch (Throwable t) {
             t.printStackTrace();

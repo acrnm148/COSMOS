@@ -202,9 +202,8 @@ public class ReviewService {
     }
 
     // 내 리뷰 모두 불러오기
-//    @RedisCached(key = "review", expire = 240)
-//    @RedisCachedKeyParam(key = "userSeq")
-    public List<ReviewUserResponseDto> findReviewsInUser ( Long userSeq, Integer limit, Integer offset) {
+    @RedisCached(key = "review", expire = 240)
+    public List<ReviewUserResponseDto> findReviewsInUser (@RedisCachedKeyParam(key = "userSeq") Long userSeq, Integer limit, Integer offset) {
         List<Review> review = reviewRepository.findReviewInUserQueryDsl(userSeq, limit, offset);
         System.out.println("userSeq = " + userSeq);
         System.out.println("review = " + review);
@@ -227,7 +226,7 @@ public class ReviewService {
                     .build();
             list.add(dto);
         }
-
+        System.out.println("list = " + list);
         return list;
     }
 
