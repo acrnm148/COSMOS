@@ -2,9 +2,11 @@ package com.cosmos.back.repository.noti;
 
 import com.cosmos.back.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,6 +39,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     void deleteById(Long notiId);
 
+    @Modifying
+    @Transactional
     @Query("delete from Notification n " +
             "where n.receiver.userSeq = :userSeq")
     void deleteByReceiver(@Param("userSeq") Long userSeq);
