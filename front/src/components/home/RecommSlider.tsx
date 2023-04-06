@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import Slider from "react-slick";
 import "../../css/slick.css";
 import "../../css/slickTheme.css";
@@ -55,8 +56,13 @@ export default function recommSlider({ isDark }: any) {
 }
 
 function Card(props: { content: string; imgSrc: string; isDark: any }) {
+    const navigate = useNavigate();
     return (
-        <div>
+        <div
+            onClick={() => {
+                navigate("/place/recommend");
+            }}
+        >
             <div className="list bg-lightMain4 w-full h-48 my-2 p-4 rounded-2xl relative dark:bg-darkMain3">
                 <div className="content ml-3 mt-3 text-2xl font-bold z-40 dark:text-white">
                     {props.content}
