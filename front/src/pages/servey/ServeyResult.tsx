@@ -135,16 +135,16 @@ export default function ServeyPage(){
                 description:'너도 데이트 유형 테스트하고 나랑 데이트가자!',
                 imageUrl: bgPng[cate as keyof typeof backgroundImage],
                 link:{
-                    webUrl:`http://localhost:3000/`,
-                    mobileWebUrl:'http://localhost:3000/',
+                    webUrl:`https://j8e104.p.ssafy.io/`,
+                    mobileWebUrl:'https://j8e104.p.ssafy.io/',
                 },
             },
             buttons:[
                 {
                     title:'데이트 취향설문하기',
                     link:{
-                        webUrl:`http://localhost:3000/servey/${coupleId}/${user.seq}`,
-                        mobileWebUrl : `http://localhost:3000/servey/${coupleId}/${user.seq}`,
+                        webUrl:`https://j8e104.p.ssafy.io/${coupleId}/${user.seq}`,
+                        mobileWebUrl : `https://j8e104.p.ssafy.io/${coupleId}/${user.seq}`,
                     }
                 }
             ]
