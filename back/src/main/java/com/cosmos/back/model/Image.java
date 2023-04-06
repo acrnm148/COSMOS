@@ -37,7 +37,7 @@ public class Image {
     private String createdTime; // 사진 생성 시간
 
     // 리뷰 상태 - 리뷰
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "review_id")
     @JsonIgnore
     private Review review;
