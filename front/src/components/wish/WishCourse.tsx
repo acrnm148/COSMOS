@@ -168,7 +168,7 @@ function Item(props: { item: Course }) {
                             icon: "question",
 
                             showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-                            confirmButtonColor: "#FF8E9E", // confrim 버튼 색깔 지정
+                            confirmButtonColor: isDark ? "#BE6DB7" : "#FF8E9E", // confrim 버튼 색깔 지정
                             cancelButtonColor: "#B9B9B9", // cancel 버튼 색깔 지정
                             confirmButtonText: "확인", // confirm 버튼 텍스트 지정
                             cancelButtonText: "취소", // cancel 버튼 텍스트 지정
