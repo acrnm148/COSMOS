@@ -42,7 +42,7 @@ export default function WishCourse() {
   }, [data]);
 
   return (
-    <div>
+    <div className="h-[100vh] bg-darkBackground">
       <div className="mx-5 mt-5">
         <div className="title font-medium text-xl inline-block">찜한 코스</div>
         <div className="cnt ml-2 font-bold text-red-600 text-xl inline-block">

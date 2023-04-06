@@ -15,7 +15,13 @@ export default function WishList() {
   const navigate = useNavigate();
 
   return (
-    <div className={isDark ? "overflow-hidden text-white" : "overflow-hidden"}>
+    <div
+      className={
+        isDark
+          ? "overflow-hidden text-white bg-darkBackground"
+          : "overflow-hidden bg-darkBackground"
+      }
+    >
       <div className="menu w-full h-16 flex items-center cursor-pointer">
         <div
           className={
