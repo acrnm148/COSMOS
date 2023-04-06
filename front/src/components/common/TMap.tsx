@@ -235,10 +235,10 @@ export default function TMap({ offset }: any) {
   useEffect(() => {
     const newMarkers: ((prevState: never[]) => never[]) | Tmapv2.Marker[] = [];
     if (window.Tmapv2) {
-      if (mapInstance !== undefined) {
+      if (mapInstance !== undefined && mapMarkersState !== undefined) {
         mapMarkersState.map((item: any, index: number) => {
           if (item.lat !== null || item.lng !== null) {
-            if (index > offset * 20 && index < offset * 20 + 20) {
+            if (index >= offset * 20 && index < offset * 20 + 20) {
               const marker = isDark[0]
                 ? item.type === "restaurant"
                   ? new window.Tmapv2.Marker({
@@ -364,7 +364,7 @@ export default function TMap({ offset }: any) {
     mapInstance?.setCenter(
       new window.Tmapv2.LatLng(mapCenterState.lat, mapCenterState.lng)
     );
-  }, [mapMarkersState]);
+  }, [mapInstance, mapMarkersState]);
 
   // 삭제 담당
   useEffect(() => {
