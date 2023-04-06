@@ -45,10 +45,10 @@ interface Place{
     const [userInfo, setUserInfo] = useState<USERINFORMATION|null>(null)
     const [coupleInfo, setCoupleInfo] = useState<USERINFORMATION>()
     const navigate = useNavigate();
-    const [isDark, setIsDark] = useRecoilState(darkMode)
+    const [isDark, setIsDark] = useRecoilState<boolean>(darkMode)
     
         const {data} =  useQuery({
-            queryKey: ["getUserInfo"],
+            queryKey: ["getUserInfo", LoginUser],
             queryFn: () => getUserInfo(LoginUser.seq,LoginUser.acToken)
         })
         
@@ -74,8 +74,8 @@ interface Place{
               createTime : data.createTime
             })
 
+            // console.log('data in mypage', data)
           }
-          // console.log('data in mypage', data)
           // console.log('userInfo', userInfo)
         },[data])
 
@@ -156,9 +156,15 @@ interface Place{
                 axios.delete((`https://j8e104.p.ssafy.io/api/couples/${user.coupleId}`),
               ).then((res)=>{
                 // console.log(res)
-                setLoginUser({...user, coupleId:"" })
+                setLoginUser({...user, coupleId:"0" })
                 // getUserInfo(LoginUser.seq,dispatch)
                 setIsDark(true)
+                Swal.fire({
+                  title:'커플을 끊었습니다',
+                  icon : "success",
+                  timer : 2000,
+                  timerProgressBar : true,
+                })
               }
               ).catch((err)=>{
                 console.log(err)
@@ -168,13 +174,13 @@ interface Place{
   }
   const th = 3
   return (
-    <div className="h-full w-screen">
-      <div className="flex items-center content-center mx-4">
-        <div className="w-full flex m-auto flex-col justify-center items-center  md:w-5/6 lg:w-3/6 overflow-x-hidden mb-[10vh]">
-          <div className="profile justify-round flex mt-5 mb-2 mt-2 w-full" >
-              {userInfo?.coupleYn === 'Y' ?
+    <div className="h-full w-full">
+      <div className="flex items-center content-center">
+        <div className="w-full flex m-auto flex-col justify-center items-center overflow-x-hidden mb-[10vh]">
+          <div className="profile justify-center flex mt-5 mb-2 mt-2 w-full" >
+              {userInfo?.coupleId !== 0 || userInfo?.coupleYn === 'Y' ?
               <div className="min-h-28 py-4 flex w-full justify-center items-center">
-                <div className={"max-w-[100px] max-h-[100px] rounded-full w-[14vw] h-[14vw] hover:w-[15vw] hover:h-[15vw] max-w-[950px]"}>
+                <div className={"w-[12vw] h-[12vw] max-w-[100px] max-h-[100px]  rounded-ful max-w-[950px]"}>
                   <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
                 </div>
                 <div className="flex max-w-[50%] text-lightMain items-end m-3 items-center">
@@ -182,30 +188,33 @@ interface Place{
                     <div className="min-w-[70px] text-sm">코스모스중</div>
                     <div className="w-[100px] max-w-[200px] h-px bg-lightMain mx-2"></div>
                 </div>
-                  <div className={"max-w-[100px] max-h-[100px] rounded-full  w-[14vw] h-[14vw] hover:w-[15vw] hover:h-[15vw] max-w-[950px]"}>
+                  <div className={"w-[12vw] h-[12vw] max-w-[100px] max-h-[100px]  rounded-full  max-w-[950px]"}>
                     <img src={userInfo? userInfo.coupleProfileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
                   </div>
               </div>
               :
-              <div className={"rounded-full  w-[24vw] h-[24vw] hover:w-[26vw] hover:h-[26vw] max-w-[950px] mb-2"}>
-                <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+              <div className="flex flex-col justify-center items-center">
+                <div className={"rounded-full  w-[12vw] h-[12vw] max-w-[100px] max-h-[100px] mb-2"}>
+                  <img src={userInfo? userInfo.profileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+                </div>
+                <p className={isDark?'text-white ':''}><span className="text-lg">{userInfo?.userName}</span>님 안녕하세요!</p>
               </div>
               }
               </div>
 
           {userInfo?.type1 ?
             <div className="dateCategory w-[100%] flex flex-col ">
-              <div className={`flex dateCategory w-[100%] flex-col justify-end items-center w-full h-[40vh] bg-lightMain3 bg-center bg-cover bg-no-repeat ${backgroundImage[userInfo?.type1  as keyof typeof backgroundImage]}`}>
+              <div className={`flex dateCategory w-[100%] flex-col justify-end items-center w-full h-[40vh] lg:h-[52vh] bg-lightMain3 bg-start bg-cover bg-no-repeat ${backgroundImage[userInfo?.type1  as keyof typeof backgroundImage]}`}>
                 <div className="hover:opacity-0 h-full bg-zinc-500/30 w-[100%] flex flex-col justify-center text-white items-center">
                   <p>1순위</p>
-                  <p>{dateCate[userInfo?.type1  as keyof typeof dateCate][1]}</p>
-                  <p><span>{dateCate[userInfo?.type1  as keyof typeof dateCate][0]}</span>형 코스모스</p>
+                  <p className="font-bold ">{dateCate[userInfo?.type1  as keyof typeof dateCate][1]}</p>
+                  <p><span className="text-lg font-bold">{dateCate[userInfo?.type1  as keyof typeof dateCate][0]}</span>형 코스모스</p>
                 </div>
               </div>
               <div className={`h-28 flex justify-center items-center`+( isDark?' bg-darkMain h-20':' bg-lightMain2')}>
                 <div className="h-full w-full flex flex-col justify-center text-white items-center">
                 2순위 
-                <p><span>{dateCate[userInfo?.type2  as keyof typeof dateCate][0]}</span>형 코스모스</p>
+                <p><span className="text-lg font-bold">{dateCate[userInfo?.type2  as keyof typeof dateCate][0]}</span>형 코스모스</p>
                 </div>
               </div>
               <div className={isDark?'text-white h-20 w-full border-solid border-2 border-darkMain4  flex justify-center items-center hover:bg-darkMain3 hover:text-lg':
