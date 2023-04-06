@@ -13,6 +13,7 @@ export default function PlaceLike({ like, placeId }: any) {
   const userSeq = useRecoilState(userState);
   const [isLike, setIsLike] = useState(like);
 
+  console.log(isDark);
   const handleLikeButton = (e: React.MouseEvent) => {
     // 모달창 생성 이벤트 방지
     e.stopPropagation();
