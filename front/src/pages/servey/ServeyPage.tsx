@@ -13,6 +13,7 @@ import Servey9 from "./Servey9";
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { loggedIn, userState } from "../../recoil/states/UserState";
+import 다크로고 from "../../assets/header/logoDark.png"
 
 export default function ServeyPage() {
   const [serveyPg, setServeyPage] = useRecoilState(serveyPage);
@@ -95,8 +96,12 @@ export default function ServeyPage() {
   }
   return (
     <>
-      <div className="h-screen w-full max-w-[500px] m-auto p-6 bg-darkBackground place-content-center text-darkMain m-auto">
-        <div className="flex content-center w-full items-start h-full">
+      <div className="h-screen w-full max-w-[500px] bg-darkBackground place-content-center text-darkMain m-auto">
+        <div className="코스모스설문로고 w-full h-32 flex justify-center items-center pt-6 mb-2" >
+          <img className="my-4 h-[100%]"  src={다크로고} alt="" />
+          {/* <img className="my-4 h-[60%]" src="https://user-images.githubusercontent.com/87971876/230258308-82549ae0-d40e-43b2-bce9-c610b4711f6c.png" alt="" /> */}
+        </div>
+        <div className="flex content-center w-full items-start h-full p-6">
           { !isLoggedIn ?
             <div className="flex h-full flex-col">
               <span className="font-baloo text-base">
@@ -116,9 +121,9 @@ export default function ServeyPage() {
             :
             <>
             {serveyPg === 0 && (
-              <div className="flex h-full flex-col">
-                <span className="font-baloo text-base">
-                  설문을 기반으로 데이트코스를 맞춤 추천해드려요.
+              <div className="w-full flex h-full flex-col items-center">
+                <span className="font-baloo text-base w-full mb-2 flex justify-center">
+                  설문을 기반으로 데이트코스를 맞춤 추천받아보세요
                 </span>
                 <button
                   onClick={submit}

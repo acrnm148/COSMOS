@@ -33,7 +33,7 @@ export default function Servey1() {
       <h1 className="font-baloo text-base text-white mb-2">
         1. 가장 중요한 식당 포인트는?
       </h1>
-      <ul className="flex flex-wrap w-full grid-rows-3 gap-2 justify-center">
+      <ul className="flex flex-wrap w-[full] justify-center">
         {[
           "인스타 핫플",
           "컨셉이 있는 식당",
@@ -50,7 +50,7 @@ export default function Servey1() {
               key={key}
               onClick={() => submit1(key)}
               className={
-                "text-sm flex justify-center w-24 sm:w-36 p-4 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg hover:bg-opacity-75 border-solid border-2 border-darkMain4"
+                "text-sm flex justify-center w-[32%] m-[2px] p-4 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg hover:bg-opacity-75 border-solid border-2 border-darkMain4"
               }
             >
               <p className="text-white break-normal">{item}</p>

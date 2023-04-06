@@ -23,7 +23,7 @@ root.render(
   <RecoilRoot>
     <QueryClientProvider client={client}>
       <RouterProvider router={router} fallbackElement={<Loading />} />
-      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+      {/* <ReactQueryDevtools initialIsOpen={false} position="bottom-right" /> */}
     </QueryClientProvider>
   </RecoilRoot>
 );

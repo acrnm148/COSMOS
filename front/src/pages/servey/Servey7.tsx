@@ -42,8 +42,9 @@ export default function Servey4() {
               <div
                 key={key}
                 onClick={() => submit7(key)}
-                className={
-                  "flex justify-center w-full h-40 p-5 content-center text-center bg-darkMain4 pt-10 pb-10 rounded-lg break-normal hover:bg-opacity-75  border-solid border-2 border-darkMain4"
+                className={(key===1?`bg-[url('https://user-images.githubusercontent.com/87971876/230256539-363f6c1d-817c-4279-9b2f-034e7666a6a1.png')]`
+                :`bg-[url('https://user-images.githubusercontent.com/87971876/230256544-cc059b2e-5208-4099-bb29-270cf76b6d03.png')]`)
+                + " bg-opacity-50 hover:bg-opacity-75 bg-cover bg-center bg-no-repeat bg-opacity-20 flex justify-center w-full h-44 p-5 content-center text-center pt-10 pb-10 rounded-lg break-normal hover:border-4  border-solid border-2 border-darkMain4"
                 }
               >
                 <div className="text-white">{item}</div>
