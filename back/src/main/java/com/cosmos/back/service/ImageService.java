@@ -29,9 +29,8 @@ public class ImageService {
 
     // 사진 생성
     @Transactional
-    @RedisEvict(key = "image")
     @Generated
-    public void createImage(List<MultipartFile> multipartFile, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
+    public void createImage(List<MultipartFile> multipartFile, Long coupleId) {
         List<String> imageUrls = s3Service.uploadFiles(multipartFile);
         Review review = Review.builder().reviewImages(new ArrayList<>()).build();
 
@@ -43,8 +42,7 @@ public class ImageService {
 
     // 사진 삭제
     @Transactional
-    @RedisEvict(key = "image")
-    public void deleteImage(Long imageId, @RedisCachedKeyParam(key = "coupleId")Long coupleId) {
+    public void deleteImage(Long imageId, Long coupleId) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new NoSuchElementException("no such data"));
         String imageUrl = image.getImageUrl();
         String[] urls = imageUrl.split("/");
@@ -54,8 +52,7 @@ public class ImageService {
     }
 
     // 사진 전체 조회
-    @RedisCached(key = "image", expire = 240)
-    public List<ImageResponseDto> findTotalImage(@RedisCachedKeyParam(key = "coupleId") Long coupleId, Integer limit, Integer offset) {
+    public List<ImageResponseDto> findTotalImage( Long coupleId, Integer limit, Integer offset) {
         List<ImageResponseDto> list = imageRepository.findAllByCoupleId(coupleId, limit, offset);
 
 //        List<ImageResponseDto> list = new ArrayList<>();
