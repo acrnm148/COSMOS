@@ -29,10 +29,8 @@ export default function Alarm() {
 
         if (!el.current || !el.current.contains(e.target)) {
             setClickModal(false);
-            console.log("다른 곳 클릭");
         } else {
             setClickModal(true);
-            console.log("안쪽 클릭");
         }
     };
 
@@ -47,7 +45,6 @@ export default function Alarm() {
         if (!clickModal && isShow) {
             setShow(false);
         }
-        console.log(clickModal);
     }, [clickModal]);
 
     // sse : eventSource
