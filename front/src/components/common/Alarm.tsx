@@ -27,8 +27,13 @@ export default function Alarm() {
     // 모달 닫기
     const el = React.useRef() as React.MutableRefObject<HTMLDivElement>;
     const handleCloseModal = (e: any) => {
-        if (isShow && (!el.current || !el.current.contains(e.target)))
-            setShow(false);
+        e.stopPropagation();
+        if (isShow && (!el.current || !el.current.contains(e.target))) {
+            setShow(!isShow);
+            console.log("다른 곳 클릭");
+        } else {
+            console.log("안쪽 클릭");
+        }
     };
     useEffect(() => {
         window.addEventListener("click", handleCloseModal);
@@ -129,10 +134,6 @@ export default function Alarm() {
         };
     }, []);
 
-    useEffect(() => {
-        // console.log(click);
-    }, [click]);
-
     // api
     const queryClient = useQueryClient();
     const res = useQueries([
@@ -197,7 +198,10 @@ export default function Alarm() {
             </Badge>
 
             {isShow && (
-                <div className="p-5 absolute w-[340px] h-[550px] bg-white right-0 top-11 rounded-lg border border-calendarDark overflow-y-auto">
+                <div
+                    ref={el}
+                    className="p-5 absolute w-[340px] h-[550px] bg-white right-0 top-11 rounded-lg border border-calendarDark overflow-y-auto"
+                >
                     <div className="text-xl border-b border-gray-500 pb-3">
                         알림
                         <div className="float-right text-base font-">
