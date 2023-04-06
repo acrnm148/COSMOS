@@ -10,6 +10,7 @@ import {
     wishCourseEdit,
 } from "../../apis/api/wish";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 interface Place {
     placeId: number;
@@ -25,6 +26,7 @@ interface Place {
 }
 
 export default function CourseEdit(props: { courseId: any }) {
+    const navigate = useNavigate();
     const isDark = useRecoilState(darkMode)[0];
     // api
     const [userSeq, setUserSeq] = useRecoilState(userState);
@@ -46,6 +48,7 @@ export default function CourseEdit(props: { courseId: any }) {
                 icon: "success",
                 confirmButtonColor: isDark[0] ? "#BE6DB7" : "#FF8E9E",
             });
+            navigate("/wish");
         },
         onError: () => {
             Swal.fire({
