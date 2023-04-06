@@ -9,10 +9,12 @@ import { AxiosAuthApi, defaultInstance } from "../utils";
  */
 interface alarmListParam {
     userSeq: number;
-    click: boolean;
+    clicked: number;
 }
-export const getAlarmList = async ({ userSeq, click }: alarmListParam) => {
-    const { data } = await defaultInstance.get(`noti/list/${userSeq}`);
+export const getAlarmList = async ({ userSeq, clicked }: alarmListParam) => {
+    const { data } = await defaultInstance.get(
+        `noti/list/${userSeq}/clicked/${clicked}`
+    );
     return data;
 };
 
