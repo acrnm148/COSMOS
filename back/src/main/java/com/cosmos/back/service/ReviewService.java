@@ -271,6 +271,7 @@ public class ReviewService {
                 String[] urls = images.get(i).getImageUrl().split("/");
                 String fileName = urls[urls.length - 1];
                 s3Service.deleteFile(fileName);
+                imageRepository.delete(images.get(i));
             }
         }
 
