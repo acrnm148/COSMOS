@@ -240,7 +240,8 @@ export function DaySchedulePage(){
                         "planName" : planName,
                         "courseIdAndDateList" : courseIdAndDateList,
                         "startDate" : courseIdAndDateList?.[0].date, 
-                        "endDate" : courseIdAndDateList?.[courseIdAndDateList?.length-1].date
+                        "endDate" : courseIdAndDateList?.[courseIdAndDateList?.length-1].date,
+                        "planId" : planId
                     }
                     console.log('dt-------------', dt)
                     if(isEditing){
@@ -464,7 +465,7 @@ export function DaySchedulePage(){
                                             draggable
                                             key={key}
                                             >
-                                                <NavLink to="/schedule/detail" state={{placeId: key, place:place, scheduleTitle:scheduleTitle}}>
+                                                <NavLink to="/schedule/detail" state={{placeId: key, place:place, scheduleTitle:scheduleTitle, planId:planId}}>
                                                     <PlaceItem place={place} key={key}/>
                                                 </NavLink>
                                             </div>

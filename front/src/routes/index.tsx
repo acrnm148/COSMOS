@@ -35,7 +35,7 @@ const router = createBrowserRouter([
             
             //로그인
             { path: "login", element: <Login /> },
-            { path: "login/oauth", element: <KakaoLogin /> },
+            { path: "login/oauth2", element: <KakaoLogin /> },
             // https://j8e104.p.ssafy.io/login/oauth2
         ],
     },

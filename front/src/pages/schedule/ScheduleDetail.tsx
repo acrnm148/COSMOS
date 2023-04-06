@@ -25,12 +25,14 @@ export interface REVIEW {
     score : number,
     createdTime : string
     placeId : any
+    planId : number
 }
 export function ScheduleDetail(){
     const location = useLocation()
     const { state } = location
     const placeId = state.placeId
     const place = state.place
+    const planId = state.planId
     const [isReview, setIsReview] = useState<boolean>(false)
     const [showReview, setShowReview] = useState<boolean>(false)
 
@@ -64,7 +66,8 @@ export function ScheduleDetail(){
                         photoOpen : review.imageOpen,
                         createdTime:review.createdTime,
                         reviewId : review.reviewId,
-                        placeId : place.placeId
+                        placeId : place.placeId,
+                        planId : planId
                     })
                 } else {
                     setCoupleReview({
@@ -77,7 +80,8 @@ export function ScheduleDetail(){
                         photoOpen : review.imageOpen,
                         createdTime:review.createdTime,
                         reviewId : review.reviewId,
-                        placeId : place.placeId
+                        placeId : place.placeId,
+                        planId : planId
                     })
                 }
                 console.log('userReview, coupleReview',userReview, coupleReview)
