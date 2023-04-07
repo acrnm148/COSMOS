@@ -29,7 +29,7 @@ export interface REVIEW {
 }
 
 export default function ReviewOurs(props:{placeId:any , sol:boolean}) {
-  const isDark = useRecoilState(darkMode);
+  const [isDark, setIsDark] = useRecoilState(darkMode);
   const LIMIT = 5;
   const [offset, setOffset] = useState(0);
   const userSeq = useRecoilState(userState);
