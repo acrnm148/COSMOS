@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 
 import "../../css/serveyResult.css"
 import axios from 'axios';
-import { userState } from '../../recoil/states/UserState';
+import { darkMode, userState } from '../../recoil/states/UserState';
 import { useQuery } from 'react-query';
 import { UserDispatch } from '../../layouts/MainLayout';
 import { getCoupleId, makeCouple, postUserType } from '../../apis/api/user';
@@ -55,6 +55,9 @@ export default function ServeyPage(){
     // 커플 요청을 받아서 온 유저인지에 따라서 다른 api 요청
     const [isInvited, setIsInvited] = useState<boolean>(ivtCoupleId?true:false) // 커플초대로 온 경우 true: false
 
+    // 다크모드
+    const [isDark, setIsDark] = useRecoilState(darkMode)
+    
      // 커플Id 생성 요청
     const {data} = useQuery(
         ["getCoupleId"],
@@ -77,6 +80,7 @@ export default function ServeyPage(){
             console.log('커플 매칭 요청을 받아 설문을 완료한 사람')
             setCoupleId(ivtCoupleId)
             setIsInvited(true)
+            setIsDark(!true)
         } 
 
         // A. 커플Id를 받은 coupleId초기화s
@@ -135,16 +139,16 @@ export default function ServeyPage(){
                 description:'너도 데이트 유형 테스트하고 나랑 데이트가자!',
                 imageUrl: bgPng[cate as keyof typeof backgroundImage],
                 link:{
-                    webUrl:`http://localhost:3000/`,
-                    mobileWebUrl:'http://localhost:3000/',
+                    webUrl:`https://j8e104.p.ssafy.io/`,
+                    mobileWebUrl:'https://j8e104.p.ssafy.io/',
                 },
             },
             buttons:[
                 {
                     title:'데이트 취향설문하기',
                     link:{
-                        webUrl:`http://localhost:3000/servey/${coupleId}/${user.seq}`,
-                        mobileWebUrl : `http://localhost:3000/servey/${coupleId}/${user.seq}`,
+                        webUrl:`https://j8e104.p.ssafy.io/servey/${coupleId}/${user.seq}`,
+                        mobileWebUrl : `https://j8e104.p.ssafy.io/servey/${coupleId}/${user.seq}`,
                     }
                 }
             ]

@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import TMapResult from "../common/TMapResult";
 import ListCard from "../common/ListCard";
 import { useRecoilState } from "recoil";
-import { userState } from "../../recoil/states/UserState";
+import { darkMode, userState } from "../../recoil/states/UserState";
 import { useMutation, useQueries } from "react-query";
 import {
     getWishPlaceList,
@@ -10,6 +10,7 @@ import {
     wishCourseEdit,
 } from "../../apis/api/wish";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 interface Place {
     placeId: number;
@@ -25,30 +26,8 @@ interface Place {
 }
 
 export default function CourseEdit(props: { courseId: any }) {
-    const state = {
-        center: {
-            lat: 37.566481622437934,
-            lng: 126.98502302169841,
-        },
-    };
-    const marker = [
-        {
-            placeId: 0,
-            lat: 37.566481622437934,
-            lng: 126.98502302169841,
-        },
-        {
-            placeId: 1,
-            lat: 37.567481622437934,
-            lng: 126.98602302169841,
-        },
-        {
-            placeId: 2,
-            lat: 37.567381622437934,
-            lng: 126.98502302169841,
-        },
-    ];
-
+    const navigate = useNavigate();
+    const isDark = useRecoilState(darkMode)[0];
     // api
     const [userSeq, setUserSeq] = useRecoilState(userState);
     const res = useQueries([
@@ -67,14 +46,15 @@ export default function CourseEdit(props: { courseId: any }) {
             Swal.fire({
                 text: "수정되었습니다. ",
                 icon: "success",
-                confirmButtonColor: "#FF8E9E",
+                confirmButtonColor: isDark[0] ? "#BE6DB7" : "#FF8E9E",
             });
+            navigate("/wish");
         },
         onError: () => {
             Swal.fire({
                 text: "수정 실패했습니다. ",
                 icon: "error",
-                confirmButtonColor: "#FF8E9E",
+                confirmButtonColor: isDark[0] ? "#BE6DB7" : "#FF8E9E",
             });
         },
     });
@@ -127,9 +107,10 @@ export default function CourseEdit(props: { courseId: any }) {
     return (
         <div>
             <div className="text-center w-full max-w-[950px]">
-                <TMapResult state={state} marker={marker} className="fixed" />
+                {/* <TMapResult state={state} marker={marker} className="fixed" /> */}
+
                 {places && (
-                    <ListCard height={false}>
+                    <div className="mb-16">
                         <div className="mb-1 text-lg font-bold text-left pb-3 mx-5">
                             {res[0].data?.name}
                         </div>
@@ -138,29 +119,35 @@ export default function CourseEdit(props: { courseId: any }) {
                             계획할 장소를 순서대로 눌러주세요!
                         </div>
 
-                        {places?.map((a: Place) => (
-                            <Item
-                                key={a.placeId}
-                                item={a}
-                                orders={orders}
-                                handleOrders={handleOrders}
-                            ></Item>
-                        ))}
+                        <div className="h-[48vh] overflow-y-auto">
+                            {places?.map((a: Place) => (
+                                <Item
+                                    key={a.placeId}
+                                    item={a}
+                                    orders={orders}
+                                    handleOrders={handleOrders}
+                                ></Item>
+                            ))}
 
-                        {wishPlaces?.map((a: Place) => (
-                            <Item
-                                key={a.placeId}
-                                item={a}
-                                orders={orders}
-                                handleOrders={handleOrders}
-                            ></Item>
-                        ))}
-                    </ListCard>
+                            {wishPlaces?.map((a: Place) => (
+                                <Item
+                                    key={a.placeId}
+                                    item={a}
+                                    orders={orders}
+                                    handleOrders={handleOrders}
+                                ></Item>
+                            ))}
+                        </div>
+                    </div>
                 )}
             </div>
 
             <div
-                className="w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                className={
+                    isDark
+                        ? "max-w-[950px] cursor-pointer w-full h-16 pt-4 text-center bg-darkMain fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                        : "max-w-[950px] cursor-pointer w-full h-16 pt-4 text-center bg-lightMain2 fixed bottom-20 z-[100001] text-white text-xl font-bold"
+                }
                 onClick={() => {
                     (async () => {
                         const { value: getName } = await Swal.fire({
@@ -168,7 +155,9 @@ export default function CourseEdit(props: { courseId: any }) {
                             input: "text",
                             inputValue: res[0].data?.name,
                             confirmButtonText: "수정",
-                            confirmButtonColor: "#FF8E9E",
+                            confirmButtonColor: isDark[0]
+                                ? "#BE6DB7"
+                                : "#FF8E9E",
                             showCancelButton: true,
                             cancelButtonText: "취소",
                             cancelButtonColor: "#B9B9B9",
@@ -192,34 +181,47 @@ export default function CourseEdit(props: { courseId: any }) {
 }
 
 function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
-    let name =
-        props.item.name.length > 7
-            ? props.item.name.slice(0, 7).concat("...")
-            : props.item.name;
-    let address =
-        props.item.address.length > 8
-            ? props.item.address.slice(0, 8).concat("...")
-            : props.item.address;
+    const isDark = useRecoilState(darkMode)[0];
 
     return (
         <div>
-            <div className="col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-calendarGray rounded-lg flex">
-                <img
-                    className="w-24 h-24 rounded-md mr-4 mt-1"
-                    src={props.item.thumbNailUrl}
-                    alt="img"
-                />
-                <div className="text-left mt-2">
-                    <div className="font-bold mb-2">{name}</div>
-                    <div className="mb-2 text-sm text-gray-500">{address}</div>
-                    <div className="text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
+            <div
+                className={
+                    isDark
+                        ? "col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-darkBackground2 rounded-lg flex"
+                        : "col-md-4 mb-4 ml-4 mr-4 p-3 h-32 bg-calendarGray rounded-lg flex"
+                }
+            >
+                <div className="w-10/12">
+                    <img
+                        className="float-left w-24 h-24 rounded-md mr-4 mt-1"
+                        src={props.item.thumbNailUrl}
+                        alt="img"
+                    />
+                    <div className="text-left mt-2">
+                        <div className="font-bold mb-2">{props.item.name}</div>
+                        <div
+                            className={
+                                isDark
+                                    ? "mb-2 text-sm text-slate-200"
+                                    : "mb-2 text-sm text-gray-500"
+                            }
+                        >
+                            {props.item.address}
+                        </div>
+                        {/* <div className="cursor-pointer text-sm text-center border-2 border-calendarDark bg-white py-1 px-3 rounded">
                         유사 장소 추천
+                    </div> */}
                     </div>
                 </div>
 
                 {props.orders.includes(props.item.placeId) ? (
                     <div
-                        className="idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        className={
+                            isDark
+                                ? "cursor-pointer idx mt-7 ml-10 pt-1.5 bg-darkMain text-white w-12 h-12 rounded-full text-2xl"
+                                : "cursor-pointer idx mt-7 ml-10 pt-1.5 bg-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        }
                         onClick={() => {
                             props.handleOrders(props.item.placeId);
                         }}
@@ -228,7 +230,11 @@ function Item(props: { item: Place; orders: number[]; handleOrders: any }) {
                     </div>
                 ) : (
                     <div
-                        className="idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        className={
+                            isDark
+                                ? "cursor-pointer idx mt-7 ml-10 pt-1.5 bg-white border-2 border-darkMain text-white w-12 h-12 rounded-full text-2xl"
+                                : "cursor-pointer idx mt-7 ml-10 pt-1.5 bg-white border-2 border-lightMain text-white w-12 h-12 rounded-full text-2xl"
+                        }
                         onClick={() => {
                             props.handleOrders(props.item.placeId);
                         }}

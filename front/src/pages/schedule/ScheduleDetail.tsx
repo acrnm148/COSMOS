@@ -1,10 +1,10 @@
 import axios from "axios"
 import React, { useEffect, useRef, useState, useCallback } from "react"
-import { NavLink, useLocation } from "react-router-dom"
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import  "../../css/detailSchedule.css"
 import { ReviewForm, ReviewSet } from "./ScheduleReview"
 import { useRecoilState } from "recoil"
-import { userState } from "../../recoil/states/UserState"
+import { darkMode, userState } from "../../recoil/states/UserState"
 import { useQuery } from "react-query"
 import { getPlaceCoupleReview } from "../../apis/api/schedule"
 // 별점 이미지
@@ -12,6 +12,7 @@ import { FaStar } from 'react-icons/fa'
 // styled component
 import {Stars} from '../../components/review/StarStyledComponent'
 import ReviewOurs from "../../components/common/ReviewOurs"
+import { Icon } from "@iconify/react"
 
 export interface REVIEW {
     reviewId : number|undefined
@@ -24,12 +25,14 @@ export interface REVIEW {
     score : number,
     createdTime : string
     placeId : any
+    planId : number
 }
 export function ScheduleDetail(){
     const location = useLocation()
     const { state } = location
     const placeId = state.placeId
     const place = state.place
+    const planId = state.planId
     const [isReview, setIsReview] = useState<boolean>(false)
     const [showReview, setShowReview] = useState<boolean>(false)
 
@@ -37,13 +40,16 @@ export function ScheduleDetail(){
     // 장소에 대한 유저, 커플의 리뷰 불러오기
     const [offset, setOffset] = useState(0)
     const { data } = useQuery({
-        queryKey: ["getPlaceCoupleReview", isReview], // authapi 요청시 acToken 변
+        queryKey: ["getPlaceCoupleReview", isReview, showReview], // authapi 요청시 acToken 변
         queryFn: () => getPlaceCoupleReview(loginUser.seq, Number(loginUser.coupleId), place.placeId, 10, offset),
       });
     
     const [showMine, setShowMine] = useState(true)
     const [userReview, setUserReview] = useState<REVIEW>()
     const [coupleReview, setCoupleReview] = useState<REVIEW>()
+
+    const [isDark, x] = useRecoilState(darkMode)
+    const [placeIdSwitch, setPlaceIdSwitch] = useState(place.placeId)
     useEffect(()=>{
         if(data){
             data.map((review: { reviewId:number,userId: number; score: any; images: any; contents: any; categories:{reviewCategoryCode:string}[], indiReviewCategories: { reviewCategory: any }[]; contentOpen: any; imageOpen: any; createdTime: any }) => {
@@ -60,7 +66,8 @@ export function ScheduleDetail(){
                         photoOpen : review.imageOpen,
                         createdTime:review.createdTime,
                         reviewId : review.reviewId,
-                        placeId : place.placeId
+                        placeId : place.placeId,
+                        planId : planId
                     })
                 } else {
                     setCoupleReview({
@@ -73,7 +80,8 @@ export function ScheduleDetail(){
                         photoOpen : review.imageOpen,
                         createdTime:review.createdTime,
                         reviewId : review.reviewId,
-                        placeId : place.placeId
+                        placeId : place.placeId,
+                        planId : planId
                     })
                 }
                 console.log('userReview, coupleReview',userReview, coupleReview)
@@ -81,22 +89,34 @@ export function ScheduleDetail(){
         }
         console.log(isReview)
     },[data])
-    
+    const navigate = useNavigate()
+    function goToBack(){
+        navigate(-1)
+    }
+    useEffect(()=>{
+        const temp = placeIdSwitch
+        setPlaceIdSwitch(0)
+        setPlaceIdSwitch(temp)
+    }, [showReview])
     return (
-        <div className='bg-lightMain2 mb-5 w-full'>
-            <div className={"bg-white rounded-t-lg w-full flex flex-col items-between" + (!showReview ? 'p-2':'w-full')}>
-                <div>
-                    <div className="flex flex-col justify-center items-center">
-                        <p className="text-md text-calendarDark">{place.date}</p>
-                        <p className="m-1 text-xl">{place.name}</p>
+        <div className={(isDark?"bg-darkBackground2 ": "bg-white ")  +" zw-full "}>
+            <div className={(isDark?"bg-darkBackground2 ": "bg-white ") + " pt- bg-white rounded-t-lg w-full flex flex-col items-between" + (!showReview ? 'p-2':'w-full')}>
+                <div >
+                    <div className={isDark&& "bg-darkMain p-2 rounded-t-lg"}>
+                        <p onClick={() => goToBack()} className={(isDark?" text-white ":"") +"cursor-pointer"}><Icon icon="material-symbols:arrow-back-ios-new-rounded" />  </p>
+                        <div className="flex flex-col justify-center items-center">
+                            <p className="text-md text-calendarDark">{place.date}</p>
+                            <p className={(isDark? "text-white ":"") + "m-1 text-xl"}>{place.name}</p>
+                        </div>
+
                     </div>
                     {
                         !showReview&&
                         <div>
                             <div className={`detailImg h-full w-full rounded-lg max-h-[50vh] overflow-hidden flex items-center`}>
-                                <img className="w-full" src={place.imgUrl} alt="" />
+                                <img className="w-full h-full" src={place.imgUrl} alt="" />
                             </div>
-                            <div className="flex justify-end text-sm mb-5 pr-2">
+                            <div className={(isDark? "text-white ":"")+ "flex justify-end text-sm mb-5 pr-2"}>
                                 <div>{place.location}</div>
                                 <div className="ml-1 mr-1 text-calendarDark">|</div>
                                 <div>{place.category}</div>
@@ -104,7 +124,7 @@ export function ScheduleDetail(){
                         </div>
                     }
                 </div>
-                <div className="min-h-[200px] bg-lightMain4 w-full h-full rounded-lg mb-20">
+                <div className={(isDark?"bg-darkMain5 ":"bg-lightMain4 ") + "min-h-[screen] w-full h-full rounded-t-lg pb-[15vh]"}>
                     {showReview?
                         <div className=" w-full h-full flex flex-col justify-end items-center p-2">
                             <ReviewForm placeId={place.placeId} review={userReview} isReview={isReview} category={place.category} setShowReview={setShowReview} edit={isReview}/>
@@ -113,18 +133,22 @@ export function ScheduleDetail(){
                     :
                             <div className="">
                                 <div className="누구리뷰 w-full flex h-10">
-                                    <div onClick={()=>(setShowMine(true))}  className={showMine ? 'bg-lightMain w-[50%] flex justify-center rounded-t-lg items-center' : 'w-[50%] flex justify-center items-center'}>나의리뷰</div>
-                                    <div onClick={()=>(setShowMine(false))} className={showMine ? ' w-[50%] flex justify-center rounded-t-lg items-center' : 'bg-lightMain w-[50%] flex justify-center items-center'}>너의리뷰</div>
+                                    <div onClick={()=>(setShowMine(true))}  className={showMine ? ((isDark ? 'bg-darkMain ' : 'bg-lightMain ') + 'w-[50%] flex justify-center rounded-t-lg items-center') : 'w-[50%] flex justify-center items-center'}>나의리뷰</div>
+                                    { !isDark &&
+                                        <div onClick={()=>(setShowMine(false))} className={showMine ? ' w-[50%] flex justify-center rounded-t-lg items-center' : 'bg-lightMain w-[50%] flex justify-center items-center'}>너의리뷰</div>
+                                    }
                                 </div>
 
                                 <div className="리뷰내용">
                                     {showMine ?
-                                    <div className="p-2">
+                                    <div className="">
                                         {
                                             isReview && userReview?
                                             <>
-                                                <ReviewOurs placeId={place.placeId}/>
-                                                {/* <ReviewContents Review={userReview} setShowReview={setShowReview} isMine={true}/> */}
+                                                <ReviewOurs placeId={placeIdSwitch} sol={true}/>
+                                                <div className="h-20 w-full cursor-pointer w-full flex flex-col justify-end items-center p-4">
+                                                    <div onClick={()=>setShowReview(true)} className="w-full"><ReviewSet edit={true}/></div>
+                                                </div>
                                             </>
                                             :
                                             <div className="h-40 w-full  w-full flex flex-col justify-end items-center p-4">
@@ -138,7 +162,7 @@ export function ScheduleDetail(){
                                         {
                                             isReview?
                                             <>
-                                                <ReviewOurs placeId={place.placeId}/>
+                                                <ReviewOurs placeId={placeIdSwitch} sol={true}/>
                                                 {/* <ReviewContents Review={coupleReview}  setShowReview={setShowReview} isMine={false}/> */}
                                             </>
                                             :
@@ -156,63 +180,6 @@ export function ScheduleDetail(){
                         }
                 </div>
             </div>
-        </div>
-    )
-}
-
-function ReviewContents(props : {Review:any, setShowReview:Function, isMine:boolean}){
-    const [clicked, setClicked] = useState([false, false, false, false, false])
-
-    // 리뷰 표출
-    const handleStarClick = (index:any) => {
-        let clickStates = [...clicked]
-        for (let i = 0; i < 5; i++) {
-            clickStates[i] = i <= index ? true : false
-        }
-        setClicked(clickStates)
-        }
-    useEffect(()=>{
-        handleStarClick(props.Review.score)
-    },[])
-          //
-    return(
-        <div className="mb-10">
-            <div className="flex justify-between">
-                <p>{props.Review?.content}</p>
-                <div>
-                    <Stars>
-                            {[0,1,2,3,4].map((el, idx) => {
-                                return (
-                                    <FaStar
-                                    key={idx}
-                                    size="30"
-                                    className={clicked[el] ? 'yellowStar':''}
-                                    />
-                                )
-                                })}    
-                        </Stars>
-                </div>
-            </div>
-            <div className="w-full h-[1px] bg-lightMain2 mt-1 mb-1"></div>
-            <div className="flex mt-1 mb-1">
-                <p className="bg-lightMain2 px-2 py-1 rounded-xl">{props.Review.cateQ}</p>
-                <p className="bg-lightMain2 px-2 py-1 rounded-xl">{props.Review.commonQ}</p>
-            </div>
-            <div className="flex">
-                {props.Review.photos?.map((photo: string | undefined) =>{
-                    return(
-                        <img className="h-20 w-20 rounded-lg" src={photo}></img>
-                        )
-                    })}
-            </div>
-            <p className="w-full flex justify-end">{props.Review.createdTime}</p>
-            {
-                props.isMine &&
-                <div className="h-20 w-full cursor-pointer w-full flex flex-col justify-end items-center p-4">
-                    <div onClick={()=>props.setShowReview(true)} className="w-full"><ReviewSet edit={true}/></div>
-                </div>
-
-            }
         </div>
     )
 }

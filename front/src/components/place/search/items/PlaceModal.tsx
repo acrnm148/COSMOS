@@ -26,7 +26,7 @@ import ReviewAll from "../../../common/ReviewAll";
 import ReviewOurs from "../../../common/ReviewOurs";
 
 export default function PlaceModal({ modalOpen, closeModal }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const userSeq = useRecoilState(userState);
   const detail = useRecoilState(placeDetail);
   const [items, setItems] = useState(detail[0]);
@@ -50,7 +50,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
     queryFn: () => getPlaceDetail(userSeq[0].seq, items.placeId, items.type),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <Modal open={modalOpen} close={closeModal} header="장소 상세" size="large">
@@ -406,7 +406,7 @@ export default function PlaceModal({ modalOpen, closeModal }: any) {
               </div>
             ) : (
               <div className="mt-2 mb-5">
-                <ReviewOurs placeId={data.placeId} />
+                <ReviewOurs placeId={data.placeId} sol={!true} />
               </div>
             )}
           </div>

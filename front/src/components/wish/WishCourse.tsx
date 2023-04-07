@@ -6,6 +6,8 @@ import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/states/UserState";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { darkMode } from "../../recoil/states/UserState";
+import DefaultImg from "../../assets/rabbit.png";
 
 interface Course {
     courseId: number;
@@ -27,6 +29,13 @@ interface Place {
     longitude: string; // 경도
     overview: string; // 개요
 }
+
+// 기존 윈도우에 없는 객체에 접근할 때 에러 발생
+// 임의로 값이 있다고 정의해주는 부분
+// const Kakao = (window as any).Kakao;
+declare const window: typeof globalThis & {
+    Kakao: any;
+};
 
 export default function WishCourse() {
     const [userSeq, setUserSeq] = useRecoilState(userState);
@@ -61,6 +70,7 @@ export default function WishCourse() {
 }
 
 function Item(props: { item: Course }) {
+    const isDark = useRecoilState(darkMode)[0];
     const navigate = useNavigate();
     const Toast = Swal.mixin({
         toast: true, // 토스트 형식
@@ -88,10 +98,47 @@ function Item(props: { item: Course }) {
         },
     });
 
+    // 카카오톡 공유하기
+    useEffect(() => {
+        // 카카오 sdk 찾도록 초기화
+        if (!window.Kakao.isInitialized()) {
+            window.Kakao.init(process.env.REACT_APP_KAKAO_SHARE_JS_MYE);
+        }
+    }, []);
+
+    const shareKakao = () => {
+        window.Kakao.Link.sendDefault({
+            objectType: "feed",
+            content: {
+                title: "나랑 데이트가자!",
+
+                description: `이번 여행 '${props.item.name}' 코스 어때?`,
+                imageUrl: props.item.places[0].thumbNailUrl,
+                link: {
+                    webUrl: `https://j8e104.p.ssafy.io/`,
+                    mobileWebUrl: "https://j8e104.p.ssafy.io/",
+                },
+            },
+            buttons: [
+                {
+                    title: "코스 보러가기",
+                    link: {
+                        webUrl: `https://j8e104.p.ssafy.io/wish/course/${props.item.courseId}/detail/`,
+                        mobileWebUrl: `https://j8e104.p.ssafy.io/wish/course/${props.item.courseId}/detail/`,
+                    },
+                },
+            ],
+        });
+    };
+
     return (
         <div className="mb-5">
             <div
-                className="col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg"
+                className={
+                    isDark
+                        ? "col-md-4 p-3 h-48 bg-darkBackground2 rounded-t-lg cursor-pointer"
+                        : "col-md-4 p-3 h-48 bg-calendarGray rounded-t-lg cursor-pointer"
+                }
                 onClick={() => {
                     navigate(`/wish/course/${props.item.courseId}/detail`);
                 }}
@@ -123,8 +170,14 @@ function Item(props: { item: Course }) {
                     })}
                 </div>
             </div>
-            <div className="btns w-full h-12 bg-lightMain3 rounded-b-lg text-center flex">
-                <div className="float-left w-1/3 m-auto">
+            <div
+                className={
+                    isDark
+                        ? "cursor-pointer btns w-full h-12 bg-darkMain3 rounded-b-lg text-center flex"
+                        : "cursor-pointer btns w-full h-12 bg-lightMain3 rounded-b-lg text-center flex"
+                }
+            >
+                <div className="float-left w-1/3 m-auto" onClick={shareKakao}>
                     <Icon
                         icon="material-symbols:share-outline"
                         width="20"
@@ -156,7 +209,7 @@ function Item(props: { item: Course }) {
                             icon: "question",
 
                             showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-                            confirmButtonColor: "#FF8E9E", // confrim 버튼 색깔 지정
+                            confirmButtonColor: isDark ? "#BE6DB7" : "#FF8E9E", // confrim 버튼 색깔 지정
                             cancelButtonColor: "#B9B9B9", // cancel 버튼 색깔 지정
                             confirmButtonText: "확인", // confirm 버튼 텍스트 지정
                             cancelButtonText: "취소", // cancel 버튼 텍스트 지정

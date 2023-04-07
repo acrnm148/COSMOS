@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import { useRecoilState } from "recoil"
+import { darkMode } from "../../recoil/states/UserState"
 
 const DAYS:string[] = ['일', '월', '화', '수', '목', '금', '토', '일', '월', '화', '수', '목', '금', '토']
 export function WeekCalendar(props:{day:any, week:any, setDayClicked:Function}){
@@ -8,6 +10,7 @@ export function WeekCalendar(props:{day:any, week:any, setDayClicked:Function}){
     const today = new Date().getDate() // 오늘 몇일
     const [dayday, setDayday] = useState(DAYS[props.day.day.getDay()]) // 오늘 무슨요일
 
+    const [isDark, x] = useRecoilState(darkMode)
     let dayIdx = DAYS.indexOf(dayday) -1 // 요일 인덱스 시작
     
 
@@ -29,7 +32,7 @@ export function WeekCalendar(props:{day:any, week:any, setDayClicked:Function}){
         return clickDate == day
     }
     return(
-        <div className="flex h-24 w-full mt-2 justify-between">
+        <div className="flex h-24 w-full my-2 justify-between ">
             {
                 result.map((day, key) => {
                     return (
@@ -38,14 +41,15 @@ export function WeekCalendar(props:{day:any, week:any, setDayClicked:Function}){
                                 SetClickDate(day)
                                 props.setDayClicked(day)
                             }} 
-                            className=" flex flex-col justify-center content-center items-center" key={key}>
-                            <div className="text-sm font-semibold max-w-12">
+                            className=" flex flex-col justify-center content-center items-center lg-w-16 lg:mx-2" key={key}>
+                            <div className={(isDark?"text-white": "" )+ " text-sm font-semibold "}>
                                 { DAYS[++dayIdx]}
                             </div>
                             <div 
                                 className={
-                                    (isClicked(day, key)? 'bg-lightMain text-white': isToday(day)?'bg-calendarDark':'bg-calendarGray')
-                                + ' cursor-pointer hover:bg-lightMain2 flex rounded-full h-12 w-12 justify-center content-center items-center sm:h-16 sm:w-16 md:h-20 md:w-20'
+                                    (isClicked(day, key)? isDark?'bg-darkMain ':'bg-lightMain text-white ': isToday(day)?'bg-calendarDark ':'bg-calendarGray ')
+                                + (isDark ? "hover:bg-darkMain2 ":"hover:bg-lightMain2 ") 
+                                +' cursor-pointer flex rounded-full h-12 w-12 justify-center content-center items-center sm:h-16 sm:w-16'
                              }>{day}
                              </div>
                         </div>

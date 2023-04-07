@@ -151,7 +151,7 @@ public class UserService {
 
         // 알림 전송
         notificationService.send("makeCouple", userSeq, "커플이 매칭되었습니다.");
-        notificationService.send("makeCouple", coupleUserSeq, "커플 연결이 끊어졌습니다.");
+        notificationService.send("makeCouple", coupleUserSeq, "커플이 매칭되었습니다.");
 
         return code;
     }
@@ -179,6 +179,10 @@ public class UserService {
         userRepository.save(couple.get(0));
         userRepository.save(couple.get(1));
         System.out.println("커플 연결이 끊어졌습니다.");
+
+        // 알림 전송
+        notificationService.send("removeCouple", couple.get(0).getUserSeq(), "커플 연결이 끊어졌습니다.");
+        notificationService.send("removeCouple", couple.get(1).getUserSeq(), "커플 연결이 끊어졌습니다.");
     }
 
     /**
@@ -201,9 +205,6 @@ public class UserService {
         Random random = new Random(); // 랜덤 객체 생성
         Long coupleId = Long.valueOf(random.nextInt(1000000000));//10자리 미만의 난수 반환
         System.out.println("생성된 커플아이디: " +coupleId);
-        // 알림 전송
-//        notificationService.send(1L, NotificationType.MESSAGE, "커플 요청이 수락되었습니다.", "");
-
 
         return coupleId;
     }

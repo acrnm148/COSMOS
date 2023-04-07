@@ -12,7 +12,7 @@ spring:
   redis:
     host: j8e104.p.ssafy.io
     port: 6379
-    password: cosmos104
+    password:
   sse:
     time: 3600000
   datasource:

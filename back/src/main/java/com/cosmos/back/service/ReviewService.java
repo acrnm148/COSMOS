@@ -37,11 +37,11 @@ public class ReviewService {
     private final ReviewNounRepository reviewNounRepository;
     private final S3Service s3Service;
     private final ImageRepository imageRepository;
+    private final NotificationService notificationService;
 
     //리뷰 쓰기
     @Transactional
-    @RedisEvict(key = "review")
-    public Long createReview(ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
+    public Long createReview(ReviewRequestDto dto,  Long userSeq) {
 
         User user = userRepository.findById(userSeq).orElseThrow(() -> new IllegalArgumentException("no such data")); // 유저
         Place place = placeRepository.findById(dto.getPlaceId()).orElseThrow(() -> new IllegalArgumentException("no such data"));
@@ -78,13 +78,17 @@ public class ReviewService {
             }
         }
 
+        // 알림 전송
+        if (user.getCoupleUserSeq() != null && user.getCoupleUserSeq() != 0) {
+            notificationService.send("makeReview", user.getCoupleUserSeq(), user.getUserName() + "님이 리뷰를 등록하셨습니다. ");
+        }
+
         return new_review.getId();
     }
 
     // 리뷰 삭제하기
     @Transactional
-    @RedisEvict(key = "review")
-    public Long deleteReview (Long reviewId, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
+    public Long deleteReview (Long reviewId,  Long userSeq) {
         // 카테고리 삭제(공통)(1)
         Long executeReviewCategory = reviewRepository.deleteReviewCategoryQueryDsl(reviewId);
         // 카테고리 삭제(개별)(2)
@@ -201,7 +205,9 @@ public class ReviewService {
     @RedisCached(key = "review", expire = 240)
     public List<ReviewUserResponseDto> findReviewsInUser (@RedisCachedKeyParam(key = "userSeq") Long userSeq, Integer limit, Integer offset) {
         List<Review> review = reviewRepository.findReviewInUserQueryDsl(userSeq, limit, offset);
-
+        System.out.println("userSeq = " + userSeq);
+        System.out.println("review = " + review);
+        System.out.println("offset = " + offset);
         List<ReviewUserResponseDto> list = new ArrayList<>();
         // Dto 형식에 맞춰서 Review 내용 중에 맞는 것을 골라 넣는다
         for (Review r : review) {
@@ -220,14 +226,14 @@ public class ReviewService {
                     .build();
             list.add(dto);
         }
-
+        System.out.println("list = " + list);
         return list;
     }
 
     // 리뷰 수정
-    @RedisEvict(key = "review")
+//    @RedisEvict(key = "review")
     @Transactional
-    public Long changeReview (Long reviewId, ReviewRequestDto dto, @RedisCachedKeyParam(key = "userSeq") Long userSeq) {
+    public Long changeReview (Long reviewId, ReviewRequestDto dto,  Long userSeq) {
         User user = userRepository.findByUserSeq(userSeq);
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("no such data"));
 
@@ -265,6 +271,7 @@ public class ReviewService {
                 String[] urls = images.get(i).getImageUrl().split("/");
                 String fileName = urls[urls.length - 1];
                 s3Service.deleteFile(fileName);
+                imageRepository.delete(images.get(i));
             }
         }
 

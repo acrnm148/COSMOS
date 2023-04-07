@@ -25,7 +25,7 @@ export default function GugunList() {
     queryFn: () => getGugunList(sido[0].sidoCode),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <select

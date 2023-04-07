@@ -33,6 +33,7 @@ public class PlaceService {
     private final UserPlaceRepository userPlaceRepository;
     private final SidoRepository sidoRepository;
     private final GugunRepository gugunRepository;
+    private final NotificationService notificationService;
 
     // 찜한 장소 조회하기
     public List<PlaceListResponseDto> findLikePlaces (Long userSeq, Integer limit, Integer offset) {
@@ -54,6 +55,11 @@ public class PlaceService {
         Map<String, Long> map = new HashMap<>();
         map.put("user", user.getUserSeq());
         map.put("place", place.getId());
+
+        // 알림 전송
+        if (user.getCoupleUserSeq() != 0 && user.getCoupleUserSeq() != null) {
+            notificationService.send("makeWish", user.getCoupleUserSeq(), user.getUserName()+"님이 장소 "+ place.getName() +"을(를) 찜하셨습니다.");
+        }
 
         return map;
     }

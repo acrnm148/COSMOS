@@ -1,15 +1,17 @@
 package com.cosmos.back.config;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.cosmos.back.dto.response.review.ReviewUserResponseDto;
+import com.cosmos.back.model.ReviewCategory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+
 
 public class RedisDB {
 
@@ -20,6 +22,9 @@ public class RedisDB {
     private Integer port;
 
     private Jedis jedis;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private static Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -36,7 +41,8 @@ public class RedisDB {
         try {
             jedis.connect();
             String s = jedis.get(name);
-            return gson.fromJson(s, tClass);
+//            return gson.fromJson(s, tClass);
+            return objectMapper.readValue(s, tClass);
         } catch (Throwable t) {
             t.printStackTrace();
         } finally {
@@ -50,11 +56,10 @@ public class RedisDB {
         try {
             jedis.connect();
 
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.setFieldNamingStrategy(new CustomNamingConfig());
-            Gson gson = gsonBuilder.create();
-
-            jedis.set(key, gson.toJson(value, tClass));
+            String Value = objectMapper.writeValueAsString(value);
+            System.out.println("Value = " + Value);
+            System.out.println("Value = " + Value.toString());
+            jedis.set(key, Value);
 
         } catch (Throwable t) {
             t.printStackTrace();

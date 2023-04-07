@@ -29,7 +29,7 @@ export interface REVIEW {
 }
 
 export default function ReviewAll({ placeId }: any) {
-  const isDark = useRecoilState(darkMode);
+  const isDark = useRecoilState(darkMode)[0];
   const LIMIT = 5;
   const [offset, setOffset] = useState(0);
 
@@ -38,7 +38,7 @@ export default function ReviewAll({ placeId }: any) {
     queryFn: () => getReviewAll(placeId, LIMIT, offset),
   });
 
-  if (isLoading) return null;
+  if (isLoading || data === undefined) return null;
 
   return (
     <div>
