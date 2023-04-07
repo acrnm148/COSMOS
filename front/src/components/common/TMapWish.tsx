@@ -364,7 +364,9 @@ export default function TMapRecommend(props: { courseId: any }) {
 
                                 polyline_ = new Tmapv2.Polyline({
                                     path: drawInfoArr,
-                                    strokeColor: isDark ? "#9C4395" : "#FF8E9E",
+                                    strokeColor: isDark[0]
+                                        ? "#9C4395"
+                                        : "#FF8E9E",
                                     strokeWeight: 6,
                                     map: map,
                                 });
