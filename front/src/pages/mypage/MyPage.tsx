@@ -74,7 +74,7 @@ interface Place{
               createTime : data.createTime
             })
 
-            // console.log('data in mypage', data)
+            console.log('data in mypage', data)
           }
           // console.log('userInfo', userInfo)
         },[data])

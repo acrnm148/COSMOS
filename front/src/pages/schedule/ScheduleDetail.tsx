@@ -99,7 +99,7 @@ export function ScheduleDetail(){
         setPlaceIdSwitch(temp)
     }, [showReview])
     return (
-        <div className={(isDark?"bg-darkBackground2 ": "bg-white ")  +"zw-full "}>
+        <div className={(isDark?"bg-darkBackground2 ": "bg-white ")  +" zw-full "}>
             <div className={(isDark?"bg-darkBackground2 ": "bg-white ") + " pt- bg-white rounded-t-lg w-full flex flex-col items-between" + (!showReview ? 'p-2':'w-full')}>
                 <div >
                     <div className={isDark&& "bg-darkMain p-2 rounded-t-lg"}>
@@ -133,7 +133,7 @@ export function ScheduleDetail(){
                     :
                             <div className="">
                                 <div className="누구리뷰 w-full flex h-10">
-                                    <div onClick={()=>(setShowMine(true))}  className={showMine ? (isDark ? 'bg-darkMain ' : 'bg-lightMain ') + 'w-[50%] flex justify-center rounded-t-lg items-center' : 'w-[50%] flex justify-center items-center'}>나의리뷰</div>
+                                    <div onClick={()=>(setShowMine(true))}  className={showMine ? ((isDark ? 'bg-darkMain ' : 'bg-lightMain ') + 'w-[50%] flex justify-center rounded-t-lg items-center') : 'w-[50%] flex justify-center items-center'}>나의리뷰</div>
                                     { !isDark &&
                                         <div onClick={()=>(setShowMine(false))} className={showMine ? ' w-[50%] flex justify-center rounded-t-lg items-center' : 'bg-lightMain w-[50%] flex justify-center items-center'}>너의리뷰</div>
                                     }

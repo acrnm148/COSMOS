@@ -99,7 +99,7 @@ export default function ReviewOurs(props:{placeId:any , sol:boolean}) {
                 {item.categories?.map((review: any) => {
                   return (
                     <span
-                      className={(isDark?"bg-darkMain ":"bg-lightMain ") + "font-medium py-1 px-2 rounded-lg text-white dark:bg-darkMain2"}
+                      className={(isDark?"bg-darkMain ":"bg-lightMain ") + "font-medium py-1 px-2 rounded-lg text-white"}
                       key={review.id}
                     >
                       {review.reviewCategoryCode}
@@ -109,7 +109,7 @@ export default function ReviewOurs(props:{placeId:any , sol:boolean}) {
                 {item.indiReviewCategories?.map((review: any) => {
                   return (
                     <span
-                      className={(isDark?"bg-darkMain ":"bg-lightMain ") + "font-medium py-1 px-2 rounded-lg text-white dark:bg-darkMain2"}
+                      className={(isDark?"bg-darkMain ":"bg-lightMain ") + "font-medium py-1 px-2 rounded-lg text-white"}
                       key={review.id}
                     >
                       {review.reviewCategory}
