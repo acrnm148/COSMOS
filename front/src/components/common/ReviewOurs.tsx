@@ -29,7 +29,7 @@ export interface REVIEW {
 }
 
 export default function ReviewOurs(props:{placeId:any , sol:boolean}) {
-  const isDark = useRecoilState(darkMode);
+  const [isDark, setIsDark] = useRecoilState(darkMode);
   const LIMIT = 5;
   const [offset, setOffset] = useState(0);
   const userSeq = useRecoilState(userState);
@@ -46,7 +46,7 @@ export default function ReviewOurs(props:{placeId:any , sol:boolean}) {
         offset
       ),
   });
-
+  console.log('review data', data)
   if (isLoading || data === undefined) return null;
 
   return (

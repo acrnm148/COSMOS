@@ -189,7 +189,7 @@ interface Place{
                     <div className="w-[100px] max-w-[200px] h-px bg-lightMain mx-2"></div>
                 </div>
                   <div className={"w-[12vw] h-[12vw] max-w-[100px] max-h-[100px]  rounded-full  max-w-[950px]"}>
-                    <img src={userInfo? userInfo.coupleProfileImgUrl : ""} className="w-full h-full rounded-full" alt="" />
+                    <img src={(userInfo&& userInfo.coupleProfileImgUrl) ? userInfo.coupleProfileImgUrl: "https://user-images.githubusercontent.com/87971876/230527186-f5e3fdea-d763-4199-a48e-26cf32202481.png"} className="w-full h-full rounded-full" alt="" />
                   </div>
               </div>
               :
