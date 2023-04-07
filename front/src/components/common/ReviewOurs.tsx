@@ -46,7 +46,7 @@ export default function ReviewOurs(props:{placeId:any , sol:boolean}) {
         offset
       ),
   });
-
+  console.log('review data', data)
   if (isLoading || data === undefined) return null;
 
   return (
