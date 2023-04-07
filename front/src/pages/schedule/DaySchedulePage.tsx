@@ -34,6 +34,7 @@ import DatePickerTest from "../../components/schedule/datePickerTest";
  
 import { PLACECATE } from "../../recoil/states/PlaceState"
 import { Place } from "../../recoil/states/PlaceState"
+import { start } from "repl";
 
 // const testPlace:Place[] = [{idx:0,name:'파주 출판단지', imgUrl:'파주출판단지', category:'관광', location:"경기도", date:'2023년 2월 28일'},
 //                         {idx:1,name:'베지앙', imgUrl:베지앙, category:'카페', location:"경기도", date:'2023년 2월 28일'},
@@ -102,6 +103,7 @@ export function DaySchedulePage(){
 
     
     const [planId, setPlanId] = useState<number>()
+    const yearStr =  year.year
     useEffect(()=>{
         // setPlaces(testPlace)
         setShowModal(false)
@@ -109,19 +111,19 @@ export function DaySchedulePage(){
         setEndDate(undefined)
         setPlanName(undefined)
         
-        const yearStr =  year.year
         const day = String(Number(dayClicked)).length === 1? '0'+String(Number(dayClicked)) :dayClicked
-
-        const coupleId = loginUser.coupleId
+        
+        const coupleId = loginUser.coupleId ? loginUser.coupleId : "0"
         const date = yearStr+(month.length === 1?'0'+ month:month)+day
-
-
+        
+        
         if(dayClicked){
             setEditing(false)
             if(dayClicked === '-1'){return}
             setStartDate(new Date(makeStartDateDateFormat()))
             axios.get(`https://j8e104.p.ssafy.io/api/plans/${coupleId}/day/${date}`)
             .then((res)=>{
+                console.log("dayClicked", res)
                 if(res.data.planName){
                     setScheduleTitle(res.data.planName)
                     setIsPlan(true)
@@ -215,66 +217,18 @@ export function DaySchedulePage(){
     const postPlan = useMutation(postSchedule)
     const putPlan = useMutation(putSchedule)
     const [scheduleDaysList, setScheduleDaysList] = useState<{day:string, contents:[]|[COURSE], seq:any, name:string}[]>()
-    function submitSchedules(){
-        console.log(endDate)
-        if(planName == undefined){
-            Toast.fire({
-                title : '일정명을 작성해주세요.'
-            }).then(()=> {return})
-        } else if(endDate == undefined){
-            Toast.fire({
-                title : '종료일을 선택해주세요.'
-            }).then(()=> {return})
-        } else{
-            Toast2.fire({
-                title : isEditing ? "일정을 수정하시겠습니까?" :"일정을 생성하시겠습니까?"
-            }).then((result)=>{
-                if (result.isConfirmed) {
-                    let courseIdAndDateList = (scheduleDaysList?.map((sd)=>({
-                        date : apiDateFormat(sd.day), //format 변경
-                        courseId :sd.seq
-                    })))
-                    //일정생성 데이터
-                    const dt = {
-                        "coupleId" : loginUser.coupleId,
-                        "planName" : planName,
-                        "courseIdAndDateList" : courseIdAndDateList,
-                        "startDate" : courseIdAndDateList?.[0].date, 
-                        "endDate" : courseIdAndDateList?.[courseIdAndDateList?.length-1].date,
-                        "planId" : planId
-                    }
-                    console.log('dt-------------', dt)
-                    if(isEditing){
-                        putPlan.mutate({
-                            schedule : dt,
-                            ac : loginUser.acToken,
-                            userSeq : loginUser.seq
-                        })
-                    } else{
-                        postPlan.mutate({
-                            schedule : dt,
-                            ac : loginUser.acToken,
-                            userSeq : loginUser.seq
-                        })
-                    }
-                    setIsPlan(true)
-                    const temp = dayClicked
-                    setDayClicked('-1')
-                    setDayClicked(temp) 
-                    setEditing(false)
-                }
-                })
 
-        }
-        
-    }
     
     // const [allDays, setAllDays] = useState<string[]>([])
     let allDays: any[] = []
     useEffect(()=>{
         if(!startDate || !endDate){return}
         if(isPlan && !isEditing){return}
-        if(isEditing && scheduleDaysList && scheduleDaysList[0].seq !== undefined){return}
+        if(isEditing && scheduleDaysList && scheduleDaysList[0].seq !== undefined){
+            console.log('여기야?', isEditing, scheduleDaysList)
+            return
+            
+        }
         // startDate와 EndDate가 새로 설정될때마다 날짜 리스트를 새로 만들기
         const sd = startDate
         const ed = endDate
@@ -300,6 +254,64 @@ export function DaySchedulePage(){
         setScheduleDaysList(temp)
         
     },[startDate, endDate])
+
+
+    function submitSchedules(){
+        console.log(endDate)
+        if(planName == undefined){
+            Toast.fire({
+                title : '일정명을 작성해주세요.'
+            }).then(()=> {return})
+        } else if(endDate == undefined){
+            Toast.fire({
+                title : '종료일을 선택해주세요.'
+            }).then(()=> {return})
+        } else{
+            Toast2.fire({
+                title : isEditing ? "일정을 수정하시겠습니까?" :"일정을 생성하시겠습니까?"
+            }).then((result)=>{
+                if (result.isConfirmed) {
+                    let courseIdAndDateList = (scheduleDaysList?.map((sd)=>({
+                        date : apiDateFormat(sd.day), //format 변경
+                        courseId :sd.seq
+                    })))
+                    //일정생성 데이터
+                    const dt = {
+                        "coupleId" : loginUser.coupleId?loginUser.coupleId:"0",
+                        "planName" : planName,
+                        "courseIdAndDateList" : courseIdAndDateList,
+                        "startDate" : courseIdAndDateList?.[0].date, 
+                        "endDate" : courseIdAndDateList?.[courseIdAndDateList?.length-1].date,
+                        "planId" : planId
+                    }
+                    console.log('dt-------------', dt)
+                    if(isEditing){
+             
+                        putPlan.mutate({
+                            schedule : dt,
+                            ac : loginUser.acToken,
+                            userSeq : loginUser.seq
+                        })
+                    } else{
+                        postPlan.mutate({
+                            schedule : dt,
+                            ac : loginUser.acToken,
+                            userSeq : loginUser.seq
+                        })
+                    }
+                    
+                    setScheduleTitle(planName)
+                    setIsPlan(true)
+                    setEditing(false)
+                }
+                })
+
+        }
+        
+    }
+
+
+
     const getDateDiff = (sd:Date, ed:Date) => {
         const date1 = new Date(sd);
         const date2 = new Date(ed);
@@ -338,7 +350,8 @@ export function DaySchedulePage(){
     }
 
     function checkEndDate(newValue: any) {
-        // console.log('react DatePicker에서 받은 값',newValue)
+
+        // console.log('일정 종료일 수정 요망 요망 ',newValue)
         const today = new Date()
         if (startDate && (getDateDiff(newValue, startDate)) > 7){
             Toast.fire({
@@ -363,6 +376,8 @@ export function DaySchedulePage(){
         //     setEndDate(undefined)
         //     return
         } else{
+            // console.log('enddate수정수정', endDate)
+            // console.log("startDate", startDate)
             setEndDate(newValue)
         }
     }
@@ -370,6 +385,8 @@ export function DaySchedulePage(){
     
 
     function getWishCourse(day : string){
+        // 코스리스트
+
         // 1. 찜코스 모달에 띄우기
         // 선택한 코스가 있을 때 $
         setShowWishModal(true)
@@ -407,13 +424,16 @@ export function DaySchedulePage(){
         return result
     }
     function editSchedule(){
-        axios.get(`https://j8e104.p.ssafy.io/api/plans/${loginUser.coupleId}/${planId}`)
+        axios.get(`https://j8e104.p.ssafy.io/api/plans/${loginUser.coupleId?loginUser.coupleId:"0"}/${planId}`)
         .then((res) => {
             // 일정명 세팅
             setPlanName(res.data.planName)
             // 기존의 시작, 종료일 세팅
             setStartDate(new Date(res.data.startDate))
             setEndDate(new Date(res.data.endDate))
+            const temp = dayClicked
+            setDayClicked('')
+            setDayClicked(temp)
             return res.data.courses
         }).then((res)=>{
             console.log('여기',res)
@@ -480,8 +500,8 @@ export function DaySchedulePage(){
                                 :
                                 ///////////////////////////////////////////// 일정생성/수정 START /////////////////////////////////////////////
                                 <div className="h-full max-h-[1000vh]">                                    
-                                        <div className={(isDark?"hover:border-darkMain2 text-white ":"hover:border-lightMain2 ")+' px-2 mx-2 h-16 flex items-center rounded-lg border-2 border-solid'} >
-                                            일정명 : <input className="bg-transparent mx-2 focus:outline-none" onChange={(e)=>setPlanName(e.target.value)} type="text" placeholder={scheduleTitle?scheduleTitle:''} />
+                                        <div className={(isDark?"hover:border-darkMain2 text-white ":"hover:border-lightMain2 ")+' flex px-2 mx-2 h-16 items-center rounded-lg border-2 border-solid'} >
+                                            <label className="min-w-[70px]">일정명 : </label><input className="w-full bg-transparent mx-2 focus:outline-none" onChange={(e)=>setPlanName(e.target.value)} type="text" value={planName?planName:''} />
                                         </div>
                                         <div className={(isDark?'bg-darkMain5 ':'bg-lightMain3 ') + ' rounded-lg p-2 m-2 flex items-center'}>
                                             <DatePickerTest checkDate={null} defaultDate={makeStartDateFormat()} isDate={!isEditing}/>
@@ -499,7 +519,7 @@ export function DaySchedulePage(){
                                                 locale={ko}
                                                 disabled={false}
                                                 dateFormat="yyyy년 MM월 dd일"
-                                                className={(isDark?"bg-darkMain5 " :"bg-lightMain3 ") +  "outline-none cursor-pointer text-[15px] w-full flex justify-center"}
+                                                className={(isDark?"bg-darkMain5 " :"bg-lightMain3 ") +  "outline-none cursor-pointer text-[15px] w-full flex justify-center text-center"}
                                                 />
                                         </div>
 
@@ -516,7 +536,7 @@ export function DaySchedulePage(){
                                                                     <div className="날짜별코스선택-토글박스 mb-2 rounded-lg flex flex-col">
                                                                         <div className="h-16 border-2 rounded-lg flex items-center justify-between">
                                                                             <div className={(isDark?"bg-darkMain3 text-white ":"bg-lightMain3 ") +"flex justify-center items-center px-8 h-full rounded-l-lg"}>{d.day.slice(4,6)}월 {d.day.slice(6)}일</div>
-                                                                            <div className="text-lightMain font-bold">
+                                                                            <div className={(isDark? "text-darkMain " : "text-lightMain") + " font-bold"}>
                                                                                 {d.contents.length !== 0?
                                                                                     d.contents.map((ee)=>{
                                                                                         return <div onClick={()=>{
@@ -529,11 +549,11 @@ export function DaySchedulePage(){
                                                                                 }
                                                                             
                                                                             </div>
-                                                                            <div onClick={()=>getWishCourse(d.day)} className={(isDark ? "bg-darkMain3 text-white " : "bg-lightMain3 ") + "px-8 h-full flex items-center justify-center cursor-pointer"}>코스선택</div>
+                                                                        <div onClick={()=>getWishCourse(d.day)} className={(isDark ? "bg-darkMain3 text-white " : "bg-lightMain3 ") + " cursor-pointer px-8 h-full flex items-center justify-center cursor-pointer"}>코스선택</div>
                                                                         </div>
                                                                             {
                                                                                 (d.contents.length !== 0 && showCourse===key) &&
-                                                                                <div className="mt-2">
+                                                                                <div className={(isDark?"bg-darkMain5 ":"lightMain5 ") +" rounded-lg py-2 mt-2"}>
                                                                                    
                                                                                     {
                                                                                         d.contents.map((course, key:number) =>{
