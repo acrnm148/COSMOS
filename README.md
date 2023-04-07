@@ -97,7 +97,7 @@ badge](https://img.shields.io/badge/mockito-FFDBE0?style=for-the-badge&logo=mock
 ##### 9. 리뷰
 - 장소 리뷰 등록/수정/삭제
 
-![makereview](https://user-images.githubusercontent.com/87971876/230555742-d150ac0b-ea10-4826-9496-4c0ce75dfff2.gif){: width="100" height="100"}
+![makereview](https://user-images.githubusercontent.com/87971876/230555742-d150ac0b-ea10-4826-9496-4c0ce75dfff2.gif | width=100)
 
 ##### 10. 실시간 알림
 - 커플 연결 / 일정 / 리뷰 관련 실시간 알림
