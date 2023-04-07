@@ -97,7 +97,7 @@ badge](https://img.shields.io/badge/mockito-FFDBE0?style=for-the-badge&logo=mock
 ##### 9. 리뷰
 - 장소 리뷰 등록/수정/삭제
 
-<image src="https://user-images.githubusercontent.com/87971876/230555742-d150ac0b-ea10-4826-9496-4c0ce75dfff2.gif" style="width:70%"; height:70%" />
+<img src="https://user-images.githubusercontent.com/87971876/230555742-d150ac0b-ea10-4826-9496-4c0ce75dfff2.gif" style="width:70%"; height:70%" />
 ![makereview](https://user-images.githubusercontent.com/87971876/230555742-d150ac0b-ea10-4826-9496-4c0ce75dfff2.gif)
 
 ##### 10. 실시간 알림
