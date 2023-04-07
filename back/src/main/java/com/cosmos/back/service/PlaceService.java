@@ -47,8 +47,6 @@ public class PlaceService {
     public Map<String, Long> likePlace (Long placeId, Long userSeq) {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new NoSuchElementException("no such data"));
         User user = userRepository.findById(userSeq).orElseThrow(() -> new NoSuchElementException("no such data"));
-        User coupleUser = userRepository.findByUserSeq(user.getCoupleUserSeq());
-        String coupleUserName = coupleUser.getUserName();
 
         UserPlace userPlace = UserPlace.createUserPlace(user, place);
 
@@ -59,7 +57,9 @@ public class PlaceService {
         map.put("place", place.getId());
 
         // 알림 전송
-        notificationService.send("makeWish", user.getCoupleUserSeq(), coupleUserName+"님이 장소 "+ place.getName() +"을(를) 찜하셨습니다.");
+        if (user.getCoupleUserSeq() != 0 && user.getCoupleUserSeq() != null) {
+            notificationService.send("makeWish", user.getCoupleUserSeq(), user.getUserName()+"님이 장소 "+ place.getName() +"을(를) 찜하셨습니다.");
+        }
 
         return map;
     }
