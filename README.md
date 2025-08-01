@@ -7,7 +7,7 @@
 |NAME|ROLE|
 |------|---|
 |장시우|Back-End 총괄|
-|강수나|Back-End & CI/CD & Server|
+|강수나|Back-End & CI/CD & Infra|
 |이상찬|Back-End & CI/CD & Data processing|
 |김혜지|Front-End 총괄 & Kakao API|
 |김정윤|Front-End & TMap API|
